@@ -1,4 +1,5 @@
-# Lexicon Forum Front end
+# Lexicon forum front-end 
+### PNPM + Vite + React + TS + Styled Components
 
 Naming conventions:
 
