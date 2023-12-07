@@ -65,10 +65,11 @@ function Landing() {
           'http://localhost:8080/api/auth/zupass/verify',
           {
             method: 'POST',
+            credentials: 'include',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ pcd: pcdStr }),
+            body: JSON.stringify({ pcd: JSON.parse(pcdStr).pcd }),
           }
         )
 
