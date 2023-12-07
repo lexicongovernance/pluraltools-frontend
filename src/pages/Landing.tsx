@@ -9,8 +9,12 @@ import {
   useSemaphoreSignatureProof,
   useZupassPopupMessages,
 } from '@pcd/passport-interface'
+import { ArgumentTypeName } from '@pcd/pcd-types'
+import {
+  SemaphoreSignaturePCDPackage,
+  SemaphoreSignaturePCDArgs,
+} from '@pcd/semaphore-signature-pcd'
 import { SemaphoreIdentityPCDPackage } from '@pcd/semaphore-identity-pcd'
-
 export const IS_PROD = import.meta.env.NODE_ENV === 'production'
 console.log('🚀 ~ file: Landing.tsx:14 ~ IS_PROD:', IS_PROD)
 export const IS_STAGING = import.meta.env.NODE_ENV === 'staging'
@@ -55,11 +59,27 @@ function Landing() {
   const { signatureProof } = useSemaphoreSignatureProof(pcdStr, onProofVerified)
 
   const handleSignatureRequest = () => {
+    const args: SemaphoreSignaturePCDArgs = {
+      identity: {
+        argumentType: ArgumentTypeName.PCD,
+        pcdType: SemaphoreIdentityPCDPackage.name,
+        value: undefined,
+        userProvided: true,
+      },
+      signedMessage: {
+        argumentType: ArgumentTypeName.String,
+        value: 'hello lex',
+        userProvided: false,
+      },
+    }
     const constructProofUrl = constructZupassPcdGetRequestUrl(
       ZUPASS_URL,
       POPUP_URL,
-      SemaphoreIdentityPCDPackage.name,
-      {}
+      SemaphoreSignaturePCDPackage.name,
+      args,
+      {
+        genericProveScreen: true,
+      }
     )
 
     openZupassPopup(POPUP_URL, constructProofUrl)

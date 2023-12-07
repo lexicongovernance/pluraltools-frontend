@@ -8,6 +8,9 @@ dependencies:
   '@pcd/eddsa-ticket-pcd':
     specifier: ^0.3.0
     version: 0.3.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)
+  '@pcd/email-pcd':
+    specifier: ^0.4.0
+    version: 0.4.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)
   '@pcd/passport-interface':
     specifier: ^0.8.0
     version: 0.8.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)
@@ -17,6 +20,9 @@ dependencies:
   '@pcd/semaphore-identity-pcd':
     specifier: ^0.8.0
     version: 0.8.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)
+  '@pcd/semaphore-signature-pcd':
+    specifier: ^0.9.0
+    version: 0.9.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0)
   '@pcd/zk-eddsa-event-ticket-pcd':
     specifier: ^0.2.1
     version: 0.2.1(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0)
@@ -959,6 +965,27 @@ packages:
       - utf-8-validate
     dev: false
 
+  /@pcd/eddsa-pcd@0.4.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0):
+    resolution: {integrity: sha512-pfE834Y1N18FuUrMvdteRnDFt5aQs+Z5WvSwc/wB1ob+xKeTGjHrrk3c4Ord0m8EfFRbnY59O48ejFMJ9M/pyQ==}
+    peerDependencies:
+      react: ^18.2.0
+      react-dom: ^18.2.0
+    dependencies:
+      '@pcd/passport-ui': 0.9.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)
+      '@pcd/pcd-types': 0.9.0
+      '@pcd/util': 0.3.0
+      chai: 4.3.10
+      circomlibjs: 0.1.7
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      uuid: 9.0.1
+    transitivePeerDependencies:
+      - '@babel/core'
+      - bufferutil
+      - react-is
+      - utf-8-validate
+    dev: false
+
   /@pcd/eddsa-ticket-pcd@0.3.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1):
     resolution: {integrity: sha512-YjObtH/FMK5YGen5v39IhP2INo6dZ9/9xSx1YmjZ6pFB7OG+MKY73nUcerPFjcdUmWK+4PmFjJToFubqD1Y3Bg==}
     dependencies:
@@ -971,6 +998,26 @@ packages:
       lodash: 4.17.21
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0)
+      uuid: 9.0.1
+    transitivePeerDependencies:
+      - '@babel/core'
+      - bufferutil
+      - react-dom
+      - react-is
+      - utf-8-validate
+    dev: false
+
+  /@pcd/email-pcd@0.4.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1):
+    resolution: {integrity: sha512-rFT72U+dV3avDGWvmmJwMW9qdqRY2qtaJp8PhC6ErWBv4xRc254XcDwkJ+nTyIf3N1zr3qRPN76Y6rQjVQPXAg==}
+    dependencies:
+      '@pcd/eddsa-pcd': 0.4.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0)
+      '@pcd/passport-ui': 0.9.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)
+      '@pcd/pcd-types': 0.9.0
+      '@pcd/util': 0.3.0
+      chai: 4.3.10
+      json-bigint: 1.0.0
+      lodash: 4.17.21
+      react: 18.2.0
       uuid: 9.0.1
     transitivePeerDependencies:
       - '@babel/core'
@@ -1034,6 +1081,20 @@ packages:
       - react-is
     dev: false
 
+  /@pcd/passport-ui@0.9.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1):
+    resolution: {integrity: sha512-w456K+LEqTDAHhExxAIue3+Q82xu5kw+BV2pva/LUbqGGMBRoMTUwbrzP1J1p6txnSUAFD+ZF24DDZ3lCOEheA==}
+    dependencies:
+      medium-zoom: 1.1.0
+      pako: 2.1.0
+      qr-image: 3.2.0
+      react: 18.2.0
+      styled-components: 5.3.11(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0)
+    transitivePeerDependencies:
+      - '@babel/core'
+      - react-dom
+      - react-is
+    dev: false
+
   /@pcd/pcd-collection@0.8.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1):
     resolution: {integrity: sha512-3E555DnW4YE6llPCFFJfxyfeTyKIHA3Q2JwfgnFTZfl1UxI+Zten26CYsxW/LtD4q9Jr+BfvGrh+V1rzRPhXqA==}
     dependencies:
@@ -1051,6 +1112,10 @@ packages:
 
   /@pcd/pcd-types@0.8.0:
     resolution: {integrity: sha512-3+9bRpidRK7GNSlRZWBM1NJckn9q4Ki81StoL6w/52k9FUIGpdGNP5ymZhyZcUOi9JXh2zCiKXLLL5EPL6441w==}
+    dev: false
+
+  /@pcd/pcd-types@0.9.0:
+    resolution: {integrity: sha512-gtaBc8ampzyIlcbZ36mBFesBybs9S+HWCAMJkrKD8Nx4Keo9ThRY43DjmDOGXaT343ymWl9z3C4uBqwyzdA/pw==}
     dev: false
 
   /@pcd/rsa-pcd@0.3.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1):
@@ -1128,6 +1193,25 @@ packages:
       - react-is
     dev: false
 
+  /@pcd/semaphore-identity-pcd@0.9.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0):
+    resolution: {integrity: sha512-GsIIVHQMi/CmpmYFcBVhCExmLOEkGp5QizLiyty6sJOsMwmdU8l9Y2naK8igdGSUod/kep4cF4oGNSrionxgvw==}
+    peerDependencies:
+      react: ^18.2.0
+      react-dom: ^18.2.0
+    dependencies:
+      '@pcd/passport-ui': 0.9.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)
+      '@pcd/pcd-types': 0.9.0
+      '@pcd/util': 0.3.0
+      '@semaphore-protocol/identity': 3.15.1
+      json-bigint: 1.0.0
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      uuid: 9.0.1
+    transitivePeerDependencies:
+      - '@babel/core'
+      - react-is
+    dev: false
+
   /@pcd/semaphore-signature-pcd@0.8.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1):
     resolution: {integrity: sha512-tfBhJkAExCdTnscSMcLr8KOCIN44qNWhx0GEPKAoEKt0pInyKn9gKV7qSCJ+X1kTzdGqiKGAJ2lx5XZ22syr2A==}
     dependencies:
@@ -1148,8 +1232,38 @@ packages:
       - react-is
     dev: false
 
+  /@pcd/semaphore-signature-pcd@0.9.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0):
+    resolution: {integrity: sha512-4Iir91yP//6s+3YaC/la9sVImuq3bpv9g38kcbO86iQuKlenCk+q8xmEGg3mOLyhb+S2UY1V8CPI9TPaDmzeTg==}
+    peerDependencies:
+      react: ^18.2.0
+      react-dom: ^18.2.0
+    dependencies:
+      '@pcd/passport-ui': 0.9.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)
+      '@pcd/pcd-types': 0.9.0
+      '@pcd/semaphore-identity-pcd': 0.9.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0)
+      '@pcd/util': 0.3.0
+      '@semaphore-protocol/group': 3.15.1
+      '@semaphore-protocol/identity': 3.15.1
+      '@semaphore-protocol/proof': 3.15.1(@semaphore-protocol/group@3.15.1)(@semaphore-protocol/identity@3.15.1)
+      json-bigint: 1.0.0
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      uuid: 9.0.1
+    transitivePeerDependencies:
+      - '@babel/core'
+      - react-is
+    dev: false
+
   /@pcd/util@0.2.0:
     resolution: {integrity: sha512-tLM2DDmm2TAwdQNf38yMltPAptC0TswOOcAoegIqtDH/UtJphujePEXXmt+IFNKcR3D/TdmlmzW+qSHc20rrkg==}
+    dependencies:
+      chai: 4.3.10
+      js-sha256: 0.10.1
+      uuid: 9.0.1
+    dev: false
+
+  /@pcd/util@0.3.0:
+    resolution: {integrity: sha512-xmZb5kJDnvfACGgj7SUe+fG6q40KSTpmzGkCHpHcYUll6f5Nu7c4Fkj+FslXVnISo5mnyxYhDi5Iw1b+iZgi3A==}
     dependencies:
       chai: 4.3.10
       js-sha256: 0.10.1
@@ -2839,6 +2953,10 @@ packages:
       inherits: 2.0.4
       safe-buffer: 5.2.1
     dev: true
+
+  /medium-zoom@1.1.0:
+    resolution: {integrity: sha512-ewyDsp7k4InCUp3jRmwHBRFGyjBimKps/AJLjRSox+2q/2H4p/PNpQf+pwONWlJiOudkBXtbdmVbFjqyybfTmQ==}
+    dev: false
 
   /merge2@1.4.1:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
