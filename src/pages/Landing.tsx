@@ -2,39 +2,38 @@
 import { useState } from 'react'
 
 import {
-  openSemaphoreSignaturePopup,
+  constructZupassPcdGetRequestUrl,
+  openZupassPopup,
   usePCDMultiplexer,
   usePendingPCD,
   useSemaphoreSignatureProof,
   useZupassPopupMessages,
 } from '@pcd/passport-interface'
+import { SemaphoreIdentityPCDPackage } from '@pcd/semaphore-identity-pcd'
 
+export const IS_PROD = import.meta.env.NODE_ENV === 'production'
+console.log('🚀 ~ file: Landing.tsx:14 ~ IS_PROD:', IS_PROD)
+export const IS_STAGING = import.meta.env.NODE_ENV === 'staging'
+console.log('🚀 ~ file: Landing.tsx:16 ~ IS_STAGING:', IS_STAGING)
+console.log(window.location.origin + '#/popup')
 
-export const IS_PROD = import.meta.env.NODE_ENV === "production";
-console.log("🚀 ~ file: Landing.tsx:14 ~ IS_PROD:", IS_PROD)
-export const IS_STAGING = import.meta.env.NODE_ENV === "staging";
-console.log("🚀 ~ file: Landing.tsx:16 ~ IS_STAGING:", IS_STAGING)
-console.log(window.location.origin + '#/popup',);
-
-
-const ZUPASS_URL = 
-// IS_PROD
+const ZUPASS_URL =
+  // IS_PROD
   // ? "https://zupass.org/"
   // : IS_STAGING
-  // ? 
-  "https://staging.zupass.org/"
-  // : "http://localhost:3000/";
+  // ?
+  'https://staging.zupass.org/'
+// : "http://localhost:3000/";
 
-const ZUPASS_SERVER_URL = 
-// IS_PROD
+const ZUPASS_SERVER_URL =
+  // IS_PROD
   // ? "https://api.zupass.org/"
   // : IS_STAGING
-  // ? 
-  "https://api-staging.zupass.org/"
-  // : "http://localhost:3002/";
+  // ?
+  'https://api-staging.zupass.org/'
+// : "http://localhost:3002/";
 
-
-const MESSAGE_TO_SIGN = 'Hi Lexicon'
+const POPUP_URL = window.location.origin + '/popup'
 
 function Landing() {
   const [zupassPCDStr, zupassPendingPCDStr] = useZupassPopupMessages()
@@ -56,11 +55,14 @@ function Landing() {
   const { signatureProof } = useSemaphoreSignatureProof(pcdStr, onProofVerified)
 
   const handleSignatureRequest = () => {
-    openSemaphoreSignaturePopup(
+    const constructProofUrl = constructZupassPcdGetRequestUrl(
       ZUPASS_URL,
-      window.location.origin + '#/popup',
-      MESSAGE_TO_SIGN
+      POPUP_URL,
+      SemaphoreIdentityPCDPackage.name,
+      {}
     )
+
+    openZupassPopup(POPUP_URL, constructProofUrl)
   }
 
   return (
