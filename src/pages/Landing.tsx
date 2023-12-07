@@ -1,5 +1,5 @@
 // Zupass Proof of concept.
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   constructZupassPcdGetRequestUrl,
@@ -15,31 +15,32 @@ import {
   SemaphoreSignaturePCDArgs,
 } from '@pcd/semaphore-signature-pcd'
 import { SemaphoreIdentityPCDPackage } from '@pcd/semaphore-identity-pcd'
-export const IS_PROD = import.meta.env.NODE_ENV === 'production'
-console.log('🚀 ~ file: Landing.tsx:14 ~ IS_PROD:', IS_PROD)
-export const IS_STAGING = import.meta.env.NODE_ENV === 'staging'
-console.log('🚀 ~ file: Landing.tsx:16 ~ IS_STAGING:', IS_STAGING)
-console.log(window.location.origin + '#/popup')
 
-const ZUPASS_URL =
-  // IS_PROD
-  // ? "https://zupass.org/"
-  // : IS_STAGING
-  // ?
-  'https://staging.zupass.org/'
-// : "http://localhost:3000/";
-
-const ZUPASS_SERVER_URL =
-  // IS_PROD
-  // ? "https://api.zupass.org/"
-  // : IS_STAGING
-  // ?
-  'https://api-staging.zupass.org/'
-// : "http://localhost:3002/";
+// const ZUPASS_URL = 'https://zupass.org/'
+const ZUPASS_URL = 'https://staging.zupass.org/'
+// const ZUPASS_SERVER_URL = 'https://api.zupass.org/'
+const ZUPASS_SERVER_URL = 'https://api-staging.zupass.org/'
 
 const POPUP_URL = window.location.origin + '/popup'
 
 function Landing() {
+  const [nonce, setNonce] = useState('')
+
+  useEffect(() => {
+    async function getNonce() {
+      try {
+        const response = await fetch(
+          'http://localhost:8080/api/auth/zupass/nonce'
+        )
+        const data = await response.json()
+        setNonce(data.nonce)
+      } catch (error) {
+        console.error('The error is: ', error)
+      }
+    }
+    getNonce()
+  }, [])
+
   const [zupassPCDStr, zupassPendingPCDStr] = useZupassPopupMessages()
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -52,6 +53,7 @@ function Landing() {
   const [signatureProofValid, setSignatureProofValid] = useState<
     boolean | undefined
   >()
+
   const onProofVerified = (valid: boolean) => {
     setSignatureProofValid(valid)
   }
@@ -68,7 +70,7 @@ function Landing() {
       },
       signedMessage: {
         argumentType: ArgumentTypeName.String,
-        value: 'hello lex',
+        value: nonce && nonce,
         userProvided: false,
       },
     }
@@ -85,9 +87,38 @@ function Landing() {
     openZupassPopup(POPUP_URL, constructProofUrl)
   }
 
+  const handlePostRequest = async () => {
+    try {
+      const response = await fetch(
+        'http://localhost:8080/api/auth/zupass/verify',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ pcd: pcdStr }),
+        }
+      )
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      }
+
+      const responseData = await response.json()
+      console.log('POST successful. Response:', responseData)
+    } catch (error) {
+      console.error('Error during POST request:', error)
+    }
+  }
+
+  if (signatureProofValid && pcdStr) {
+    handlePostRequest()
+  }
+
   return (
     <>
       <h1>Zupass test</h1>
+      <pre>Nonce: {nonce}</pre>
       <button onClick={handleSignatureRequest}>
         Request Semaphore signature
       </button>
@@ -95,7 +126,6 @@ function Landing() {
       {signatureProof != null && (
         <>
           <p>Got Semaphore Signature Proof from Zupass</p>
-
           <p>{`Message signed: ${signatureProof.claim.signedMessage}`}</p>
           {signatureProofValid === undefined && <p>❓ Proof verifying</p>}
           {signatureProofValid === false && <p>❌ Proof is invalid</p>}

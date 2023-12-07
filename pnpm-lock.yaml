@@ -5,12 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  '@pcd/eddsa-ticket-pcd':
-    specifier: ^0.3.0
-    version: 0.3.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)
-  '@pcd/email-pcd':
-    specifier: ^0.4.0
-    version: 0.4.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)
   '@pcd/passport-interface':
     specifier: ^0.8.0
     version: 0.8.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)
@@ -23,9 +17,6 @@ dependencies:
   '@pcd/semaphore-signature-pcd':
     specifier: ^0.9.0
     version: 0.9.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0)
-  '@pcd/zk-eddsa-event-ticket-pcd':
-    specifier: ^0.2.1
-    version: 0.2.1(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0)
   formik:
     specifier: ^2.4.5
     version: 2.4.5(react@18.2.0)
@@ -965,27 +956,6 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@pcd/eddsa-pcd@0.4.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0):
-    resolution: {integrity: sha512-pfE834Y1N18FuUrMvdteRnDFt5aQs+Z5WvSwc/wB1ob+xKeTGjHrrk3c4Ord0m8EfFRbnY59O48ejFMJ9M/pyQ==}
-    peerDependencies:
-      react: ^18.2.0
-      react-dom: ^18.2.0
-    dependencies:
-      '@pcd/passport-ui': 0.9.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)
-      '@pcd/pcd-types': 0.9.0
-      '@pcd/util': 0.3.0
-      chai: 4.3.10
-      circomlibjs: 0.1.7
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - '@babel/core'
-      - bufferutil
-      - react-is
-      - utf-8-validate
-    dev: false
-
   /@pcd/eddsa-ticket-pcd@0.3.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1):
     resolution: {integrity: sha512-YjObtH/FMK5YGen5v39IhP2INo6dZ9/9xSx1YmjZ6pFB7OG+MKY73nUcerPFjcdUmWK+4PmFjJToFubqD1Y3Bg==}
     dependencies:
@@ -998,26 +968,6 @@ packages:
       lodash: 4.17.21
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0)
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - '@babel/core'
-      - bufferutil
-      - react-dom
-      - react-is
-      - utf-8-validate
-    dev: false
-
-  /@pcd/email-pcd@0.4.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1):
-    resolution: {integrity: sha512-rFT72U+dV3avDGWvmmJwMW9qdqRY2qtaJp8PhC6ErWBv4xRc254XcDwkJ+nTyIf3N1zr3qRPN76Y6rQjVQPXAg==}
-    dependencies:
-      '@pcd/eddsa-pcd': 0.4.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0)
-      '@pcd/passport-ui': 0.9.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)
-      '@pcd/pcd-types': 0.9.0
-      '@pcd/util': 0.3.0
-      chai: 4.3.10
-      json-bigint: 1.0.0
-      lodash: 4.17.21
-      react: 18.2.0
       uuid: 9.0.1
     transitivePeerDependencies:
       - '@babel/core'
@@ -1268,31 +1218,6 @@ packages:
       chai: 4.3.10
       js-sha256: 0.10.1
       uuid: 9.0.1
-    dev: false
-
-  /@pcd/zk-eddsa-event-ticket-pcd@0.2.1(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0):
-    resolution: {integrity: sha512-TWTcWqSvGEe2Hs0QqLIDaa0SM9/12Hky3J5NIxG68ofR+/nIC4pMABzpI665VJbLCeXiYnPRnIRQezoGSFZ/fA==}
-    dependencies:
-      '@pcd/eddsa-pcd': 0.3.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)
-      '@pcd/eddsa-ticket-pcd': 0.3.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)
-      '@pcd/passport-ui': 0.8.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)
-      '@pcd/pcd-types': 0.8.0
-      '@pcd/semaphore-identity-pcd': 0.8.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)
-      '@pcd/semaphore-signature-pcd': 0.8.0(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)
-      '@pcd/util': 0.2.0
-      '@semaphore-protocol/identity': 3.15.1
-      '@zk-kit/groth16': 0.3.0
-      circomlibjs: 0.1.7
-      json-bigint: 1.0.0
-      styled-components: 5.3.11(@babel/core@7.23.5)(react-dom@18.2.0)(react-is@16.13.1)(react@18.2.0)
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - '@babel/core'
-      - bufferutil
-      - react
-      - react-dom
-      - react-is
-      - utf-8-validate
     dev: false
 
   /@remix-run/router@1.13.1:
