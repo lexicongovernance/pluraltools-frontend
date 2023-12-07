@@ -1,6 +1,4 @@
-// Zupass Proof of concept.
-import { useEffect, useState } from 'react'
-
+import { useEffect, useRef, useState } from 'react'
 import {
   constructZupassPcdGetRequestUrl,
   openZupassPopup,
@@ -16,29 +14,39 @@ import {
 } from '@pcd/semaphore-signature-pcd'
 import { SemaphoreIdentityPCDPackage } from '@pcd/semaphore-identity-pcd'
 
-// const ZUPASS_URL = 'https://zupass.org/'
 const ZUPASS_URL = 'https://staging.zupass.org/'
-// const ZUPASS_SERVER_URL = 'https://api.zupass.org/'
 const ZUPASS_SERVER_URL = 'https://api-staging.zupass.org/'
-
 const POPUP_URL = window.location.origin + '/popup'
 
 function Landing() {
+  const [signatureProofValid, setSignatureProofValid] = useState<
+    boolean | undefined
+  >()
+  const isMounted = useRef(true)
   const [nonce, setNonce] = useState('')
 
   useEffect(() => {
-    async function getNonce() {
-      try {
-        const response = await fetch(
-          'http://localhost:8080/api/auth/zupass/nonce'
-        )
-        const data = await response.json()
-        setNonce(data.nonce)
-      } catch (error) {
-        console.error('The error is: ', error)
+    const fetchNonce = async () => {
+      if (isMounted.current) {
+        isMounted.current = false
+        try {
+          const response = await fetch(
+            'http://localhost:8080/api/auth/zupass/nonce'
+          )
+          const data = await response.json()
+
+          setNonce(data.nonce)
+        } catch (error) {
+          console.error('Error fetching nonce:', error)
+        }
       }
     }
-    getNonce()
+
+    fetchNonce()
+
+    return () => {
+      isMounted.current = false
+    }
   }, [])
 
   const [zupassPCDStr, zupassPendingPCDStr] = useZupassPopupMessages()
@@ -50,9 +58,35 @@ function Landing() {
   )
   const pcdStr = usePCDMultiplexer(zupassPCDStr, serverPCDStr)
 
-  const [signatureProofValid, setSignatureProofValid] = useState<
-    boolean | undefined
-  >()
+  useEffect(() => {
+    const handlePostRequest = async () => {
+      try {
+        const response = await fetch(
+          'http://localhost:8080/api/auth/zupass/verify',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ pcd: pcdStr }),
+          }
+        )
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`)
+        }
+
+        const responseData = await response.json()
+        console.log('POST successful. Response:', responseData)
+      } catch (error) {
+        console.error('Error during POST request:', error)
+      }
+    }
+
+    if (signatureProofValid && pcdStr) {
+      handlePostRequest()
+    }
+  }, [signatureProofValid, pcdStr])
 
   const onProofVerified = (valid: boolean) => {
     setSignatureProofValid(valid)
@@ -87,34 +121,6 @@ function Landing() {
     openZupassPopup(POPUP_URL, constructProofUrl)
   }
 
-  const handlePostRequest = async () => {
-    try {
-      const response = await fetch(
-        'http://localhost:8080/api/auth/zupass/verify',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ pcd: pcdStr }),
-        }
-      )
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`)
-      }
-
-      const responseData = await response.json()
-      console.log('POST successful. Response:', responseData)
-    } catch (error) {
-      console.error('Error during POST request:', error)
-    }
-  }
-
-  if (signatureProofValid && pcdStr) {
-    handlePostRequest()
-  }
-
   return (
     <>
       <h1>Zupass test</h1>
@@ -127,6 +133,7 @@ function Landing() {
         <>
           <p>Got Semaphore Signature Proof from Zupass</p>
           <p>{`Message signed: ${signatureProof.claim.signedMessage}`}</p>
+          <p>{pcdStr}</p>
           {signatureProofValid === undefined && <p>❓ Proof verifying</p>}
           {signatureProofValid === false && <p>❌ Proof is invalid</p>}
           {signatureProofValid === true && <p>✅ Proof is valid</p>}
