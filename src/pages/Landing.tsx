@@ -31,7 +31,13 @@ function Landing() {
         isMounted.current = false
         try {
           const response = await fetch(
-            'http://localhost:8080/api/auth/zupass/nonce'
+            'http://localhost:8080/api/auth/zupass/nonce',
+            {
+              credentials: 'include',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
           )
           const data = await response.json()
 
@@ -105,7 +111,7 @@ function Landing() {
       },
       signedMessage: {
         argumentType: ArgumentTypeName.String,
-        value: nonce && nonce,
+        value: 'sign',
         userProvided: false,
       },
     }
