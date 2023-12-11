@@ -111,7 +111,7 @@ function Landing() {
       },
       signedMessage: {
         argumentType: ArgumentTypeName.String,
-        value: 'sign',
+        value: nonce && nonce,
         userProvided: false,
       },
     }
