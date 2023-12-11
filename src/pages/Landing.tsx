@@ -48,7 +48,24 @@ function Landing() {
       }
     }
 
+    const fetchUser = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/users', {
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        const data = await response.json()
+
+        console.log({ user: data })
+      } catch (error) {
+        console.error('Error fetching nonce:', error)
+      }
+    }
+
     fetchNonce()
+    fetchUser()
 
     return () => {
       isMounted.current = false
