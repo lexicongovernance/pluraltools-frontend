@@ -163,7 +163,6 @@ function Landing() {
         <>
           <p>Got Semaphore Signature Proof from Zupass</p>
           <p>{`Message signed: ${signatureProof.claim.signedMessage}`}</p>
-          <p>{pcdStr}</p>
           {signatureProofValid === undefined && <p>❓ Proof verifying</p>}
           {signatureProofValid === false && <p>❌ Proof is invalid</p>}
           {signatureProofValid === true && <p>✅ Proof is valid</p>}
