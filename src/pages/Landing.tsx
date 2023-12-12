@@ -54,11 +54,16 @@ function Landing() {
             },
           }
         )
-        const data = await response.json()
 
-        console.log({ user: data })
+        if (response.status > 399) {
+          console.error('Status code error')
+        }
+        if (response.status === 200) {
+          const data = await response.json()
+          console.log({ user: data })
+        }
       } catch (error) {
-        console.error('Error fetching nonce:', error)
+        console.error('Error fetching user:', error)
       }
     }
 
