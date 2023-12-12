@@ -14,8 +14,6 @@ import {
 } from '@pcd/semaphore-signature-pcd'
 import { SemaphoreIdentityPCDPackage } from '@pcd/semaphore-identity-pcd'
 
-const ZUPASS_URL = 'https://staging.zupass.org/'
-const ZUPASS_SERVER_URL = 'https://api-staging.zupass.org/'
 const POPUP_URL = window.location.origin + '/popup'
 
 function Landing() {
@@ -27,35 +25,35 @@ function Landing() {
 
   useEffect(() => {
     const fetchNonce = async () => {
-      if (isMounted.current) {
-        isMounted.current = false
-        try {
-          const response = await fetch(
-            'http://localhost:8080/api/auth/zupass/nonce',
-            {
-              credentials: 'include',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            }
-          )
-          const data = await response.json()
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_SERVER_URL}/api/auth/zupass/nonce`,
+          {
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        const data = await response.json()
 
-          setNonce(data.nonce)
-        } catch (error) {
-          console.error('Error fetching nonce:', error)
-        }
+        setNonce(data.nonce)
+      } catch (error) {
+        console.error('Error fetching nonce:', error)
       }
     }
 
     const fetchUser = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/users', {
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
+        const response = await fetch(
+          `${import.meta.env.VITE_SERVER_URL}/api/users`,
+          {
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
         const data = await response.json()
 
         console.log({ user: data })
@@ -64,8 +62,11 @@ function Landing() {
       }
     }
 
-    fetchNonce()
-    fetchUser()
+    if (isMounted.current) {
+      isMounted.current = false
+      fetchNonce()
+      fetchUser()
+    }
 
     return () => {
       isMounted.current = false
@@ -77,7 +78,7 @@ function Landing() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, __, serverPCDStr] = usePendingPCD(
     zupassPendingPCDStr,
-    ZUPASS_SERVER_URL
+    import.meta.env.VITE_ZUPASS_SERVER_URL
   )
   const pcdStr = usePCDMultiplexer(zupassPCDStr, serverPCDStr)
 
@@ -85,7 +86,7 @@ function Landing() {
     const handlePostRequest = async () => {
       try {
         const response = await fetch(
-          'http://localhost:8080/api/auth/zupass/verify',
+          `${import.meta.env.VITE_SERVER_URL}/api/auth/zupass/verify`,
           {
             method: 'POST',
             credentials: 'include',
@@ -133,7 +134,7 @@ function Landing() {
       },
     }
     const constructProofUrl = constructZupassPcdGetRequestUrl(
-      ZUPASS_URL,
+      import.meta.env.VITE_ZUPASS_URL,
       POPUP_URL,
       SemaphoreSignaturePCDPackage.name,
       args,
