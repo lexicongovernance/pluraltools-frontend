@@ -13,6 +13,7 @@ import {
   SemaphoreSignaturePCDArgs,
 } from '@pcd/semaphore-signature-pcd'
 import { SemaphoreIdentityPCDPackage } from '@pcd/semaphore-identity-pcd'
+import useAuth from '../hooks/useAuth'
 
 const POPUP_URL = window.location.origin + '/popup'
 
@@ -22,6 +23,7 @@ function Landing() {
   >()
   const isMounted = useRef(true)
   const [nonce, setNonce] = useState('')
+  const { authUser, setAuthUser, setIsLogged } = useAuth()
 
   useEffect(() => {
     const fetchNonce = async () => {
@@ -59,8 +61,9 @@ function Landing() {
           console.error('Status code error')
         }
         if (response.status === 200) {
-          const data = await response.json()
-          console.log({ user: data })
+          const json = await response.json()
+          setAuthUser(json.data)
+          setIsLogged(true)
         }
       } catch (error) {
         console.error('Error fetching user:', error)
@@ -153,8 +156,9 @@ function Landing() {
 
   return (
     <>
-      <h1>Zupass test</h1>
+      <h1>Login</h1>
       <pre>Nonce: {nonce}</pre>
+      <pre>User: {JSON.stringify(authUser, null, 2)}</pre>
       <button onClick={handleSignatureRequest}>
         Request Semaphore signature
       </button>
