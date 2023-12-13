@@ -1,3 +1,4 @@
+import Button from '../button'
 import { Section, FlexColumn } from './Hero.styled'
 
 function Hero() {
@@ -14,7 +15,7 @@ function Hero() {
             ecosystem.
           </p>
         </FlexColumn>
-        <button>Get started</button>
+        <Button>Get started</Button>
       </FlexColumn>
     </Section>
   )
