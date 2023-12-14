@@ -9,12 +9,15 @@ import postPcdStr from '../../utils/postPcdStr'
 import handleSignatureRequest from '../../utils/handleSignatureRequest'
 import Button from '../button'
 import { ButtonProps } from '../../types/ButtonType'
+import fetchUserData from '../../utils/fetchUserData'
+import useAuth from '../../hooks/useAuth'
 
 interface ZupassLoginButtonProps extends ButtonProps {
   children: React.ReactNode
   nonce: string | undefined
 }
 function ZupassLoginButton({ children, nonce, color }: ZupassLoginButtonProps) {
+  const { setAuthUser } = useAuth()
   // State for Zupass proof verification
   const [signatureProofValid, setSignatureProofValid] = useState<
     boolean | undefined
@@ -58,6 +61,7 @@ function ZupassLoginButton({ children, nonce, color }: ZupassLoginButtonProps) {
     handleSignatureRequest(nonce)
     // redirect('/register')
   }
+
   return (
     <>
       <Button color={color} onClick={handleLoginClick}>

@@ -6,8 +6,7 @@ import Button from '../button'
 import { HeaderContainer, NavButtons, SyledHeader } from './Header.styled'
 
 function Header() {
-  // const { nonce } = useZupassLogin()
-  const { setAuthUser, isLogged, setIsLogged } = useAuth()
+  const { authUser, setAuthUser, isLogged, setIsLogged, nonce } = useAuth()
 
   const handleLogOut = async () => {
     const response = await logout()
@@ -21,6 +20,11 @@ function Header() {
     <SyledHeader>
       <HeaderContainer>
         <div>Our logo</div>
+        <div>
+          user: <pre>{JSON.stringify(authUser, null, 2)}</pre>
+          <br />
+          nonce: {nonce}
+        </div>
         <nav>
           <NavButtons>
             {isLogged ? (

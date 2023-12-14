@@ -1,9 +1,9 @@
-import useZupassLogin from '../../hooks/useZupassLogin'
+import useAuth from '../../hooks/useAuth'
 import ZupassLoginButton from '../zupassLoginButton'
 import { Section, FlexColumn } from './Hero.styled'
 
 function Hero() {
-  const { nonce } = useZupassLogin()
+  const { nonce } = useAuth()
 
   return (
     <Section>

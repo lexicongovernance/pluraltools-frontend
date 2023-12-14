@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react'
 import useAuth from '../hooks/useAuth'
-import useFetchNonce from '../hooks/useFetchNonce'
+// import useFetchNonce from '../hooks/useFetchNonce'
 import useFetchUserData from '../hooks/useFetchUserData'
 
 const useZupassLogin = () => {
   const isMounted = useRef(true)
-  const { nonce } = useFetchNonce()
+  // const { nonce } = useFetchNonce()
   const { userData } = useFetchUserData()
   const { setAuthUser, setIsLogged } = useAuth()
 
@@ -24,7 +24,7 @@ const useZupassLogin = () => {
     }
   }, [userData])
 
-  return { nonce }
+  // return { nonce }
 }
 
 export default useZupassLogin

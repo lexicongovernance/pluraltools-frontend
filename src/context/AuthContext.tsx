@@ -6,6 +6,8 @@ type AuthContextProps = {
   setAuthUser: React.Dispatch<React.SetStateAction<AuthUser | null>>
   isLogged: boolean
   setIsLogged: React.Dispatch<React.SetStateAction<boolean>>
+  nonce: string | undefined
+  setNonce: React.Dispatch<React.SetStateAction<string | undefined>>
 }
 
 type AuthProviderProps = {
@@ -17,17 +19,22 @@ export const AuthContext = createContext<AuthContextProps>({
   setAuthUser: () => {},
   isLogged: false,
   setIsLogged: () => {},
+  nonce: undefined,
+  setNonce: () => {},
 })
 
 function AuthProvider({ children }: AuthProviderProps) {
   const [authUser, setAuthUser] = useState<AuthUser | null>(null)
   const [isLogged, setIsLogged] = useState(false)
+  const [nonce, setNonce] = useState<string | undefined>(undefined)
 
   const value = {
     authUser,
     setAuthUser,
     isLogged,
     setIsLogged,
+    nonce,
+    setNonce,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
