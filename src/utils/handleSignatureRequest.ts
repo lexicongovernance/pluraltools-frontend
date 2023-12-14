@@ -11,7 +11,7 @@ import { SemaphoreIdentityPCDPackage } from '@pcd/semaphore-identity-pcd'
 
 const POPUP_URL = window.location.origin + '/popup'
 
-const handleSignatureRequest = (nonce: string | undefined) => {
+const handleSignatureRequest = (nonce: string | null) => {
   const args: SemaphoreSignaturePCDArgs = {
     identity: {
       argumentType: ArgumentTypeName.PCD,
@@ -21,7 +21,7 @@ const handleSignatureRequest = (nonce: string | undefined) => {
     },
     signedMessage: {
       argumentType: ArgumentTypeName.String,
-      value: nonce && nonce,
+      value: nonce ? nonce : undefined,
       userProvided: false,
     },
   }

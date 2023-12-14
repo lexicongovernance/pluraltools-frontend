@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import fetchNonce from '../utils/fetchNonce'
+import fetchNonce from '../api/fetchNonce'
 
 function useFetchNonce() {
   const isMounted = useRef(true)

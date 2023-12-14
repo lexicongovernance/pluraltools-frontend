@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
-import useAuth from '../hooks/useAuth'
+import useAuth from './useAuth'
 // import useFetchNonce from '../hooks/useFetchNonce'
-import useFetchUserData from '../hooks/useFetchUserData'
+import useFetchUserData from './useFetchUserData'
 
 const useZupassLogin = () => {
   const isMounted = useRef(true)

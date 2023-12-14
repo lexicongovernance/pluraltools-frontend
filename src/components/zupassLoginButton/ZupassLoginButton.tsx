@@ -4,20 +4,30 @@ import {
   useSemaphoreSignatureProof,
   useZupassPopupMessages,
 } from '@pcd/passport-interface'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
-import postPcdStr from '../../utils/postPcdStr'
+import fetchNonce from '../../api/fetchNonce'
+import postPcdStr from '../../api/postPcdStr'
+import { ButtonProps } from '../../types/ButtonType'
 import handleSignatureRequest from '../../utils/handleSignatureRequest'
 import Button from '../button'
-import { ButtonProps } from '../../types/ButtonType'
-import fetchUserData from '../../utils/fetchUserData'
-import useAuth from '../../hooks/useAuth'
-
+import { queryClient } from '../../main'
 interface ZupassLoginButtonProps extends ButtonProps {
   children: React.ReactNode
-  nonce: string | undefined
 }
-function ZupassLoginButton({ children, nonce, color }: ZupassLoginButtonProps) {
-  const { setAuthUser } = useAuth()
+function ZupassLoginButton({ children, color }: ZupassLoginButtonProps) {
+  const { refetch } = useQuery({
+    queryKey: ['nonce'],
+    queryFn: fetchNonce,
+    enabled: false,
+  })
+  const { mutate: mutateVerify } = useMutation({
+    mutationFn: postPcdStr,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user'] })
+    },
+  })
+
   // State for Zupass proof verification
   const [signatureProofValid, setSignatureProofValid] = useState<
     boolean | undefined
@@ -43,23 +53,16 @@ function ZupassLoginButton({ children, nonce, color }: ZupassLoginButtonProps) {
   const { signatureProof } = useSemaphoreSignatureProof(pcdStr, onProofVerified)
 
   useEffect(() => {
-    const handlePostRequest = async () => {
-      try {
-        const response = await postPcdStr(pcdStr)
-        console.log('POST successful. Response:', response)
-      } catch (error) {
-        console.error('Error during POST request:', error)
-      }
-    }
-
     if (signatureProofValid && pcdStr) {
-      handlePostRequest()
+      mutateVerify(pcdStr)
     }
   }, [signatureProofValid, pcdStr])
 
-  const handleLoginClick = () => {
-    handleSignatureRequest(nonce)
-    // redirect('/register')
+  const handleLoginClick = async () => {
+    const nonce = await refetch()
+    if (nonce.data) {
+      handleSignatureRequest(nonce.data)
+    }
   }
 
   return (
@@ -67,16 +70,6 @@ function ZupassLoginButton({ children, nonce, color }: ZupassLoginButtonProps) {
       <Button color={color} onClick={handleLoginClick}>
         {children}
       </Button>
-      {/* {signatureProof != null && (
-        <>
-          <p>Got Semaphore Signature Proof from Zupass</p>
-          <p>{`Message signed: ${signatureProof.claim.signedMessage}`}</p>
-          {signatureProofValid === undefined && <p>❓ Proof verifying</p>}
-          {signatureProofValid === false && <p>❌ Proof is invalid</p>}
-          {signatureProofValid === true && <p>✅ Proof is valid</p>}
-          <pre>{JSON.stringify(signatureProof, null, 2)}</pre>
-        </>
-      )} */}
     </>
   )
 }
