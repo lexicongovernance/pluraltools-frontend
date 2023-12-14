@@ -1,11 +1,7 @@
 import styled from 'styled-components'
+import { ButtonProps } from '../../types/ButtonType'
 
-type StyledButtonProps = {
-  color?: 'primary' | 'secondary'
-  variant?: 'text' | 'contained'
-}
-
-export const StyledButton = styled.button<StyledButtonProps>`
+export const StyledButton = styled.button<ButtonProps>`
   align-self: flex-start;
   background-color: #759de9;
   background-color: ${(props) => props.color === 'secondary' && '#1F2021'};

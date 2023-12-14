@@ -1,11 +1,5 @@
 import { StyledButton } from './Button.styled'
-
-type ButtonProps = {
-  children: React.ReactNode
-  color?: 'primary' | 'secondary'
-  variant?: 'text' | 'contained'
-  onClick?: () => void
-}
+import { ButtonProps } from '../../types/ButtonType'
 
 function Button({ children, color, variant, onClick }: ButtonProps) {
   return (

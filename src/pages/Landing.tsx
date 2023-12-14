@@ -1,16 +1,12 @@
-import ZupassLoginButton from '../components/zupassLoginButton'
-import useZupassLogin from '../hooks/useZupassLogin'
+import Hero from '../components/hero'
+import useAuth from '../hooks/useAuth'
 
 function Landing() {
-  const { nonce } = useZupassLogin()
-
+  const { isLogged } = useAuth()
   return (
     <>
-      <h1>Zupass test</h1>
-      <pre>Nonce: {nonce}</pre>
-      <ZupassLoginButton nonce={nonce}>
-        Request Semaphore signature
-      </ZupassLoginButton>
+      <Hero />
+      {isLogged && <h2>User is logged: </h2>}
     </>
   )
 }

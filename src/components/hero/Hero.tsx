@@ -1,7 +1,10 @@
-import Button from '../button'
+import useZupassLogin from '../../hooks/useZupassLogin'
+import ZupassLoginButton from '../zupassLoginButton'
 import { Section, FlexColumn } from './Hero.styled'
 
 function Hero() {
+  const { nonce } = useZupassLogin()
+
   return (
     <Section>
       <img src="/landing-graphic.svg" alt="Graphic" />
@@ -15,7 +18,7 @@ function Hero() {
             ecosystem.
           </p>
         </FlexColumn>
-        <Button>Get started</Button>
+        <ZupassLoginButton nonce={nonce}>Get started</ZupassLoginButton>
       </FlexColumn>
     </Section>
   )

@@ -8,12 +8,13 @@ import { useEffect, useState } from 'react'
 import postPcdStr from '../../utils/postPcdStr'
 import handleSignatureRequest from '../../utils/handleSignatureRequest'
 import Button from '../button'
+import { ButtonProps } from '../../types/ButtonType'
 
-type ZupassLoginButtonProps = {
+interface ZupassLoginButtonProps extends ButtonProps {
   children: React.ReactNode
   nonce: string | undefined
 }
-function ZupassLoginButton({ children, nonce }: ZupassLoginButtonProps) {
+function ZupassLoginButton({ children, nonce, color }: ZupassLoginButtonProps) {
   // State for Zupass proof verification
   const [signatureProofValid, setSignatureProofValid] = useState<
     boolean | undefined
@@ -52,9 +53,16 @@ function ZupassLoginButton({ children, nonce }: ZupassLoginButtonProps) {
       handlePostRequest()
     }
   }, [signatureProofValid, pcdStr])
+
+  const handleLoginClick = () => {
+    handleSignatureRequest(nonce)
+    // redirect('/register')
+  }
   return (
     <>
-      <Button onClick={() => handleSignatureRequest(nonce)}>{children}</Button>
+      <Button color={color} onClick={handleLoginClick}>
+        {children}
+      </Button>
       {/* {signatureProof != null && (
         <>
           <p>Got Semaphore Signature Proof from Zupass</p>
