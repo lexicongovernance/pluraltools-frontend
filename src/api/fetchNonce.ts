@@ -1,4 +1,4 @@
-async function fetchNonce() {
+async function fetchNonce(): Promise<string | null> {
   try {
     const response = await fetch(
       `${import.meta.env.VITE_SERVER_URL}/api/auth/zupass/nonce`,
@@ -18,7 +18,7 @@ async function fetchNonce() {
     return data.nonce
   } catch (error) {
     console.error('Error fetching nonce:', error)
-    throw error
+    return null
   }
 }
 

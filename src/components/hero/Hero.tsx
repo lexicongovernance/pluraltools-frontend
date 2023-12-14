@@ -1,10 +1,7 @@
-import useAuth from '../../hooks/useAuth'
 import ZupassLoginButton from '../zupassLoginButton'
 import { Section, FlexColumn } from './Hero.styled'
 
 function Hero() {
-  const { nonce } = useAuth()
-
   return (
     <Section>
       <img src="/landing-graphic.svg" alt="Graphic" />
@@ -18,7 +15,7 @@ function Hero() {
             ecosystem.
           </p>
         </FlexColumn>
-        <ZupassLoginButton nonce={nonce}>Get started</ZupassLoginButton>
+        <ZupassLoginButton>Get started</ZupassLoginButton>
       </FlexColumn>
     </Section>
   )

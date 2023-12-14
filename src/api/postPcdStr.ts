@@ -19,7 +19,7 @@ const postPcdStr = async (pcdStr: string) => {
     console.log('POST successful. Response:')
   } catch (error) {
     console.error('Error during POST request:', error)
-    throw error
+    return null
   }
 }
 

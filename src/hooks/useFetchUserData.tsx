@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { AuthUser } from '../types/AuthUserType'
-import fetchUserData from '../utils/fetchUserData'
+import fetchUserData from '../api/fetchUserData'
 
 function useFetchUserData() {
   const isMounted = useRef(true)
