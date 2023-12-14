@@ -45,7 +45,7 @@ function ZupassLoginButton({ children, nonce, color }: ZupassLoginButtonProps) {
   useEffect(() => {
     const handlePostRequest = async () => {
       try {
-        const response = await postPcdStr({ pcdStr })
+        const response = await postPcdStr(pcdStr)
         console.log('POST successful. Response:', response)
       } catch (error) {
         console.error('Error during POST request:', error)

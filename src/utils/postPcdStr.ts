@@ -1,8 +1,4 @@
-type PostPcdStrProps = {
-  pcdStr: string
-}
-
-const postPcdStr = async ({ pcdStr }: PostPcdStrProps) => {
+const postPcdStr = async (pcdStr: string) => {
   try {
     const response = await fetch(
       `${import.meta.env.VITE_SERVER_URL}/api/auth/zupass/verify`,
@@ -20,9 +16,7 @@ const postPcdStr = async ({ pcdStr }: PostPcdStrProps) => {
       throw new Error(`HTTP error! Status: ${response.status}`)
     }
 
-    const responseData = await response.json()
-    console.log('POST successful. Response:', responseData)
-    return responseData
+    console.log('POST successful. Response:')
   } catch (error) {
     console.error('Error during POST request:', error)
     throw error
