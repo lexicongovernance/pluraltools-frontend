@@ -1,29 +1,41 @@
 import useAuth from '../../hooks/useAuth'
+import logout from '../../utils/logout'
+import Button from '../button'
 import { HeaderContainer, NavButtons, SyledHeader } from './Header.styled'
 
 function Header() {
   const { setAuthUser, isLogged, setIsLogged } = useAuth()
-  const handleLogOut = () => {
-    setAuthUser(null)
-    setIsLogged(false)
+
+  const handleLogIn = async () => {}
+  const handleLogOut = async () => {
+    const response = await logout()
+    if (response.status === 204) {
+      setAuthUser(null)
+      setIsLogged(false)
+    }
   }
+
   return (
     <SyledHeader>
       <HeaderContainer>
         <div>Our logo</div>
         <nav>
           <NavButtons>
-            {isLogged && (
+            {isLogged ? (
               <li>
-                <button onClick={handleLogOut}>Log out</button>
+                <Button color="secondary" onClick={handleLogOut}>
+                  Log out
+                </Button>
               </li>
+            ) : (
+              <>
+                <li>
+                  <Button color="secondary" onClick={handleLogIn}>
+                    Login with Zupass
+                  </Button>
+                </li>
+              </>
             )}
-            <li>
-              <button>Log in</button>
-            </li>
-            <li>
-              <button>Register with Zupass</button>
-            </li>
           </NavButtons>
         </nav>
       </HeaderContainer>

@@ -5,9 +5,7 @@ function Register() {
   return (
     <>
       <h2>Register Page</h2>
-      <p>
-        User is: <pre>{JSON.stringify(authUser, null, 2)}</pre>
-      </p>
+      User is: <pre>{JSON.stringify(authUser, null, 2)}</pre>
     </>
   )
 }

@@ -1,8 +1,9 @@
 import { createContext, useState } from 'react'
+import { AuthUser } from '../types/AuthUserType'
 
 type AuthContextProps = {
-  authUser: null
-  setAuthUser: React.Dispatch<React.SetStateAction<null>>
+  authUser: AuthUser | null
+  setAuthUser: React.Dispatch<React.SetStateAction<AuthUser | null>>
   isLogged: boolean
   setIsLogged: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -19,7 +20,7 @@ export const AuthContext = createContext<AuthContextProps>({
 })
 
 function AuthProvider({ children }: AuthProviderProps) {
-  const [authUser, setAuthUser] = useState(null)
+  const [authUser, setAuthUser] = useState<AuthUser | null>(null)
   const [isLogged, setIsLogged] = useState(false)
 
   const value = {
