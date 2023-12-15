@@ -24,11 +24,14 @@ function ZupassLoginButton({ children, color }: ZupassLoginButtonProps) {
     queryFn: fetchNonce,
     enabled: false,
   })
+
   const { mutate: mutateVerify } = useMutation({
     mutationFn: postPcdStr,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['user'] })
-      navigate('/register')
+    onSuccess: (body) => {
+      if (body) {
+        queryClient.invalidateQueries({ queryKey: ['user'] })
+        navigate('/register')
+      }
     },
   })
 

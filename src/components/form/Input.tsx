@@ -1,15 +1,17 @@
+import React from 'react'
 import styled from 'styled-components'
 
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+
 const StyledInput = styled.input`
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
+  border-radius: 0.5rem;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 10px;
+  width: 100%;
 `
 
-const Input = () => {
-  return <StyledInput />
+function Input({ ...props }: InputProps) {
+  return <StyledInput {...props} />
 }
 
 export default Input

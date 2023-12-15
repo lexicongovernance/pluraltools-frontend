@@ -1,17 +1,22 @@
+import React from 'react'
 import styled from 'styled-components'
 
-const StyledTextarea = styled.input`
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
+interface TextareaProps
+  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+  // Add any additional props specific to your Textarea component
+}
+
+const StyledTextarea = styled.textarea`
+  border-radius: 0.5rem;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  height: 200px;
+  height: 12rem;
+  padding: 10px;
   resize: none;
+  width: 100%;
 `
 
-const Textarea = () => {
-  return <StyledTextarea />
+function Textarea({ ...props }: TextareaProps) {
+  return <StyledTextarea {...props} />
 }
 
 export default Textarea

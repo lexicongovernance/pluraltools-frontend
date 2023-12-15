@@ -23,7 +23,11 @@ export const FlexColumn = styled.section<{ gap?: string }>`
   gap: ${(props) => props.gap || '1rem'};
 `
 
-export const FlexRow = styled.section<{ gap?: string }>`
+export const FlexRow = styled.section<{
+  alignSelf?: 'flex-start' | 'flex-end'
+  gap?: string
+}>`
+  align-self: ${(props) => (props.alignSelf ? props.alignSelf : 'flex-start')};
   display: flex;
   flex-direction: row;
   gap: ${(props) => props.gap || '1rem'};
