@@ -13,15 +13,19 @@ import postRegistration from '../api/postRegistration';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { queryClient } from '../main';
 import fetchRegistrations from '../api/fetchRegistration';
+import useGroups from '../hooks/useGroups';
+import Select from '../components/form/Select';
 
 const RegisterSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email address').required('Required'),
   username: Yup.string().min(4).required('Required'),
+  group: Yup.string().required('Please choose a group'),
   proposalTitle: Yup.string().required('Required'),
   proposalAbstract: Yup.string(),
 });
 
 function Register() {
+  const { groups } = useGroups();
   const { user, isLoading } = useUser();
   const [status, setStatus] = useState<'DRAFT' | 'PUBLISHED' | undefined>();
 
@@ -48,11 +52,11 @@ function Register() {
       proposalTitle: '',
       proposalAbstract: '',
       status: 'DRAFT',
+      group: '',
     },
     validationSchema: RegisterSchema,
     onSubmit: async (values) => {
       // TODO: Simulating an asynchronous submission
-      console.log('🚀 ~ file: Register.tsx:31 ~ onSubmit: ~ values:', values);
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       if (user) {
@@ -67,7 +71,7 @@ function Register() {
       }
 
       // Reset the form using Formik's resetForm method
-      // formik.resetForm();
+      formik.resetForm();
     },
   });
 
@@ -92,6 +96,7 @@ function Register() {
                   type="text"
                   id="email"
                   name="email"
+                  placeholder="Enter your email"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.email}
@@ -108,6 +113,7 @@ function Register() {
                   type="text"
                   id="username"
                   name="username"
+                  placeholder="Choose a username"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.username}
@@ -116,7 +122,32 @@ function Register() {
                   <ErrorText>{formik.errors.username}</ErrorText>
                 )}
               </FlexColumn>
-
+              <FlexColumn $gap="0.5rem">
+                <Label htmlFor="group" required>
+                  Select Group:
+                </Label>
+                <Select
+                  id="group"
+                  name="group"
+                  placeholder="Choose a group"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.group}
+                >
+                  <option value="" disabled>
+                    Choose a group
+                  </option>
+                  {groups &&
+                    groups.map((group) => (
+                      <option key={group.id} value={group.id}>
+                        {group.name}
+                      </option>
+                    ))}
+                </Select>
+                {formik.touched.group && formik.errors.group && (
+                  <ErrorText>{formik.errors.group}</ErrorText>
+                )}
+              </FlexColumn>
               <FlexColumn $gap="0.5rem">
                 <Label htmlFor="proposalTitle" required>
                   Proposal Title:
@@ -125,6 +156,7 @@ function Register() {
                   type="text"
                   id="proposalTitle"
                   name="proposalTitle"
+                  placeholder="Enter your proposal title"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.proposalTitle}
@@ -133,12 +165,12 @@ function Register() {
                   <ErrorText>{formik.errors.proposalTitle}</ErrorText>
                 )}
               </FlexColumn>
-
               <FlexColumn $gap="0.5rem">
                 <Label htmlFor="proposalAbstract">Proposal Abstract:</Label>
                 <Textarea
                   id="proposalAbstract"
                   name="proposalAbstract"
+                  placeholder="Enter your proposal abstract"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.proposalAbstract}
@@ -147,7 +179,6 @@ function Register() {
                   <ErrorText>{formik.errors.proposalAbstract}</ErrorText>
                 )}
               </FlexColumn>
-
               <FlexRow $alignSelf="flex-end">
                 <Button color="secondary" type="button" onClick={() => setStatus('DRAFT')}>
                   Save as draft

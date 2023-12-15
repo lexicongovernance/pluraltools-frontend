@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
@@ -6,7 +5,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 const StyledInput = styled.input`
   border-radius: 0.5rem;
   border: 1px solid #ccc;
-  padding: 10px;
+  padding: 0.75rem;
   width: 100%;
 `;
 

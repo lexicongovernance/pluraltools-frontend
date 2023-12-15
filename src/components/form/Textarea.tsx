@@ -1,15 +1,12 @@
-import React from 'react';
 import styled from 'styled-components';
 
-interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  // Add any additional props specific to your Textarea component
-}
+interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
 
 const StyledTextarea = styled.textarea`
   border-radius: 0.5rem;
   border: 1px solid #ccc;
   height: 12rem;
-  padding: 10px;
+  padding: 0.75rem;
   resize: none;
   width: 100%;
 `;
