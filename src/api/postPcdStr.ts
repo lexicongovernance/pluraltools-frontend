@@ -1,4 +1,6 @@
-const postPcdStr = async (pcdStr: string) => {
+import { AuthUser } from '../types/AuthUserType'
+
+const postPcdStr = async (pcdStr: string): Promise<AuthUser | null> => {
   try {
     const response = await fetch(
       `${import.meta.env.VITE_SERVER_URL}/api/auth/zupass/verify`,
@@ -16,7 +18,8 @@ const postPcdStr = async (pcdStr: string) => {
       throw new Error(`HTTP error! Status: ${response.status}`)
     }
 
-    console.log('POST successful. Response:')
+    const user = (await response.json()) as { data: AuthUser }
+    return user.data
   } catch (error) {
     console.error('Error during POST request:', error)
     return null

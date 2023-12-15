@@ -1,18 +1,12 @@
-import { useQuery } from '@tanstack/react-query'
 import { Routes, Route } from 'react-router-dom'
+import useUser from './hooks/useUser'
 
 import Landing from './pages/Landing'
 import Register from './pages/Register'
 import PassportPopupRedirect from './pages/Popup'
-import fetchUserData from './api/fetchUserData'
 
 function App() {
-  const { data: user, isLoading } = useQuery({
-    queryKey: ['user'],
-    queryFn: fetchUserData,
-    retry: false,
-    staleTime: 10000,
-  })
+  const { user, isLoading } = useUser()
 
   // This will be a loading skeleton
   if (isLoading) {

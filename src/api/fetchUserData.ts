@@ -16,8 +16,8 @@ async function fetchUserData(): Promise<AuthUser | null> {
       throw new Error(`HTTP error! Status: ${response.status}`)
     }
 
-    const data = await response.json()
-    return data
+    const user = (await response.json()) as { data: AuthUser }
+    return user.data
   } catch (error) {
     console.error('Error fetching user:', error)
     return null

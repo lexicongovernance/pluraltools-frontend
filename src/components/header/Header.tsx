@@ -1,22 +1,16 @@
 import logout from '../../api/logout'
 import Button from '../button'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import fetchUserData from '../../api/fetchUserData'
+import { useMutation } from '@tanstack/react-query'
 import { queryClient } from '../../main'
 import ZupassLoginButton from '../zupassLoginButton'
 import { HeaderContainer, NavButtons, SyledHeader } from './Header.styled'
 import { useNavigate } from 'react-router-dom'
+import useUser from '../../hooks/useUser'
 
 function Header() {
   const navigate = useNavigate() // Add this line to get the navigate function
 
-  const { data: user } = useQuery({
-    queryKey: ['user'],
-    queryFn: fetchUserData,
-    retry: false,
-    staleTime: 10000,
-  })
-
+  const { user } = useUser()
   const { mutate: mutateLogout } = useMutation({
     mutationFn: logout,
     onSuccess: () => {
