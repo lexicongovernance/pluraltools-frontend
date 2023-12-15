@@ -7,12 +7,18 @@ import PassportPopupRedirect from './pages/Popup'
 import fetchUserData from './api/fetchUserData'
 
 function App() {
-  const { data: user } = useQuery({
+  const { data: user, isLoading } = useQuery({
     queryKey: ['user'],
     queryFn: fetchUserData,
     retry: false,
     staleTime: 10000,
   })
+
+  // This will be a loading skeleton
+  if (isLoading) {
+    return <h1>Loading...</h1>
+  }
+
   return (
     <Routes>
       <Route path="/" element={<Landing />} />

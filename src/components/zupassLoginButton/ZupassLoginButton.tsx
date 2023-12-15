@@ -12,10 +12,13 @@ import { ButtonProps } from '../../types/ButtonType'
 import handleSignatureRequest from '../../utils/handleSignatureRequest'
 import Button from '../button'
 import { queryClient } from '../../main'
+import { useNavigate } from 'react-router-dom'
 interface ZupassLoginButtonProps extends ButtonProps {
   children: React.ReactNode
 }
 function ZupassLoginButton({ children, color }: ZupassLoginButtonProps) {
+  const navigate = useNavigate()
+
   const { refetch } = useQuery({
     queryKey: ['nonce'],
     queryFn: fetchNonce,
@@ -25,6 +28,7 @@ function ZupassLoginButton({ children, color }: ZupassLoginButtonProps) {
     mutationFn: postPcdStr,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user'] })
+      navigate('/register')
     },
   })
 
