@@ -1,6 +1,6 @@
 import { ProposalType } from '../types/ProposalType';
 
-const postRegistration = async ({
+async function postRegistration({
   userId,
   email,
   username,
@@ -8,7 +8,7 @@ const postRegistration = async ({
   proposalTitle,
   proposalAbstract,
   status,
-}: ProposalType) => {
+}: ProposalType) {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/registrations`, {
       method: 'POST',
@@ -37,6 +37,6 @@ const postRegistration = async ({
     console.error('Error during POST request:', error);
     return null;
   }
-};
+}
 
 export default postRegistration;

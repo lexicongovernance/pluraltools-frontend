@@ -1,6 +1,6 @@
 import { AuthUser } from '../types/AuthUserType';
 
-const postPcdStr = async (pcdStr: string): Promise<AuthUser | null> => {
+async function postPcdStr(pcdStr: string): Promise<AuthUser | null> {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/auth/zupass/verify`, {
       method: 'POST',
@@ -21,6 +21,6 @@ const postPcdStr = async (pcdStr: string): Promise<AuthUser | null> => {
     console.error('Error during POST request:', error);
     return null;
   }
-};
+}
 
 export default postPcdStr;
