@@ -22,3 +22,9 @@ export const FlexColumn = styled.section<{ gap?: string }>`
   flex-direction: column;
   gap: ${(props) => props.gap || '1rem'};
 `
+
+export const FlexRow = styled.section<{ gap?: string }>`
+  display: flex;
+  flex-direction: row;
+  gap: ${(props) => props.gap || '1rem'};
+`
