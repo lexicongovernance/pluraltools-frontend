@@ -50,9 +50,9 @@ function Register() {
           <h2>Register Page:</h2>
           <br />
           <form onSubmit={formik.handleSubmit}>
-            <FlexColumn gap="0.75rem">
-              <FlexColumn gap="0.5rem">
-                <Label isRequired htmlFor="email" title="Required">
+            <FlexColumn $gap="0.75rem">
+              <FlexColumn $gap="0.5rem">
+                <Label htmlFor="email" required>
                   Email:
                 </Label>
                 <Input
@@ -67,8 +67,8 @@ function Register() {
                   <ErrorText>{formik.errors.email}</ErrorText>
                 )}
               </FlexColumn>
-              <FlexColumn gap="0.5rem">
-                <Label isRequired htmlFor="username" title="Required">
+              <FlexColumn $gap="0.5rem">
+                <Label htmlFor="username" required>
                   Username:
                 </Label>
                 <Input
@@ -84,8 +84,8 @@ function Register() {
                 )}
               </FlexColumn>
 
-              <FlexColumn gap="0.5rem">
-                <Label isRequired htmlFor="proposalTitle" title="Required">
+              <FlexColumn $gap="0.5rem">
+                <Label htmlFor="proposalTitle" required>
                   Proposal Title:
                 </Label>
                 <Input
@@ -102,7 +102,7 @@ function Register() {
                   )}
               </FlexColumn>
 
-              <FlexColumn gap="0.5rem">
+              <FlexColumn $gap="0.5rem">
                 <Label htmlFor="proposalAbstract">Proposal Abstract:</Label>
                 <Textarea
                   id="proposalAbstract"
@@ -117,7 +117,7 @@ function Register() {
                   )}
               </FlexColumn>
 
-              <FlexRow alignSelf="flex-end">
+              <FlexRow $alignSelf="flex-end">
                 <Button color="secondary" type="button">
                   Save as draft
                 </Button>

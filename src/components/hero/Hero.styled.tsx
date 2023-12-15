@@ -17,18 +17,25 @@ export const Section = styled.section`
   }
 `
 
-export const FlexColumn = styled.section<{ gap?: string }>`
+export const FlexColumn1 = styled.section.attrs<{ $gap?: string }>(() => ({}))`
   display: flex;
   flex-direction: column;
-  gap: ${(props) => props.gap || '1rem'};
+  gap: ${(props) => props.$gap || '1rem'};
+`
+
+export const FlexColumn = styled.section<{ $gap?: string }>`
+  display: flex;
+  flex-direction: column;
+  gap: ${(props) => props.$gap || '1rem'};
 `
 
 export const FlexRow = styled.section<{
-  alignSelf?: 'flex-start' | 'flex-end'
-  gap?: string
+  $alignSelf?: 'flex-start' | 'flex-end'
+  $gap?: string
 }>`
-  align-self: ${(props) => (props.alignSelf ? props.alignSelf : 'flex-start')};
+  align-self: ${(props) =>
+    props.$alignSelf ? props.$alignSelf : 'flex-start'};
   display: flex;
   flex-direction: row;
-  gap: ${(props) => props.gap || '1rem'};
+  gap: ${(props) => props.$gap || '1rem'};
 `
