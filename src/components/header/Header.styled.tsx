@@ -4,7 +4,7 @@ export const SyledHeader = styled.header`
   align-items: center;
   background-color: #759de9;
   display: flex;
-  /* height: 6rem; */
+  height: 6rem;
   justify-content: center;
 `
 

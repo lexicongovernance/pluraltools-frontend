@@ -1,7 +1,5 @@
-// import useZupassLogin from '../../hooks/useZupassLogin'
 import logout from '../../api/logout'
 import Button from '../button'
-// import ZupassLoginButton from '../zupassLoginButton'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import fetchUserData from '../../api/fetchUserData'
 import { queryClient } from '../../main'
@@ -26,10 +24,6 @@ function Header() {
     <SyledHeader>
       <HeaderContainer>
         <div>Our logo</div>
-        <div>
-          user: <pre>{JSON.stringify(user, null, 2)}</pre>
-          <br />
-        </div>
         <nav>
           <NavButtons>
             {user ? (
