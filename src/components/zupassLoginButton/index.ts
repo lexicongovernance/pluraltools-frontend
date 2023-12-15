@@ -1,1 +1,1 @@
-export { default } from './ZupassLoginButton'
+export { default } from './ZupassLoginButton';

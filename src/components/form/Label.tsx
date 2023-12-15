@@ -1,8 +1,8 @@
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components';
 
 interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
-  children: React.ReactNode
-  isRequired?: boolean
+  children: React.ReactNode;
+  required?: boolean;
 }
 
 const StyledLabel = styled.label<LabelProps>`
@@ -10,21 +10,21 @@ const StyledLabel = styled.label<LabelProps>`
   font-size: 0.9rem;
 
   ${(props) =>
-    props.isRequired &&
+    props.required &&
     css`
       &:after {
         content: ' *';
         color: #db4545;
       }
     `}
-`
+`;
 
-function Label({ children, isRequired }: LabelProps) {
+function Label({ children, required }: LabelProps) {
   return (
-    <StyledLabel isRequired={isRequired} title={isRequired ? 'Required' : ''}>
+    <StyledLabel required={required} title={required ? 'Required' : ''}>
       {children}
     </StyledLabel>
-  )
+  );
 }
 
-export default Label
+export default Label;

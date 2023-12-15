@@ -1,15 +1,12 @@
-import {
-  constructZupassPcdGetRequestUrl,
-  openZupassPopup,
-} from '@pcd/passport-interface'
-import { ArgumentTypeName } from '@pcd/pcd-types'
+import { constructZupassPcdGetRequestUrl, openZupassPopup } from '@pcd/passport-interface';
+import { ArgumentTypeName } from '@pcd/pcd-types';
 import {
   SemaphoreSignaturePCDPackage,
   SemaphoreSignaturePCDArgs,
-} from '@pcd/semaphore-signature-pcd'
-import { SemaphoreIdentityPCDPackage } from '@pcd/semaphore-identity-pcd'
+} from '@pcd/semaphore-signature-pcd';
+import { SemaphoreIdentityPCDPackage } from '@pcd/semaphore-identity-pcd';
 
-const POPUP_URL = window.location.origin + '/popup'
+const POPUP_URL = window.location.origin + '/popup';
 
 const handleSignatureRequest = (nonce: string | null) => {
   const args: SemaphoreSignaturePCDArgs = {
@@ -24,7 +21,7 @@ const handleSignatureRequest = (nonce: string | null) => {
       value: nonce ? nonce : undefined,
       userProvided: false,
     },
-  }
+  };
 
   const constructProofUrl = constructZupassPcdGetRequestUrl(
     import.meta.env.VITE_ZUPASS_URL,
@@ -34,9 +31,9 @@ const handleSignatureRequest = (nonce: string | null) => {
     {
       genericProveScreen: true,
     }
-  )
+  );
 
-  openZupassPopup(POPUP_URL, constructProofUrl)
-}
+  openZupassPopup(POPUP_URL, constructProofUrl);
+};
 
-export default handleSignatureRequest
+export default handleSignatureRequest;

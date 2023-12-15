@@ -1,28 +1,22 @@
-import * as Yup from 'yup'
-import { useQuery } from '@tanstack/react-query'
-import { useFormik } from 'formik'
-import fetchUserData from '../api/fetchUserData'
-import Button from '../components/button'
-import Input from '../components/form/Input'
-import Textarea from '../components/form/Textarea'
-import { FlexColumn, FlexRow } from '../components/hero/Hero.styled'
-import ErrorText from '../components/form/ErrorText'
-import Label from '../components/form/Label'
+import * as Yup from 'yup';
+import { useFormik } from 'formik';
+import Button from '../components/button';
+import Input from '../components/form/Input';
+import Textarea from '../components/form/Textarea';
+import { FlexColumn, FlexRow } from '../components/hero/Hero.styled';
+import ErrorText from '../components/form/ErrorText';
+import Label from '../components/form/Label';
+import useUser from '../hooks/useUser';
 
 const RegisterSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email address').required('Required'),
   username: Yup.string().min(4).required('Required'),
   proposalTitle: Yup.string().required('Required'),
   proposalAbstract: Yup.string(),
-})
+});
 
 function Register() {
-  const { data: user, isLoading } = useQuery({
-    queryKey: ['user'],
-    queryFn: fetchUserData,
-    retry: false,
-    staleTime: 10000,
-  })
+  const { user, isLoading } = useUser();
 
   const formik = useFormik({
     initialValues: {
@@ -34,19 +28,19 @@ function Register() {
     validationSchema: RegisterSchema,
     onSubmit: async (values) => {
       // TODO: Simulating an asynchronous submission
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Log the values
-      console.log('Form submitted with values:', values)
+      console.log('Form submitted with values:', values);
 
       // Reset the form using Formik's resetForm method
-      formik.resetForm()
+      formik.resetForm();
     },
-  })
+  });
 
   // TODO: This will be a loading skeleton
   if (isLoading) {
-    return <h1>Loading...</h1>
+    return <h1>Loading...</h1>;
   }
 
   return (
@@ -56,9 +50,9 @@ function Register() {
           <h2>Register Page:</h2>
           <br />
           <form onSubmit={formik.handleSubmit}>
-            <FlexColumn gap="0.75rem">
-              <FlexColumn gap="0.5rem">
-                <Label isRequired htmlFor="email" title="Required">
+            <FlexColumn $gap="0.75rem">
+              <FlexColumn $gap="0.5rem">
+                <Label htmlFor="email" required>
                   Email:
                 </Label>
                 <Input
@@ -73,8 +67,8 @@ function Register() {
                   <ErrorText>{formik.errors.email}</ErrorText>
                 )}
               </FlexColumn>
-              <FlexColumn gap="0.5rem">
-                <Label isRequired htmlFor="username" title="Required">
+              <FlexColumn $gap="0.5rem">
+                <Label htmlFor="username" required>
                   Username:
                 </Label>
                 <Input
@@ -90,8 +84,8 @@ function Register() {
                 )}
               </FlexColumn>
 
-              <FlexColumn gap="0.5rem">
-                <Label isRequired htmlFor="proposalTitle" title="Required">
+              <FlexColumn $gap="0.5rem">
+                <Label htmlFor="proposalTitle" required>
                   Proposal Title:
                 </Label>
                 <Input
@@ -102,13 +96,12 @@ function Register() {
                   onBlur={formik.handleBlur}
                   value={formik.values.proposalTitle}
                 />
-                {formik.touched.proposalTitle &&
-                  formik.errors.proposalTitle && (
-                    <ErrorText>{formik.errors.proposalTitle}</ErrorText>
-                  )}
+                {formik.touched.proposalTitle && formik.errors.proposalTitle && (
+                  <ErrorText>{formik.errors.proposalTitle}</ErrorText>
+                )}
               </FlexColumn>
 
-              <FlexColumn gap="0.5rem">
+              <FlexColumn $gap="0.5rem">
                 <Label htmlFor="proposalAbstract">Proposal Abstract:</Label>
                 <Textarea
                   id="proposalAbstract"
@@ -117,13 +110,12 @@ function Register() {
                   onBlur={formik.handleBlur}
                   value={formik.values.proposalAbstract}
                 />
-                {formik.touched.proposalAbstract &&
-                  formik.errors.proposalAbstract && (
-                    <ErrorText>{formik.errors.proposalAbstract}</ErrorText>
-                  )}
+                {formik.touched.proposalAbstract && formik.errors.proposalAbstract && (
+                  <ErrorText>{formik.errors.proposalAbstract}</ErrorText>
+                )}
               </FlexColumn>
 
-              <FlexRow alignSelf="flex-end">
+              <FlexRow $alignSelf="flex-end">
                 <Button color="secondary" type="button">
                   Save as draft
                 </Button>
@@ -136,7 +128,7 @@ function Register() {
         <h2>Please login</h2>
       )}
     </>
-  )
+  );
 }
 
-export default Register
+export default Register;

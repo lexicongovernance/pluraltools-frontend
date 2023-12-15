@@ -1,5 +1,5 @@
-import styled from 'styled-components'
-import { ButtonProps } from '../../types/ButtonType'
+import styled from 'styled-components';
+import { ButtonProps } from '../../types/ButtonType';
 
 export const StyledButton = styled.button<ButtonProps>`
   align-self: flex-start;
@@ -18,4 +18,4 @@ export const StyledButton = styled.button<ButtonProps>`
   &:hover {
     opacity: 0.8;
   }
-`
+`;
