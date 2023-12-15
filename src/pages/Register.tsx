@@ -1,13 +1,12 @@
 import * as Yup from 'yup'
-import { useQuery } from '@tanstack/react-query'
 import { useFormik } from 'formik'
-import fetchUserData from '../api/fetchUserData'
 import Button from '../components/button'
 import Input from '../components/form/Input'
 import Textarea from '../components/form/Textarea'
 import { FlexColumn, FlexRow } from '../components/hero/Hero.styled'
 import ErrorText from '../components/form/ErrorText'
 import Label from '../components/form/Label'
+import useUser from '../hooks/useUser'
 
 const RegisterSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email address').required('Required'),
@@ -17,12 +16,7 @@ const RegisterSchema = Yup.object().shape({
 })
 
 function Register() {
-  const { data: user, isLoading } = useQuery({
-    queryKey: ['user'],
-    queryFn: fetchUserData,
-    retry: false,
-    staleTime: 10000,
-  })
+  const { user, isLoading } = useUser()
 
   const formik = useFormik({
     initialValues: {
