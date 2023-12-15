@@ -4,18 +4,14 @@ import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '../../main';
 import ZupassLoginButton from '../zupassLoginButton';
 import { HeaderContainer, NavButtons, SyledHeader } from './Header.styled';
-import { useNavigate } from 'react-router-dom';
 import useUser from '../../hooks/useUser';
 
 function Header() {
-  const navigate = useNavigate(); // Add this line to get the navigate function
-
   const { user } = useUser();
   const { mutate: mutateLogout } = useMutation({
     mutationFn: logout,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user'] });
-      navigate('/');
     },
   });
 
