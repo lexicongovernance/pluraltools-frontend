@@ -7,7 +7,7 @@ const StyledSelect = styled.select`
   background-image: url('/arrow_down.svg');
   background-position: right 0.75rem top 50%;
   background-repeat: no-repeat;
-  background-size: 2rem;
+  background-size: 1.5rem;
   border-radius: 0.5rem;
   border: 1px solid #ccc;
   padding: 0.75rem;
