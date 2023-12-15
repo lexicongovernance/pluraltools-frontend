@@ -1,5 +1,5 @@
-import ZupassLoginButton from '../zupassLoginButton'
-import { Section, FlexColumn } from './Hero.styled'
+import ZupassLoginButton from '../zupassLoginButton';
+import { Section, FlexColumn } from './Hero.styled';
 
 function Hero() {
   return (
@@ -9,16 +9,15 @@ function Hero() {
         <FlexColumn $gap={'1.5rem'}>
           <h1>Unlock the Future of MEV Research with Plural MEV Grants</h1>
           <p>
-            Shape the future of MEV research. Join Plural MEV, earn a share of
-            100,000 ARB grants, and be part of a groundbreaking conference.
-            Connect your Zupass wallet and contribute to a decentralized MEV
-            ecosystem.
+            Shape the future of MEV research. Join Plural MEV, earn a share of 100,000 ARB grants,
+            and be part of a groundbreaking conference. Connect your Zupass wallet and contribute to
+            a decentralized MEV ecosystem.
           </p>
         </FlexColumn>
         <ZupassLoginButton>Get started</ZupassLoginButton>
       </FlexColumn>
     </Section>
-  )
+  );
 }
 
-export default Hero
+export default Hero;

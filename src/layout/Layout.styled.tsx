@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const Main = styled.main`
   margin-inline: auto;
@@ -9,4 +9,4 @@ export const Main = styled.main`
   @media (min-width: 600px) {
     padding-block: min(15vh, 7rem);
   }
-`
+`;

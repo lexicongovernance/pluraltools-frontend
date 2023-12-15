@@ -1,22 +1,22 @@
-import * as Yup from 'yup'
-import { useFormik } from 'formik'
-import Button from '../components/button'
-import Input from '../components/form/Input'
-import Textarea from '../components/form/Textarea'
-import { FlexColumn, FlexRow } from '../components/hero/Hero.styled'
-import ErrorText from '../components/form/ErrorText'
-import Label from '../components/form/Label'
-import useUser from '../hooks/useUser'
+import * as Yup from 'yup';
+import { useFormik } from 'formik';
+import Button from '../components/button';
+import Input from '../components/form/Input';
+import Textarea from '../components/form/Textarea';
+import { FlexColumn, FlexRow } from '../components/hero/Hero.styled';
+import ErrorText from '../components/form/ErrorText';
+import Label from '../components/form/Label';
+import useUser from '../hooks/useUser';
 
 const RegisterSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email address').required('Required'),
   username: Yup.string().min(4).required('Required'),
   proposalTitle: Yup.string().required('Required'),
   proposalAbstract: Yup.string(),
-})
+});
 
 function Register() {
-  const { user, isLoading } = useUser()
+  const { user, isLoading } = useUser();
 
   const formik = useFormik({
     initialValues: {
@@ -28,19 +28,19 @@ function Register() {
     validationSchema: RegisterSchema,
     onSubmit: async (values) => {
       // TODO: Simulating an asynchronous submission
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Log the values
-      console.log('Form submitted with values:', values)
+      console.log('Form submitted with values:', values);
 
       // Reset the form using Formik's resetForm method
-      formik.resetForm()
+      formik.resetForm();
     },
-  })
+  });
 
   // TODO: This will be a loading skeleton
   if (isLoading) {
-    return <h1>Loading...</h1>
+    return <h1>Loading...</h1>;
   }
 
   return (
@@ -96,10 +96,9 @@ function Register() {
                   onBlur={formik.handleBlur}
                   value={formik.values.proposalTitle}
                 />
-                {formik.touched.proposalTitle &&
-                  formik.errors.proposalTitle && (
-                    <ErrorText>{formik.errors.proposalTitle}</ErrorText>
-                  )}
+                {formik.touched.proposalTitle && formik.errors.proposalTitle && (
+                  <ErrorText>{formik.errors.proposalTitle}</ErrorText>
+                )}
               </FlexColumn>
 
               <FlexColumn $gap="0.5rem">
@@ -111,10 +110,9 @@ function Register() {
                   onBlur={formik.handleBlur}
                   value={formik.values.proposalAbstract}
                 />
-                {formik.touched.proposalAbstract &&
-                  formik.errors.proposalAbstract && (
-                    <ErrorText>{formik.errors.proposalAbstract}</ErrorText>
-                  )}
+                {formik.touched.proposalAbstract && formik.errors.proposalAbstract && (
+                  <ErrorText>{formik.errors.proposalAbstract}</ErrorText>
+                )}
               </FlexColumn>
 
               <FlexRow $alignSelf="flex-end">
@@ -130,7 +128,7 @@ function Register() {
         <h2>Please login</h2>
       )}
     </>
-  )
+  );
 }
 
-export default Register
+export default Register;

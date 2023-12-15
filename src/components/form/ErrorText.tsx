@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 const ErrorText = styled.div`
   color: #db4545;
@@ -6,6 +6,6 @@ const ErrorText = styled.div`
   &::first-letter {
     text-transform: uppercase;
   }
-`
+`;
 
-export default ErrorText
+export default ErrorText;

@@ -1,23 +1,23 @@
-import logout from '../../api/logout'
-import Button from '../button'
-import { useMutation } from '@tanstack/react-query'
-import { queryClient } from '../../main'
-import ZupassLoginButton from '../zupassLoginButton'
-import { HeaderContainer, NavButtons, SyledHeader } from './Header.styled'
-import { useNavigate } from 'react-router-dom'
-import useUser from '../../hooks/useUser'
+import logout from '../../api/logout';
+import Button from '../button';
+import { useMutation } from '@tanstack/react-query';
+import { queryClient } from '../../main';
+import ZupassLoginButton from '../zupassLoginButton';
+import { HeaderContainer, NavButtons, SyledHeader } from './Header.styled';
+import { useNavigate } from 'react-router-dom';
+import useUser from '../../hooks/useUser';
 
 function Header() {
-  const navigate = useNavigate() // Add this line to get the navigate function
+  const navigate = useNavigate(); // Add this line to get the navigate function
 
-  const { user } = useUser()
+  const { user } = useUser();
   const { mutate: mutateLogout } = useMutation({
     mutationFn: logout,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['user'] })
-      navigate('/')
+      queryClient.invalidateQueries({ queryKey: ['user'] });
+      navigate('/');
     },
-  })
+  });
 
   return (
     <SyledHeader>
@@ -34,9 +34,7 @@ function Header() {
             ) : (
               <>
                 <li>
-                  <ZupassLoginButton color="secondary">
-                    Login with Zupass
-                  </ZupassLoginButton>
+                  <ZupassLoginButton color="secondary">Login with Zupass</ZupassLoginButton>
                 </li>
               </>
             )}
@@ -44,7 +42,7 @@ function Header() {
         </nav>
       </HeaderContainer>
     </SyledHeader>
-  )
+  );
 }
 
-export default Header
+export default Header;

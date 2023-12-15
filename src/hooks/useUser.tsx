@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query'
-import fetchUserData from '../api/fetchUserData'
+import { useQuery } from '@tanstack/react-query';
+import fetchUserData from '../api/fetchUserData';
 
 function useUser() {
   const {
@@ -11,9 +11,9 @@ function useUser() {
     queryFn: fetchUserData,
     retry: false,
     staleTime: 10000,
-  })
+  });
 
-  return { user, isLoading, isError }
+  return { user, isLoading, isError };
 }
 
-export default useUser
+export default useUser;
