@@ -7,6 +7,12 @@ import { FlexColumn, FlexRow } from '../components/hero/Hero.styled';
 import ErrorText from '../components/form/ErrorText';
 import Label from '../components/form/Label';
 import useUser from '../hooks/useUser';
+import { ProposalType } from '../types/ProposalType';
+import { useState } from 'react';
+import postRegistration from '../api/postRegistration';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { queryClient } from '../main';
+import fetchRegistrations from '../api/fetchRegistration';
 
 const RegisterSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email address').required('Required'),
@@ -17,6 +23,23 @@ const RegisterSchema = Yup.object().shape({
 
 function Register() {
   const { user, isLoading } = useUser();
+  const [status, setStatus] = useState<'DRAFT' | 'PUBLISHED' | undefined>();
+
+  const { data: registration } = useQuery({
+    queryKey: ['registration'],
+    queryFn: () => fetchRegistrations(user?.id || ''),
+    staleTime: 10000,
+    enabled: !!user?.id,
+  });
+
+  const { mutate: mutateRegistrations } = useMutation({
+    mutationFn: postRegistration,
+    onSuccess: (body) => {
+      if (body) {
+        queryClient.invalidateQueries({ queryKey: ['registrations'] });
+      }
+    },
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -24,17 +47,27 @@ function Register() {
       username: '',
       proposalTitle: '',
       proposalAbstract: '',
+      status: 'DRAFT',
     },
     validationSchema: RegisterSchema,
     onSubmit: async (values) => {
       // TODO: Simulating an asynchronous submission
+      console.log('🚀 ~ file: Register.tsx:31 ~ onSubmit: ~ values:', values);
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Log the values
-      console.log('Form submitted with values:', values);
+      if (user) {
+        const postValues: ProposalType = {
+          ...values,
+          userId: user?.id,
+
+          status,
+        };
+        console.log('🚀 ~ file: Register.tsx:31 ~ onSubmit: ~ values:', postValues);
+        mutateRegistrations(postValues);
+      }
 
       // Reset the form using Formik's resetForm method
-      formik.resetForm();
+      // formik.resetForm();
     },
   });
 
@@ -116,13 +149,16 @@ function Register() {
               </FlexColumn>
 
               <FlexRow $alignSelf="flex-end">
-                <Button color="secondary" type="button">
+                <Button color="secondary" type="button" onClick={() => setStatus('DRAFT')}>
                   Save as draft
                 </Button>
-                <Button type="submit">Submit</Button>
+                <Button type="submit" onClick={() => setStatus('PUBLISHED')}>
+                  Submit
+                </Button>
               </FlexRow>
             </FlexColumn>
           </form>
+          <pre>{JSON.stringify(registration, null, 2)}</pre>
         </>
       ) : (
         <h2>Please login</h2>
