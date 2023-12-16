@@ -40,7 +40,7 @@ function Register() {
     mutationFn: postRegistration,
     onSuccess: (body) => {
       if (body) {
-        queryClient.invalidateQueries({ queryKey: ['registrations'] });
+        queryClient.invalidateQueries({ queryKey: ['registration'] });
       }
     },
   });
@@ -62,11 +62,11 @@ function Register() {
       if (user) {
         const postValues: ProposalType = {
           ...values,
+          group: [formik.values.group],
           userId: user?.id,
-
+          groupIds: ['id-del-group'],
           status,
         };
-        console.log('🚀 ~ file: Register.tsx:31 ~ onSubmit: ~ values:', postValues);
         mutateRegistrations(postValues);
       }
 
@@ -139,7 +139,7 @@ function Register() {
                   </option>
                   {groups &&
                     groups.map((group) => (
-                      <option key={group.id} value={group.id}>
+                      <option key={group.id} value={group.name}>
                         {group.name}
                       </option>
                     ))}

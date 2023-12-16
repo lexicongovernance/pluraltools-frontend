@@ -8,6 +8,8 @@ async function postRegistration({
   proposalTitle,
   proposalAbstract,
   status,
+  group,
+  groupIds,
 }: ProposalType) {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/registrations`, {
@@ -24,15 +26,14 @@ async function postRegistration({
         proposalTitle,
         proposalAbstract,
         status,
+        group,
+        groupIds,
       }),
     });
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-
-    // const user = (await response.json()) as { data: AuthUser };
-    // return user.data;
   } catch (error) {
     console.error('Error during POST request:', error);
     return null;
