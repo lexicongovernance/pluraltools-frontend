@@ -6,6 +6,21 @@ type GroupsUsers = {
   groupId: string;
 };
 
+type RegistrationOptions = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: string;
+  registrationOptionId: string;
+  registrationOption: {
+    id: string;
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
+    category: string;
+  };
+};
+
 export type ResponseProposalType = {
   userId: string;
   email?: string | undefined;
@@ -15,6 +30,7 @@ export type ResponseProposalType = {
   proposalAbstract?: string | undefined;
   status?: 'DRAFT' | 'PUBLISHED' | undefined;
   groups: GroupsUsers[];
+  registrationOptions: RegistrationOptions[];
 };
 
 export type PostProposalType = {
@@ -25,5 +41,6 @@ export type PostProposalType = {
   proposalTitle: string;
   proposalAbstract?: string | undefined;
   status?: 'DRAFT' | 'PUBLISHED' | undefined;
-  groupIds: string[] | null;
+  groupIds: string[];
+  registrationOptionIds: string[];
 };

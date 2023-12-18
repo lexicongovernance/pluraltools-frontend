@@ -16,6 +16,7 @@ import fetchRegistrations from '../api/fetchRegistration';
 import useGroups from '../hooks/useGroups';
 import Select from '../components/form/Select';
 import Chip from '../components/chip';
+import fetchRegistrationOptions from '../api/fetchRegistrationOptions';
 
 const RegisterSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email address').required('Required'),
@@ -32,6 +33,7 @@ type InitialValues = {
   proposalAbstract: string | undefined;
   status: 'DRAFT' | 'PUBLISHED' | undefined;
   groupId?: string;
+  registrationOptions: { [category: string]: string };
 };
 
 function Register() {
@@ -44,6 +46,7 @@ function Register() {
     proposalAbstract: '',
     status: undefined,
     groupId: '',
+    registrationOptions: {},
   });
 
   const { data: registration } = useQuery({
@@ -51,6 +54,12 @@ function Register() {
     queryFn: () => fetchRegistrations(user?.id || ''),
     staleTime: 10000,
     enabled: !!user?.id,
+  });
+
+  const { data: registrationOptions } = useQuery({
+    queryKey: ['registration', 'options'],
+    queryFn: fetchRegistrationOptions,
+    staleTime: 10000,
   });
 
   const { mutate: mutateRegistrations } = useMutation({
@@ -72,6 +81,7 @@ function Register() {
           ...values,
           userId: user?.id,
           groupIds: [formik.values.groupId],
+          registrationOptionIds: Object.values(formik.values.registrationOptions),
         };
         mutateRegistrations(postValues);
       }
@@ -90,6 +100,13 @@ function Register() {
         proposalAbstract: registration.proposalAbstract,
         status: registration.status === 'DRAFT' ? registration.status : 'DRAFT',
         groupId: registration.groups?.[0].groupId,
+        registrationOptions: registration.registrationOptions.reduce(
+          (acc, next) => {
+            acc[next.registrationOption.category] = next.registrationOptionId;
+            return acc;
+          },
+          {} as InitialValues['registrationOptions']
+        ),
       });
     }
   }, [registration]);
@@ -206,6 +223,35 @@ function Register() {
                   <ErrorText>{formik.errors.proposalAbstract}</ErrorText>
                 )}
               </FlexColumn>
+              {registrationOptions &&
+                Object.entries(registrationOptions).map(([category, options]) => (
+                  <FlexColumn key={category} $gap="0.5rem">
+                    <Label htmlFor={category} required>
+                      {category}
+                    </Label>
+                    <Select
+                      id={`registrationOptions.${category}`}
+                      name={`registrationOptions.${category}`}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.registrationOptions?.[category]}
+                      disabled={registration?.status === 'PUBLISHED'}
+                    >
+                      <option value="" disabled>
+                        Choose a {category}
+                      </option>
+                      {options.map((option) => (
+                        <option key={option.id} value={option.id}>
+                          {option.name}
+                        </option>
+                      ))}
+                    </Select>
+                    {formik.touched.registrationOptions?.[category] &&
+                      formik.errors.registrationOptions?.[category] && (
+                        <ErrorText>{formik.errors.registrationOptions?.[category]}</ErrorText>
+                      )}
+                  </FlexColumn>
+                ))}
               <FlexRow $alignSelf="flex-end">
                 <Button
                   color="secondary"
