@@ -141,7 +141,7 @@ function Register() {
                 )}
               </FlexColumn>
               <FlexColumn $gap="0.5rem">
-                <Label htmlFor="group" required>
+                <Label htmlFor="groupId" required>
                   Select Group:
                 </Label>
                 <Select
