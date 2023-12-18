@@ -143,12 +143,12 @@ function Register() {
                 )}
               </FlexColumn>
               <FlexColumn $gap="0.5rem">
-                <Label htmlFor="group" required>
+                <Label htmlFor="groupId" required>
                   Select Group:
                 </Label>
                 <Select
-                  id="group"
-                  name="group"
+                  id="groupId"
+                  name="groupId"
                   placeholder="Choose a group"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
