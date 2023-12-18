@@ -10,3 +10,31 @@ export const Main = styled.main`
     padding-block: min(15vh, 7rem);
   }
 `;
+
+export const Grid = styled.section<{ $columns?: number; $rows?: number; $gap?: string }>`
+  display: grid;
+  gap: ${(props) => props.$gap || '1rem'};
+  grid-template-columns: repeat(1, 1fr);
+  grid-template-rows: repeat(auto, 1fr);
+
+  @media (min-width: 600px) {
+    grid-template-columns: ${(props) => props.$columns && `repeat(${props.$columns || 1}, 1fr)`};
+    grid-template-rows: ${(props) => props.$rows && `repeat(${props.$rows || 1}, 1fr)`};
+  }
+`;
+
+export const FlexColumn = styled.section<{ $gap?: string }>`
+  display: flex;
+  flex-direction: column;
+  gap: ${(props) => props.$gap || '1rem'};
+`;
+
+export const FlexRow = styled.section<{
+  $alignSelf?: 'flex-start' | 'flex-end';
+  $gap?: string;
+}>`
+  align-self: ${(props) => (props.$alignSelf ? props.$alignSelf : 'flex-start')};
+  display: flex;
+  flex-direction: row;
+  gap: ${(props) => props.$gap || '1rem'};
+`;

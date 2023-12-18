@@ -1,5 +1,6 @@
 import ZupassLoginButton from '../zupassLoginButton';
-import { Section, FlexColumn } from './Hero.styled';
+import { Section } from './Hero.styled';
+import { FlexColumn } from '../../layout/Layout.styled';
 
 function Hero() {
   return (
