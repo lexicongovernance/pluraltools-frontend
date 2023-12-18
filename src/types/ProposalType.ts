@@ -1,10 +1,29 @@
-export type ProposalType = {
+type GroupsUsers = {
   userId: string;
-  email?: string | null | undefined;
-  username?: string | null | undefined;
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  groupId: string;
+};
+
+export type ResponseProposalType = {
+  userId: string;
+  email?: string | undefined;
+  username?: string | undefined;
   id?: string | undefined;
   proposalTitle: string;
   proposalAbstract?: string | undefined;
   status?: 'DRAFT' | 'PUBLISHED' | undefined;
-  groupIds: string[];
+  groups: GroupsUsers[];
+};
+
+export type PostProposalType = {
+  userId: string;
+  email?: string | undefined;
+  username?: string | undefined;
+  id?: string | undefined;
+  proposalTitle: string;
+  proposalAbstract?: string | undefined;
+  status?: 'DRAFT' | 'PUBLISHED' | undefined;
+  groupIds: string[] | null;
 };

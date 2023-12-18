@@ -7,27 +7,44 @@ import { FlexColumn, FlexRow } from '../components/hero/Hero.styled';
 import ErrorText from '../components/form/ErrorText';
 import Label from '../components/form/Label';
 import useUser from '../hooks/useUser';
-import { ProposalType } from '../types/ProposalType';
-import { useState } from 'react';
+import { PostProposalType } from '../types/ProposalType';
+import { useEffect, useState } from 'react';
 import postRegistration from '../api/postRegistration';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { queryClient } from '../main';
 import fetchRegistrations from '../api/fetchRegistration';
 import useGroups from '../hooks/useGroups';
 import Select from '../components/form/Select';
+import Chip from '../components/chip';
 
 const RegisterSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email address').required('Required'),
   username: Yup.string().min(4).required('Required'),
-  group: Yup.string().required('Please choose a group'),
+  groupId: Yup.string().required('Please choose a group'),
   proposalTitle: Yup.string().required('Required'),
   proposalAbstract: Yup.string(),
 });
 
+type InitialValues = {
+  email: string | undefined;
+  username: string | undefined;
+  proposalTitle: string;
+  proposalAbstract: string | undefined;
+  status: 'DRAFT' | 'PUBLISHED' | undefined;
+  groupId?: string;
+};
+
 function Register() {
   const { groups } = useGroups();
   const { user, isLoading } = useUser();
-  const [status, setStatus] = useState<'DRAFT' | 'PUBLISHED' | undefined>();
+  const [initialValues, setInitialValues] = useState<InitialValues>({
+    email: '',
+    username: '',
+    proposalTitle: '',
+    proposalAbstract: '',
+    status: undefined,
+    groupId: '',
+  });
 
   const { data: registration } = useQuery({
     queryKey: ['registration'],
@@ -40,32 +57,21 @@ function Register() {
     mutationFn: postRegistration,
     onSuccess: (body) => {
       if (body) {
-        console.log('Im being called:', body);
         queryClient.invalidateQueries({ queryKey: ['registration'] });
       }
     },
   });
 
   const formik = useFormik({
-    initialValues: {
-      email: '',
-      username: '',
-      proposalTitle: '',
-      proposalAbstract: '',
-      status: 'DRAFT',
-      group: '',
-    },
+    initialValues,
+    enableReinitialize: true,
     validationSchema: RegisterSchema,
     onSubmit: async (values) => {
-      // TODO: Simulating an asynchronous submission
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      if (user) {
-        const postValues: ProposalType = {
+      if (user && formik.values.groupId) {
+        const postValues: PostProposalType = {
           ...values,
           userId: user?.id,
-          groupIds: [formik.values.group],
-          status,
+          groupIds: [formik.values.groupId],
         };
         mutateRegistrations(postValues);
       }
@@ -75,17 +81,33 @@ function Register() {
     },
   });
 
+  useEffect(() => {
+    if (registration && registration.id) {
+      setInitialValues({
+        email: registration.email,
+        username: registration.username,
+        proposalTitle: registration.proposalTitle,
+        proposalAbstract: registration.proposalAbstract,
+        status: registration.status === 'DRAFT' ? registration.status : 'DRAFT',
+        groupId: registration.groups?.[0].groupId,
+      });
+    }
+  }, [registration]);
+
+  useEffect(() => {
+    console.log('Status', registration?.status);
+  }, [registration]);
+
   // TODO: This will be a loading skeleton
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
-
   return (
     <>
       {user ? (
-        <>
+        <FlexColumn>
           <h2>Register Page:</h2>
-          <br />
+          {registration?.status && <Chip>{registration.status}</Chip>}
           <form onSubmit={formik.handleSubmit}>
             <FlexColumn $gap="0.75rem">
               <FlexColumn $gap="0.5rem">
@@ -100,6 +122,7 @@ function Register() {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.email}
+                  disabled={registration?.status === 'PUBLISHED'}
                 />
                 {formik.touched.email && formik.errors.email && (
                   <ErrorText>{formik.errors.email}</ErrorText>
@@ -117,22 +140,24 @@ function Register() {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.username}
+                  disabled={registration?.status === 'PUBLISHED'}
                 />
                 {formik.touched.username && formik.errors.username && (
                   <ErrorText>{formik.errors.username}</ErrorText>
                 )}
               </FlexColumn>
               <FlexColumn $gap="0.5rem">
-                <Label htmlFor="group" required>
+                <Label htmlFor="groupId" required>
                   Select Group:
                 </Label>
                 <Select
-                  id="group"
-                  name="group"
+                  id="groupId"
+                  name="groupId"
                   placeholder="Choose a group"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.group}
+                  value={formik.values.groupId}
+                  disabled={registration?.status === 'PUBLISHED'}
                 >
                   <option value="" disabled>
                     Choose a group
@@ -144,8 +169,8 @@ function Register() {
                       </option>
                     ))}
                 </Select>
-                {formik.touched.group && formik.errors.group && (
-                  <ErrorText>{formik.errors.group}</ErrorText>
+                {formik.touched.groupId && formik.errors.groupId && (
+                  <ErrorText>{formik.errors.groupId}</ErrorText>
                 )}
               </FlexColumn>
               <FlexColumn $gap="0.5rem">
@@ -160,6 +185,7 @@ function Register() {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.proposalTitle}
+                  disabled={registration?.status === 'PUBLISHED'}
                 />
                 {formik.touched.proposalTitle && formik.errors.proposalTitle && (
                   <ErrorText>{formik.errors.proposalTitle}</ErrorText>
@@ -174,23 +200,32 @@ function Register() {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.proposalAbstract}
+                  disabled={registration?.status === 'PUBLISHED'}
                 />
                 {formik.touched.proposalAbstract && formik.errors.proposalAbstract && (
                   <ErrorText>{formik.errors.proposalAbstract}</ErrorText>
                 )}
               </FlexColumn>
               <FlexRow $alignSelf="flex-end">
-                <Button color="secondary" type="button" onClick={() => setStatus('DRAFT')}>
+                <Button
+                  color="secondary"
+                  type="submit"
+                  onClick={() => formik.setValues((prev) => ({ ...prev, status: 'DRAFT' }))}
+                  disabled={registration?.status === 'PUBLISHED'}
+                >
                   Save as draft
                 </Button>
-                <Button type="submit" onClick={() => setStatus('PUBLISHED')}>
+                <Button
+                  type="submit"
+                  onClick={() => formik.setValues((prev) => ({ ...prev, status: 'PUBLISHED' }))}
+                  disabled={registration?.status === 'PUBLISHED'}
+                >
                   Submit
                 </Button>
               </FlexRow>
             </FlexColumn>
           </form>
-          <pre>{JSON.stringify(registration, null, 2)}</pre>
-        </>
+        </FlexColumn>
       ) : (
         <h2>Please login</h2>
       )}

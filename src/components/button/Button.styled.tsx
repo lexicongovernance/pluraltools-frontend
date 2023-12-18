@@ -18,4 +18,11 @@ export const StyledButton = styled.button<ButtonProps>`
   &:hover {
     opacity: 0.8;
   }
+
+  &:disabled {
+    cursor: not-allowed;
+    &:hover {
+      opacity: 1;
+    }
+  }
 `;

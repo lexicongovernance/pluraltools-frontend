@@ -1,6 +1,6 @@
-import { ProposalType } from '../types/ProposalType';
+import { ResponseProposalType } from '../types/ProposalType';
 
-async function fetchRegistration(userId: string): Promise<ProposalType | null> {
+async function fetchRegistration(userId: string): Promise<ResponseProposalType | null> {
   try {
     const response = await fetch(
       `${import.meta.env.VITE_SERVER_URL}/api/users/${userId}/registration`,
@@ -16,8 +16,8 @@ async function fetchRegistration(userId: string): Promise<ProposalType | null> {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    const data = (await response.json()) as ProposalType;
-    return data;
+    const registration = (await response.json()) as { data: ResponseProposalType };
+    return registration.data;
   } catch (error) {
     console.error(error);
     return null;
