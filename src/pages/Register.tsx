@@ -15,6 +15,7 @@ import { queryClient } from '../main';
 import fetchRegistrations from '../api/fetchRegistration';
 import useGroups from '../hooks/useGroups';
 import Select from '../components/form/Select';
+import Chip from '../components/chip';
 
 const RegisterSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email address').required('Required'),
@@ -93,17 +94,20 @@ function Register() {
     }
   }, [registration]);
 
+  useEffect(() => {
+    console.log('Status', registration?.status);
+  }, [registration]);
+
   // TODO: This will be a loading skeleton
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
-
   return (
     <>
       {user ? (
-        <>
+        <FlexColumn>
           <h2>Register Page:</h2>
-          <br />
+          {registration?.status && <Chip>{registration.status}</Chip>}
           <form onSubmit={formik.handleSubmit}>
             <FlexColumn $gap="0.75rem">
               <FlexColumn $gap="0.5rem">
@@ -118,6 +122,7 @@ function Register() {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.email}
+                  disabled={registration?.status === 'PUBLISHED'}
                 />
                 {formik.touched.email && formik.errors.email && (
                   <ErrorText>{formik.errors.email}</ErrorText>
@@ -135,6 +140,7 @@ function Register() {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.username}
+                  disabled={registration?.status === 'PUBLISHED'}
                 />
                 {formik.touched.username && formik.errors.username && (
                   <ErrorText>{formik.errors.username}</ErrorText>
@@ -151,6 +157,7 @@ function Register() {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.groupId}
+                  disabled={registration?.status === 'PUBLISHED'}
                 >
                   <option value="" disabled>
                     Choose a group
@@ -178,6 +185,7 @@ function Register() {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.proposalTitle}
+                  disabled={registration?.status === 'PUBLISHED'}
                 />
                 {formik.touched.proposalTitle && formik.errors.proposalTitle && (
                   <ErrorText>{formik.errors.proposalTitle}</ErrorText>
@@ -192,6 +200,7 @@ function Register() {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.proposalAbstract}
+                  disabled={registration?.status === 'PUBLISHED'}
                 />
                 {formik.touched.proposalAbstract && formik.errors.proposalAbstract && (
                   <ErrorText>{formik.errors.proposalAbstract}</ErrorText>
@@ -200,21 +209,23 @@ function Register() {
               <FlexRow $alignSelf="flex-end">
                 <Button
                   color="secondary"
-                  type="button"
+                  type="submit"
                   onClick={() => formik.setValues((prev) => ({ ...prev, status: 'DRAFT' }))}
+                  disabled={registration?.status === 'PUBLISHED'}
                 >
                   Save as draft
                 </Button>
                 <Button
                   type="submit"
                   onClick={() => formik.setValues((prev) => ({ ...prev, status: 'PUBLISHED' }))}
+                  disabled={registration?.status === 'PUBLISHED'}
                 >
                   Submit
                 </Button>
               </FlexRow>
             </FlexColumn>
           </form>
-        </>
+        </FlexColumn>
       ) : (
         <h2>Please login</h2>
       )}
