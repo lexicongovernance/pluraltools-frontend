@@ -5,6 +5,7 @@ import { queryClient } from '../../main';
 import ZupassLoginButton from '../zupassLoginButton';
 import { HeaderContainer, NavButtons, SyledHeader } from './Header.styled';
 import useUser from '../../hooks/useUser';
+import { NavLink } from 'react-router-dom';
 
 function Header() {
   const { user } = useUser();
@@ -22,11 +23,23 @@ function Header() {
         <nav>
           <NavButtons>
             {user ? (
-              <li>
-                <Button color="secondary" onClick={mutateLogout}>
-                  Log out
-                </Button>
-              </li>
+              <>
+                <li>
+                  <NavLink to="/home">
+                    <Button variant="text">Home</Button>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink to="/register">
+                    <Button variant="text">Register</Button>
+                  </NavLink>
+                </li>
+                <li>
+                  <Button color="secondary" onClick={mutateLogout}>
+                    Log out
+                  </Button>
+                </li>
+              </>
             ) : (
               <>
                 <li>
