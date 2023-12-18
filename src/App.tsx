@@ -4,6 +4,7 @@ import useUser from './hooks/useUser';
 import Landing from './pages/Landing';
 import Register from './pages/Register';
 import PassportPopupRedirect from './pages/Popup';
+import Home from './pages/Home';
 
 function App() {
   const { user, isLoading } = useUser();
@@ -16,6 +17,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={user ? <Navigate to="/register" replace /> : <Landing />} />
+      <Route path="/home" element={user ? <Home /> : <Navigate to="/" replace />} />
       <Route path="/register" element={user ? <Register /> : <Navigate to="/" replace />} />
       <Route path="/popup" element={<PassportPopupRedirect />} />
     </Routes>
