@@ -1,4 +1,4 @@
-import { ProposalType } from '../types/ProposalType';
+import { ResponseProposalType, PostProposalType } from '../types/ProposalType';
 
 async function postRegistration({
   userId,
@@ -9,7 +9,7 @@ async function postRegistration({
   proposalAbstract,
   status,
   groupIds,
-}: ProposalType) {
+}: PostProposalType) {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/registrations`, {
       method: 'POST',
@@ -33,8 +33,7 @@ async function postRegistration({
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    const post = await response.json();
-    console.log('🚀 ~ file: postRegistration.ts:37 ~ post:', post);
+    const post = (await response.json()) as { data: ResponseProposalType };
     return post.data;
   } catch (error) {
     console.error('Error during POST request:', error);

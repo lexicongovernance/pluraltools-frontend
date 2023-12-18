@@ -7,7 +7,7 @@ import { FlexColumn, FlexRow } from '../components/hero/Hero.styled';
 import ErrorText from '../components/form/ErrorText';
 import Label from '../components/form/Label';
 import useUser from '../hooks/useUser';
-import { ProposalType } from '../types/ProposalType';
+import { PostProposalType } from '../types/ProposalType';
 import { useState } from 'react';
 import postRegistration from '../api/postRegistration';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -24,10 +24,27 @@ const RegisterSchema = Yup.object().shape({
   proposalAbstract: Yup.string(),
 });
 
+type InitialValues = {
+  email: string | undefined;
+  username: string | undefined;
+  proposalTitle: string;
+  proposalAbstract: string | undefined;
+  status: 'DRAFT' | 'PUBLISHED' | undefined;
+  groupId?: string;
+};
+
 function Register() {
   const { groups } = useGroups();
   const { user, isLoading } = useUser();
   const [status, setStatus] = useState<'DRAFT' | 'PUBLISHED' | undefined>();
+  const [initialValues, setInitialValues] = useState<InitialValues>({
+    email: '',
+    username: '',
+    proposalTitle: '',
+    proposalAbstract: '',
+    status,
+    groupId: '',
+  });
 
   const { data: registration } = useQuery({
     queryKey: ['registration'],
@@ -40,31 +57,34 @@ function Register() {
     mutationFn: postRegistration,
     onSuccess: (body) => {
       if (body) {
-        console.log('Im being called:', body);
         queryClient.invalidateQueries({ queryKey: ['registration'] });
       }
     },
   });
 
+  // useEffect(() => {
+  //   console.log('Initial values:', initialValues);
+  //   if (registration) {
+  //     setInitialValues({
+  //       email: registration.email,
+  //       username: registration.username,
+  //       proposalTitle: registration.proposalTitle,
+  //       proposalAbstract: registration.proposalAbstract,
+  //       status: registration.status === 'DRAFT' ? registration.status : 'DRAFT',
+  //       groupId: registration.groups?.[0].groupId,
+  //     });
+  //   }
+  // }, [registration]);
+
   const formik = useFormik({
-    initialValues: {
-      email: '',
-      username: '',
-      proposalTitle: '',
-      proposalAbstract: '',
-      status: 'DRAFT',
-      group: '',
-    },
+    initialValues,
     validationSchema: RegisterSchema,
     onSubmit: async (values) => {
-      // TODO: Simulating an asynchronous submission
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      if (user) {
-        const postValues: ProposalType = {
+      if (user && formik.values.groupId) {
+        const postValues: PostProposalType = {
           ...values,
           userId: user?.id,
-          groupIds: [formik.values.group],
+          groupIds: [formik.values.groupId],
           status,
         };
         mutateRegistrations(postValues);
@@ -132,7 +152,7 @@ function Register() {
                   placeholder="Choose a group"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.group}
+                  value={formik.values.groupId}
                 >
                   <option value="" disabled>
                     Choose a group
@@ -144,8 +164,8 @@ function Register() {
                       </option>
                     ))}
                 </Select>
-                {formik.touched.group && formik.errors.group && (
-                  <ErrorText>{formik.errors.group}</ErrorText>
+                {formik.touched.groupId && formik.errors.groupId && (
+                  <ErrorText>{formik.errors.groupId}</ErrorText>
                 )}
               </FlexColumn>
               <FlexColumn $gap="0.5rem">
