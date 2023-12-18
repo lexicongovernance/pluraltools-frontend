@@ -8,7 +8,7 @@ import ErrorText from '../components/form/ErrorText';
 import Label from '../components/form/Label';
 import useUser from '../hooks/useUser';
 import { PostProposalType } from '../types/ProposalType';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import postRegistration from '../api/postRegistration';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { queryClient } from '../main';
@@ -19,7 +19,7 @@ import Select from '../components/form/Select';
 const RegisterSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email address').required('Required'),
   username: Yup.string().min(4).required('Required'),
-  group: Yup.string().required('Please choose a group'),
+  groupId: Yup.string().required('Please choose a group'),
   proposalTitle: Yup.string().required('Required'),
   proposalAbstract: Yup.string(),
 });
@@ -36,13 +36,12 @@ type InitialValues = {
 function Register() {
   const { groups } = useGroups();
   const { user, isLoading } = useUser();
-  const [status, setStatus] = useState<'DRAFT' | 'PUBLISHED' | undefined>();
   const [initialValues, setInitialValues] = useState<InitialValues>({
     email: '',
     username: '',
     proposalTitle: '',
     proposalAbstract: '',
-    status,
+    status: undefined,
     groupId: '',
   });
 
@@ -62,22 +61,9 @@ function Register() {
     },
   });
 
-  // useEffect(() => {
-  //   console.log('Initial values:', initialValues);
-  //   if (registration) {
-  //     setInitialValues({
-  //       email: registration.email,
-  //       username: registration.username,
-  //       proposalTitle: registration.proposalTitle,
-  //       proposalAbstract: registration.proposalAbstract,
-  //       status: registration.status === 'DRAFT' ? registration.status : 'DRAFT',
-  //       groupId: registration.groups?.[0].groupId,
-  //     });
-  //   }
-  // }, [registration]);
-
   const formik = useFormik({
     initialValues,
+    enableReinitialize: true,
     validationSchema: RegisterSchema,
     onSubmit: async (values) => {
       if (user && formik.values.groupId) {
@@ -85,7 +71,6 @@ function Register() {
           ...values,
           userId: user?.id,
           groupIds: [formik.values.groupId],
-          status,
         };
         mutateRegistrations(postValues);
       }
@@ -94,6 +79,19 @@ function Register() {
       formik.resetForm();
     },
   });
+
+  useEffect(() => {
+    if (registration && registration.id) {
+      setInitialValues({
+        email: registration.email,
+        username: registration.username,
+        proposalTitle: registration.proposalTitle,
+        proposalAbstract: registration.proposalAbstract,
+        status: registration.status === 'DRAFT' ? registration.status : 'DRAFT',
+        groupId: registration.groups?.[0].groupId,
+      });
+    }
+  }, [registration]);
 
   // TODO: This will be a loading skeleton
   if (isLoading) {
@@ -147,8 +145,8 @@ function Register() {
                   Select Group:
                 </Label>
                 <Select
-                  id="group"
-                  name="group"
+                  id="groupId"
+                  name="groupId"
                   placeholder="Choose a group"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -200,16 +198,22 @@ function Register() {
                 )}
               </FlexColumn>
               <FlexRow $alignSelf="flex-end">
-                <Button color="secondary" type="button" onClick={() => setStatus('DRAFT')}>
+                <Button
+                  color="secondary"
+                  type="button"
+                  onClick={() => formik.setValues((prev) => ({ ...prev, status: 'DRAFT' }))}
+                >
                   Save as draft
                 </Button>
-                <Button type="submit" onClick={() => setStatus('PUBLISHED')}>
+                <Button
+                  type="submit"
+                  onClick={() => formik.setValues((prev) => ({ ...prev, status: 'PUBLISHED' }))}
+                >
                   Submit
                 </Button>
               </FlexRow>
             </FlexColumn>
           </form>
-          <pre>{JSON.stringify(registration, null, 2)}</pre>
         </>
       ) : (
         <h2>Please login</h2>

@@ -16,8 +16,8 @@ async function fetchRegistration(userId: string): Promise<ResponseProposalType |
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    const data = (await response.json()) as ResponseProposalType;
-    return data;
+    const registration = (await response.json()) as { data: ResponseProposalType };
+    return registration.data;
   } catch (error) {
     console.error(error);
     return null;
