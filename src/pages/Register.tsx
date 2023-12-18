@@ -226,9 +226,7 @@ function Register() {
               {registrationOptions &&
                 Object.entries(registrationOptions).map(([category, options]) => (
                   <FlexColumn key={category} $gap="0.5rem">
-                    <Label htmlFor={category} required>
-                      {category}
-                    </Label>
+                    <Label htmlFor={category}>{category}</Label>
                     <Select
                       id={`registrationOptions.${category}`}
                       name={`registrationOptions.${category}`}
