@@ -1,5 +1,5 @@
 import { FlexColumn } from '../../layout/Layout.styled';
-import { StyledOption } from './Option.styled';
+import { StyledOption, Title, Body } from './Option.styled';
 
 type OptionProps = { title: string; body: string };
 
@@ -7,8 +7,8 @@ function Option({ title, body }: OptionProps) {
   return (
     <StyledOption>
       <FlexColumn>
-        <h3>{title}</h3>
-        <p>{body}</p>
+        <Title>{title}</Title>
+        <Body>{body}</Body>
       </FlexColumn>
     </StyledOption>
   );
