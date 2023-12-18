@@ -3,9 +3,8 @@ import Button from '../button';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '../../main';
 import ZupassLoginButton from '../zupassLoginButton';
-import { HeaderContainer, NavButtons, SyledHeader } from './Header.styled';
+import { HeaderContainer, NavButtons, SyledHeader, StyledNavLink } from './Header.styled';
 import useUser from '../../hooks/useUser';
-import { NavLink } from 'react-router-dom';
 
 function Header() {
   const { user } = useUser();
@@ -25,14 +24,18 @@ function Header() {
             {user ? (
               <>
                 <li>
-                  <NavLink to="/home">
-                    <Button variant="text">Home</Button>
-                  </NavLink>
+                  <StyledNavLink to="/home">
+                    <Button variant="text" tabIndex={-1}>
+                      Home
+                    </Button>
+                  </StyledNavLink>
                 </li>
                 <li>
-                  <NavLink to="/register">
-                    <Button variant="text">Register</Button>
-                  </NavLink>
+                  <StyledNavLink to="/register">
+                    <Button variant="text" tabIndex={-1}>
+                      Register
+                    </Button>
+                  </StyledNavLink>
                 </li>
                 <li>
                   <Button color="secondary" onClick={mutateLogout}>
