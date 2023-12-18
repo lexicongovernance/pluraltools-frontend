@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const Section = styled.section`
   display: grid;
@@ -15,10 +15,26 @@ export const Section = styled.section`
       grid-row: 1/3;
     }
   }
-`
+`;
 
-export const FlexColumn = styled.section<{ gap?: string }>`
+export const FlexColumn1 = styled.section.attrs<{ $gap?: string }>(() => ({}))`
   display: flex;
   flex-direction: column;
-  gap: ${(props) => props.gap || '1rem'};
-`
+  gap: ${(props) => props.$gap || '1rem'};
+`;
+
+export const FlexColumn = styled.section<{ $gap?: string }>`
+  display: flex;
+  flex-direction: column;
+  gap: ${(props) => props.$gap || '1rem'};
+`;
+
+export const FlexRow = styled.section<{
+  $alignSelf?: 'flex-start' | 'flex-end';
+  $gap?: string;
+}>`
+  align-self: ${(props) => (props.$alignSelf ? props.$alignSelf : 'flex-start')};
+  display: flex;
+  flex-direction: row;
+  gap: ${(props) => props.$gap || '1rem'};
+`;

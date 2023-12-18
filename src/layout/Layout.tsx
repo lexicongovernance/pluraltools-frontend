@@ -1,9 +1,9 @@
-import Header from '../components/header'
-import { Main } from './Layout.styled'
+import Header from '../components/header';
+import { Main } from './Layout.styled';
 
 type LayoutProps = {
-  children: React.ReactNode
-}
+  children: React.ReactNode;
+};
 
 function Layout({ children }: LayoutProps) {
   return (
@@ -11,7 +11,7 @@ function Layout({ children }: LayoutProps) {
       <Header />
       <Main>{children}</Main>
     </>
-  )
+  );
 }
 
-export default Layout
+export default Layout;
