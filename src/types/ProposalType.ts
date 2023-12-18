@@ -6,6 +6,5 @@ export type ProposalType = {
   proposalTitle: string;
   proposalAbstract?: string | undefined;
   status?: 'DRAFT' | 'PUBLISHED' | undefined;
-  group: string[];
   groupIds: string[];
 };

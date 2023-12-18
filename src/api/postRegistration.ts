@@ -8,7 +8,6 @@ async function postRegistration({
   proposalTitle,
   proposalAbstract,
   status,
-  group,
   groupIds,
 }: ProposalType) {
   try {
@@ -26,7 +25,6 @@ async function postRegistration({
         proposalTitle,
         proposalAbstract,
         status,
-        group,
         groupIds,
       }),
     });
@@ -34,6 +32,10 @@ async function postRegistration({
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
+
+    const post = await response.json();
+    console.log('🚀 ~ file: postRegistration.ts:37 ~ post:', post);
+    return post.data;
   } catch (error) {
     console.error('Error during POST request:', error);
     return null;
