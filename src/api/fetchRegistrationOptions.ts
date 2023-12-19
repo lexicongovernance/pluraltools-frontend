@@ -16,7 +16,7 @@ async function fetchRegistrationOptions(): Promise<ResponseRegistrationOptionsTy
     const options = (await response.json()) as { data: ResponseRegistrationOptionsType };
     return options.data;
   } catch (error) {
-    console.error('Error fetching nonce:', error);
+    console.error('Error fetching registration options:', error);
     return null;
   }
 }
