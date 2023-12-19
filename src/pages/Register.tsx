@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import Button from '../components/button';
 import Input from '../components/form/Input';
 import Textarea from '../components/form/Textarea';
-import { FlexColumn, FlexRow } from '../components/hero/Hero.styled';
+import { FlexColumn, FlexRow } from '../layout/Layout.styled';
 import ErrorText from '../components/form/ErrorText';
 import Label from '../components/form/Label';
 import useUser from '../hooks/useUser';
