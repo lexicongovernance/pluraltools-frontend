@@ -35,6 +35,44 @@ type InitialValues = {
 };
 
 function Register() {
+  const [skipOnboarding, setSkipOnboarding] = useState(localStorage.getItem('skip_onboarding'));
+  const handleSkip = () => {
+    setSkipOnboarding('true');
+    localStorage.setItem('skip_onboarding', 'true');
+  };
+  // check if is visited
+  if (skipOnboarding == 'true') {
+    return <RegisterForm />;
+  }
+
+  // make a component that shows onboarding if not visited
+  return <OnboardingRegisterForm handleSkip={handleSkip} />;
+}
+
+function OnboardingRegisterForm({ handleSkip }: { handleSkip: () => void }) {
+  return (
+    <FlexColumn>
+      <p>
+        Welcome to our platform! We're thrilled to have you join our vibrant community. As you
+        embark on this exciting journey with us, you'll discover a plethora of features designed to
+        enhance your experience. Our platform is tailored to foster engagement, learning, and
+        collaboration. Whether you're here to gain new insights, share your expertise, or connect
+        with like-minded individuals, you're in the right place. To get started, we recommend
+        exploring our diverse forums and groups. They are the perfect spaces to engage in
+        discussions, ask questions, and offer your unique perspectives. To make the most of your
+        time here, don't hesitate to dive into creating and participating in various events and
+        discussions. Your contributions are valuable and help in creating a rich, diverse, and
+        informative environment for all members. If you have any questions or need assistance, our
+        dedicated support team is always here to help. Remember, this is your community too, and
+        your active participation shapes its future. Welcome aboard, and let's embark on this
+        journey of discovery and growth together!
+      </p>
+      <Button onClick={handleSkip}>Continue</Button>
+    </FlexColumn>
+  );
+}
+
+function RegisterForm() {
   const { groups } = useGroups();
   const { user, isLoading } = useUser();
   const [initialValues, setInitialValues] = useState<InitialValues>({
@@ -232,5 +270,4 @@ function Register() {
     </>
   );
 }
-
 export default Register;
