@@ -7,11 +7,12 @@ export const StyledOption = styled.article`
 `;
 
 export const Title = styled.h3`
-  min-height: 3rem;
-  font-size: 1.5rem;
-  line-height: 2rem;
-  font-weight: 600;
   color: #eee;
+  font-family: 'Pixelify Sans', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 2rem;
+  min-height: 3rem;
   &::first-letter {
     text-transform: capitalize;
   }
@@ -19,8 +20,8 @@ export const Title = styled.h3`
 
 export const Body = styled.p`
   color: #ddd;
-  font-weight: 400;
   font-size: 1.125rem;
+  font-weight: 400;
   letter-spacing: 0.35px;
   &::first-letter {
     text-transform: capitalize;
