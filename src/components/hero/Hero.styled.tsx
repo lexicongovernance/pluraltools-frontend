@@ -30,7 +30,7 @@ export const FlexColumn = styled.section<{ $gap?: string }>`
 `;
 
 export const FlexRow = styled.section<{
-  $alignSelf?: 'flex-start' | 'flex-end';
+  $alignSelf?: 'flex-start' | 'flex-end' | 'center';
   $gap?: string;
 }>`
   align-self: ${(props) => (props.$alignSelf ? props.$alignSelf : 'flex-start')};

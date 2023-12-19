@@ -50,24 +50,52 @@ function Register() {
 }
 
 function OnboardingRegisterForm({ handleSkip }: { handleSkip: () => void }) {
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const texts = [
+    `Welcome to our platform! We're thrilled to have you join our vibrant community. As you
+  embark on this exciting journey with us, you'll discover a plethora of features designed to
+  enhance your experience. Our platform is tailored to foster engagement, learning, and
+  collaboration.`,
+    `Whether you're here to gain new insights, share your expertise, or connect
+  with like-minded individuals, you're in the right place. To get started, we recommend
+  exploring our diverse forums and groups. They are the perfect spaces to engage in
+  discussions, ask questions, and offer your unique perspectives. To make the most of your
+  time here, don't hesitate to dive into creating and participating in various events and
+  discussions.`,
+    `Your contributions are valuable and help in creating a rich, diverse, and
+  informative environment for all members. If you have any questions or need assistance, our
+  dedicated support team is always here to help. Remember, this is your community too, and
+  your active participation shapes its future. Welcome aboard, and let's embark on this
+  journey of discovery and growth together!`,
+  ];
+
   return (
-    <FlexColumn>
-      <p>
-        Welcome to our platform! We're thrilled to have you join our vibrant community. As you
-        embark on this exciting journey with us, you'll discover a plethora of features designed to
-        enhance your experience. Our platform is tailored to foster engagement, learning, and
-        collaboration. Whether you're here to gain new insights, share your expertise, or connect
-        with like-minded individuals, you're in the right place. To get started, we recommend
-        exploring our diverse forums and groups. They are the perfect spaces to engage in
-        discussions, ask questions, and offer your unique perspectives. To make the most of your
-        time here, don't hesitate to dive into creating and participating in various events and
-        discussions. Your contributions are valuable and help in creating a rich, diverse, and
-        informative environment for all members. If you have any questions or need assistance, our
-        dedicated support team is always here to help. Remember, this is your community too, and
-        your active participation shapes its future. Welcome aboard, and let's embark on this
-        journey of discovery and growth together!
-      </p>
-      <Button onClick={handleSkip}>Continue</Button>
+    <FlexColumn
+      style={{
+        width: '50%',
+        margin: 'auto',
+        textAlign: 'center',
+      }}
+    >
+      <p>{texts[currentStep]}</p>
+      <FlexRow $alignSelf="center">
+        {Array.from({ length: texts.length }).map((_, i) =>
+          i === currentStep ? <p>*</p> : <p>.</p>
+        )}
+      </FlexRow>
+      <FlexRow $alignSelf="flex-end">
+        <Button variant="text" color="secondary" onClick={handleSkip}>
+          Skip
+        </Button>
+        <Button
+          onClick={() =>
+            currentStep === texts.length - 1 ? handleSkip() : setCurrentStep((prev) => prev + 1)
+          }
+        >
+          Continue
+        </Button>
+      </FlexRow>
     </FlexColumn>
   );
 }
