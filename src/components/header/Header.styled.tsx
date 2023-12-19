@@ -1,3 +1,4 @@
+import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const SyledHeader = styled.header`
@@ -19,4 +20,12 @@ export const NavButtons = styled.ul`
   display: flex;
   gap: 1rem;
   list-style: none;
+`;
+
+export const StyledNavLink = styled(NavLink)`
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid transparent;
+  &.active {
+    border-bottom: 3px solid #fff;
+  }
 `;

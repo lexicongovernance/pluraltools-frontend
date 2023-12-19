@@ -9,6 +9,7 @@ async function postRegistration({
   proposalAbstract,
   status,
   groupIds,
+  registrationOptionIds,
 }: PostProposalType) {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/registrations`, {
@@ -26,6 +27,7 @@ async function postRegistration({
         proposalAbstract,
         status,
         groupIds,
+        registrationOptionIds,
       }),
     });
 

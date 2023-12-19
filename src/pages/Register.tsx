@@ -16,6 +16,7 @@ import fetchRegistrations from '../api/fetchRegistration';
 import useGroups from '../hooks/useGroups';
 import Select from '../components/form/Select';
 import Chip from '../components/chip';
+import fetchRegistrationOptions from '../api/fetchRegistrationOptions';
 
 const RegisterSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email address').required('Required'),
@@ -32,9 +33,76 @@ type InitialValues = {
   proposalAbstract: string | undefined;
   status: 'DRAFT' | 'PUBLISHED' | undefined;
   groupId?: string;
+  registrationOptions: { [category: string]: string };
 };
 
 function Register() {
+  const [skipOnboarding, setSkipOnboarding] = useState(localStorage.getItem('skip_onboarding'));
+  const handleSkip = () => {
+    setSkipOnboarding('true');
+    localStorage.setItem('skip_onboarding', 'true');
+  };
+  // check if is visited
+  if (skipOnboarding == 'true') {
+    return <RegisterForm />;
+  }
+
+  // make a component that shows onboarding if not visited
+  return <OnboardingRegisterForm handleSkip={handleSkip} />;
+}
+
+function OnboardingRegisterForm({ handleSkip }: { handleSkip: () => void }) {
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const texts = [
+    `Welcome to our platform! We're thrilled to have you join our vibrant community. As you
+  embark on this exciting journey with us, you'll discover a plethora of features designed to
+  enhance your experience. Our platform is tailored to foster engagement, learning, and
+  collaboration.`,
+    `Whether you're here to gain new insights, share your expertise, or connect
+  with like-minded individuals, you're in the right place. To get started, we recommend
+  exploring our diverse forums and groups. They are the perfect spaces to engage in
+  discussions, ask questions, and offer your unique perspectives. To make the most of your
+  time here, don't hesitate to dive into creating and participating in various events and
+  discussions.`,
+    `Your contributions are valuable and help in creating a rich, diverse, and
+  informative environment for all members. If you have any questions or need assistance, our
+  dedicated support team is always here to help. Remember, this is your community too, and
+  your active participation shapes its future. Welcome aboard, and let's embark on this
+  journey of discovery and growth together!`,
+  ];
+
+  return (
+    <FlexColumn
+      style={{
+        width: '50%',
+        margin: 'auto',
+        textAlign: 'center',
+      }}
+    >
+      <p>{texts[currentStep]}</p>
+      <FlexRow $alignSelf="center">
+        {Array.from({ length: texts.length }).map((_, i) =>
+          i === currentStep ? <p>*</p> : <p>.</p>
+        )}
+      </FlexRow>
+      <FlexRow $alignSelf="flex-end">
+        <Button variant="text" color="secondary" onClick={handleSkip}>
+          Skip
+        </Button>
+        <Button
+          onClick={() =>
+            currentStep === texts.length - 1 ? handleSkip() : setCurrentStep((prev) => prev + 1)
+          }
+        >
+          Continue
+        </Button>
+      </FlexRow>
+    </FlexColumn>
+  );
+}
+
+function RegisterForm() {
   const { groups } = useGroups();
   const { user, isLoading } = useUser();
   const [initialValues, setInitialValues] = useState<InitialValues>({
@@ -44,6 +112,7 @@ function Register() {
     proposalAbstract: '',
     status: undefined,
     groupId: '',
+    registrationOptions: {},
   });
 
   const { data: registration } = useQuery({
@@ -51,6 +120,12 @@ function Register() {
     queryFn: () => fetchRegistrations(user?.id || ''),
     staleTime: 10000,
     enabled: !!user?.id,
+  });
+
+  const { data: registrationOptions } = useQuery({
+    queryKey: ['registration', 'options'],
+    queryFn: fetchRegistrationOptions,
+    staleTime: 10000,
   });
 
   const { mutate: mutateRegistrations } = useMutation({
@@ -72,6 +147,7 @@ function Register() {
           ...values,
           userId: user?.id,
           groupIds: [formik.values.groupId],
+          registrationOptionIds: Object.values(formik.values.registrationOptions),
         };
         mutateRegistrations(postValues);
       }
@@ -90,6 +166,13 @@ function Register() {
         proposalAbstract: registration.proposalAbstract,
         status: registration.status === 'DRAFT' ? registration.status : 'DRAFT',
         groupId: registration.groups?.[0].groupId,
+        registrationOptions: registration.registrationOptions.reduce(
+          (acc, next) => {
+            acc[next.registrationOption.category] = next.registrationOptionId;
+            return acc;
+          },
+          {} as InitialValues['registrationOptions']
+        ),
       });
     }
   }, [registration]);
@@ -206,6 +289,33 @@ function Register() {
                   <ErrorText>{formik.errors.proposalAbstract}</ErrorText>
                 )}
               </FlexColumn>
+              {registrationOptions &&
+                Object.entries(registrationOptions).map(([category, options]) => (
+                  <FlexColumn key={category} $gap="0.5rem">
+                    <Label htmlFor={category}>{category}</Label>
+                    <Select
+                      id={`registrationOptions.${category}`}
+                      name={`registrationOptions.${category}`}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.registrationOptions?.[category]}
+                      disabled={registration?.status === 'PUBLISHED'}
+                    >
+                      <option value="" disabled>
+                        Choose a {category}
+                      </option>
+                      {options.map((option) => (
+                        <option key={option.id} value={option.id}>
+                          {option.name}
+                        </option>
+                      ))}
+                    </Select>
+                    {formik.touched.registrationOptions?.[category] &&
+                      formik.errors.registrationOptions?.[category] && (
+                        <ErrorText>{formik.errors.registrationOptions?.[category]}</ErrorText>
+                      )}
+                  </FlexColumn>
+                ))}
               <FlexRow $alignSelf="flex-end">
                 <Button
                   color="secondary"
@@ -232,5 +342,4 @@ function Register() {
     </>
   );
 }
-
 export default Register;

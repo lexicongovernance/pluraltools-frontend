@@ -3,7 +3,7 @@ import Button from '../button';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '../../main';
 import ZupassLoginButton from '../zupassLoginButton';
-import { HeaderContainer, NavButtons, SyledHeader } from './Header.styled';
+import { HeaderContainer, NavButtons, SyledHeader, StyledNavLink } from './Header.styled';
 import useUser from '../../hooks/useUser';
 
 function Header() {
@@ -22,11 +22,27 @@ function Header() {
         <nav>
           <NavButtons>
             {user ? (
-              <li>
-                <Button color="secondary" onClick={mutateLogout}>
-                  Log out
-                </Button>
-              </li>
+              <>
+                <li>
+                  <StyledNavLink to="/home">
+                    <Button variant="text" tabIndex={-1}>
+                      Home
+                    </Button>
+                  </StyledNavLink>
+                </li>
+                <li>
+                  <StyledNavLink to="/register">
+                    <Button variant="text" tabIndex={-1}>
+                      Register
+                    </Button>
+                  </StyledNavLink>
+                </li>
+                <li>
+                  <Button color="secondary" onClick={mutateLogout}>
+                    Log out
+                  </Button>
+                </li>
+              </>
             ) : (
               <>
                 <li>
