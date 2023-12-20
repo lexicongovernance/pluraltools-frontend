@@ -2,5 +2,6 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   children: React.ReactNode;
   color?: 'primary' | 'secondary';
   variant?: 'text' | 'contained';
+  center?: boolean;
   onClick?: () => void;
 }
