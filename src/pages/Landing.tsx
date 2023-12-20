@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import Hero from '../components/hero';
 import Card from '../components/card';
-import { FlexColumn, Grid } from '../layout/Layout.styled';
+import Hero from '../components/hero';
+import ZupassLoginButton from '../components/zupassLoginButton';
 import landing from '../data/landing';
-import Button from '../components/button';
+import { FlexColumn, Grid } from '../layout/Layout.styled';
 
 const Subtitle = styled.h3`
   font-family: 'Press Start 2P', sans-serif;
@@ -49,7 +49,7 @@ function Landing() {
       <FlexColumn $gap="4rem">
         <Subtitle>{landing.spark.title}</Subtitle>
         <Text center>{landing.spark.body}</Text>
-        <Button center>{landing.spark.button}</Button>
+        <ZupassLoginButton center>{landing.spark.button}</ZupassLoginButton>
       </FlexColumn>
     </FlexColumn>
   );
