@@ -7,6 +7,12 @@ export const StyledCard = styled.article`
   text-align: center;
 `;
 
+export const Icon = styled.div`
+  align-self: center;
+  height: 2rem;
+  width: 2rem;
+`;
+
 export const Title = styled.h3`
   color: #eee;
   font-size: 1.25rem;

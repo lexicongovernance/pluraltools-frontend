@@ -4,19 +4,19 @@ const landing = {
     cards: [
       {
         id: 0,
-        icon: '',
+        icon: '/icons/research.svg',
         title: 'Collaborative Research',
         body: 'Join a diverse community of MEV researchers to foster collaboration and innovation in the field.',
       },
       {
         id: 1,
-        icon: '',
+        icon: '/icons/plurality.svg',
         title: 'Plurality Scoring',
-        body: 'Join a diverse community of MEV researchers to foster collaboration and innovation in the field.',
+        body: 'Experience a fair and inclusive voting system using Quadratic Voting and correlation discounts to prioritize valuable research.',
       },
       {
         id: 2,
-        icon: '',
+        icon: '/icons/decentralized.svg',
         title: 'Decentralized Conference',
         body: 'Participate in a groundbreaking conference where participants shape the agenda and discuss the future of MEV development.',
       },
