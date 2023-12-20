@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 interface ZupassLoginButtonProps extends ButtonProps {
   children: React.ReactNode;
 }
-function ZupassLoginButton({ children, color }: ZupassLoginButtonProps) {
+function ZupassLoginButton({ children, ...props }: ZupassLoginButtonProps) {
   const navigate = useNavigate();
 
   const { refetch } = useQuery({
@@ -72,7 +72,7 @@ function ZupassLoginButton({ children, color }: ZupassLoginButtonProps) {
 
   return (
     <>
-      <Button color={color} onClick={handleLoginClick}>
+      <Button onClick={handleLoginClick} {...props}>
         {children}
       </Button>
     </>

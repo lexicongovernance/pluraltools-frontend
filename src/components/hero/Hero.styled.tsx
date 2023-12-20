@@ -16,3 +16,9 @@ export const Section = styled.section`
     }
   }
 `;
+
+export const Body = styled.p`
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 2rem;
+`;

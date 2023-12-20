@@ -13,7 +13,7 @@ export const HeaderContainer = styled.div`
   align-items: center;
   display: flex;
   justify-content: space-between;
-  width: min(90%, 60rem);
+  width: min(90%, 1080px);
 `;
 
 export const NavButtons = styled.ul`
