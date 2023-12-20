@@ -32,8 +32,11 @@ export const FlexColumn = styled.section<{ $gap?: string }>`
 export const FlexRow = styled.section<{
   $alignSelf?: 'flex-start' | 'flex-end';
   $gap?: string;
+  $justifyContent?: 'space-between';
 }>`
-  align-self: ${(props) => (props.$alignSelf ? props.$alignSelf : 'flex-start')};
+  align-self: ${(props) => props.$alignSelf && props.$alignSelf};
+  justify-content: ${(props) => props.$justifyContent && props.$justifyContent};
+  justify-content: space-between;
   display: flex;
   flex-direction: row;
   gap: ${(props) => props.$gap || '1rem'};
