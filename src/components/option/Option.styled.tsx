@@ -8,7 +8,7 @@ export const StyledOption = styled.article`
 
 export const Title = styled.h3`
   color: #eee;
-  font-family: 'Pixelify Sans', sans-serif;
+  font-family: 'Press Start 2P', sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
   line-height: 2rem;
