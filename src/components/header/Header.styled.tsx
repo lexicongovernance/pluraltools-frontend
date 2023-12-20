@@ -16,6 +16,12 @@ export const HeaderContainer = styled.div`
   width: min(90%, 1080px);
 `;
 
+export const Logo = styled.h2`
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.125rem;
+`;
+
 export const NavButtons = styled.ul`
   display: flex;
   gap: 1rem;
