@@ -13,7 +13,6 @@ export const Title = styled.h3`
   font-size: 1rem;
   font-weight: 600;
   line-height: 1.25rem;
-  min-height: 3rem;
 
   &::first-letter {
     text-transform: capitalize;
