@@ -3,10 +3,10 @@ import styled from 'styled-components';
 export const Section = styled.section`
   display: grid;
   grid-template-columns: 1fr;
-  row-gap: 1rem;
+  row-gap: 3rem;
 
   @media (min-width: 600px) {
-    column-gap: 1rem;
+    column-gap: 2rem;
     grid-template-columns: 1fr 1fr;
     row-gap: 0;
 
