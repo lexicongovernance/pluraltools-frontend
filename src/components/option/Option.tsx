@@ -17,7 +17,7 @@ function Option({ title, body, hearts = 0, onVote, onUnvote }: OptionProps) {
         <FlexColumn $gap="2rem">
           <Title>{title}</Title>
           <Body>{body}</Body>
-          <FlexRow $gap="0.25rem">
+          <FlexRow $gap="0.25rem" $wrap>
             {hearts > 0 ? (
               Array.from({ length: hearts }).map((_, id) => (
                 <img

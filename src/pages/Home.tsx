@@ -28,7 +28,7 @@ function Home() {
 
   // TODO: connect with backend
   const startAt = Math.floor(Date.now() / 1000);
-  const duration = 5;
+  const duration = 5 * 60;
   const endAt = startAt + duration;
   const { formattedTime } = useCountdown(startAt, endAt);
 
@@ -50,7 +50,9 @@ function Home() {
   };
 
   const handleUnvote = (id: number) => {
-    if (heartsCount < initialHearts) {
+    const likedOption = localOptions.find((option) => option.id === id && option.hearts > 0);
+
+    if (likedOption && heartsCount < initialHearts) {
       setHeartsCount((prevCount) => Math.min(prevCount + 1, initialHearts));
       // Update the local state of options directly (no server interaction)
       const updatedLocalOptions = localOptions.map((option) =>
