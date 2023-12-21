@@ -1,3 +1,4 @@
+import Footer from '../components/footer';
 import Header from '../components/header';
 import { Main } from './Layout.styled';
 
@@ -10,6 +11,7 @@ function Layout({ children }: LayoutProps) {
     <>
       <Header />
       <Main>{children}</Main>
+      <Footer />
     </>
   );
 }
