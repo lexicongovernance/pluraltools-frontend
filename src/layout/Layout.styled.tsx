@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 type FlexProps = {
   $alignItems?: 'center';
-  $alignSelf?: 'flex-start' | 'flex-end';
+  $alignSelf?: 'flex-start' | 'center' | 'flex-end';
   $gap?: string;
   $justifyContent?: 'space-between';
   $reverse?: boolean;
