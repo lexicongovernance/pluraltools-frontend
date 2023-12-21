@@ -55,21 +55,31 @@ function OnboardingRegisterForm({ handleSkip }: { handleSkip: () => void }) {
   const [currentStep, setCurrentStep] = useState(0);
 
   const texts = [
-    `Welcome to our platform! We're thrilled to have you join our vibrant community. As you
-  embark on this exciting journey with us, you'll discover a plethora of features designed to
-  enhance your experience. Our platform is tailored to foster engagement, learning, and
-  collaboration.`,
-    `Whether you're here to gain new insights, share your expertise, or connect
-  with like-minded individuals, you're in the right place. To get started, we recommend
-  exploring our diverse forums and groups. They are the perfect spaces to engage in
-  discussions, ask questions, and offer your unique perspectives. To make the most of your
-  time here, don't hesitate to dive into creating and participating in various events and
-  discussions.`,
-    `Your contributions are valuable and help in creating a rich, diverse, and
-  informative environment for all members. If you have any questions or need assistance, our
-  dedicated support team is always here to help. Remember, this is your community too, and
-  your active participation shapes its future. Welcome aboard, and let's embark on this
-  journey of discovery and growth together!`,
+    `Welcome to Plural MEV! Plural MEV is a research community dedicated to fostering 
+    collaborative research into MEV. Plural MEV uses plural voting and other pluralistic 
+    techniques to help reach consensus across boundaries. `,
+    `Community members are given vote power in the form of hearts. Hearts are initially 
+    allocated based on expertise, but you can earn more hearts through participation 
+    and correctly predicting results.`,
+    `You’ll be shown various topics to vote on. Allocate your hearts amongst the various 
+    options. More hearts means a stronger preference. Once everyone has voted, final scores 
+    will be calculated using the connection-oriented cluster match formula.`,
+    `You can read more here, but this is basically QV+. In addition to your vote intensity 
+    being square-rooted, a discount is applied to votes from participants with similar 
+    profiles. The result should be to signal boost ideas which have support from a broad 
+    swathe of the community.`,
+    `Our first event will be [Berlin Event] on [Date], a pluralistic conference where you, 
+    the participants, will set the agenda, content, and ultimately decide who receives 
+    a share of 100,000 ARB in MEV research grants.`,
+    `Each participant should give a flash talk (5 mins max) outlining a research question 
+    in MEV. You’ll be asked to provide a title and brief talk summary on the next page. 
+    Don't worry if you need some time. You can return any time before [Date] to edit your 
+    talk.`,
+    `You’ll also be asked to provide your sign up information, including your MEV experience 
+    and organizational affiliation. This is needed to power the plural voting, but won’t be 
+    revealed to any other participants. In future, this will be stored in Zupass, so even 
+    we won’t need to access this information.`,
+    `Welcome to the future of MEV research. Let’s get started!`,
   ];
 
   return (
