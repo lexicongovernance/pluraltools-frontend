@@ -4,6 +4,7 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {}
 
 const StyledSelect = styled.select`
   appearance: none;
+  background-color: #3b3b3b;
   background-image: url('/arrow_down.svg');
   background-position: right 0.75rem top 50%;
   background-repeat: no-repeat;
