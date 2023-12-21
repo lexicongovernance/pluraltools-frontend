@@ -4,13 +4,14 @@ import Option from '../components/option';
 import { FlexColumn, FlexRow, Grid } from '../layout/Layout.styled';
 import useCountdown from '../hooks/useCountdown';
 import Countdown from '../components/countdown';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface OptionData {
   userId: number;
   id: number;
   title: string;
   body: string;
+  hearts: number;
 }
 
 function Home() {
@@ -23,29 +24,40 @@ function Home() {
 
   const initialHearts = 10;
   const [heartsCount, setHeartsCount] = useState(initialHearts);
-  const [likedOptionsIds, setLikedOptionsIds] = useState<Set<number>>(new Set());
+  const [localOptions, setLocalOptions] = useState<OptionData[]>([]);
 
-  // TODO: Get from db.
+  // TODO: connect with backend
   const startAt = Math.floor(Date.now() / 1000);
-  const duration = 5 * 60;
+  const duration = 5;
   const endAt = startAt + duration;
   const { formattedTime } = useCountdown(startAt, endAt);
 
-  const handleVote = (postId: number) => {
-    if (!likedOptionsIds.has(postId) && heartsCount > 0) {
-      setLikedOptionsIds((prevIds) => new Set<number>(prevIds).add(postId));
+  useEffect(() => {
+    // Initialize localOptions with the initial options from the server
+    setLocalOptions(options || []);
+  }, [options]);
+
+  const handleVote = (id: number) => {
+    if (heartsCount > 0) {
       setHeartsCount((prevCount) => prevCount - 1);
+      // Update the local state of options directly (no server interaction)
+      const updatedLocalOptions = localOptions.map((option) =>
+        option.id === id ? { ...option, hearts: option.hearts + 1 } : option
+      );
+      // Set the updated local state
+      setLocalOptions(updatedLocalOptions);
     }
   };
 
-  const handleUnvote = (postId: number) => {
-    if (likedOptionsIds.has(postId)) {
-      setLikedOptionsIds((prevIds) => {
-        const newIds = new Set<number>(prevIds);
-        newIds.delete(postId);
-        return newIds;
-      });
+  const handleUnvote = (id: number) => {
+    if (heartsCount < initialHearts) {
       setHeartsCount((prevCount) => Math.min(prevCount + 1, initialHearts));
+      // Update the local state of options directly (no server interaction)
+      const updatedLocalOptions = localOptions.map((option) =>
+        option.id === id ? { ...option, hearts: Math.max(option.hearts - 1, 0) } : option
+      );
+      // Set the updated local state
+      setLocalOptions(updatedLocalOptions);
     }
   };
 
@@ -73,11 +85,12 @@ function Home() {
         <Countdown formattedTime={formattedTime} />
       </FlexColumn>
       <Grid $columns={2} $gap="2rem">
-        {options.map((option: OptionData) => (
+        {localOptions.map((option: OptionData) => (
           <Option
             key={option.id}
             title={option.title}
             body={option.body}
+            hearts={option.hearts}
             onVote={() => handleVote(option.id)}
             onUnvote={() => handleUnvote(option.id)}
           />
