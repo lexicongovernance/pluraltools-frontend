@@ -39,6 +39,7 @@ type InitialValues = {
 };
 
 function Register() {
+  // TODO: Create useLocalStorage hook
   const [skipOnboarding, setSkipOnboarding] = useState(localStorage.getItem('skip_onboarding'));
   const handleSkip = () => {
     setSkipOnboarding('true');
