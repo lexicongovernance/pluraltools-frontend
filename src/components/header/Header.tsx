@@ -3,10 +3,12 @@ import Button from '../button';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '../../main';
 import ZupassLoginButton from '../zupassLoginButton';
-import { HeaderContainer, NavButtons, SyledHeader, StyledNavLink } from './Header.styled';
+import { HeaderContainer, NavButtons, SyledHeader, StyledNavLink, Logo } from './Header.styled';
 import useUser from '../../hooks/useUser';
+import { useNavigate } from 'react-router-dom';
 
 function Header() {
+  const navigate = useNavigate();
   const { user } = useUser();
   const { mutate: mutateLogout } = useMutation({
     mutationFn: logout,
@@ -18,7 +20,7 @@ function Header() {
   return (
     <SyledHeader>
       <HeaderContainer>
-        <div>Our logo</div>
+        <Logo onClick={() => navigate('/home')}>Lexicon</Logo>
         <nav>
           <NavButtons>
             {user ? (

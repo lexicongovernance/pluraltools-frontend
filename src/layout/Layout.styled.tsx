@@ -1,5 +1,14 @@
 import styled from 'styled-components';
 
+type FlexProps = {
+  $alignItems?: 'center';
+  $alignSelf?: 'flex-start' | 'flex-end';
+  $gap?: string;
+  $justifyContent?: 'space-between';
+  $reverse?: boolean;
+  $wrap?: boolean;
+};
+
 export const Main = styled.main`
   margin-inline: auto;
   min-height: calc(100vh - 6rem);
@@ -23,18 +32,17 @@ export const Grid = styled.section<{ $columns?: number; $rows?: number; $gap?: s
   }
 `;
 
-export const FlexColumn = styled.section<{ $gap?: string }>`
+export const FlexRow = styled.section<FlexProps>`
+  align-items: ${(props) => props.$alignItems && props.$alignItems};
+  align-self: ${(props) => props.$alignSelf && props.$alignSelf};
   display: flex;
-  flex-direction: column;
   gap: ${(props) => props.$gap || '1rem'};
+  justify-content: ${(props) => props.$justifyContent && props.$justifyContent};
+  flex-wrap: ${(props) => props.$wrap && 'wrap'};
+  flex-direction: ${(props) => props.$reverse && 'row-reverse'};
 `;
 
-export const FlexRow = styled.section<{
-  $alignSelf?: 'flex-start' | 'flex-end';
-  $gap?: string;
-}>`
-  align-self: ${(props) => (props.$alignSelf ? props.$alignSelf : 'flex-start')};
-  display: flex;
-  flex-direction: row;
-  gap: ${(props) => props.$gap || '1rem'};
+export const FlexColumn = styled(FlexRow)`
+  flex-direction: column;
+  height: 100%;
 `;

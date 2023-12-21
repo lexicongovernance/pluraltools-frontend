@@ -5,7 +5,7 @@ import { FlexColumn } from '../../layout/Layout.styled';
 function Hero() {
   return (
     <Section>
-      <img src="/landing-graphic.svg" alt="Graphic" />
+      <img src="/landing-graphic.png" alt="Graphic" />
       <FlexColumn $gap={'3rem'}>
         <FlexColumn $gap={'2rem'}>
           <h1>Unlock the Future of MEV Research with Plural MEV Grants</h1>
