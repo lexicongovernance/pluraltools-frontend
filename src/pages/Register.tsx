@@ -207,6 +207,33 @@ function RegisterForm() {
                   <ErrorText>{formik.errors.groupId}</ErrorText>
                 )}
               </FlexColumn>
+              {registrationOptions &&
+                Object.entries(registrationOptions).map(([category, options]) => (
+                  <FlexColumn key={category} $gap="0.5rem">
+                    <Label htmlFor={category}>{category}:</Label>
+                    <Select
+                      id={`registrationOptions.${category}`}
+                      name={`registrationOptions.${category}`}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.registrationOptions?.[category]}
+                      disabled={registration?.status === 'PUBLISHED'}
+                    >
+                      <option value="" disabled>
+                        Choose a {category}
+                      </option>
+                      {options.map((option) => (
+                        <option key={option.id} value={option.id}>
+                          {option.name}
+                        </option>
+                      ))}
+                    </Select>
+                    {formik.touched.registrationOptions?.[category] &&
+                      formik.errors.registrationOptions?.[category] && (
+                        <ErrorText>{formik.errors.registrationOptions?.[category]}</ErrorText>
+                      )}
+                  </FlexColumn>
+                ))}
               <FlexColumn $gap="0.5rem">
                 <Label htmlFor="proposalTitle" required>
                   Proposal Title:
@@ -240,33 +267,6 @@ function RegisterForm() {
                   <ErrorText>{formik.errors.proposalAbstract}</ErrorText>
                 )}
               </FlexColumn>
-              {registrationOptions &&
-                Object.entries(registrationOptions).map(([category, options]) => (
-                  <FlexColumn key={category} $gap="0.5rem">
-                    <Label htmlFor={category}>{category}</Label>
-                    <Select
-                      id={`registrationOptions.${category}`}
-                      name={`registrationOptions.${category}`}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.registrationOptions?.[category]}
-                      disabled={registration?.status === 'PUBLISHED'}
-                    >
-                      <option value="" disabled>
-                        Choose a {category}
-                      </option>
-                      {options.map((option) => (
-                        <option key={option.id} value={option.id}>
-                          {option.name}
-                        </option>
-                      ))}
-                    </Select>
-                    {formik.touched.registrationOptions?.[category] &&
-                      formik.errors.registrationOptions?.[category] && (
-                        <ErrorText>{formik.errors.registrationOptions?.[category]}</ErrorText>
-                      )}
-                  </FlexColumn>
-                ))}
               <FlexRow $alignSelf="flex-end">
                 <Button
                   color="secondary"

@@ -6,12 +6,9 @@
   padding: 0;
 }
 
-html {
-  color-scheme: light dark;
-}
-
 body {
   background-color: #121212;
+  color: #fff;
   font-family: 'Raleway', sans-serif;
   line-height: 1.6;
 }
@@ -25,6 +22,7 @@ input,
 textarea,
 button,
 select {
+  color: inherit;
   font: inherit;
 }
 
@@ -38,4 +36,9 @@ h1 {
   font-size: 2rem;
   font-weight: 600;
   line-height: 2.875rem;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
 }

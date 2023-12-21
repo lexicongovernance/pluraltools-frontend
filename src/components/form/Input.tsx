@@ -3,6 +3,7 @@ import styled from 'styled-components';
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 const StyledInput = styled.input`
+  background-color: #3b3b3b;
   border-radius: 0.5rem;
   border: 1px solid #ccc;
   padding: 0.75rem 1rem;
