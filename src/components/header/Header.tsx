@@ -20,7 +20,7 @@ function Header() {
   return (
     <SyledHeader>
       <HeaderContainer>
-        <Logo onClick={() => navigate('/home')}>Lexicon</Logo>
+        <Logo onClick={() => navigate('/home')}>Plural MEV</Logo>
         <nav>
           <NavButtons>
             {user ? (

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 type FlexProps = {
   $alignItems?: 'center';
-  $alignSelf?: 'flex-start' | 'flex-end';
+  $alignSelf?: 'flex-start' | 'center' | 'flex-end';
   $gap?: string;
   $justifyContent?: 'space-between';
   $reverse?: boolean;
@@ -11,7 +11,7 @@ type FlexProps = {
 
 export const Main = styled.main`
   margin-inline: auto;
-  min-height: calc(100vh - 6rem);
+  min-height: calc(100vh - 12rem);
   padding-block: min(15vh, 4rem);
   width: min(90%, 1080px);
 

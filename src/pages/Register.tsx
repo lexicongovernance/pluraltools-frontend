@@ -1,22 +1,24 @@
-import * as Yup from 'yup';
-import { useFormik } from 'formik';
-import Button from '../components/button';
-import Input from '../components/form/Input';
-import Textarea from '../components/form/Textarea';
-import { FlexColumn, FlexRow } from '../layout/Layout.styled';
-import ErrorText from '../components/form/ErrorText';
-import Label from '../components/form/Label';
-import useUser from '../hooks/useUser';
-import { PostProposalType } from '../types/ProposalType';
-import { useEffect, useState } from 'react';
-import postRegistration from '../api/postRegistration';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { queryClient } from '../main';
+import { useFormik } from 'formik';
+import { useEffect, useState } from 'react';
+import * as Yup from 'yup';
 import fetchRegistrations from '../api/fetchRegistration';
-import useGroups from '../hooks/useGroups';
-import Select from '../components/form/Select';
-import Chip from '../components/chip';
 import fetchRegistrationOptions from '../api/fetchRegistrationOptions';
+import postRegistration from '../api/postRegistration';
+import Button from '../components/button';
+import Chip from '../components/chip';
+import ErrorText from '../components/form/ErrorText';
+import Input from '../components/form/Input';
+import Label from '../components/form/Label';
+import Select from '../components/form/Select';
+import Textarea from '../components/form/Textarea';
+import Onboarding from '../components/onboarding';
+import register from '../data/register';
+import useGroups from '../hooks/useGroups';
+import useUser from '../hooks/useUser';
+import { FlexColumn, FlexRow } from '../layout/Layout.styled';
+import { queryClient } from '../main';
+import { PostProposalType } from '../types/ProposalType';
 
 const RegisterSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email address').required('Required'),
@@ -37,79 +39,18 @@ type InitialValues = {
 };
 
 function Register() {
+  // TODO: Create useLocalStorage hook
   const [skipOnboarding, setSkipOnboarding] = useState(localStorage.getItem('skip_onboarding'));
   const handleSkip = () => {
     setSkipOnboarding('true');
     localStorage.setItem('skip_onboarding', 'true');
   };
-  // check if is visited
+
   if (skipOnboarding == 'true') {
     return <RegisterForm />;
   }
 
-  // make a component that shows onboarding if not visited
-  return <OnboardingRegisterForm handleSkip={handleSkip} />;
-}
-
-function OnboardingRegisterForm({ handleSkip }: { handleSkip: () => void }) {
-  const [currentStep, setCurrentStep] = useState(0);
-
-  const texts = [
-    `Welcome to Plural MEV! Plural MEV is a research community dedicated to fostering 
-    collaborative research into MEV. Plural MEV uses plural voting and other pluralistic 
-    techniques to help reach consensus across boundaries. `,
-    `Community members are given vote power in the form of hearts. Hearts are initially 
-    allocated based on expertise, but you can earn more hearts through participation 
-    and correctly predicting results.`,
-    `You’ll be shown various topics to vote on. Allocate your hearts amongst the various 
-    options. More hearts means a stronger preference. Once everyone has voted, final scores 
-    will be calculated using the connection-oriented cluster match formula.`,
-    `You can read more here, but this is basically QV+. In addition to your vote intensity 
-    being square-rooted, a discount is applied to votes from participants with similar 
-    profiles. The result should be to signal boost ideas which have support from a broad 
-    swathe of the community.`,
-    `Our first event will be [Berlin Event] on [Date], a pluralistic conference where you, 
-    the participants, will set the agenda, content, and ultimately decide who receives 
-    a share of 100,000 ARB in MEV research grants.`,
-    `Each participant should give a flash talk (5 mins max) outlining a research question 
-    in MEV. You’ll be asked to provide a title and brief talk summary on the next page. 
-    Don't worry if you need some time. You can return any time before [Date] to edit your 
-    talk.`,
-    `You’ll also be asked to provide your sign up information, including your MEV experience 
-    and organizational affiliation. This is needed to power the plural voting, but won’t be 
-    revealed to any other participants. In future, this will be stored in Zupass, so even 
-    we won’t need to access this information.`,
-    `Welcome to the future of MEV research. Let’s get started!`,
-  ];
-
-  return (
-    <FlexColumn
-      style={{
-        width: '50%',
-        margin: 'auto',
-        textAlign: 'center',
-      }}
-    >
-      <p>{texts[currentStep]}</p>
-      <FlexRow $alignSelf="center">
-        {Array.from({ length: texts.length }).map((_, i) =>
-          i === currentStep ? <p>*</p> : <p>.</p>
-        )}
-      </FlexRow>
-      <FlexRow $alignSelf="flex-end">
-        <Button variant="text" color="secondary" onClick={handleSkip}>
-          Skip
-        </Button>
-        <Button
-          onClick={() =>
-            currentStep === texts.length - 1 ? handleSkip() : setCurrentStep((prev) => prev + 1)
-          }
-        >
-          Continue
-        </Button>
-      </FlexRow>
-    </FlexColumn>
-  );
+  return <Onboarding data={register.onboarding} handleSkip={handleSkip} />;
 }
 
 function RegisterForm() {
@@ -199,7 +140,7 @@ function RegisterForm() {
     <>
       {user ? (
         <FlexColumn>
-          <h2>Register Page:</h2>
+          <h2>{register.form.title}</h2>
           {registration?.status && <Chip>{registration.status}</Chip>}
           <form onSubmit={formik.handleSubmit}>
             <FlexColumn $gap="0.75rem">
