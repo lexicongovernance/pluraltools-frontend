@@ -19,10 +19,12 @@ const Text = styled.p<{ center?: boolean }>`
   line-height: 2rem;
 `;
 
+const ListItem = styled(Text).attrs({ as: 'li' })``;
+
 function Landing() {
   return (
     <FlexColumn $gap="10rem">
-      <Hero />
+      <Hero data={landing.hero} />
       <FlexColumn $gap="4rem">
         <Subtitle>{landing.explore.title}</Subtitle>
         <Grid $columns={3}>
@@ -33,16 +35,9 @@ function Landing() {
       </FlexColumn>
       <FlexColumn $gap="4rem">
         <Subtitle>{landing.benefits.title}</Subtitle>
-        <Grid $columns={2}>
-          {landing.benefits.columns.map((column, columnIndex) => (
-            <ul key={columnIndex}>
-              {column.items.map((item, index) => (
-                <li key={index}>
-                  <Text>{item}</Text>
-                  <br />
-                </li>
-              ))}
-            </ul>
+        <Grid $columns={2} $rows={2} $gap="2rem">
+          {landing.benefits.items.map((item, itemIndex) => (
+            <ListItem key={itemIndex}>{item}</ListItem>
           ))}
         </Grid>
       </FlexColumn>

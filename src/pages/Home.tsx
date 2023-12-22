@@ -5,6 +5,7 @@ import { FlexColumn, FlexRow, Grid } from '../layout/Layout.styled';
 import useCountdown from '../hooks/useCountdown';
 import Countdown from '../components/countdown';
 import { useState, useEffect } from 'react';
+import styled from 'styled-components';
 
 interface OptionData {
   userId: number;
@@ -13,6 +14,14 @@ interface OptionData {
   body: string;
   hearts: number;
 }
+
+const Question = styled.h2`
+  text-align: center;
+
+  @media (min-width: 600px) {
+    text-align: left;
+  }
+`;
 
 function Home() {
   const { data: options, isLoading } = useQuery({
@@ -70,9 +79,10 @@ function Home() {
   return (
     <FlexColumn $gap="3rem">
       <FlexColumn>
-        <Grid $columns={2}>
-          <h2>Should Lexicon win the Pluralistic Grant Program?</h2>
-          <FlexRow $gap="0.25rem" $wrap $reverse>
+        <Grid $columns={2} $gap="2rem">
+          <Question>What are you most excited about for 2024?</Question>
+          <Countdown formattedTime={formattedTime} />
+          <FlexRow $gap="0.25rem" $wrap>
             {Array.from({ length: initialHearts }).map((_, id) => (
               <img
                 key={id}
@@ -84,7 +94,6 @@ function Home() {
             ))}
           </FlexRow>
         </Grid>
-        <Countdown formattedTime={formattedTime} />
       </FlexColumn>
       <Grid $columns={2} $gap="2rem">
         {localOptions.map((option: OptionData) => (

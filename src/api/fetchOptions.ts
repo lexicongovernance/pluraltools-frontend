@@ -1,6 +1,6 @@
 async function fetchOptions() {
   try {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+    const response = await fetch('/options.json', {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
@@ -16,6 +16,7 @@ async function fetchOptions() {
       ...post,
       hearts: 0,
     }));
+
     return optionsWithHearts;
   } catch (error) {
     console.error(error);

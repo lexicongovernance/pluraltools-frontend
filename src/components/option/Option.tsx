@@ -13,7 +13,7 @@ type OptionProps = {
 function Option({ title, body, hearts = 0, onVote, onUnvote }: OptionProps) {
   return (
     <StyledOption>
-      <FlexColumn $justifyContent="space-between">
+      <FlexColumn $justifyContent="space-between" $gap="2rem">
         <FlexColumn $gap="2rem">
           <Title>{title}</Title>
           <Body>{body}</Body>

@@ -1,47 +1,44 @@
 const landing = {
+  hero: {
+    title: 'Unlock the Future of MEV Research',
+    body: 'Shape the future of MEV research. Join Plural MEV, and be part of a groundbreaking research event where YOU decide who gets a share of 100,000 ARB in grants.',
+    button: 'Get Started',
+  },
   explore: {
-    title: 'Explore the Potential of Plural MEV',
+    title: 'Harness the Power of Plurality',
     cards: [
       {
         id: 0,
         icon: '/icons/research.svg',
         title: 'Collaborative Research',
-        body: 'Join a diverse community of MEV researchers to foster collaboration and innovation in the field.',
+        body: 'Join a diverse community of MEV researchers to foster collaboration and innovation',
       },
       {
         id: 1,
         icon: '/icons/plurality.svg',
-        title: 'Plurality Scoring',
-        body: 'Experience a fair and inclusive voting system using Quadratic Voting and correlation discounts to prioritize valuable research.',
+        title: 'Plural Voting',
+        body: 'Quadratic voting combined with correlation discounting surfaces new and diverse ideas and more efficiently allocates funding',
       },
       {
         id: 2,
         icon: '/icons/decentralized.svg',
-        title: 'Decentralized Conference',
-        body: 'Participate in a groundbreaking conference where participants shape the agenda and discuss the future of MEV development.',
+        title: 'Set the Agenda',
+        body: 'Participate in a groundbreaking MEV conference where participants decide the agenda and content',
       },
     ],
   },
   benefits: {
-    title: 'Benefits',
-    columns: [
-      {
-        items: [
-          'Seize the opportunity to receive a share of the 100,000 ARB grant pool for your valuable contributions.',
-          'Break down silos in MEV research and contribute to shaping the future of web3 and MEV development.',
-        ],
-      },
-      {
-        items: [
-          'Engage with the Plural MEV tool to connect your Zupass, register for the grant program, and learn about the exciting Denver event.',
-          'Participate in a groundbreaking conference where you, the participant, determine the agenda.',
-        ],
-      },
+    title: '100,000 ARB in Grants',
+    items: [
+      'Sign up with Zupass to join Plural MEV',
+      'Submit an MEV research proposal in the form of a flash talk',
+      'Vote on other submissions and the entire event agenda',
+      'At the event, participants vote to distribute 100,000 ARB in research grants',
     ],
   },
   spark: {
-    title: 'Spark Your Involvement',
-    body: 'Ignite Your Participation: Embark on a journey of active involvement by registering through Zupass. Join the ever-expanding community of MEV researchers and enthusiasts who play a pivotal role in shaping the destiny of decentralized ecosystems. Your registration not only links you to the Plural MEV tool and the enticing 100,000 ARB grant pool but also empowers you to make meaningful contributions to the ongoing discussions and decision-making processes within the MEV research community.',
+    title: 'Berlin March 2023',
+    body: 'More details coming soon',
     button: 'Register with Zupass',
   },
 };
