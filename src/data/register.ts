@@ -7,7 +7,7 @@ const register = {
     },
     {
       id: 1,
-      title: `❤️ Hearths ❤️`,
+      title: `❤️ Hearts ❤️`,
       body: `Community members are given vote power in the form of hearts. Hearts are initially allocated based on expertise, but you can earn more hearts through participation and correctly predicting results.`,
     },
     {
