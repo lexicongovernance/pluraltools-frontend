@@ -20,8 +20,9 @@ const register = {
     {
       id: 3,
       title: `Plural Voting`,
-      body: `Plural voting signal boosts ideas which have support from a broad swathe of the community.
-      In addition to your vote intensity being square-rooted, a discount is applied to votes from participants with similar profiles.`,
+      body: `Plural voting boosts ideas which have support from a broad range of participants.
+      In addition to your vote intensity being square-rooted, a discount is applied to votes from participants with similar profiles.
+      `,
     },
     {
       id: 4,
