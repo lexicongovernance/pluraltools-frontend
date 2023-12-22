@@ -5,21 +5,33 @@ export const SyledHeader = styled.header`
   align-items: center;
   background-color: #759de9;
   display: flex;
-  height: 6rem;
+  min-height: 6rem;
   justify-content: center;
+  padding-block: 2rem;
 `;
 
 export const HeaderContainer = styled.div`
   align-items: center;
   display: flex;
+  flex-direction: column;
+  gap: 2rem;
   justify-content: space-between;
   width: min(90%, 1080px);
+
+  @media (min-width: 600px) {
+    flex-direction: row;
+  }
 `;
 
 export const Logo = styled.h2`
   font-family: 'Press Start 2P', sans-serif;
   font-size: 1.125rem;
   line-height: 1.5rem;
+  text-align: center;
+
+  @media (min-width: 600px) {
+    text-align: left;
+  }
 `;
 
 export const NavButtons = styled.ul`
