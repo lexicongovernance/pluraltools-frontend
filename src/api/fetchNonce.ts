@@ -11,8 +11,8 @@ async function fetchNonce(): Promise<string | null> {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    const data = await response.json();
-    return data.nonce;
+    const nonce = (await response.json()) as { data: string };
+    return nonce.data;
   } catch (error) {
     console.error('Error fetching nonce:', error);
     return null;
