@@ -1,19 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
-import fetchOptions from '../api/fetchOptions';
-import Option from '../components/option';
-import { FlexColumn, FlexRow, Grid } from '../layout/Layout.styled';
-import useCountdown from '../hooks/useCountdown';
-import Countdown from '../components/countdown';
-import { useState, useEffect } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-
-interface OptionData {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-  hearts: number;
-}
+import fetchCycles from '../api/fetchCycles';
+import Countdown from '../components/countdown';
+import Option from '../components/option';
+import useCountdown from '../hooks/useCountdown';
+import { FlexColumn, FlexRow, Grid } from '../layout/Layout.styled';
+import postVote from '../api/postVote';
 
 const Question = styled.h2`
   text-align: center;
@@ -24,64 +17,92 @@ const Question = styled.h2`
 `;
 
 function Home() {
-  const { data: options, isLoading } = useQuery({
-    queryKey: ['options'],
-    queryFn: fetchOptions,
+  const queryClient = useQueryClient();
+
+  const { data: cycles, isLoading } = useQuery({
+    queryKey: ['cycles'],
+    queryFn: fetchCycles,
     staleTime: 10000,
     retry: false,
   });
 
+  const { mutate: mutateUserVotes } = useMutation({
+    mutationFn: () => postVote(optionId, numOfVotes),
+    onSuccess: (body) => {
+      if (body) {
+        queryClient.invalidateQueries({ queryKey: ['user-votes', optionId] });
+      }
+    },
+  });
+
+  const saveVotesToDatabase = async () => {
+    try {
+      // Iterate over localVotes and sync with the database
+      await Promise.all(
+        Object.keys(localVotes).map(async (optionId: string) => {
+          const numOfVotes = localVotes[optionId];
+          await mutateUserVotes(optionId, numOfVotes);
+        })
+      );
+
+      setLocalVotes({});
+    } catch (error) {
+      console.error('Error during saving votes:', error);
+    }
+  };
+
   const initialHearts = 10;
   const [heartsCount, setHeartsCount] = useState(initialHearts);
-  const [localOptions, setLocalOptions] = useState<OptionData[]>([]);
+  const [localVotes, setLocalVotes] = useState<{ [optionId: string]: number }>({});
+  const totalAssignedVotes = Object.values(localVotes).reduce((total, votes) => total + votes, 0);
+  const isVoteButtonDisabled = totalAssignedVotes >= initialHearts;
 
-  // TODO: connect with backend
-  const startAt = Math.floor(Date.now() / 1000);
-  const duration = 5 * 60;
-  const endAt = startAt + duration;
-  const { formattedTime } = useCountdown(startAt, endAt);
+  console.log('🚀 ~ file: Home.tsx:30 ~ Home ~ localVotes:', localVotes);
+
+  const [startAt, setStartAt] = useState<string | null>(null);
+  const [endAt, setEndAt] = useState<string | null>(null);
+
+  const currentCycle = cycles && cycles[0];
 
   useEffect(() => {
-    // Initialize localOptions with the initial options from the server
-    setLocalOptions(options || []);
-  }, [options]);
-
-  const handleVote = (id: number) => {
-    if (heartsCount > 0) {
-      setHeartsCount((prevCount) => prevCount - 1);
-      // Update the local state of options directly (no server interaction)
-      const updatedLocalOptions = localOptions.map((option) =>
-        option.id === id ? { ...option, hearts: option.hearts + 1 } : option
-      );
-      // Set the updated local state
-      setLocalOptions(updatedLocalOptions);
+    if (currentCycle && currentCycle.startAt && currentCycle.endAt) {
+      setStartAt(currentCycle.startAt);
+      setEndAt(currentCycle.endAt);
     }
-  };
+  }, [currentCycle]);
 
-  const handleUnvote = (id: number) => {
-    const likedOption = localOptions.find((option) => option.id === id && option.hearts > 0);
+  // const { formattedTime } = useCountdown(startAt, endAt);
 
-    if (likedOption && heartsCount < initialHearts) {
-      setHeartsCount((prevCount) => Math.min(prevCount + 1, initialHearts));
-      // Update the local state of options directly (no server interaction)
-      const updatedLocalOptions = localOptions.map((option) =>
-        option.id === id ? { ...option, hearts: Math.max(option.hearts - 1, 0) } : option
-      );
-      // Set the updated local state
-      setLocalOptions(updatedLocalOptions);
-    }
-  };
-
-  if (isLoading) {
+  if (isLoading || !cycles) {
     return <p>Loading...</p>;
   }
+
+  const handleVote = (optionId: string) => {
+    if (heartsCount > 0) {
+      setLocalVotes((prevVotes) => ({
+        ...prevVotes,
+        [optionId]: (prevVotes[optionId] || 0) + 1,
+      }));
+      setHeartsCount((prevCount) => prevCount - 1);
+    }
+  };
+
+  const handleUnvote = (optionId: string) => {
+    if (localVotes[optionId] > 0) {
+      setLocalVotes((prevVotes) => ({
+        ...prevVotes,
+        [optionId]: prevVotes[optionId] - 1,
+      }));
+      setHeartsCount((prevCount) => prevCount + 1);
+    }
+  };
 
   return (
     <FlexColumn $gap="3rem">
       <FlexColumn>
         <Grid $columns={2} $gap="2rem">
           <Question>What are you most excited about for 2024?</Question>
-          <Countdown formattedTime={formattedTime} />
+          {/* <Countdown formattedTime={formattedTime} /> */}
           <FlexRow $gap="0.25rem" $wrap>
             {Array.from({ length: initialHearts }).map((_, id) => (
               <img
@@ -96,16 +117,22 @@ function Home() {
         </Grid>
       </FlexColumn>
       <Grid $columns={2} $gap="2rem">
-        {localOptions.map((option: OptionData) => (
-          <Option
-            key={option.id}
-            title={option.title}
-            body={option.body}
-            hearts={option.hearts}
-            onVote={() => handleVote(option.id)}
-            onUnvote={() => handleUnvote(option.id)}
-          />
-        ))}
+        {currentCycle &&
+          currentCycle.forumQuestions.map((forumQuestion) => {
+            return forumQuestion.questionOptions.map((questionOption) => (
+              <Option
+                key={questionOption.id}
+                id={questionOption.id}
+                title={questionOption.text}
+                // TODO: Add body to db
+                body={'body'}
+                initialVotes={questionOption.voteCount}
+                isVoteButtonDisabled={isVoteButtonDisabled}
+                onVote={() => handleVote(questionOption.id)}
+                onUnvote={() => handleUnvote(questionOption.id)}
+              />
+            ));
+          })}
       </Grid>
     </FlexColumn>
   );
