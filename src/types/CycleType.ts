@@ -1,4 +1,4 @@
-type Question = {
+export type Question = {
   id: string;
   createdAt: string;
   updatedAt: string;
@@ -7,7 +7,7 @@ type Question = {
   title: string;
 };
 
-type Option = {
+export type Option = {
   id: string;
   createdAt: string;
   updatedAt: string;
@@ -16,7 +16,7 @@ type Option = {
   voteCount: number;
 };
 
-type Cycle = {
+export type Cycle = {
   id: string;
   createdAt: string;
   updatedAt: string;
@@ -41,14 +41,14 @@ export type ResponseCycleType = {
   status: 'OPEN' | 'CLOSED' | 'RESULTS' | null;
   startAt: string;
   endAt: string;
-  questions: {
+  forumQuestions: {
     id: string;
     createdAt: string;
     updatedAt: string;
     description: string | null;
     cycleId: string;
     title: string;
-    options: {
+    questionOptions: {
       id: string;
       createdAt: string;
       updatedAt: string;
