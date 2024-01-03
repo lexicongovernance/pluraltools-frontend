@@ -1,11 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import {
+  //  useEffect,
+  useState,
+} from 'react';
 import styled from 'styled-components';
 import fetchCycles from '../api/fetchCycles';
-import Countdown from '../components/countdown';
+// import Countdown from '../components/countdown';
 import Option from '../components/option';
-import useCountdown from '../hooks/useCountdown';
+// import useCountdown from '../hooks/useCountdown';
 import { FlexColumn, FlexRow, Grid } from '../layout/Layout.styled';
+import Button from '../components/button';
 import postVote from '../api/postVote';
 
 const Question = styled.h2`
@@ -18,7 +22,6 @@ const Question = styled.h2`
 
 function Home() {
   const queryClient = useQueryClient();
-
   const { data: cycles, isLoading } = useQuery({
     queryKey: ['cycles'],
     queryFn: fetchCycles,
@@ -26,50 +29,28 @@ function Home() {
     retry: false,
   });
 
-  const { mutate: mutateUserVotes } = useMutation({
-    mutationFn: () => postVote(optionId, numOfVotes),
-    onSuccess: (body) => {
-      if (body) {
-        queryClient.invalidateQueries({ queryKey: ['user-votes', optionId] });
-      }
-    },
+  const { mutate: mutateVote } = useMutation({
+    mutationFn: postVote,
   });
 
-  const saveVotesToDatabase = async () => {
-    try {
-      // Iterate over localVotes and sync with the database
-      await Promise.all(
-        Object.keys(localVotes).map(async (optionId: string) => {
-          const numOfVotes = localVotes[optionId];
-          await mutateUserVotes(optionId, numOfVotes);
-        })
-      );
-
-      setLocalVotes({});
-    } catch (error) {
-      console.error('Error during saving votes:', error);
-    }
-  };
+  const currentCycle = cycles && cycles[0];
 
   const initialHearts = 10;
   const [heartsCount, setHeartsCount] = useState(initialHearts);
   const [localVotes, setLocalVotes] = useState<{ [optionId: string]: number }>({});
+  console.log('🚀 ~ file: Home.tsx:35 ~ Home ~ localVotes:', localVotes);
   const totalAssignedVotes = Object.values(localVotes).reduce((total, votes) => total + votes, 0);
   const isVoteButtonDisabled = totalAssignedVotes >= initialHearts;
 
-  console.log('🚀 ~ file: Home.tsx:30 ~ Home ~ localVotes:', localVotes);
+  // const [startAt, setStartAt] = useState<string | null>(null);
+  // const [endAt, setEndAt] = useState<string | null>(null);
 
-  const [startAt, setStartAt] = useState<string | null>(null);
-  const [endAt, setEndAt] = useState<string | null>(null);
-
-  const currentCycle = cycles && cycles[0];
-
-  useEffect(() => {
-    if (currentCycle && currentCycle.startAt && currentCycle.endAt) {
-      setStartAt(currentCycle.startAt);
-      setEndAt(currentCycle.endAt);
-    }
-  }, [currentCycle]);
+  // useEffect(() => {
+  //   if (currentCycle && currentCycle.startAt && currentCycle.endAt) {
+  //     setStartAt(currentCycle.startAt);
+  //     setEndAt(currentCycle.endAt);
+  //   }
+  // }, [currentCycle]);
 
   // const { formattedTime } = useCountdown(startAt, endAt);
 
@@ -114,6 +95,7 @@ function Home() {
               />
             ))}
           </FlexRow>
+          <Button>Save votes</Button>
         </Grid>
       </FlexColumn>
       <Grid $columns={2} $gap="2rem">
@@ -126,7 +108,6 @@ function Home() {
                 title={questionOption.text}
                 // TODO: Add body to db
                 body={'body'}
-                initialVotes={questionOption.voteCount}
                 isVoteButtonDisabled={isVoteButtonDisabled}
                 onVote={() => handleVote(questionOption.id)}
                 onUnvote={() => handleUnvote(questionOption.id)}

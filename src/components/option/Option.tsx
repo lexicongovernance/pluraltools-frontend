@@ -1,35 +1,43 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import fetchUserVotes from '../../api/fetchUserVotes';
 import useUser from '../../hooks/useUser';
 import { FlexColumn, FlexRow } from '../../layout/Layout.styled';
 import Button from '../button';
 import { Body, StyledOption, Title } from './Option.styled';
-import postVote from '../../api/postVote';
-import { useState } from 'react';
 
 type OptionProps = {
   id: string;
   title: string;
   body: string;
-  initialVotes: number;
   isVoteButtonDisabled: boolean;
   onVote: () => void;
   onUnvote: () => void;
 };
 
-function Option({
-  id,
-  title,
-  body,
-  initialVotes,
-  isVoteButtonDisabled,
-  onVote,
-  onUnvote,
-}: OptionProps) {
+function Option({ id, title, body, isVoteButtonDisabled, onVote, onUnvote }: OptionProps) {
   const { user } = useUser();
 
-  const [localVotes, setLocalVotes] = useState(initialVotes);
+  const {
+    data: userVotes,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['user-vote', id],
+    queryFn: () => fetchUserVotes(user?.id || '', id),
+    enabled: !!user?.id,
+    staleTime: 1000,
+    retry: false,
+  });
 
+  const [localVotes, setLocalVotes] = useState(0);
+
+  useEffect(() => {
+    if (userVotes) {
+      console.log('running');
+      setLocalVotes(userVotes.numOfVotes);
+    }
+  }, [userVotes]);
   const handleIncrement = () => {
     setLocalVotes((prevVotes) => prevVotes + 1);
     onVote();
@@ -39,18 +47,6 @@ function Option({
     setLocalVotes((prevVotes) => Math.max(0, prevVotes - 1));
     onUnvote();
   };
-
-  const {
-    data: userVotes,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['user-votes', id],
-    queryFn: () => fetchUserVotes(user?.id || '', id),
-    enabled: !!user?.id,
-    staleTime: 10000,
-    retry: false,
-  });
 
   if (isLoading) {
     return <p>Loading...</p>;
