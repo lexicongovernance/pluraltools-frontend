@@ -19,7 +19,7 @@ async function fetchRegistration(userId: string): Promise<ResponseProposalType |
     const registration = (await response.json()) as { data: ResponseProposalType };
     return registration.data;
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching registration:', error);
     return null;
   }
 }
