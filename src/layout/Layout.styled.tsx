@@ -4,7 +4,7 @@ type FlexProps = {
   $alignItems?: 'center';
   $alignSelf?: 'flex-start' | 'center' | 'flex-end';
   $gap?: string;
-  $justifyContent?: 'space-between';
+  $justifyContent?: 'space-between' | 'flex-end';
   $reverse?: boolean;
   $wrap?: boolean;
 };

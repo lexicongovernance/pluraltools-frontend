@@ -1,9 +1,11 @@
 import { ResponseUserVoteType } from '../types/CycleType';
 
-async function postVote(
-  optionId: string,
-  numOfVotes: number
-): Promise<ResponseUserVoteType | null> {
+type PostVote = {
+  optionId: string;
+  numOfVotes: number;
+};
+
+async function postVote({ optionId, numOfVotes }: PostVote): Promise<ResponseUserVoteType | null> {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/votes`, {
       method: 'POST',

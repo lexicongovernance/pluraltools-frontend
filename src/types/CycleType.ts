@@ -25,14 +25,14 @@ export type Cycle = {
   endAt: string;
 };
 
-export type ResponseUserVoteType = {
+export type ResponseUserVotesType = {
   id: string;
   userId: string;
   optionId: string;
   numOfVotes: number;
   createdAt: string;
   updatedAt: string;
-};
+}[];
 
 export type ResponseCycleType = {
   id: string;

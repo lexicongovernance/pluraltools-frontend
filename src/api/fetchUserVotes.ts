@@ -1,12 +1,12 @@
-import { ResponseUserVoteType } from '../types/CycleType';
+import { ResponseUserVotesType } from '../types/CycleType';
 
 async function fetchUserVotes(
   userId: string,
-  optionId: string
-): Promise<ResponseUserVoteType | null> {
+  cycleId: string
+): Promise<ResponseUserVotesType | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/users/${userId}/options/${optionId}/votes`,
+      `${import.meta.env.VITE_SERVER_URL}/api/users/${userId}/cycles/${cycleId}/votes`,
       {
         credentials: 'include',
         headers: {
@@ -18,7 +18,7 @@ async function fetchUserVotes(
       throw new Error(`HTTP Error! Status: ${response.status}`);
     }
 
-    const userVotes = (await response.json()) as { data: ResponseUserVoteType };
+    const userVotes = (await response.json()) as { data: ResponseUserVotesType };
     return userVotes.data;
   } catch (error) {
     console.error('Error fetchin user votes:', error);
