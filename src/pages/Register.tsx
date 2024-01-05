@@ -16,6 +16,8 @@ import register from '../data/register';
 import useUser from '../hooks/useUser';
 import { FlexColumn } from '../layout/Layout.styled';
 import { GetRegistrationDataResponse } from '../types/RegistrationDataType';
+import Select from '../components/form/Select';
+import { RegistrationFieldOption } from '../types/RegistrationFieldOptionType';
 
 function Register() {
   // TODO: Create useLocalStorage hook
@@ -94,105 +96,23 @@ function RegisterForm() {
                           errors={errors}
                         />
                       );
+                    case 'SELECT':
+                      return (
+                        <SelectInput
+                          key={field.id}
+                          idx={idx}
+                          id={field.id}
+                          title={field.name}
+                          options={field.registrationFieldOptions}
+                          register={register}
+                          disabled={registration?.status === 'PUBLISHED'}
+                          errors={errors}
+                        />
+                      );
                     default:
                       return null;
                   }
                 })}
-              {/* <FlexColumn $gap="0.5rem">
-                <Label htmlFor="username" required>
-                  Username:
-                </Label>
-                <Input
-                  type="text"
-                  id="username"
-                  name="username"
-                  placeholder="Choose a username"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.username}
-                  disabled={registration?.status === 'PUBLISHED'}
-                />
-                {formik.touched.username && formik.errors.username && (
-                  <ErrorText>{formik.errors.username}</ErrorText>
-                )}
-              </FlexColumn>
-              <FlexColumn $gap="0.5rem">
-                <Label htmlFor="groupId" required>
-                  Select Group:
-                </Label>
-                <Select
-                  id="groupId"
-                  name="groupId"
-                  placeholder="Choose a group"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.groupId}
-                  disabled={registration?.status === 'PUBLISHED'}
-                >
-                  <option value="" disabled>
-                    Choose a group
-                  </option>
-                  {groups &&
-                    groups.map((group) => (
-                      <option key={group.id} value={group.id}>
-                        {group.name}
-                      </option>
-                    ))}
-                </Select>
-                {formik.touched.groupId && formik.errors.groupId && (
-                  <ErrorText>{formik.errors.groupId}</ErrorText>
-                )}
-              </FlexColumn>
-              <FlexColumn $gap="0.5rem">
-                <Label htmlFor="proposalTitle" required>
-                  Proposal Title:
-                </Label>
-                <Input
-                  type="text"
-                  id="proposalTitle"
-                  name="proposalTitle"
-                  placeholder="Enter your proposal title"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.proposalTitle}
-                  disabled={registration?.status === 'PUBLISHED'}
-                />
-                {formik.touched.proposalTitle && formik.errors.proposalTitle && (
-                  <ErrorText>{formik.errors.proposalTitle}</ErrorText>
-                )}
-              </FlexColumn>
-              <FlexColumn $gap="0.5rem">
-                <Label htmlFor="proposalAbstract">Proposal Abstract:</Label>
-                <Textarea
-                  id="proposalAbstract"
-                  name="proposalAbstract"
-                  placeholder="Enter your proposal abstract"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.proposalAbstract}
-                  disabled={registration?.status === 'PUBLISHED'}
-                />
-                {formik.touched.proposalAbstract && formik.errors.proposalAbstract && (
-                  <ErrorText>{formik.errors.proposalAbstract}</ErrorText>
-                )}
-              </FlexColumn>
-              <FlexRow $alignSelf="flex-end">
-                <Button
-                  color="secondary"
-                  type="submit"
-                  onClick={() => formik.setValues((prev) => ({ ...prev, status: 'DRAFT' }))}
-                  disabled={registration?.status === 'PUBLISHED'}
-                >
-                  Save as draft
-                </Button>
-                <Button
-                  type="submit"
-                  onClick={() => formik.setValues((prev) => ({ ...prev, status: 'PUBLISHED' }))}
-                  disabled={registration?.status === 'PUBLISHED'}
-                >
-                  Submit
-                </Button>
-              </FlexRow> */}
             </FlexColumn>
           </form>
         </FlexColumn>
@@ -225,6 +145,45 @@ function TextInput(props: {
         disabled={props.disabled}
         {...props.register(`fields.${props.idx}.value` as const)}
       />
+      {props.errors.fields?.[props.idx]?.id && (
+        <ErrorText>{props.errors.fields?.[props.idx]?.message}</ErrorText>
+      )}
+    </FlexColumn>
+  );
+}
+
+function SelectInput(props: {
+  idx: number;
+  id: string;
+  title: string;
+  options: RegistrationFieldOption[];
+  register: UseFormRegister<{
+    fields: GetRegistrationDataResponse;
+  }>;
+  disabled: boolean;
+  errors: FieldErrors<{
+    fields: GetRegistrationDataResponse;
+  }>;
+}) {
+  return (
+    <FlexColumn $gap="0.5rem">
+      <Label htmlFor={props.title} required>
+        {props.title}
+      </Label>
+      <Select
+        id={props.id}
+        disabled={props.disabled}
+        {...props.register(`fields.${props.idx}.value` as const)}
+      >
+        <option value="" disabled>
+          Choose a value
+        </option>
+        {props.options.map((option) => (
+          <option key={option.id} value={option.value}>
+            {option.value}
+          </option>
+        ))}
+      </Select>
       {props.errors.fields?.[props.idx]?.id && (
         <ErrorText>{props.errors.fields?.[props.idx]?.message}</ErrorText>
       )}
