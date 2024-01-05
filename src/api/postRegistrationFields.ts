@@ -3,10 +3,13 @@ import {
   PostRegistrationDataResponse,
 } from '../types/RegistrationDataType';
 
-async function postRegistrationData(
-  eventId: string,
-  body: PostRegistrationDataRequest
-): Promise<PostRegistrationDataResponse | null> {
+async function postRegistrationData({
+  body,
+  eventId,
+}: {
+  eventId: string;
+  body: PostRegistrationDataRequest;
+}): Promise<PostRegistrationDataResponse | null> {
   try {
     const response = await fetch(
       `${import.meta.env.VITE_SERVER_URL}/api/events/${eventId}/registration`,

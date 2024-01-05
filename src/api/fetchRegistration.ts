@@ -1,9 +1,9 @@
-import { ResponseProposalType } from '../types/RegistrationType';
+import { GetRegistrationResponseType } from '../types/RegistrationType';
 
-async function fetchRegistration(userId: string): Promise<ResponseProposalType | null> {
+async function fetchRegistration(eventId: string): Promise<GetRegistrationResponseType | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/users/${userId}/registrations`,
+      `${import.meta.env.VITE_SERVER_URL}/api/events/${eventId}/registration`,
       {
         credentials: 'include',
         headers: {
@@ -16,7 +16,7 @@ async function fetchRegistration(userId: string): Promise<ResponseProposalType |
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    const registration = (await response.json()) as { data: ResponseProposalType };
+    const registration = (await response.json()) as { data: GetRegistrationResponseType };
     return registration.data;
   } catch (error) {
     console.error(error);

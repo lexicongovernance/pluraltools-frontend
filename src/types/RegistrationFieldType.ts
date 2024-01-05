@@ -10,4 +10,4 @@ export type GetRegistrationFieldsResponse = {
   type: 'SELECT' | 'TEXT' | 'NUMBER' | 'DATE' | 'BOOLEAN';
   isRequired: boolean | null;
   registrationFieldOptions: RegistrationFieldOption[];
-};
+}[];

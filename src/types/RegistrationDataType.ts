@@ -8,9 +8,12 @@ export type GetRegistrationDataResponse = {
 }[];
 
 export type PostRegistrationDataRequest = {
-  registrationFieldId: string;
-  value: string;
-}[];
+  status: 'DRAFT' | 'APPROVED' | 'PUBLISHED' | null;
+  registrationData: {
+    registrationFieldId: string;
+    value: string;
+  }[];
+};
 
 export type PostRegistrationDataResponse = {
   registrationData:
