@@ -92,6 +92,7 @@ function RegisterForm() {
                           id={field.id}
                           title={field.name}
                           register={register}
+                          required={field.isRequired}
                           disabled={registration?.status === 'PUBLISHED'}
                           errors={errors}
                         />
@@ -105,6 +106,7 @@ function RegisterForm() {
                           title={field.name}
                           options={field.registrationFieldOptions}
                           register={register}
+                          required={field.isRequired}
                           disabled={registration?.status === 'PUBLISHED'}
                           errors={errors}
                         />
@@ -127,17 +129,18 @@ function TextInput(props: {
   idx: number;
   id: string;
   title: string;
+  required: boolean | null;
+  disabled: boolean;
   register: UseFormRegister<{
     fields: GetRegistrationDataResponse;
   }>;
-  disabled: boolean;
   errors: FieldErrors<{
     fields: GetRegistrationDataResponse;
   }>;
 }) {
   return (
     <FlexColumn $gap="0.5rem">
-      <Label htmlFor={props.title} required>
+      <Label htmlFor={props.title} required={!!props.required}>
         {props.title}
       </Label>
       <Input
@@ -156,18 +159,19 @@ function SelectInput(props: {
   idx: number;
   id: string;
   title: string;
+  required: boolean | null;
+  disabled: boolean;
   options: RegistrationFieldOption[];
   register: UseFormRegister<{
     fields: GetRegistrationDataResponse;
   }>;
-  disabled: boolean;
   errors: FieldErrors<{
     fields: GetRegistrationDataResponse;
   }>;
 }) {
   return (
     <FlexColumn $gap="0.5rem">
-      <Label htmlFor={props.title} required>
+      <Label htmlFor={props.title} required={!!props.required}>
         {props.title}
       </Label>
       <Select
