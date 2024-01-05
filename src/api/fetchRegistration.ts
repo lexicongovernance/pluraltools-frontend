@@ -1,9 +1,9 @@
-import { ResponseProposalType } from '../types/ProposalType';
+import { ResponseProposalType } from '../types/RegistrationType';
 
 async function fetchRegistration(userId: string): Promise<ResponseProposalType | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/users/${userId}/registration`,
+      `${import.meta.env.VITE_SERVER_URL}/api/users/${userId}/registrations`,
       {
         credentials: 'include',
         headers: {
