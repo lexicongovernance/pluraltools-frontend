@@ -1,18 +1,18 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import fetchCycles from '../api/fetchCycles';
 import fetchUserVotes from '../api/fetchUserVotes';
+import postVote from '../api/postVote';
+import Button from '../components/button';
 import Countdown from '../components/countdown';
 import Option from '../components/option';
+import useCountdown from '../hooks/useCountdown';
 import useUser from '../hooks/useUser';
 import { FlexColumn, FlexRow, Grid } from '../layout/Layout.styled';
 import { ResponseUserVotesType } from '../types/CycleType';
-import useCountdown from '../hooks/useCountdown';
-import postVote from '../api/postVote';
-import { queryClient } from '../main';
-import Button from '../components/button';
 
 function Home() {
+  const queryClient = useQueryClient();
   const { user } = useUser();
   const [startAt, setStartAt] = useState<string | null>(null);
   const [endAt, setEndAt] = useState<string | null>(null);
@@ -40,8 +40,9 @@ function Home() {
 
   const initialHearts = 10;
   const [avaliableHearts, setAvaliableHearts] = useState(initialHearts);
-  const [localUserVotes, setLocalUserVotes] = useState<ResponseUserVotesType>([]);
-  console.log('localUserVotes:', localUserVotes);
+  const [localUserVotes, setLocalUserVotes] = useState<
+    ResponseUserVotesType | { optionId: string; numOfVotes: number }[]
+  >([]);
 
   useEffect(() => {
     if (currentCycle && currentCycle.startAt && currentCycle.endAt) {
@@ -50,22 +51,30 @@ function Home() {
     }
   }, [currentCycle]);
 
-  // const { formattedTime } = useCountdown(startAt, endAt);
+  const { formattedTime } = useCountdown(startAt, endAt);
+
+  const updateVotesAndHearts = (votes: ResponseUserVotesType) => {
+    const givenVotes = votes
+      .map((option) => option.numOfVotes)
+      .reduce((prev, curr) => prev + curr, 0);
+
+    setAvaliableHearts(initialHearts - givenVotes);
+    setLocalUserVotes(votes);
+  };
 
   useEffect(() => {
-    if (userVotes) {
-      const givenVotes = userVotes
-        .map((option) => option.numOfVotes)
-        .reduce((prev, curr) => prev + curr, 0);
-
-      setAvaliableHearts((prevavaliableHearts) => prevavaliableHearts - givenVotes);
-      setLocalUserVotes(userVotes);
+    if (userVotes?.length) {
+      updateVotesAndHearts(userVotes);
     }
   }, [userVotes]);
 
   const handleVote = (optionId: string) => {
     if (avaliableHearts > 0) {
       setLocalUserVotes((prevLocalUserVotes) => {
+        const temp = prevLocalUserVotes.find((x) => x.optionId === optionId);
+        if (!temp) {
+          return [...prevLocalUserVotes, { optionId, numOfVotes: 1 }];
+        }
         const updatedLocalVotes = prevLocalUserVotes.map((prevLocalUserVote) => {
           if (prevLocalUserVote.optionId === optionId) {
             return { ...prevLocalUserVote, numOfVotes: prevLocalUserVote.numOfVotes + 1 };
@@ -104,8 +113,18 @@ function Home() {
   });
 
   const handleSaveVotes = () => {
-    for (const localVote of localUserVotes) {
-      mutateVote({ optionId: localVote.optionId, numOfVotes: localVote.numOfVotes });
+    if (userVotes) {
+      const serverVotesMap = new Map(userVotes.map((vote) => [vote.optionId, vote]));
+
+      for (const localVote of localUserVotes) {
+        const matchingServerVote = serverVotesMap.get(localVote.optionId);
+
+        if (!matchingServerVote) {
+          mutateVote({ optionId: localVote.optionId, numOfVotes: localVote.numOfVotes });
+        } else if (matchingServerVote.numOfVotes !== localVote.numOfVotes) {
+          mutateVote({ optionId: localVote.optionId, numOfVotes: localVote.numOfVotes });
+        }
+      }
     }
   };
 
@@ -122,7 +141,7 @@ function Home() {
       <FlexColumn>
         <Grid $columns={2} $gap="2rem">
           <h2>{currentCycle?.forumQuestions[0].title}</h2>
-          <Countdown formattedTime={'formattedTime'} />
+          <Countdown formattedTime={formattedTime} />
           <FlexRow $gap="0.25rem" $wrap>
             {Array.from({ length: initialHearts }).map((_, id) => (
               <img
