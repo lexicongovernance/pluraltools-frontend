@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
@@ -17,7 +17,6 @@ import register from '../data/register';
 import useGroups from '../hooks/useGroups';
 import useUser from '../hooks/useUser';
 import { FlexColumn, FlexRow } from '../layout/Layout.styled';
-import { queryClient } from '../main';
 import { PostProposalType } from '../types/ProposalType';
 
 const RegisterSchema = Yup.object().shape({
@@ -54,6 +53,7 @@ function Register() {
 }
 
 function RegisterForm() {
+  const queryClient = useQueryClient();
   const { groups } = useGroups();
   const { user, isLoading } = useUser();
   const [initialValues, setInitialValues] = useState<InitialValues>({
