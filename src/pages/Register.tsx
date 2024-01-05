@@ -95,11 +95,15 @@ function RegisterForm(props: {
     getValues,
     formState: { errors },
   } = useForm<{
-    fields: NonNullable<GetRegistrationDataResponse>;
+    [fieldId: string]: string;
   }>({
-    defaultValues: {
-      fields: props.registrationData || [],
-    },
+    defaultValues: props.registrationData?.reduce(
+      (acc, field) => ({
+        ...acc,
+        [field.registrationFieldId]: field.value,
+      }),
+      {}
+    ),
   });
 
   const { mutate: mutateRegistrationData } = useMutation({
@@ -117,12 +121,10 @@ function RegisterForm(props: {
         eventId: props.events[0].id,
         body: {
           status: 'DRAFT',
-          registrationData: getValues()
-            .fields.filter((field) => !!field)
-            .map((field) => ({
-              registrationFieldId: field.registrationFieldId,
-              value: field.value,
-            })),
+          registrationData: Object.entries(getValues()).map(([key, value]) => ({
+            registrationFieldId: key,
+            value,
+          })),
         },
       });
     }
@@ -147,13 +149,9 @@ function RegisterForm(props: {
                           id={field.id}
                           name={field.name}
                           onChange={(event) => {
-                            setValue(`fields.${idx}`, {
-                              ...getValues(`fields.${idx}`),
-                              registrationFieldId: field.id,
-                              value: event.target.value,
-                            });
+                            setValue(`${field.id}`, event.target.value);
                           }}
-                          defaultValue={getValues(`fields.${idx}`)?.value}
+                          defaultValue={getValues(`${field.id}`)}
                           required={field.isRequired}
                           disabled={props.registration?.status === 'PUBLISHED'}
                           errors={errors}
@@ -168,13 +166,9 @@ function RegisterForm(props: {
                           title={field.name}
                           name={field.name}
                           onChange={(event) => {
-                            setValue(`fields.${idx}`, {
-                              ...getValues(`fields.${idx}`),
-                              registrationFieldId: field.id,
-                              value: event.target.value,
-                            });
+                            setValue(`${field.id}`, event.target.value);
                           }}
-                          defaultValue={getValues(`fields.${idx}`)?.value}
+                          defaultValue={getValues(`${field.id}`)}
                           options={field.registrationFieldOptions}
                           required={field.isRequired}
                           disabled={props.registration?.status === 'PUBLISHED'}
