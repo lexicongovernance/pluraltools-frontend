@@ -93,6 +93,8 @@ function RegisterForm(props: {
   const {
     setValue,
     getValues,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm<{
     [fieldId: string]: string;
@@ -110,13 +112,42 @@ function RegisterForm(props: {
     mutationFn: postRegistrationData,
     onSuccess: (body) => {
       if (body) {
+        // reset errors
+        clearErrors();
         queryClient.invalidateQueries({ queryKey: ['registration', 'data'] });
       }
     },
   });
 
+  const isValidated = (): boolean => {
+    // check if all required fields are filled
+    const requiredFields = props.registrationFields?.filter((field) => field.isRequired);
+    const requiredFieldsIds = requiredFields?.map((field) => field.id);
+    const requiredFieldsValues = requiredFieldsIds?.map((fieldId) => getValues(fieldId));
+    const requiredFieldsFilled = requiredFieldsValues?.every((value) => value);
+
+    if (!requiredFieldsFilled) {
+      console.log('not all required fields are filled');
+      requiredFields?.forEach((field) => {
+        if (!getValues(field.id)) {
+          setError(field.id, {
+            type: 'required',
+            message: `${field.name} is required`,
+          });
+        }
+      });
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = () => {
     if (props.events?.[0].id) {
+      if (!isValidated()) {
+        return;
+      }
+
       mutateRegistrationData({
         eventId: props.events[0].id,
         body: {
@@ -138,47 +169,18 @@ function RegisterForm(props: {
           {props.registration?.status && <Chip>{props.registration.status}</Chip>}
           <form>
             <FlexColumn $gap="0.75rem">
-              {props.registrationFields &&
-                props.registrationFields.map((field, idx) => {
-                  switch (field.type) {
-                    case 'TEXT':
-                      return (
-                        <TextInput
-                          key={field.id}
-                          idx={idx}
-                          id={field.id}
-                          name={field.name}
-                          onChange={(event) => {
-                            setValue(`${field.id}`, event.target.value);
-                          }}
-                          defaultValue={getValues(`${field.id}`)}
-                          required={field.isRequired}
-                          disabled={props.registration?.status === 'PUBLISHED'}
-                          errors={errors}
-                        />
-                      );
-                    case 'SELECT':
-                      return (
-                        <SelectInput
-                          key={field.id}
-                          idx={idx}
-                          id={field.id}
-                          title={field.name}
-                          name={field.name}
-                          onChange={(event) => {
-                            setValue(`${field.id}`, event.target.value);
-                          }}
-                          defaultValue={getValues(`${field.id}`)}
-                          options={field.registrationFieldOptions}
-                          required={field.isRequired}
-                          disabled={props.registration?.status === 'PUBLISHED'}
-                          errors={errors}
-                        />
-                      );
-                    default:
-                      return null;
-                  }
-                })}
+              {props.registrationFields?.map((field, idx) => (
+                <FormField
+                  field={field}
+                  idx={idx}
+                  disabled={props.registration?.status === 'PUBLISHED'}
+                  errors={errors}
+                  onChange={(event) => {
+                    setValue(`${field.id}`, event.target.value);
+                  }}
+                  defaultValue={getValues(`${field.id}`)}
+                />
+              ))}
             </FlexColumn>
           </form>
           <FlexRow $alignSelf="flex-end">
@@ -192,6 +194,59 @@ function RegisterForm(props: {
   );
 }
 
+function FormField({
+  field,
+  idx,
+  errors,
+  disabled,
+  defaultValue,
+  onChange,
+}: {
+  field: GetRegistrationFieldsResponse[0];
+  idx: number;
+  errors: FieldErrors<{
+    [fieldId: string]: string;
+  }>;
+  disabled: boolean;
+  defaultValue?: string;
+  onChange: (event: { target: { value: string } }) => void;
+}) {
+  switch (field.type) {
+    case 'TEXT':
+      return (
+        <TextInput
+          key={field.id}
+          idx={idx}
+          id={field.id}
+          name={field.name}
+          onChange={onChange}
+          defaultValue={defaultValue}
+          required={field.isRequired}
+          disabled={disabled}
+          errors={errors}
+        />
+      );
+    case 'SELECT':
+      return (
+        <SelectInput
+          key={field.id}
+          idx={idx}
+          id={field.id}
+          title={field.name}
+          name={field.name}
+          onChange={onChange}
+          defaultValue={defaultValue}
+          options={field.registrationFieldOptions}
+          required={field.isRequired}
+          disabled={disabled}
+          errors={errors}
+        />
+      );
+    default:
+      return null;
+  }
+}
+
 function TextInput(props: {
   idx: number;
   id: string;
@@ -201,7 +256,7 @@ function TextInput(props: {
   disabled: boolean;
   onChange: (event: { target: { value: string } }) => void;
   errors: FieldErrors<{
-    fields: GetRegistrationDataResponse;
+    [fieldId: string]: string;
   }>;
 }) {
   return (
@@ -216,9 +271,7 @@ function TextInput(props: {
         onChange={props.onChange}
         disabled={props.disabled}
       />
-      {props.errors.fields?.[props.idx]?.id && (
-        <ErrorText>{props.errors.fields?.[props.idx]?.message}</ErrorText>
-      )}
+      {props.errors?.[props.id] && <ErrorText>{props.errors?.[props.id]?.message}</ErrorText>}
     </FlexColumn>
   );
 }
@@ -234,7 +287,7 @@ function SelectInput(props: {
   defaultValue?: string;
   options: RegistrationFieldOption[];
   errors: FieldErrors<{
-    fields: GetRegistrationDataResponse;
+    [fieldId: string]: string;
   }>;
 }) {
   return (
@@ -258,9 +311,7 @@ function SelectInput(props: {
           </option>
         ))}
       </Select>
-      {props.errors.fields?.[props.idx]?.id && (
-        <ErrorText>{props.errors.fields?.[props.idx]?.message}</ErrorText>
-      )}
+      {props.errors?.[props.id] && <ErrorText>{props.errors?.[props.id]?.message}</ErrorText>}
     </FlexColumn>
   );
 }
