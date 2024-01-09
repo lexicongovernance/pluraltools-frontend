@@ -121,7 +121,7 @@ function RegisterForm(props: {
 
   const isValidated = (): boolean => {
     // check if all required fields are filled
-    const requiredFields = props.registrationFields?.filter((field) => field.isRequired);
+    const requiredFields = props.registrationFields?.filter((field) => field.required);
     const requiredFieldsIds = requiredFields?.map((field) => field.id);
     const requiredFieldsValues = requiredFieldsIds?.map((fieldId) => getValues(fieldId));
     const requiredFieldsFilled = requiredFieldsValues?.every((value) => value);
@@ -221,7 +221,7 @@ function FormField({
           name={field.name}
           onChange={onChange}
           defaultValue={defaultValue}
-          required={field.isRequired}
+          required={field.required}
           disabled={disabled}
           errors={errors}
         />
@@ -237,7 +237,7 @@ function FormField({
           onChange={onChange}
           defaultValue={defaultValue}
           options={field.registrationFieldOptions}
-          required={field.isRequired}
+          required={field.required}
           disabled={disabled}
           errors={errors}
         />
