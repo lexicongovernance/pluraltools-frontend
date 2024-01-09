@@ -1,7 +1,7 @@
 export type RegistrationFieldOption = {
   id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   registrationFieldId: string;
   value: string;
 };

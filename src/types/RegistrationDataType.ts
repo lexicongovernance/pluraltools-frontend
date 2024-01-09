@@ -1,14 +1,16 @@
+import { RegistrationStatus } from './RegistrationType';
+
 export type GetRegistrationDataResponse = {
   id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   registrationId: string;
   registrationFieldId: string;
   value: string;
 }[];
 
 export type PostRegistrationDataRequest = {
-  status: 'DRAFT' | 'APPROVED' | 'PUBLISHED' | null;
+  status: RegistrationStatus;
   registrationData: {
     registrationFieldId: string;
     value: string;
@@ -19,17 +21,17 @@ export type PostRegistrationDataResponse = {
   registrationData:
     | {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
+        createdAt: string;
+        updatedAt: string;
         registrationId: string;
         registrationFieldId: string;
         value: string;
       }[]
     | null;
   id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   userId: string;
   eventId: string;
-  status: 'DRAFT' | 'APPROVED' | 'PUBLISHED' | null;
+  status: RegistrationStatus;
 };

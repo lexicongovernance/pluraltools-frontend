@@ -16,7 +16,7 @@ async function fetchEvents(): Promise<DBEvent[] | null> {
     const res = (await response.json()) as { data: DBEvent[] };
     return res.data;
   } catch (error) {
-    console.error('Error fetching nonce:', error);
+    console.error('Error fetching events:', error);
     return null;
   }
 }

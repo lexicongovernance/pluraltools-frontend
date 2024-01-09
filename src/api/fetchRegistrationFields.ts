@@ -21,7 +21,7 @@ async function fetchRegistrationFields(
     const res = (await response.json()) as { data: GetRegistrationFieldsResponse };
     return res.data;
   } catch (error) {
-    console.error('Error fetching nonce:', error);
+    console.error('Error fetching registration fields:', error);
     return null;
   }
 }

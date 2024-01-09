@@ -19,7 +19,7 @@ async function fetchRegistrationData(eventId: string): Promise<GetRegistrationDa
     const res = (await response.json()) as { data: GetRegistrationDataResponse };
     return res.data;
   } catch (error) {
-    console.error('Error fetching nonce:', error);
+    console.error('Error fetching registration data:', error);
     return null;
   }
 }

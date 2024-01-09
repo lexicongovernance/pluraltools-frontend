@@ -19,7 +19,7 @@ async function fetchRegistration(eventId: string): Promise<GetRegistrationRespon
     const registration = (await response.json()) as { data: GetRegistrationResponseType };
     return registration.data;
   } catch (error) {
-    console.error(error);
+    console.error('error fetching registration', error);
     return null;
   }
 }
