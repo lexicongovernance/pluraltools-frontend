@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FieldErrors, useForm } from 'react-hook-form';
 import {
@@ -18,7 +18,6 @@ import Onboarding from '../components/onboarding';
 import register from '../data/register';
 import useUser from '../hooks/useUser';
 import { FlexColumn, FlexRow } from '../layout/Layout.styled';
-import { queryClient } from '../main';
 import { AuthUser } from '../types/AuthUserType';
 import { DBEvent } from '../types/DBEventType';
 import { GetRegistrationDataResponse } from '../types/RegistrationDataType';
@@ -90,6 +89,7 @@ function RegisterForm(props: {
   registrationData?: GetRegistrationDataResponse | null | undefined;
   events: DBEvent[] | null | undefined;
 }) {
+  const queryClient = useQueryClient();
   const {
     setValue,
     getValues,
