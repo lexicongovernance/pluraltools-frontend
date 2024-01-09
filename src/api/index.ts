@@ -1,7 +1,6 @@
 export { default as fetchCycles } from './fetchCycles';
 export { default as fetchEvents } from './fetchEvents';
 export { default as fetchNonce } from './fetchNonce';
-export { default as fetchOptions } from './fetchOptions';
 export { default as fetchRegistration } from './fetchRegistration';
 export { default as fetchRegistrationData } from './fetchRegistrationData';
 export { default as fetchRegistrationFields } from './fetchRegistrationFields';
