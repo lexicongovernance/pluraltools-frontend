@@ -4,19 +4,25 @@ interface Countdown {
   formattedTime: string;
 }
 
-const useCountdown = (startAt: number, endAt: number): Countdown => {
-  const [time, setTime] = useState<number>(Math.max(0, endAt - Math.floor(Date.now() / 1000)));
+const useCountdown = (startAt: string | null, endAt: string | null): Countdown => {
+  const [time, setTime] = useState<number | null>(null);
 
   useEffect(() => {
-    const now = Math.floor(Date.now() / 1000);
-    const startTimePassed = now >= startAt;
+    if (startAt && endAt) {
+      const endTimestamp = new Date(endAt).getTime() / 1000;
+      const initialTime = Math.max(0, endTimestamp - Math.floor(Date.now() / 1000));
+      setTime(initialTime);
 
-    if (startTimePassed) {
-      const timer = setInterval(() => {
-        setTime((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
-      }, 1000);
+      const now = Math.floor(Date.now() / 1000);
+      const startTimePassed = now >= new Date(startAt).getTime() / 1000;
 
-      return () => clearInterval(timer);
+      if (startTimePassed) {
+        const timer = setInterval(() => {
+          setTime((prevTime) => (prevTime && prevTime > 0 ? prevTime - 1 : 0));
+        }, 1000);
+
+        return () => clearInterval(timer);
+      }
     }
   }, [startAt, endAt]);
 
@@ -25,7 +31,7 @@ const useCountdown = (startAt: number, endAt: number): Countdown => {
   };
 
   const calculateTime = (): string => {
-    if (time <= 0) {
+    if (time === null || time <= 0) {
       return 'Cycle has expired';
     }
 

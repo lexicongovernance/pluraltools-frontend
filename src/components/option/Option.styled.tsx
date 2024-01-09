@@ -4,7 +4,7 @@ export const StyledOption = styled.article`
   background-color: #1f2021;
   border-radius: 0.75rem;
   padding: 2.5rem;
-  min-height: 500px;
+  /* min-height: 500px; */
 `;
 
 export const Title = styled.h3`
@@ -19,7 +19,7 @@ export const Title = styled.h3`
   }
 
   @media (min-width: 600px) {
-    min-height: 4rem;
+    /* min-height: 4rem; */
   }
 `;
 

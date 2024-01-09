@@ -1,13 +1,13 @@
 import logout from '../../api/logout';
 import Button from '../button';
-import { useMutation } from '@tanstack/react-query';
-import { queryClient } from '../../main';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import ZupassLoginButton from '../zupassLoginButton';
 import { HeaderContainer, NavButtons, SyledHeader, StyledNavLink, Logo } from './Header.styled';
 import useUser from '../../hooks/useUser';
 import { useNavigate } from 'react-router-dom';
 
 function Header() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { user } = useUser();
   const { mutate: mutateLogout } = useMutation({

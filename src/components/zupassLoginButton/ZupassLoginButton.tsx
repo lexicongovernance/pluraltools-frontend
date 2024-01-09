@@ -4,19 +4,19 @@ import {
   useSemaphoreSignatureProof,
   useZupassPopupMessages,
 } from '@pcd/passport-interface';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import fetchNonce from '../../api/fetchNonce';
 import postPcdStr from '../../api/postPcdStr';
 import { ButtonProps } from '../../types/ButtonType';
 import handleSignatureRequest from '../../utils/handleSignatureRequest';
 import Button from '../button';
-import { queryClient } from '../../main';
 import { useNavigate } from 'react-router-dom';
 interface ZupassLoginButtonProps extends ButtonProps {
   children: React.ReactNode;
 }
 function ZupassLoginButton({ children, ...props }: ZupassLoginButtonProps) {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const { refetch } = useQuery({
