@@ -68,7 +68,7 @@ function Register() {
     return <h1>Loading...</h1>;
   }
 
-  if (skipOnboarding == 'true') {
+  if (skipOnboarding === 'true') {
     return (
       <RegisterForm
         user={user}
