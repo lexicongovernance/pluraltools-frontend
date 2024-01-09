@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import fetchCycles from '../api/fetchCycles';
 import fetchUserVotes from '../api/fetchUserVotes';
 import postVote from '../api/postVote';
@@ -113,18 +114,24 @@ function Home() {
   });
 
   const handleSaveVotes = () => {
-    if (userVotes) {
-      const serverVotesMap = new Map(userVotes.map((vote) => [vote.optionId, vote]));
+    try {
+      if (userVotes) {
+        const serverVotesMap = new Map(userVotes.map((vote) => [vote.optionId, vote]));
 
-      for (const localVote of localUserVotes) {
-        const matchingServerVote = serverVotesMap.get(localVote.optionId);
+        for (const localVote of localUserVotes) {
+          const matchingServerVote = serverVotesMap.get(localVote.optionId);
 
-        if (!matchingServerVote) {
-          mutateVote({ optionId: localVote.optionId, numOfVotes: localVote.numOfVotes });
-        } else if (matchingServerVote.numOfVotes !== localVote.numOfVotes) {
-          mutateVote({ optionId: localVote.optionId, numOfVotes: localVote.numOfVotes });
+          if (!matchingServerVote) {
+            mutateVote({ optionId: localVote.optionId, numOfVotes: localVote.numOfVotes });
+          } else if (matchingServerVote.numOfVotes !== localVote.numOfVotes) {
+            mutateVote({ optionId: localVote.optionId, numOfVotes: localVote.numOfVotes });
+          }
         }
+        toast.success('Votes saved successfully!');
       }
+    } catch (error) {
+      toast.error('Failed to save votes, please try again');
+      console.error('Error saving votes:', error);
     }
   };
 
@@ -137,47 +144,51 @@ function Home() {
   }
 
   return (
-    <FlexColumn $gap="3rem">
-      <FlexColumn>
+    <>
+      <Toaster position="top-center" />
+      <FlexColumn $gap="3rem">
+        <FlexColumn>
+          <Grid $columns={2} $gap="2rem">
+            <h2>{currentCycle?.forumQuestions[0].title}</h2>
+            <Countdown formattedTime={formattedTime} />
+            <FlexRow $gap="0.25rem" $wrap>
+              {Array.from({ length: initialHearts }).map((_, id) => (
+                <img
+                  key={id}
+                  src={id < avaliableHearts ? '/icons/full_heart.svg' : '/icons/empty_heart.svg'}
+                  height={32}
+                  width={32}
+                  alt={id < avaliableHearts ? 'Full Heart' : 'Empty Heart'}
+                />
+              ))}
+            </FlexRow>
+            {/* // TODO: Disable button if there are no changes */}
+            <Button color="primary" onClick={handleSaveVotes}>
+              Save all votes
+            </Button>
+          </Grid>
+        </FlexColumn>
         <Grid $columns={2} $gap="2rem">
-          <h2>{currentCycle?.forumQuestions[0].title}</h2>
-          <Countdown formattedTime={formattedTime} />
-          <FlexRow $gap="0.25rem" $wrap>
-            {Array.from({ length: initialHearts }).map((_, id) => (
-              <img
-                key={id}
-                src={id < avaliableHearts ? '/icons/full_heart.svg' : '/icons/empty_heart.svg'}
-                height={32}
-                width={32}
-                alt={id < avaliableHearts ? 'Full Heart' : 'Empty Heart'}
-              />
-            ))}
-          </FlexRow>
-          <Button color="primary" onClick={handleSaveVotes}>
-            Save all votes
-          </Button>
+          {currentCycle &&
+            currentCycle.forumQuestions.map((forumQuestion) => {
+              return forumQuestion.questionOptions.map((questionOption) => {
+                const userVote = localUserVotes.find((vote) => vote.optionId === questionOption.id);
+                const numOfVotes = userVote ? userVote.numOfVotes : 0;
+                return (
+                  <Option
+                    key={questionOption.id}
+                    title={questionOption.text}
+                    avaliableHearts={avaliableHearts}
+                    numOfVotes={numOfVotes}
+                    onVote={() => handleVote(questionOption.id)}
+                    onUnvote={() => handleUnvote(questionOption.id)}
+                  />
+                );
+              });
+            })}
         </Grid>
       </FlexColumn>
-      <Grid $columns={2} $gap="2rem">
-        {currentCycle &&
-          currentCycle.forumQuestions.map((forumQuestion) => {
-            return forumQuestion.questionOptions.map((questionOption) => {
-              const userVote = localUserVotes.find((vote) => vote.optionId === questionOption.id);
-              const numOfVotes = userVote ? userVote.numOfVotes : 0;
-              return (
-                <Option
-                  key={questionOption.id}
-                  title={questionOption.text}
-                  avaliableHearts={avaliableHearts}
-                  numOfVotes={numOfVotes}
-                  onVote={() => handleVote(questionOption.id)}
-                  onUnvote={() => handleUnvote(questionOption.id)}
-                />
-              );
-            });
-          })}
-      </Grid>
-    </FlexColumn>
+    </>
   );
 }
 
