@@ -1,296 +1,318 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useFormik } from 'formik';
-import { useEffect, useState } from 'react';
-import * as Yup from 'yup';
-import fetchRegistrations from '../api/fetchRegistration';
-import fetchRegistrationOptions from '../api/fetchRegistrationOptions';
-import postRegistration from '../api/postRegistration';
+import { useState } from 'react';
+import { FieldErrors, useForm } from 'react-hook-form';
+import {
+  fetchEvents,
+  fetchRegistration,
+  fetchRegistrationData,
+  fetchRegistrationFields,
+} from '../api';
+import postRegistrationData from '../api/postRegistrationFields';
 import Button from '../components/button';
 import Chip from '../components/chip';
 import ErrorText from '../components/form/ErrorText';
 import Input from '../components/form/Input';
 import Label from '../components/form/Label';
 import Select from '../components/form/Select';
-import Textarea from '../components/form/Textarea';
 import Onboarding from '../components/onboarding';
 import register from '../data/register';
-import useGroups from '../hooks/useGroups';
 import useUser from '../hooks/useUser';
 import { FlexColumn, FlexRow } from '../layout/Layout.styled';
-import { PostProposalType } from '../types/ProposalType';
-
-const RegisterSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email address').required('Required'),
-  username: Yup.string().min(4).required('Required'),
-  groupId: Yup.string().required('Please choose a group'),
-  proposalTitle: Yup.string().required('Required'),
-  proposalAbstract: Yup.string(),
-});
-
-type InitialValues = {
-  email: string | undefined;
-  username: string | undefined;
-  proposalTitle: string;
-  proposalAbstract: string | undefined;
-  status: 'DRAFT' | 'PUBLISHED' | undefined;
-  groupId?: string;
-  registrationOptions: { [category: string]: string };
-};
+import { AuthUser } from '../types/AuthUserType';
+import { DBEvent } from '../types/DBEventType';
+import { GetRegistrationDataResponse } from '../types/RegistrationDataType';
+import { RegistrationFieldOption } from '../types/RegistrationFieldOptionType';
+import { GetRegistrationFieldsResponse } from '../types/RegistrationFieldType';
+import { GetRegistrationResponseType } from '../types/RegistrationType';
 
 function Register() {
   // TODO: Create useLocalStorage hook
   const [skipOnboarding, setSkipOnboarding] = useState(localStorage.getItem('skip_onboarding'));
+
+  const { user, isLoading } = useUser();
+
+  const { data: events } = useQuery({
+    queryKey: ['event'],
+    queryFn: () => fetchEvents(),
+    staleTime: 10000,
+  });
+
+  const { data: registration } = useQuery({
+    queryKey: ['registration'],
+    queryFn: () => fetchRegistration(events?.[0].id || ''),
+    staleTime: 10000,
+    enabled: !!events?.[0].id,
+  });
+
+  const { data: registrationFields } = useQuery({
+    queryKey: ['registration', 'fields'],
+    queryFn: () => fetchRegistrationFields(events?.[0].id || ''),
+    staleTime: 10000,
+    enabled: !!events?.[0].id,
+  });
+
+  const { data: registrationData, isLoading: registrationDataIsLoading } = useQuery({
+    queryKey: ['registration', 'data'],
+    queryFn: () => fetchRegistrationData(events?.[0].id || ''),
+    staleTime: 10000,
+    enabled: !!events?.[0].id,
+  });
+
   const handleSkip = () => {
     setSkipOnboarding('true');
     localStorage.setItem('skip_onboarding', 'true');
   };
 
-  if (skipOnboarding == 'true') {
-    return <RegisterForm />;
+  if (isLoading || registrationDataIsLoading) {
+    return <h1>Loading...</h1>;
+  }
+
+  if (skipOnboarding === 'true') {
+    return (
+      <RegisterForm
+        user={user}
+        events={events}
+        registration={registration}
+        registrationFields={registrationFields}
+        registrationData={registrationData}
+      />
+    );
   }
 
   return <Onboarding data={register.onboarding} handleSkip={handleSkip} />;
 }
 
-function RegisterForm() {
+function RegisterForm(props: {
+  user: AuthUser | null | undefined;
+  registrationFields?: GetRegistrationFieldsResponse | null | undefined;
+  registration?: GetRegistrationResponseType | null | undefined;
+  registrationData?: GetRegistrationDataResponse | null | undefined;
+  events: DBEvent[] | null | undefined;
+}) {
   const queryClient = useQueryClient();
-  const { groups } = useGroups();
-  const { user, isLoading } = useUser();
-  const [initialValues, setInitialValues] = useState<InitialValues>({
-    email: '',
-    username: '',
-    proposalTitle: '',
-    proposalAbstract: '',
-    status: undefined,
-    groupId: '',
-    registrationOptions: {},
+  const {
+    setValue,
+    getValues,
+    setError,
+    clearErrors,
+    formState: { errors },
+  } = useForm<{
+    [fieldId: string]: string;
+  }>({
+    defaultValues: props.registrationData?.reduce(
+      (acc, field) => ({
+        ...acc,
+        [field.registrationFieldId]: field.value,
+      }),
+      {}
+    ),
   });
 
-  const { data: registration } = useQuery({
-    queryKey: ['registration'],
-    queryFn: () => fetchRegistrations(user?.id || ''),
-    staleTime: 10000,
-    enabled: !!user?.id,
-  });
-
-  const { data: registrationOptions } = useQuery({
-    queryKey: ['registration', 'options'],
-    queryFn: fetchRegistrationOptions,
-    staleTime: 10000,
-  });
-
-  const { mutate: mutateRegistrations } = useMutation({
-    mutationFn: postRegistration,
+  const { mutate: mutateRegistrationData } = useMutation({
+    mutationFn: postRegistrationData,
     onSuccess: (body) => {
       if (body) {
-        queryClient.invalidateQueries({ queryKey: ['registration'] });
+        // reset errors
+        clearErrors();
+        queryClient.invalidateQueries({ queryKey: ['registration', 'data'] });
       }
     },
   });
 
-  const formik = useFormik({
-    initialValues,
-    enableReinitialize: true,
-    validationSchema: RegisterSchema,
-    onSubmit: async (values) => {
-      if (user && formik.values.groupId) {
-        const postValues: PostProposalType = {
-          ...values,
-          userId: user?.id,
-          groupIds: [formik.values.groupId],
-          registrationOptionIds: Object.values(formik.values.registrationOptions),
-        };
-        mutateRegistrations(postValues);
+  const isValidated = (): boolean => {
+    // check if all required fields are filled
+    const requiredFields = props.registrationFields?.filter((field) => field.isRequired);
+    const requiredFieldsIds = requiredFields?.map((field) => field.id);
+    const requiredFieldsValues = requiredFieldsIds?.map((fieldId) => getValues(fieldId));
+    const requiredFieldsFilled = requiredFieldsValues?.every((value) => value);
+
+    if (!requiredFieldsFilled) {
+      console.log('not all required fields are filled');
+      requiredFields?.forEach((field) => {
+        if (!getValues(field.id)) {
+          setError(field.id, {
+            type: 'required',
+            message: `${field.name} is required`,
+          });
+        }
+      });
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = () => {
+    if (props.events?.[0].id) {
+      if (!isValidated()) {
+        return;
       }
 
-      // Reset the form using Formik's resetForm method
-      formik.resetForm();
-    },
-  });
-
-  useEffect(() => {
-    if (registration && registration.id) {
-      setInitialValues({
-        email: registration.email,
-        username: registration.username,
-        proposalTitle: registration.proposalTitle,
-        proposalAbstract: registration.proposalAbstract,
-        status: registration.status === 'DRAFT' ? registration.status : 'DRAFT',
-        groupId: registration.groups?.[0].groupId,
-        registrationOptions: registration.registrationOptions.reduce(
-          (acc, next) => {
-            acc[next.registrationOption.category] = next.registrationOptionId;
-            return acc;
-          },
-          {} as InitialValues['registrationOptions']
-        ),
+      mutateRegistrationData({
+        eventId: props.events[0].id,
+        body: {
+          status: 'DRAFT',
+          registrationData: Object.entries(getValues()).map(([key, value]) => ({
+            registrationFieldId: key,
+            value,
+          })),
+        },
       });
     }
-  }, [registration]);
+  };
 
-  useEffect(() => {
-    console.log('Status', registration?.status);
-  }, [registration]);
-
-  // TODO: This will be a loading skeleton
-  if (isLoading) {
-    return <h1>Loading...</h1>;
-  }
   return (
     <>
-      {user ? (
+      {props.user ? (
         <FlexColumn>
-          <h2>{register.form.title}</h2>
-          {registration?.status && <Chip>{registration.status}</Chip>}
-          <form onSubmit={formik.handleSubmit}>
+          <h2>REGISTER</h2>
+          {props.registration?.status && <Chip>{props.registration.status}</Chip>}
+          <form>
             <FlexColumn $gap="0.75rem">
-              <FlexColumn $gap="0.5rem">
-                <Label htmlFor="email" required>
-                  Email:
-                </Label>
-                <Input
-                  type="text"
-                  id="email"
-                  name="email"
-                  placeholder="Enter your email"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.email}
-                  disabled={registration?.status === 'PUBLISHED'}
+              {props.registrationFields?.map((field, idx) => (
+                <FormField
+                  field={field}
+                  idx={idx}
+                  disabled={props.registration?.status === 'PUBLISHED'}
+                  errors={errors}
+                  onChange={(event) => {
+                    setValue(`${field.id}`, event.target.value);
+                  }}
+                  defaultValue={getValues(`${field.id}`)}
                 />
-                {formik.touched.email && formik.errors.email && (
-                  <ErrorText>{formik.errors.email}</ErrorText>
-                )}
-              </FlexColumn>
-              <FlexColumn $gap="0.5rem">
-                <Label htmlFor="username" required>
-                  Username:
-                </Label>
-                <Input
-                  type="text"
-                  id="username"
-                  name="username"
-                  placeholder="Choose a username"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.username}
-                  disabled={registration?.status === 'PUBLISHED'}
-                />
-                {formik.touched.username && formik.errors.username && (
-                  <ErrorText>{formik.errors.username}</ErrorText>
-                )}
-              </FlexColumn>
-              <FlexColumn $gap="0.5rem">
-                <Label htmlFor="groupId" required>
-                  Select Group:
-                </Label>
-                <Select
-                  id="groupId"
-                  name="groupId"
-                  placeholder="Choose a group"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.groupId}
-                  disabled={registration?.status === 'PUBLISHED'}
-                >
-                  <option value="" disabled>
-                    Choose a group
-                  </option>
-                  {groups &&
-                    groups.map((group) => (
-                      <option key={group.id} value={group.id}>
-                        {group.name}
-                      </option>
-                    ))}
-                </Select>
-                {formik.touched.groupId && formik.errors.groupId && (
-                  <ErrorText>{formik.errors.groupId}</ErrorText>
-                )}
-              </FlexColumn>
-              {registrationOptions &&
-                Object.entries(registrationOptions).map(([category, options]) => (
-                  <FlexColumn key={category} $gap="0.5rem">
-                    <Label htmlFor={category}>{category}:</Label>
-                    <Select
-                      id={`registrationOptions.${category}`}
-                      name={`registrationOptions.${category}`}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.registrationOptions?.[category]}
-                      disabled={registration?.status === 'PUBLISHED'}
-                    >
-                      <option value="" disabled>
-                        Choose a {category}
-                      </option>
-                      {options.map((option) => (
-                        <option key={option.id} value={option.id}>
-                          {option.name}
-                        </option>
-                      ))}
-                    </Select>
-                    {formik.touched.registrationOptions?.[category] &&
-                      formik.errors.registrationOptions?.[category] && (
-                        <ErrorText>{formik.errors.registrationOptions?.[category]}</ErrorText>
-                      )}
-                  </FlexColumn>
-                ))}
-              <FlexColumn $gap="0.5rem">
-                <Label htmlFor="proposalTitle" required>
-                  Proposal Title:
-                </Label>
-                <Input
-                  type="text"
-                  id="proposalTitle"
-                  name="proposalTitle"
-                  placeholder="Enter your proposal title"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.proposalTitle}
-                  disabled={registration?.status === 'PUBLISHED'}
-                />
-                {formik.touched.proposalTitle && formik.errors.proposalTitle && (
-                  <ErrorText>{formik.errors.proposalTitle}</ErrorText>
-                )}
-              </FlexColumn>
-              <FlexColumn $gap="0.5rem">
-                <Label htmlFor="proposalAbstract">Proposal Abstract:</Label>
-                <Textarea
-                  id="proposalAbstract"
-                  name="proposalAbstract"
-                  placeholder="Enter your proposal abstract"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.proposalAbstract}
-                  disabled={registration?.status === 'PUBLISHED'}
-                />
-                {formik.touched.proposalAbstract && formik.errors.proposalAbstract && (
-                  <ErrorText>{formik.errors.proposalAbstract}</ErrorText>
-                )}
-              </FlexColumn>
-              <FlexRow $alignSelf="flex-end">
-                <Button
-                  color="secondary"
-                  type="submit"
-                  onClick={() => formik.setValues((prev) => ({ ...prev, status: 'DRAFT' }))}
-                  disabled={registration?.status === 'PUBLISHED'}
-                >
-                  Save as draft
-                </Button>
-                <Button
-                  type="submit"
-                  onClick={() => formik.setValues((prev) => ({ ...prev, status: 'PUBLISHED' }))}
-                  disabled={registration?.status === 'PUBLISHED'}
-                >
-                  Submit
-                </Button>
-              </FlexRow>
+              ))}
             </FlexColumn>
           </form>
+          <FlexRow $alignSelf="flex-end">
+            <Button onClick={handleSubmit}>Save</Button>
+          </FlexRow>
         </FlexColumn>
       ) : (
         <h2>Please login</h2>
       )}
     </>
+  );
+}
+
+function FormField({
+  field,
+  idx,
+  errors,
+  disabled,
+  defaultValue,
+  onChange,
+}: {
+  field: GetRegistrationFieldsResponse[0];
+  idx: number;
+  errors: FieldErrors<{
+    [fieldId: string]: string;
+  }>;
+  disabled: boolean;
+  defaultValue?: string;
+  onChange: (event: { target: { value: string } }) => void;
+}) {
+  switch (field.type) {
+    case 'TEXT':
+      return (
+        <TextInput
+          key={field.id}
+          idx={idx}
+          id={field.id}
+          name={field.name}
+          onChange={onChange}
+          defaultValue={defaultValue}
+          required={field.isRequired}
+          disabled={disabled}
+          errors={errors}
+        />
+      );
+    case 'SELECT':
+      return (
+        <SelectInput
+          key={field.id}
+          idx={idx}
+          id={field.id}
+          title={field.name}
+          name={field.name}
+          onChange={onChange}
+          defaultValue={defaultValue}
+          options={field.registrationFieldOptions}
+          required={field.isRequired}
+          disabled={disabled}
+          errors={errors}
+        />
+      );
+    default:
+      return null;
+  }
+}
+
+function TextInput(props: {
+  idx: number;
+  id: string;
+  name: string;
+  defaultValue?: string;
+  required: boolean | null;
+  disabled: boolean;
+  onChange: (event: { target: { value: string } }) => void;
+  errors: FieldErrors<{
+    [fieldId: string]: string;
+  }>;
+}) {
+  return (
+    <FlexColumn $gap="0.5rem">
+      <Label htmlFor={props.name} required={!!props.required}>
+        {props.name}
+      </Label>
+      <Input
+        defaultValue={props.defaultValue}
+        type="text"
+        name={props.name}
+        onChange={props.onChange}
+        disabled={props.disabled}
+      />
+      {props.errors?.[props.id] && <ErrorText>{props.errors?.[props.id]?.message}</ErrorText>}
+    </FlexColumn>
+  );
+}
+
+function SelectInput(props: {
+  idx: number;
+  id: string;
+  name: string;
+  title: string;
+  required: boolean | null;
+  disabled: boolean;
+  onChange: (event: { target: { value: string } }) => void;
+  defaultValue?: string;
+  options: RegistrationFieldOption[];
+  errors: FieldErrors<{
+    [fieldId: string]: string;
+  }>;
+}) {
+  return (
+    <FlexColumn $gap="0.5rem">
+      <Label htmlFor={props.name} required={!!props.required}>
+        {props.title}
+      </Label>
+      <Select
+        id={props.id}
+        name={props.name}
+        defaultValue={props.defaultValue}
+        onChange={props.onChange}
+        disabled={props.disabled}
+      >
+        <option value="" selected={props.defaultValue ? false : true} disabled>
+          Choose a value
+        </option>
+        {props.options.map((option) => (
+          <option key={option.id} value={option.value}>
+            {option.value}
+          </option>
+        ))}
+      </Select>
+      {props.errors?.[props.id] && <ErrorText>{props.errors?.[props.id]?.message}</ErrorText>}
+    </FlexColumn>
   );
 }
 export default Register;
