@@ -1,13 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { FieldErrors, useForm } from 'react-hook-form';
 import {
   fetchEvents,
   fetchRegistration,
   fetchRegistrationData,
   fetchRegistrationFields,
+  postRegistrationData,
 } from '../api';
-import postRegistrationData from '../api/postRegistrationFields';
 import Button from '../components/button';
 import Chip from '../components/chip';
 import ErrorText from '../components/form/ErrorText';
@@ -24,6 +23,10 @@ import { GetRegistrationDataResponse } from '../types/RegistrationDataType';
 import { RegistrationFieldOption } from '../types/RegistrationFieldOptionType';
 import { GetRegistrationFieldsResponse } from '../types/RegistrationFieldType';
 import { GetRegistrationResponseType } from '../types/RegistrationType';
+import { useForm, ValidationError } from '@tanstack/react-form';
+import { zodValidator } from '@tanstack/zod-form-adapter';
+import { z } from 'zod';
+import toast, { Toaster } from 'react-hot-toast';
 
 function Register() {
   // TODO: Create useLocalStorage hook
@@ -90,101 +93,106 @@ function RegisterForm(props: {
   events: DBEvent[] | null | undefined;
 }) {
   const queryClient = useQueryClient();
-  const {
-    setValue,
-    getValues,
-    setError,
-    clearErrors,
-    formState: { errors },
-  } = useForm<{
-    [fieldId: string]: string;
-  }>({
+  const form = useForm({
+    validatorAdapter: zodValidator,
     defaultValues: props.registrationData?.reduce(
-      (acc, field) => ({
-        ...acc,
-        [field.registrationFieldId]: field.value,
-      }),
-      {}
+      (acc, curr) => {
+        acc[curr.registrationFieldId] = curr.value;
+        return acc;
+      },
+      {} as Record<string, string>
     ),
+    onSubmit: (form) => {
+      mutateRegistrationData({
+        eventId: props.events![0].id,
+        body: {
+          status: 'DRAFT',
+          registrationData: Object.entries(form.value).map(([key, value]) => ({
+            registrationFieldId: key,
+            value,
+          })),
+        },
+      });
+    },
   });
 
   const { mutate: mutateRegistrationData } = useMutation({
     mutationFn: postRegistrationData,
     onSuccess: (body) => {
       if (body) {
-        // reset errors
-        clearErrors();
+        toast.success('Registration saved successfully!');
         queryClient.invalidateQueries({ queryKey: ['registration', 'data'] });
       }
     },
+    onError: (error) => {
+      console.error('Error saving registration:', error);
+      toast.error('Failed to save registration, please try again');
+    },
   });
 
-  const isValidated = (): boolean => {
-    // check if all required fields are filled
-    const requiredFields = props.registrationFields?.filter((field) => field.required);
-    const requiredFieldsIds = requiredFields?.map((field) => field.id);
-    const requiredFieldsValues = requiredFieldsIds?.map((fieldId) => getValues(fieldId));
-    const requiredFieldsFilled = requiredFieldsValues?.every((value) => value);
-
-    if (!requiredFieldsFilled) {
-      console.log('not all required fields are filled');
-      requiredFields?.forEach((field) => {
-        if (!getValues(field.id)) {
-          setError(field.id, {
-            type: 'required',
-            message: `${field.name} is required`,
-          });
-        }
-      });
-      return false;
+  const handleValidation = (
+    type: 'TEXT' | 'SELECT' | 'NUMBER' | 'DATE' | 'BOOLEAN',
+    required: boolean | null
+  ) => {
+    if (!required) {
+      return;
     }
 
-    return true;
-  };
+    if (type === 'TEXT') {
+      return z.string().min(1, { message: 'Please enter a value' });
+    }
 
-  const handleSubmit = () => {
-    if (props.events?.[0].id) {
-      if (!isValidated()) {
-        return;
-      }
-
-      mutateRegistrationData({
-        eventId: props.events[0].id,
-        body: {
-          status: 'DRAFT',
-          registrationData: Object.entries(getValues()).map(([key, value]) => ({
-            registrationFieldId: key,
-            value,
-          })),
-        },
-      });
+    if (type === 'SELECT') {
+      return z.string().min(1, { message: 'Please select a value' });
     }
   };
 
   return (
     <>
+      <Toaster position="top-center" />
       {props.user ? (
         <FlexColumn>
-          <h2>REGISTER</h2>
+          <h2>Register: {props.events?.[0].name}</h2>
           {props.registration?.status && <Chip>{props.registration.status}</Chip>}
-          <form>
-            <FlexColumn $gap="0.75rem">
-              {props.registrationFields?.map((field, idx) => (
-                <FormField
-                  field={field}
-                  idx={idx}
-                  disabled={props.registration?.status === 'PUBLISHED'}
-                  errors={errors}
-                  onChange={(event) => {
-                    setValue(`${field.id}`, event.target.value);
-                  }}
-                  defaultValue={getValues(`${field.id}`)}
-                />
-              ))}
-            </FlexColumn>
-          </form>
+          <form.Provider>
+            <form>
+              <FlexColumn $gap="0.75rem">
+                {props.registrationFields?.map((regField) => (
+                  <form.Field
+                    name={regField.id}
+                    key={regField.id}
+                    validators={{
+                      onBlur: handleValidation(regField.type, regField.required),
+                      onChange: handleValidation(regField.type, regField.required),
+                    }}
+                    children={(field) => (
+                      <FormField
+                        disabled={props.registration?.status === 'PUBLISHED'}
+                        errors={field.state.meta.errors}
+                        required={regField.required}
+                        id={regField.id}
+                        name={regField.name}
+                        options={regField.registrationFieldOptions}
+                        type={regField.type}
+                        onChange={(event) => field.handleChange(event.target.value)}
+                        onBlur={field.handleBlur}
+                        value={field.state.value}
+                      />
+                    )}
+                  />
+                ))}
+              </FlexColumn>
+            </form>
+          </form.Provider>
           <FlexRow $alignSelf="flex-end">
-            <Button onClick={handleSubmit}>Save</Button>
+            <form.Subscribe
+              selector={(state) => [state.canSubmit]}
+              children={([canSubmit]) => (
+                <Button disabled={!canSubmit} onClick={form.handleSubmit}>
+                  Save
+                </Button>
+              )}
+            />
           </FlexRow>
         </FlexColumn>
       ) : (
@@ -195,33 +203,38 @@ function RegisterForm(props: {
 }
 
 function FormField({
-  field,
-  idx,
+  id,
+  name,
+  required,
+  type,
   errors,
+  options,
   disabled,
-  defaultValue,
+  value,
   onChange,
+  onBlur,
 }: {
-  field: GetRegistrationFieldsResponse[0];
-  idx: number;
-  errors: FieldErrors<{
-    [fieldId: string]: string;
-  }>;
+  id: string;
+  name: string;
+  required: boolean | null;
+  type: 'TEXT' | 'SELECT' | 'NUMBER' | 'DATE' | 'BOOLEAN';
+  options: RegistrationFieldOption[];
+  errors: ValidationError[];
   disabled: boolean;
-  defaultValue?: string;
+  value: string;
   onChange: (event: { target: { value: string } }) => void;
+  onBlur: (event: { target: { value: string } }) => void;
 }) {
-  switch (field.type) {
+  switch (type) {
     case 'TEXT':
       return (
         <TextInput
-          key={field.id}
-          idx={idx}
-          id={field.id}
-          name={field.name}
+          id={id}
+          name={name}
           onChange={onChange}
-          defaultValue={defaultValue}
-          required={field.required}
+          onBlur={onBlur}
+          value={value}
+          required={required}
           disabled={disabled}
           errors={errors}
         />
@@ -229,15 +242,13 @@ function FormField({
     case 'SELECT':
       return (
         <SelectInput
-          key={field.id}
-          idx={idx}
-          id={field.id}
-          title={field.name}
-          name={field.name}
+          id={id}
+          name={name}
           onChange={onChange}
-          defaultValue={defaultValue}
-          options={field.registrationFieldOptions}
-          required={field.required}
+          onBlur={onBlur}
+          value={value}
+          options={options}
+          required={required}
           disabled={disabled}
           errors={errors}
         />
@@ -248,16 +259,14 @@ function FormField({
 }
 
 function TextInput(props: {
-  idx: number;
   id: string;
   name: string;
-  defaultValue?: string;
+  value?: string;
   required: boolean | null;
   disabled: boolean;
   onChange: (event: { target: { value: string } }) => void;
-  errors: FieldErrors<{
-    [fieldId: string]: string;
-  }>;
+  onBlur: (event: { target: { value: string } }) => void;
+  errors: ValidationError[];
 }) {
   return (
     <FlexColumn $gap="0.5rem">
@@ -265,44 +274,44 @@ function TextInput(props: {
         {props.name}
       </Label>
       <Input
-        defaultValue={props.defaultValue}
+        value={props.value}
         type="text"
         name={props.name}
+        onBlur={props.onBlur}
         onChange={props.onChange}
         disabled={props.disabled}
       />
-      {props.errors?.[props.id] && <ErrorText>{props.errors?.[props.id]?.message}</ErrorText>}
+      {props.errors?.[0] && <ErrorText>{props.errors?.[0]}</ErrorText>}
     </FlexColumn>
   );
 }
 
 function SelectInput(props: {
-  idx: number;
   id: string;
   name: string;
-  title: string;
   required: boolean | null;
   disabled: boolean;
   onChange: (event: { target: { value: string } }) => void;
-  defaultValue?: string;
+  onBlur: (event: { target: { value: string } }) => void;
+  value?: string;
   options: RegistrationFieldOption[];
-  errors: FieldErrors<{
-    [fieldId: string]: string;
-  }>;
+  errors: ValidationError[];
 }) {
   return (
     <FlexColumn $gap="0.5rem">
       <Label htmlFor={props.name} required={!!props.required}>
-        {props.title}
+        {props.name}
       </Label>
       <Select
         id={props.id}
         name={props.name}
-        defaultValue={props.defaultValue}
+        value={props.value}
+        defaultValue={''}
+        onBlur={props.onBlur}
         onChange={props.onChange}
         disabled={props.disabled}
       >
-        <option value="" selected={props.defaultValue ? false : true} disabled>
+        <option value="" disabled>
           Choose a value
         </option>
         {props.options.map((option) => (
@@ -311,7 +320,7 @@ function SelectInput(props: {
           </option>
         ))}
       </Select>
-      {props.errors?.[props.id] && <ErrorText>{props.errors?.[props.id]?.message}</ErrorText>}
+      {props.errors?.[0] && <ErrorText>{props.errors?.[0]}</ErrorText>}
     </FlexColumn>
   );
 }
