@@ -19,7 +19,6 @@
     "@tanstack/react-query": "^5.13.4",
     "@tanstack/react-query-devtools": "^5.13.5",
     "@tanstack/zod-form-adapter": "^0.13.3",
-    "i": "^0.3.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
