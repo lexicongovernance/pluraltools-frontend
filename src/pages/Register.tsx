@@ -162,6 +162,7 @@ function RegisterForm(props: {
                     name={regField.id}
                     key={regField.id}
                     validators={{
+                      onBlur: handleValidation(regField.type, regField.required),
                       onChange: handleValidation(regField.type, regField.required),
                     }}
                     children={(field) => (
@@ -276,6 +277,7 @@ function TextInput(props: {
         value={props.value}
         type="text"
         name={props.name}
+        onBlur={props.onBlur}
         onChange={props.onChange}
         disabled={props.disabled}
       />
@@ -304,11 +306,12 @@ function SelectInput(props: {
         id={props.id}
         name={props.name}
         value={props.value}
+        defaultValue={''}
         onBlur={props.onBlur}
         onChange={props.onChange}
         disabled={props.disabled}
       >
-        <option value="" selected={props.value ? false : true} disabled>
+        <option value="" disabled>
           Choose a value
         </option>
         {props.options.map((option) => (
