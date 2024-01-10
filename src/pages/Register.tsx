@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
 import {
   fetchEvents,
   fetchRegistration,
@@ -27,11 +26,11 @@ import { useForm, ValidationError } from '@tanstack/react-form';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { z } from 'zod';
 import toast, { Toaster } from 'react-hot-toast';
+import { useAppStore } from '../store';
 
 function Register() {
-  // TODO: Create useLocalStorage hook
-  const [skipOnboarding, setSkipOnboarding] = useState(localStorage.getItem('skip_onboarding'));
-
+  const onboardingStatus = useAppStore((state) => state.onboardingStatus);
+  const setOnboardingStatus = useAppStore((state) => state.setOnboardingStatus);
   const { user, isLoading } = useUser();
 
   const { data: events } = useQuery({
@@ -62,15 +61,14 @@ function Register() {
   });
 
   const handleSkip = () => {
-    setSkipOnboarding('true');
-    localStorage.setItem('skip_onboarding', 'true');
+    setOnboardingStatus('COMPLETE');
   };
 
   if (isLoading || registrationDataIsLoading) {
     return <h1>Loading...</h1>;
   }
 
-  if (skipOnboarding === 'true') {
+  if (onboardingStatus === 'COMPLETE') {
     return (
       <RegisterForm
         user={user}
