@@ -15,14 +15,17 @@
     "@pcd/pcd-types": "^0.8.0",
     "@pcd/semaphore-identity-pcd": "^0.8.0",
     "@pcd/semaphore-signature-pcd": "^0.9.0",
+    "@tanstack/react-form": "^0.13.3",
     "@tanstack/react-query": "^5.13.4",
     "@tanstack/react-query-devtools": "^5.13.5",
+    "@tanstack/zod-form-adapter": "^0.13.3",
+    "i": "^0.3.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-hook-form": "^7.49.2",
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.20.1",
-    "styled-components": "^6.1.1"
+    "styled-components": "^6.1.1",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",
