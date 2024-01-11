@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import fetchCycles from '../api/fetchCycles';
 import fetchUserVotes from '../api/fetchUserVotes';
@@ -62,6 +62,23 @@ function Home() {
     setAvaliableHearts(initialHearts - givenVotes);
     setLocalUserVotes(votes);
   };
+
+  const votesAreDifferent = useMemo(() => {
+    return (
+      JSON.stringify(
+        localUserVotes.map((vote) => ({
+          optionId: vote.optionId,
+          numOfVotes: vote.numOfVotes,
+        }))
+      ) !==
+      JSON.stringify(
+        userVotes?.map((vote) => ({
+          optionId: vote.optionId,
+          numOfVotes: vote.numOfVotes,
+        }))
+      )
+    );
+  }, [localUserVotes, userVotes]);
 
   useEffect(() => {
     if (userVotes?.length) {
@@ -163,7 +180,7 @@ function Home() {
               ))}
             </FlexRow>
             {/* // TODO: Disable button if there are no changes */}
-            <Button color="primary" onClick={handleSaveVotes}>
+            <Button color="primary" onClick={handleSaveVotes} disabled={!votesAreDifferent}>
               Save all votes
             </Button>
           </Grid>
