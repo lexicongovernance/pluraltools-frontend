@@ -37,13 +37,6 @@ function Header() {
                   </StyledNavLink>
                 </li>
                 <li>
-                  <StyledNavLink to="/register">
-                    <Button variant="text" tabIndex={-1}>
-                      Register
-                    </Button>
-                  </StyledNavLink>
-                </li>
-                <li>
                   <Button color="secondary" onClick={mutateLogout}>
                     Log out
                   </Button>
