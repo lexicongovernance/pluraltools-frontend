@@ -1,13 +1,15 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 
+type COMPLETION_STATUS = 'COMPLETE' | 'INCOMPLETE';
+
 interface AppState {
-  onboardingStatus: 'COMPLETE' | 'INCOMPLETE';
-  userStatus: 'COMPLETE' | 'INCOMPLETE';
-  registrationStatus: 'COMPLETE' | 'INCOMPLETE';
-  setUserStatus: (status: 'COMPLETE' | 'INCOMPLETE') => void;
-  setRegistrationStatus: (status: 'COMPLETE' | 'INCOMPLETE') => void;
-  setOnboardingStatus: (status: 'COMPLETE' | 'INCOMPLETE') => void;
+  onboardingStatus: COMPLETION_STATUS;
+  userStatus: COMPLETION_STATUS;
+  registrationStatus: COMPLETION_STATUS;
+  setUserStatus: (status: COMPLETION_STATUS) => void;
+  setRegistrationStatus: (status: COMPLETION_STATUS) => void;
+  setOnboardingStatus: (status: COMPLETION_STATUS) => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -17,10 +19,10 @@ export const useAppStore = create<AppState>()(
         onboardingStatus: 'INCOMPLETE',
         userStatus: 'INCOMPLETE',
         registrationStatus: 'INCOMPLETE',
-        setUserStatus: (status: 'COMPLETE' | 'INCOMPLETE') => set(() => ({ userStatus: status })),
-        setRegistrationStatus: (status: 'COMPLETE' | 'INCOMPLETE') =>
+        setUserStatus: (status: COMPLETION_STATUS) => set(() => ({ userStatus: status })),
+        setRegistrationStatus: (status: COMPLETION_STATUS) =>
           set(() => ({ registrationStatus: status })),
-        setOnboardingStatus: (status: 'COMPLETE' | 'INCOMPLETE') =>
+        setOnboardingStatus: (status: COMPLETION_STATUS) =>
           set(() => ({ onboardingStatus: status })),
       }),
       { name: 'lexicon-store' }
