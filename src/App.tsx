@@ -1,13 +1,14 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import useUser from './hooks/useUser';
-import { useAppStore } from './store';
-import Landing from './pages/Landing';
-import Register from './pages/Register';
-import PassportPopupRedirect from './pages/Popup';
-import Home from './pages/Home';
-import { ReactNode, useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { ReactNode, useEffect, useMemo } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { fetchEvents, fetchRegistration } from './api';
+import useUser from './hooks/useUser';
+import Account from './pages/Account';
+import Home from './pages/Home';
+import Landing from './pages/Landing';
+import PassportPopupRedirect from './pages/Popup';
+import Register from './pages/Register';
+import { useAppStore } from './store';
 
 function App() {
   const { user, isLoading } = useUser();
@@ -76,6 +77,7 @@ function App() {
       <Route path="/" element={handleHomePage} />
       <Route path="/home" element={user ? <Home /> : <Navigate to="/" replace />} />
       <Route path="/register" element={user ? <Register /> : <Navigate to="/" replace />} />
+      <Route path="/account" element={user ? <Account /> : <Navigate to="/" replace />} />
       <Route path="/popup" element={<PassportPopupRedirect />} />
     </Routes>
   );
