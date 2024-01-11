@@ -61,6 +61,7 @@ function ZupassLoginButton({ children, ...props }: ZupassLoginButtonProps) {
     if (signatureProofValid && pcdStr) {
       mutateVerify(pcdStr);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signatureProofValid, pcdStr]);
 
   const handleLoginClick = async () => {
