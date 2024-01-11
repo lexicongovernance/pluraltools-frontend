@@ -22,6 +22,7 @@ function App() {
     queryKey: ['event'],
     queryFn: () => fetchEvents(),
     staleTime: 10000,
+    enabled: !!user?.id,
   });
   const { data: registration } = useQuery({
     queryKey: ['registration'],
@@ -72,7 +73,7 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={handleHomePage()} />
+      <Route path="/" element={handleHomePage} />
       <Route path="/home" element={user ? <Home /> : <Navigate to="/" replace />} />
       <Route path="/register" element={user ? <Register /> : <Navigate to="/" replace />} />
       <Route path="/popup" element={<PassportPopupRedirect />} />
