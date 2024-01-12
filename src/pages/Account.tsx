@@ -1,7 +1,7 @@
 import { useForm } from '@tanstack/react-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { zodValidator } from '@tanstack/zod-form-adapter';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import fetchGroups from '../api/fetchGroups';
@@ -92,98 +92,99 @@ function Account() {
   const userRegistered = userGroups && userGroups?.length > 0;
 
   return (
-    <>
-      <Toaster position="top-center" />
-      <FlexColumn>
-        <FlexRow $justifyContent="space-between">
-          <h2>{userRegistered ? 'User data' : 'Finish your registration'}</h2>
-          {userRegistered && <Chip>Registered</Chip>}
-        </FlexRow>
-        <Provider>
-          <form onSubmit={(e) => handleSubmit(e)}>
-            <FlexColumn>
-              <Field
-                name="username"
-                validatorAdapter={zodValidator}
-                validators={{
-                  onChange: z
-                    .string()
-                    .min(3, { message: 'Username must be 3 characters or longer.' }),
-                }}
-                children={(field) => (
-                  <FlexColumn $gap="0.5rem">
-                    <Label required>Username</Label>
-                    <Input
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
-                    <ErrorText>{field.state.meta.errors}</ErrorText>
-                  </FlexColumn>
-                )}
-              />
-              <Field
-                name="email"
-                children={(field) => (
-                  <FlexColumn $gap="0.5rem">
-                    <Label>Email</Label>
-                    <Input
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
-                    <ErrorText>{field.state.meta.errors}</ErrorText>
-                  </FlexColumn>
-                )}
-              />
-              <Field
-                name="group"
-                validatorAdapter={zodValidator}
-                validators={{
-                  onChange: z.string().min(1, { message: 'Please select a value.' }),
-                }}
-                children={(field) => (
-                  <FlexColumn $gap="0.5rem">
-                    <Label required>Group</Label>
-                    <Select
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    >
-                      <option value="" disabled>
-                        Please choose a group
+    <FlexColumn>
+      <FlexRow $justifyContent="space-between">
+        <h2>{userRegistered ? 'User data' : 'Finish your registration'}</h2>
+        {userRegistered && <Chip>Registered</Chip>}
+      </FlexRow>
+      <Provider>
+        <form onSubmit={(e) => handleSubmit(e)}>
+          <FlexColumn>
+            <Field
+              name="username"
+              validatorAdapter={zodValidator}
+              validators={{
+                onChange: z
+                  .string()
+                  .min(3, { message: 'Username must be 3 characters or longer.' }),
+              }}
+              children={(field) => (
+                <FlexColumn $gap="0.5rem">
+                  <Label required>Username</Label>
+                  <Input
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                  <ErrorText>{field.state.meta.errors}</ErrorText>
+                </FlexColumn>
+              )}
+            />
+            <Field
+              name="email"
+              validatorAdapter={zodValidator}
+              validators={{
+                onChange: z.string().email('Not a valid email').nullable(),
+              }}
+              children={(field) => (
+                <FlexColumn $gap="0.5rem">
+                  <Label>Email</Label>
+                  <Input
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                  <ErrorText>{field.state.meta.errors}</ErrorText>
+                </FlexColumn>
+              )}
+            />
+            <Field
+              name="group"
+              validatorAdapter={zodValidator}
+              validators={{
+                onChange: z.string().min(1, { message: 'Please select a value.' }),
+              }}
+              children={(field) => (
+                <FlexColumn $gap="0.5rem">
+                  <Label required>Group</Label>
+                  <Select
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  >
+                    <option value="" disabled>
+                      Please choose a group
+                    </option>
+                    {groups?.map((group) => (
+                      <option key={group.id} value={group.id}>
+                        {group.name}
                       </option>
-                      {groups?.map((group) => (
-                        <option key={group.id} value={group.id}>
-                          {group.name}
-                        </option>
-                      ))}
-                    </Select>
-                    <ErrorText>{field.state.meta.errors}</ErrorText>
-                  </FlexColumn>
-                )}
+                    ))}
+                  </Select>
+                  <ErrorText>{field.state.meta.errors}</ErrorText>
+                </FlexColumn>
+              )}
+            />
+            <FlexRow $alignSelf="flex-end">
+              <Subscribe
+                selector={(state) => [state.canSubmit, state.values]}
+                children={([canSubmit, values]) => {
+                  const isEqual = JSON.stringify(values) === JSON.stringify(initialUser);
+                  return (
+                    <Button type="submit" disabled={isEqual || !canSubmit}>
+                      Submit
+                    </Button>
+                  );
+                }}
               />
-              <FlexRow $alignSelf="flex-end">
-                <Subscribe
-                  selector={(state) => [state.canSubmit, state.values]}
-                  children={([canSubmit, values]) => {
-                    const isEqual = JSON.stringify(values) === JSON.stringify(initialUser);
-                    return (
-                      <Button type="submit" disabled={isEqual || !canSubmit}>
-                        Submit
-                      </Button>
-                    );
-                  }}
-                />
-              </FlexRow>
-            </FlexColumn>
-          </form>
-        </Provider>
-      </FlexColumn>
-    </>
+            </FlexRow>
+          </FlexColumn>
+        </form>
+      </Provider>
+    </FlexColumn>
   );
 }
 

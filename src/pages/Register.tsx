@@ -25,7 +25,7 @@ import { GetRegistrationResponseType } from '../types/RegistrationType';
 import { useForm, ValidationError } from '@tanstack/react-form';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { z } from 'zod';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { useAppStore } from '../store';
 import { useNavigate } from 'react-router-dom';
 
@@ -154,7 +154,6 @@ function RegisterForm(props: {
 
   return (
     <>
-      <Toaster position="top-center" />
       {props.user ? (
         <FlexColumn>
           <FlexRow $justifyContent="space-between">
