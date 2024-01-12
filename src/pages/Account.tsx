@@ -2,6 +2,7 @@ import { useForm } from '@tanstack/react-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import toast, { Toaster } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import fetchGroups from '../api/fetchGroups';
 import fetchUserGroups from '../api/fetchUserGroups';
@@ -14,9 +15,15 @@ import Label from '../components/form/Label';
 import Select from '../components/form/Select';
 import useUser from '../hooks/useUser';
 import { FlexColumn, FlexRow } from '../layout/Layout.styled';
+import { useAppStore } from '../store';
 
 function Account() {
   const { user } = useUser();
+  const registrationStatus = useAppStore((state) => state.registrationStatus);
+  const setUserStatus = useAppStore((state) => state.setUserStatus);
+
+  const navigate = useNavigate();
+
   const queryClient = useQueryClient();
 
   const { data: groups } = useQuery({
@@ -63,16 +70,15 @@ function Account() {
           email: value.email,
           groupIds: [value.group],
         });
+
         toast.success('User data updated!');
+
+        if (registrationStatus === 'INCOMPLETE') {
+          setUserStatus('COMPLETE');
+          navigate('/register');
+        }
       }
     },
-    // validators: {
-    //   onChange: ({ value }) => {
-    //     if (JSON.stringify(initialUser) === JSON.stringify(value)) {
-    //       return 'Form without changes';
-    //     }
-    //   },
-    // },
   });
 
   const { Provider, Field, Subscribe } = form;

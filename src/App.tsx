@@ -53,7 +53,7 @@ function App() {
     }
 
     if (userStatus === 'INCOMPLETE') {
-      return <Navigate to="/register" />;
+      return <Navigate to="/account" />;
     }
 
     if (userStatus === 'COMPLETE' && registrationStatus === 'INCOMPLETE') {
