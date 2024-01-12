@@ -1,24 +1,36 @@
 import { useForm } from '@tanstack/react-form';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { z } from 'zod';
 import fetchGroups from '../api/fetchGroups';
+import updateUserData from '../api/updateUserData';
+import Button from '../components/button';
+import ErrorText from '../components/form/ErrorText';
 import Input from '../components/form/Input';
 import Label from '../components/form/Label';
 import Select from '../components/form/Select';
+import useUser from '../hooks/useUser';
 import { FlexColumn, FlexRow } from '../layout/Layout.styled';
-import Button from '../components/button';
-import ErrorText from '../components/form/ErrorText';
 
 function Account() {
+  const queryClient = useQueryClient();
+  const { user } = useUser();
+
   const form = useForm({
     defaultValues: {
       username: '',
       email: '',
       group: '',
     },
-    onSubmit: async ({ value }) => {
-      console.log('Value:', value);
+    onSubmit: ({ value }) => {
+      if (user?.id) {
+        mutateUserData({
+          userId: user?.id,
+          username: value.username,
+          email: value.email,
+          groupIds: [value.group],
+        });
+      }
     },
   });
 
@@ -29,6 +41,16 @@ function Account() {
     queryFn: fetchGroups,
     staleTime: 10000,
     retry: false,
+  });
+
+  const { mutate: mutateUserData } = useMutation({
+    mutationFn: updateUserData,
+    onSuccess: (body) => {
+      if (body) {
+        queryClient.invalidateQueries({ queryKey: ['user'] });
+        queryClient.invalidateQueries({ queryKey: ['user-groups'] });
+      }
+    },
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -97,7 +119,11 @@ function Account() {
                     <option value="" disabled>
                       Please choose a group
                     </option>
-                    {groups?.map((group) => <option key={group.id}>{group.name}</option>)}
+                    {groups?.map((group) => (
+                      <option key={group.id} value={group.id}>
+                        {group.name}
+                      </option>
+                    ))}
                   </Select>
                   <ErrorText>{field.state.meta.errors}</ErrorText>
                 </FlexColumn>
