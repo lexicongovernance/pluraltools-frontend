@@ -17,7 +17,6 @@ import { FlexColumn, FlexRow } from '../layout/Layout.styled';
 
 function Account() {
   const { user } = useUser();
-  console.log('user:', user);
   const queryClient = useQueryClient();
 
   const { data: groups } = useQuery({
@@ -34,7 +33,6 @@ function Account() {
     staleTime: 10000,
     retry: false,
   });
-  console.log('userGroups:', userGroups);
 
   const { mutate: mutateUserData } = useMutation({
     mutationFn: updateUserData,
@@ -49,16 +47,18 @@ function Account() {
     },
   });
 
+  const initialUser = {
+    username: user?.username || '',
+    email: user?.email || '',
+    group: (userGroups && userGroups[0]?.id) || '',
+  };
+
   const form = useForm({
-    defaultValues: {
-      username: user?.username || '',
-      email: user?.email || '',
-      group: (userGroups && userGroups[0]?.id) || '',
-    },
+    defaultValues: initialUser,
     onSubmit: ({ value }) => {
-      if (user?.id) {
+      if (user && user.id) {
         mutateUserData({
-          userId: user?.id,
+          userId: user.id,
           username: value.username,
           email: value.email,
           groupIds: [value.group],
@@ -66,6 +66,13 @@ function Account() {
         toast.success('User data updated!');
       }
     },
+    // validators: {
+    //   onChange: ({ value }) => {
+    //     if (JSON.stringify(initialUser) === JSON.stringify(value)) {
+    //       return 'Form without changes';
+    //     }
+    //   },
+    // },
   });
 
   const { Provider, Field, Subscribe } = form;
@@ -155,12 +162,15 @@ function Account() {
               />
               <FlexRow $alignSelf="flex-end">
                 <Subscribe
-                  selector={(state) => [state.canSubmit]}
-                  children={([canSubmit]) => (
-                    <Button type="submit" disabled={!canSubmit}>
-                      Submit
-                    </Button>
-                  )}
+                  selector={(state) => [state.canSubmit, state.values]}
+                  children={([canSubmit, values]) => {
+                    const isEqual = JSON.stringify(values) === JSON.stringify(initialUser);
+                    return (
+                      <Button type="submit" disabled={isEqual || !canSubmit}>
+                        Submit
+                      </Button>
+                    );
+                  }}
                 />
               </FlexRow>
             </FlexColumn>
