@@ -1,4 +1,9 @@
+import { ValidationError, useForm } from '@tanstack/react-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { zodValidator } from '@tanstack/zod-form-adapter';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import { z } from 'zod';
 import {
   fetchEvents,
   fetchRegistration,
@@ -12,8 +17,6 @@ import ErrorText from '../components/form/ErrorText';
 import Input from '../components/form/Input';
 import Label from '../components/form/Label';
 import Select from '../components/form/Select';
-import Onboarding from '../components/onboarding';
-import register from '../data/register';
 import useUser from '../hooks/useUser';
 import { FlexColumn, FlexRow } from '../layout/Layout.styled';
 import { AuthUser } from '../types/AuthUserType';
@@ -22,17 +25,8 @@ import { GetRegistrationDataResponse } from '../types/RegistrationDataType';
 import { RegistrationFieldOption } from '../types/RegistrationFieldOptionType';
 import { GetRegistrationFieldsResponse } from '../types/RegistrationFieldType';
 import { GetRegistrationResponseType } from '../types/RegistrationType';
-import { useForm, ValidationError } from '@tanstack/react-form';
-import { zodValidator } from '@tanstack/zod-form-adapter';
-import { z } from 'zod';
-import toast from 'react-hot-toast';
-import { useAppStore } from '../store';
-import { useNavigate } from 'react-router-dom';
 
 function Register() {
-  const onboardingStatus = useAppStore((state) => state.onboardingStatus);
-  const setOnboardingStatus = useAppStore((state) => state.setOnboardingStatus);
-
   const { user, isLoading } = useUser();
 
   const { data: events } = useQuery({
@@ -62,27 +56,19 @@ function Register() {
     enabled: !!events?.[0].id,
   });
 
-  const handleSkip = () => {
-    setOnboardingStatus('COMPLETE');
-  };
-
   if (isLoading || registrationDataIsLoading) {
     return <h1>Loading...</h1>;
   }
 
-  if (onboardingStatus === 'COMPLETE') {
-    return (
-      <RegisterForm
-        user={user}
-        events={events}
-        registration={registration}
-        registrationFields={registrationFields}
-        registrationData={registrationData}
-      />
-    );
-  }
-
-  return <Onboarding data={register.onboarding} handleSkip={handleSkip} />;
+  return (
+    <RegisterForm
+      user={user}
+      events={events}
+      registration={registration}
+      registrationFields={registrationFields}
+      registrationData={registrationData}
+    />
+  );
 }
 
 function RegisterForm(props: {
@@ -93,7 +79,6 @@ function RegisterForm(props: {
   events: DBEvent[] | null | undefined;
 }) {
   const navigate = useNavigate();
-  const setRegistrationStatus = useAppStore((state) => state.setRegistrationStatus);
 
   const queryClient = useQueryClient();
   const form = useForm({
@@ -116,7 +101,6 @@ function RegisterForm(props: {
           })),
         },
       });
-      setRegistrationStatus('COMPLETE');
       navigate('/events');
     },
   });

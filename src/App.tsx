@@ -1,7 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
 import { ReactNode, useEffect, useMemo } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { fetchEvents, fetchRegistration } from './api';
 import useUser from './hooks/useUser';
 import Account from './pages/Account';
 import Event from './pages/Event';
@@ -11,36 +9,13 @@ import PassportPopupRedirect from './pages/Popup';
 import Register from './pages/Register';
 import Vote from './pages/Vote';
 import { useAppStore } from './store';
+import OnboardingPage from './pages/Onboarding';
 
 function App() {
   const { user, isLoading } = useUser();
-
+  const onboardingStatus = useAppStore((state) => state.onboardingStatus);
   const userStatus = useAppStore((state) => state.userStatus);
   const setUserStatus = useAppStore((state) => state.setUserStatus);
-  const registrationStatus = useAppStore((state) => state.registrationStatus);
-  const setRegistrationStatus = useAppStore((state) => state.setRegistrationStatus);
-
-  // START OF TEMPORARY REGISTRATION STATUS
-  const { data: events } = useQuery({
-    queryKey: ['event'],
-    queryFn: () => fetchEvents(),
-    staleTime: 10000,
-    enabled: !!user?.id,
-  });
-  const { data: registration } = useQuery({
-    queryKey: ['registration'],
-    queryFn: () => fetchRegistration(events?.[0].id || ''),
-    staleTime: 10000,
-    enabled: !!events?.[0].id,
-  });
-
-  useEffect(() => {
-    // check if user has email and name
-    if (registration?.id) {
-      setRegistrationStatus('COMPLETE');
-    }
-  }, [registration?.id, setRegistrationStatus]);
-  // END OF TEMPORARY REGISTRATION STATUS
 
   useEffect(() => {
     // check if user has email and name
@@ -54,20 +29,20 @@ function App() {
       return <Landing />;
     }
 
+    if (onboardingStatus === 'INCOMPLETE') {
+      return <OnboardingPage />;
+    }
+
     if (userStatus === 'INCOMPLETE') {
       return <Navigate to="/account" />;
     }
 
-    if (userStatus === 'COMPLETE' && registrationStatus === 'INCOMPLETE') {
-      return <Navigate to="/register" />;
-    }
-
-    if (userStatus === 'COMPLETE' && registrationStatus === 'COMPLETE') {
+    if (userStatus === 'COMPLETE') {
       return <Navigate to="/events" />;
     }
 
     return <Landing />;
-  }, [user, userStatus, registrationStatus]);
+  }, [user, userStatus, onboardingStatus]);
 
   // This will be a loading skeleton
   if (isLoading) {
@@ -77,6 +52,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={handleHomePage} />
+      <Route path="/" element={<OnboardingPage />} />
       <Route path="/events" element={user ? <Events /> : <Navigate to="/" replace />} />
       <Route path="/events/:eventId" element={user ? <Event /> : <Navigate to="/" replace />} />
       <Route
