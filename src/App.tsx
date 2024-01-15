@@ -4,10 +4,12 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { fetchEvents, fetchRegistration } from './api';
 import useUser from './hooks/useUser';
 import Account from './pages/Account';
-import Home from './pages/Home';
+import Event from './pages/Event';
+import Events from './pages/Events';
 import Landing from './pages/Landing';
 import PassportPopupRedirect from './pages/Popup';
 import Register from './pages/Register';
+import Vote from './pages/Vote';
 import { useAppStore } from './store';
 
 function App() {
@@ -61,7 +63,7 @@ function App() {
     }
 
     if (userStatus === 'COMPLETE' && registrationStatus === 'COMPLETE') {
-      return <Navigate to="/home" />;
+      return <Navigate to="/events" />;
     }
 
     return <Landing />;
@@ -75,7 +77,12 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={handleHomePage} />
-      <Route path="/home" element={user ? <Home /> : <Navigate to="/" replace />} />
+      <Route path="/events" element={user ? <Events /> : <Navigate to="/" replace />} />
+      <Route path="/events/:eventId" element={user ? <Event /> : <Navigate to="/" replace />} />
+      <Route
+        path="/events/:eventId/cycles/:cycleId"
+        element={user ? <Vote /> : <Navigate to="/" replace />}
+      />
       <Route path="/register" element={user ? <Register /> : <Navigate to="/" replace />} />
       <Route path="/account" element={user ? <Account /> : <Navigate to="/" replace />} />
       <Route path="/popup" element={<PassportPopupRedirect />} />

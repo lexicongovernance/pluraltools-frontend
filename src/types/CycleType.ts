@@ -18,6 +18,7 @@ export type Option = {
 
 export type Cycle = {
   id: string;
+  eventId: string | null;
   createdAt: string;
   updatedAt: string;
   status: 'OPEN' | 'CLOSED' | 'RESULTS' | null;

@@ -117,7 +117,7 @@ function RegisterForm(props: {
         },
       });
       setRegistrationStatus('COMPLETE');
-      navigate('/home');
+      navigate('/events');
     },
   });
 

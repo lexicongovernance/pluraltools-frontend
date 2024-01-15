@@ -44,5 +44,5 @@ export const FlexRow = styled.section<FlexProps>`
 
 export const FlexColumn = styled(FlexRow)`
   flex-direction: column;
-  height: 100%;
+  /* height: 100%; */
 `;

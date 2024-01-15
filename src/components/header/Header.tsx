@@ -30,9 +30,9 @@ function Header() {
             {user ? (
               <>
                 <li>
-                  <StyledNavLink to="/home">
+                  <StyledNavLink to="/events">
                     <Button variant="text" tabIndex={-1}>
-                      Home
+                      Events
                     </Button>
                   </StyledNavLink>
                 </li>
