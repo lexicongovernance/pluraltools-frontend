@@ -25,12 +25,14 @@ import { GetRegistrationResponseType } from '../types/RegistrationType';
 import { useForm, ValidationError } from '@tanstack/react-form';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { z } from 'zod';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { useAppStore } from '../store';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
   const onboardingStatus = useAppStore((state) => state.onboardingStatus);
   const setOnboardingStatus = useAppStore((state) => state.setOnboardingStatus);
+
   const { user, isLoading } = useUser();
 
   const { data: events } = useQuery({
@@ -90,6 +92,9 @@ function RegisterForm(props: {
   registrationData?: GetRegistrationDataResponse | null | undefined;
   events: DBEvent[] | null | undefined;
 }) {
+  const navigate = useNavigate();
+  const setRegistrationStatus = useAppStore((state) => state.setRegistrationStatus);
+
   const queryClient = useQueryClient();
   const form = useForm({
     validatorAdapter: zodValidator,
@@ -111,6 +116,8 @@ function RegisterForm(props: {
           })),
         },
       });
+      setRegistrationStatus('COMPLETE');
+      navigate('/home');
     },
   });
 
@@ -147,11 +154,12 @@ function RegisterForm(props: {
 
   return (
     <>
-      <Toaster position="top-center" />
       {props.user ? (
         <FlexColumn>
-          <h2>Register: {props.events?.[0].name}</h2>
-          {props.registration?.status && <Chip>{props.registration.status}</Chip>}
+          <FlexRow $justifyContent="space-between">
+            <h2>Register: {props.events?.[0].name}</h2>
+            {props.registration?.status && <Chip>{props.registration.status}</Chip>}
+          </FlexRow>
           <form.Provider>
             <form>
               <FlexColumn $gap="0.75rem">
