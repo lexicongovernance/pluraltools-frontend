@@ -7,7 +7,7 @@ type EventCardType = {
   eventId: string;
   src: string;
   title: string;
-  description: string;
+  description: string | null;
 };
 
 function EventCard({ eventId, src, title, description }: EventCardType) {
