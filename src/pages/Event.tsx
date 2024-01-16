@@ -77,12 +77,7 @@ function Event() {
           <Container>
             <FlexColumn>
               <Title>{event?.name}</Title>
-              {/* <p>{event?.description}</p> */}
-              <p>
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nostrum doloribus
-                perspiciatis corporis vero tempore magnam eligendi, numquam culpa repellat assumenda
-                amet ullam placeat suscipit cum?
-              </p>
+              <p>{event?.description}</p>
             </FlexColumn>
           </Container>
         </Grid>
