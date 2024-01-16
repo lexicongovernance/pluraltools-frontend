@@ -13,6 +13,7 @@ import ErrorText from '../components/form/ErrorText';
 import Input from '../components/form/Input';
 import Label from '../components/form/Label';
 import Select from '../components/form/Select';
+import Title from '../components/typography/Title';
 import useUser from '../hooks/useUser';
 import { FlexColumn, FlexRow } from '../layout/Layout.styled';
 import { useAppStore } from '../store';
@@ -94,7 +95,7 @@ function Account() {
   return (
     <FlexColumn>
       <FlexRow $justifyContent="space-between">
-        <h2>{userRegistered ? 'User data' : 'Complete your profile'}</h2>
+        <Title>{userRegistered ? 'Your Account' : 'Complete your profile'}</Title>
         {userRegistered && <Chip>Registered</Chip>}
       </FlexRow>
       <Provider>
@@ -148,7 +149,7 @@ function Account() {
               }}
               children={(field) => (
                 <FlexColumn $gap="0.5rem">
-                  <Label required>Group</Label>
+                  <Label required>Affiliation</Label>
                   <Select
                     name={field.name}
                     value={field.state.value}
@@ -156,7 +157,7 @@ function Account() {
                     onChange={(e) => field.handleChange(e.target.value)}
                   >
                     <option value="" disabled>
-                      Please choose a group
+                      Please choose an affiliation
                     </option>
                     {groups?.map((group) => (
                       <option key={group.id} value={group.id}>

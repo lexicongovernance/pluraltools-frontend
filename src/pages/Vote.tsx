@@ -2,16 +2,18 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
+import { fetchForumQuestionHearts } from '../api';
+import fetchCycle from '../api/fetchCycle';
 import fetchUserVotes from '../api/fetchUserVotes';
 import postVote from '../api/postVote';
 import Button from '../components/button';
 import Countdown from '../components/countdown';
 import Option from '../components/option';
+import Title from '../components/typography/Title';
 import useCountdown from '../hooks/useCountdown';
 import useUser from '../hooks/useUser';
 import { FlexColumn, FlexRow, Grid } from '../layout/Layout.styled';
 import { ResponseUserVotesType } from '../types/CycleType';
-import fetchCycle from '../api/fetchCycle';
 
 function Vote() {
   const queryClient = useQueryClient();
@@ -165,7 +167,7 @@ function Vote() {
     <FlexColumn $gap="3rem">
       <FlexColumn>
         <Grid $columns={2} $gap="2rem">
-          <h2>{cycle?.forumQuestions?.[0].title}</h2>
+          <Title className="title">{cycle?.forumQuestions?.[0].title}</Title>
           <Countdown formattedTime={formattedTime} />
           <FlexRow $gap="0.25rem" $wrap>
             {Array.from({ length: initialHearts }).map((_, id) => (
@@ -178,9 +180,11 @@ function Vote() {
               />
             ))}
           </FlexRow>
-          <Button color="primary" onClick={handleSaveVotes} disabled={!votesAreDifferent}>
-            Save all votes
-          </Button>
+          <FlexRow $justifySelf="flex-end">
+            <Button color="primary" onClick={handleSaveVotes} disabled={!votesAreDifferent}>
+              Save all votes
+            </Button>
+          </FlexRow>
         </Grid>
       </FlexColumn>
       <Grid $columns={2} $gap="2rem">

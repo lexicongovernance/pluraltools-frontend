@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchEvents } from '../api';
 import EventCard from '../components/eventCard';
+import Title from '../components/typography/Title';
 import useUser from '../hooks/useUser';
 import { FlexColumn, Grid } from '../layout/Layout.styled';
 
@@ -22,7 +23,7 @@ function Events() {
 
   return (
     <FlexColumn $gap="4rem">
-      <h2>Welcome, {user?.username}</h2>
+      <Title>Welcome, {user?.username}</Title>
       <Grid $columns={2} $gap="2rem">
         {eventsWithImage?.map((event) => (
           <EventCard

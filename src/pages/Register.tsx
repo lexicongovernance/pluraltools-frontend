@@ -17,14 +17,15 @@ import ErrorText from '../components/form/ErrorText';
 import Input from '../components/form/Input';
 import Label from '../components/form/Label';
 import Select from '../components/form/Select';
+import Title from '../components/typography/Title';
 import useUser from '../hooks/useUser';
 import { FlexColumn, FlexRow } from '../layout/Layout.styled';
 import { AuthUser } from '../types/AuthUserType';
+import { DBEvent } from '../types/DBEventType';
 import { GetRegistrationDataResponse } from '../types/RegistrationDataType';
 import { RegistrationFieldOption } from '../types/RegistrationFieldOptionType';
 import { GetRegistrationFieldsResponse } from '../types/RegistrationFieldType';
 import { GetRegistrationResponseType } from '../types/RegistrationType';
-import { DBEvent } from '../types/DBEventType';
 
 function Register() {
   const { user, isLoading } = useUser();
@@ -144,7 +145,7 @@ function RegisterForm(props: {
       {props.user ? (
         <FlexColumn>
           <FlexRow $justifyContent="space-between">
-            <h2>Register for {props.event?.name}</h2>
+            <Title>Register for {props.event?.name}</Title>
             {props.registration?.status && <Chip>{props.registration.status}</Chip>}
           </FlexRow>
           <form.Provider>

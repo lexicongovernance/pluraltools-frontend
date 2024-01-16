@@ -58,7 +58,7 @@ function Event() {
   };
 
   const { data: event } = useQuery({
-    queryKey: ['event'],
+    queryKey: ['event', eventId],
     queryFn: () => fetchEvent(eventId || ''),
     enabled: !!eventId,
     staleTime: 10000,
@@ -66,7 +66,7 @@ function Event() {
   });
 
   const { data: eventCycles } = useQuery({
-    queryKey: ['event', 'cycles'],
+    queryKey: ['event', eventId, 'cycles'],
     queryFn: () => fetchEventCycles(eventId || ''),
     enabled: !!eventId,
     staleTime: 10000,
