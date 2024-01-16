@@ -8,10 +8,10 @@ const StyledError = styled.p`
 
 type ErrorProps = {
   children: React.ReactNode;
-};
+} & React.ComponentProps<typeof StyledError>;
 
-function Error({ children }: ErrorProps) {
-  return <StyledError>{children}</StyledError>;
+function Error({ children, ...props }: ErrorProps) {
+  return <StyledError {...props}>{children}</StyledError>;
 }
 
 export default Error;

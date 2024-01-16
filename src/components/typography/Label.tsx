@@ -8,10 +8,10 @@ const StyledLabel = styled.p`
 
 type LabelProps = {
   children: React.ReactNode;
-};
+} & React.ComponentProps<typeof StyledLabel>;
 
-function Label({ children }: LabelProps) {
-  return <StyledLabel>{children}</StyledLabel>;
+function Label({ children, ...props }: LabelProps) {
+  return <StyledLabel {...props}>{children}</StyledLabel>;
 }
 
 export default Label;

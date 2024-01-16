@@ -7,10 +7,10 @@ const StyledBody = styled.p`
 
 type BodyProps = {
   children: React.ReactNode;
-};
+} & React.ComponentProps<typeof StyledBody>;
 
-function Body({ children }: BodyProps) {
-  return <StyledBody>{children}</StyledBody>;
+function Body({ children, ...props }: BodyProps) {
+  return <StyledBody {...props}>{children}</StyledBody>;
 }
 
 export default Body;

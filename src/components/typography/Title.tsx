@@ -8,10 +8,10 @@ const StyledTitle = styled.h2`
 
 type TitleProps = {
   children: React.ReactNode;
-};
+} & React.ComponentProps<typeof StyledTitle>;
 
-function Title({ children }: TitleProps) {
-  return <StyledTitle>{children}</StyledTitle>;
+function Title({ children, ...props }: TitleProps) {
+  return <StyledTitle {...props}>{children}</StyledTitle>;
 }
 
 export default Title;
