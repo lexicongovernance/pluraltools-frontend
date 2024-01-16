@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
-import fetchCycles from '../api/fetchCycles';
+import { useNavigate, useParams } from 'react-router-dom';
 import fetchUserVotes from '../api/fetchUserVotes';
 import postVote from '../api/postVote';
 import Button from '../components/button';
@@ -11,21 +11,23 @@ import useCountdown from '../hooks/useCountdown';
 import useUser from '../hooks/useUser';
 import { FlexColumn, FlexRow, Grid } from '../layout/Layout.styled';
 import { ResponseUserVotesType } from '../types/CycleType';
+import fetchCycle from '../api/fetchCycle';
 
-function Home() {
+function Vote() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { user } = useUser();
   const [startAt, setStartAt] = useState<string | null>(null);
   const [endAt, setEndAt] = useState<string | null>(null);
 
-  const { data: cycles } = useQuery({
+  const { cycleId, eventId } = useParams();
+
+  const { data: cycle } = useQuery({
     queryKey: ['cycles'],
-    queryFn: fetchCycles,
-    staleTime: 10000,
+    queryFn: () => fetchCycle(cycleId || ''),
+    enabled: !!cycleId,
     retry: false,
   });
-
-  const currentCycle = cycles && cycles[0];
 
   const {
     data: userVotes,
@@ -33,9 +35,8 @@ function Home() {
     isError: isErrorUserVotes,
   } = useQuery({
     queryKey: ['user-votes'],
-    queryFn: () => fetchUserVotes(user?.id || '', currentCycle!.id),
-    enabled: !!user?.id && !!currentCycle?.id,
-    staleTime: 10000,
+    queryFn: () => fetchUserVotes(user?.id || '', cycleId || ''),
+    enabled: !!user?.id && !!cycleId,
     retry: false,
   });
 
@@ -46,11 +47,11 @@ function Home() {
   >([]);
 
   useEffect(() => {
-    if (currentCycle && currentCycle.startAt && currentCycle.endAt) {
-      setStartAt(currentCycle.startAt);
-      setEndAt(currentCycle.endAt);
+    if (cycle && cycle.startAt && cycle.endAt) {
+      setStartAt(cycle.startAt);
+      setEndAt(cycle.endAt);
     }
-  }, [currentCycle]);
+  }, [cycle]);
 
   const { formattedTime } = useCountdown(startAt, endAt);
 
@@ -164,7 +165,7 @@ function Home() {
     <FlexColumn $gap="3rem">
       <FlexColumn>
         <Grid $columns={2} $gap="2rem">
-          <h2>{currentCycle?.forumQuestions[0].title}</h2>
+          <h2>{cycle?.forumQuestions?.[0].title}</h2>
           <Countdown formattedTime={formattedTime} />
           <FlexRow $gap="0.25rem" $wrap>
             {Array.from({ length: initialHearts }).map((_, id) => (
@@ -177,15 +178,14 @@ function Home() {
               />
             ))}
           </FlexRow>
-          {/* // TODO: Disable button if there are no changes */}
           <Button color="primary" onClick={handleSaveVotes} disabled={!votesAreDifferent}>
             Save all votes
           </Button>
         </Grid>
       </FlexColumn>
       <Grid $columns={2} $gap="2rem">
-        {currentCycle &&
-          currentCycle.forumQuestions.map((forumQuestion) => {
+        {cycle &&
+          cycle.forumQuestions?.map((forumQuestion) => {
             return forumQuestion.questionOptions.map((questionOption) => {
               const userVote = localUserVotes.find((vote) => vote.optionId === questionOption.id);
               const numOfVotes = userVote ? userVote.numOfVotes : 0;
@@ -202,8 +202,17 @@ function Home() {
             });
           })}
       </Grid>
+      <FlexRow $alignSelf="center">
+        <Button
+          color="secondary"
+          variant="text"
+          onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/results`)}
+        >
+          see results
+        </Button>
+      </FlexRow>
     </FlexColumn>
   );
 }
 
-export default Home;
+export default Vote;

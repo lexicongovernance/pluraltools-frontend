@@ -5,22 +5,25 @@ import ZupassLoginButton from '../zupassLoginButton';
 import { HeaderContainer, NavButtons, SyledHeader, StyledNavLink, Logo } from './Header.styled';
 import useUser from '../../hooks/useUser';
 import { useNavigate } from 'react-router-dom';
+import { useAppStore } from '../../store';
 
 function Header() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { user } = useUser();
+  const resetState = useAppStore((state) => state.reset);
   const { mutate: mutateLogout } = useMutation({
     mutationFn: logout,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['user'] });
+      resetState();
+      queryClient.invalidateQueries();
     },
   });
 
   return (
     <SyledHeader>
       <HeaderContainer>
-        <Logo onClick={() => navigate('/home')}>
+        <Logo onClick={() => navigate('/events')}>
           Plural
           <br />
           MEV
@@ -30,9 +33,9 @@ function Header() {
             {user ? (
               <>
                 <li>
-                  <StyledNavLink to="/home">
+                  <StyledNavLink to="/events">
                     <Button variant="text" tabIndex={-1}>
-                      Home
+                      Events
                     </Button>
                   </StyledNavLink>
                 </li>

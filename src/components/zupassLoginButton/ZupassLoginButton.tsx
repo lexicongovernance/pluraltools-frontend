@@ -30,7 +30,7 @@ function ZupassLoginButton({ children, ...props }: ZupassLoginButtonProps) {
     onSuccess: (body) => {
       if (body) {
         queryClient.invalidateQueries({ queryKey: ['user'] });
-        navigate('/register');
+        navigate('/');
       }
     },
   });
