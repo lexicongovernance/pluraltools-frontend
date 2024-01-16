@@ -26,7 +26,7 @@ function Header() {
         <Logo onClick={() => navigate('/events')}>
           Plural
           <br />
-          MEV
+          Research
         </Logo>
         <nav>
           <NavButtons>
