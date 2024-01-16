@@ -156,7 +156,7 @@ function Account() {
                     onChange={(e) => field.handleChange(e.target.value)}
                   >
                     <option value="" disabled>
-                      Please choose a affiliation
+                      Please choose an affiliation
                     </option>
                     {groups?.map((group) => (
                       <option key={group.id} value={group.id}>
