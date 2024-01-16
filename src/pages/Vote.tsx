@@ -166,7 +166,7 @@ function Vote() {
     <FlexColumn $gap="3rem">
       <FlexColumn>
         <Grid $columns={2} $gap="2rem">
-          <h2>{cycle?.forumQuestions[0].title}</h2>
+          <h2>{cycle?.forumQuestions?.[0].title}</h2>
           <Countdown formattedTime={formattedTime} />
           <FlexRow $gap="0.25rem" $wrap>
             {Array.from({ length: initialHearts }).map((_, id) => (
@@ -187,7 +187,7 @@ function Vote() {
       </FlexColumn>
       <Grid $columns={2} $gap="2rem">
         {cycle &&
-          cycle.forumQuestions.map((forumQuestion) => {
+          cycle.forumQuestions?.map((forumQuestion) => {
             return forumQuestion.questionOptions.map((questionOption) => {
               const userVote = localUserVotes.find((vote) => vote.optionId === questionOption.id);
               const numOfVotes = userVote ? userVote.numOfVotes : 0;

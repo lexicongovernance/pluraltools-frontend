@@ -20,9 +20,17 @@ export const Main = styled.main`
   }
 `;
 
-export const Grid = styled.section<{ $columns?: number; $rows?: number; $gap?: string }>`
+export const Grid = styled.section<{
+  $columns?: number;
+  $rows?: number;
+  $gap?: string;
+  $colgap?: string;
+  $rowgap?: string;
+}>`
   display: grid;
   gap: ${(props) => props.$gap || '1rem'};
+  column-gap: ${(props) => props.$colgap || '1rem'};
+  row-gap: ${(props) => props.$rowgap || '1rem'};
   grid-template-columns: repeat(1, 1fr);
   grid-template-rows: repeat(auto, 1fr);
 
