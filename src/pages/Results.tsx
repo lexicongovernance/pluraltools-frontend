@@ -5,7 +5,41 @@ import styled from 'styled-components';
 import { fetchForumQuestionStatistics } from '../api';
 import fetchCycle from '../api/fetchCycle';
 import Card from '../components/card';
+import Subtitle from '../components/typography/Subtitle';
+import Title from '../components/typography/Title';
 import { FlexColumn, FlexRow, Grid } from '../layout/Layout.styled';
+
+const ResultsCard = styled.article<{ $expanded: boolean }>`
+  background-color: #1f2021;
+  border-radius: 1rem;
+  cursor: pointer;
+  padding: 2rem;
+  position: relative;
+  transition: height 0.3s ease-in-out;
+
+  .arrow {
+    transform: rotate(${(props) => (props.$expanded ? '180deg' : '0deg')});
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .statistics {
+    display: ${(props) => (props.$expanded ? 'flex' : 'none')};
+  }
+`;
+const Badge = styled.div<{ $type: 'gold' | 'silver' | 'bronze' }>`
+  align-items: center;
+  background-image: ${(props) => props.$type && `url('/icons/${props.$type}_badge.svg')`};
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: flex;
+  height: 2.5rem;
+  justify-content: center;
+  left: -1rem;
+  position: absolute;
+  top: -0.75rem;
+  width: 2.5rem;
+`;
 
 function Results() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -54,33 +88,12 @@ function Results() {
       id,
       ...stats,
     }))
-    .sort((a, b) => b.pluralityScore - a.pluralityScore);
-
-  const ResultsCard = styled.article<{ $expanded: boolean }>`
-    background-color: #1f2021;
-    border-radius: 1rem;
-    max-height: ${(props) => (props.$expanded ? '100%' : '90px')};
-    overflow: hidden;
-    padding: 2rem;
-    transition: max-height 0.3s ease-in-out;
-    cursor: pointer;
-
-    .arrow {
-      transform: rotate(${(props) => (props.$expanded ? '180deg' : '0deg')});
-      transition: transform 0.3s ease-in-out;
-    }
-  `;
-
-  const Badge = styled.div<{ $type: 'gold' | 'silver' | 'bronze' }>`
-    background-image: ${(props) => props.$type && `url('/icons/${props.$type}_badge.svg')`};
-    height: 30px;
-    width: 30px;
-  `;
+    .sort((a, b) => parseFloat(b.pluralityScore) - parseFloat(a.pluralityScore));
 
   return (
     <FlexColumn $gap="4rem">
       <FlexColumn $gap="3rem">
-        <h2>Results for: {cycle?.forumQuestions?.[0].title}</h2>
+        <Title>Results for: {cycle?.forumQuestions?.[0].title}</Title>
         <Grid $columns={4}>
           {stats.map((stat) => (
             <Card key={stat.id} title={stat.title} body={stat.data} />
@@ -88,32 +101,48 @@ function Results() {
         </Grid>
       </FlexColumn>
       <FlexColumn $gap="3rem">
-        <h2>Leaderboard</h2>
+        <Title>Leaderboard</Title>
         <FlexColumn $gap="2rem">
-          {optionStatsArray.map((option, index) => (
-            <ResultsCard
-              key={option.id}
-              $expanded={expandedIndex === index}
-              onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
-            >
-              <FlexColumn $gap="2rem">
-                <FlexRow $justifyContent="space-between">
-                  <FlexRow $gap="0.5rem">
-                    {index === 0 && <Badge $type="gold" />}
-                    {index === 1 && <Badge $type="silver" />}
-                    {index === 2 && <Badge $type="bronze" />}
-                    <h3>{option.optionTitle}</h3>
+          {optionStatsArray.map((option, index) => {
+            const formattedPluralityScore =
+              parseFloat(option.pluralityScore) % 1 === 0
+                ? parseFloat(option.pluralityScore).toFixed(0)
+                : parseFloat(option.pluralityScore).toFixed(3);
+
+            return (
+              <ResultsCard
+                key={option.id}
+                $expanded={expandedIndex === index}
+                onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
+              >
+                <FlexColumn $gap="2rem">
+                  <FlexRow $justifyContent="space-between">
+                    <FlexRow $gap="0.5rem">
+                      {index === 0 && <Badge $type="gold" />}
+                      {index === 1 && <Badge $type="silver" />}
+                      {index === 2 && <Badge $type="bronze" />}
+                      <Title>{option.optionTitle}</Title>
+                    </FlexRow>
+                    <img className="arrow" src="/arrow_down.svg" alt="Arrow icon" />
                   </FlexRow>
-                  <img className="arrow" src="/arrow_down.svg" alt="Arrow icon" />
-                </FlexRow>
-                <FlexColumn>
-                  <p>Plurality score: {option.pluralityScore}</p>
-                  <p>Distinct voters: {option.distinctUsers}</p>
-                  <p>Allocated hearts: {option.allocatedHearts}</p>
+                  <FlexColumn className="statistics">
+                    <FlexRow>
+                      <Subtitle>Plurality score:</Subtitle>
+                      <span>{formattedPluralityScore}</span>
+                    </FlexRow>
+                    <FlexRow>
+                      <Subtitle>Distinct voters:</Subtitle>
+                      <span>{option.distinctUsers}</span>
+                    </FlexRow>
+                    <FlexRow>
+                      <Subtitle>Allocated hearts:</Subtitle>
+                      <span>{option.allocatedHearts}</span>
+                    </FlexRow>
+                  </FlexColumn>
                 </FlexColumn>
-              </FlexColumn>
-            </ResultsCard>
-          ))}
+              </ResultsCard>
+            );
+          })}
         </FlexColumn>
       </FlexColumn>
     </FlexColumn>

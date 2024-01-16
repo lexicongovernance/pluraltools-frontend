@@ -3,6 +3,7 @@ import styled from 'styled-components';
 type FlexProps = {
   $alignItems?: 'center';
   $alignSelf?: 'flex-start' | 'center' | 'flex-end';
+  $justifySelf?: 'flex-start' | 'center' | 'flex-end';
   $gap?: string;
   $justifyContent?: 'space-between' | 'flex-end';
   $reverse?: boolean;
@@ -43,6 +44,7 @@ export const Grid = styled.section<{
 export const FlexRow = styled.section<FlexProps>`
   align-items: ${(props) => props.$alignItems && props.$alignItems};
   align-self: ${(props) => props.$alignSelf && props.$alignSelf};
+  justify-self: ${(props) => props.$justifySelf && props.$justifySelf};
   display: flex;
   gap: ${(props) => props.$gap || '1rem'};
   justify-content: ${(props) => props.$justifyContent && props.$justifyContent};
