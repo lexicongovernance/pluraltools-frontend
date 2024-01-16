@@ -52,9 +52,13 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={handleHomePage} />
-      <Route path="/" element={<OnboardingPage />} />
+      <Route path="/onboarding" element={<OnboardingPage />} />
       <Route path="/events" element={user ? <Events /> : <Navigate to="/" replace />} />
       <Route path="/events/:eventId" element={user ? <Event /> : <Navigate to="/" replace />} />
+      <Route
+        path="/events/:eventId/register"
+        element={user ? <Register /> : <Navigate to="/" replace />}
+      />
       <Route
         path="/events/:eventId/cycles/:cycleId"
         element={user ? <Vote /> : <Navigate to="/" replace />}

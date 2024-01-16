@@ -2,10 +2,10 @@ import { ValidationError, useForm } from '@tanstack/react-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
 import {
-  fetchEvents,
+  fetchEvent,
   fetchRegistration,
   fetchRegistrationData,
   fetchRegistrationFields,
@@ -20,40 +20,41 @@ import Select from '../components/form/Select';
 import useUser from '../hooks/useUser';
 import { FlexColumn, FlexRow } from '../layout/Layout.styled';
 import { AuthUser } from '../types/AuthUserType';
-import { DBEvent } from '../types/DBEventType';
 import { GetRegistrationDataResponse } from '../types/RegistrationDataType';
 import { RegistrationFieldOption } from '../types/RegistrationFieldOptionType';
 import { GetRegistrationFieldsResponse } from '../types/RegistrationFieldType';
 import { GetRegistrationResponseType } from '../types/RegistrationType';
+import { DBEvent } from '../types/DBEventType';
 
 function Register() {
   const { user, isLoading } = useUser();
+  const { eventId } = useParams();
 
-  const { data: events } = useQuery({
-    queryKey: ['event'],
-    queryFn: () => fetchEvents(),
+  const { data: event } = useQuery({
+    queryKey: ['event', eventId],
+    queryFn: () => fetchEvent(eventId || ''),
     staleTime: 10000,
   });
 
   const { data: registration } = useQuery({
-    queryKey: ['registration'],
-    queryFn: () => fetchRegistration(events?.[0].id || ''),
+    queryKey: ['event', eventId, 'registration'],
+    queryFn: () => fetchRegistration(eventId || ''),
     staleTime: 10000,
-    enabled: !!events?.[0].id,
+    enabled: !!eventId,
   });
 
   const { data: registrationFields } = useQuery({
-    queryKey: ['registration', 'fields'],
-    queryFn: () => fetchRegistrationFields(events?.[0].id || ''),
+    queryKey: ['event', eventId, 'registration', 'fields'],
+    queryFn: () => fetchRegistrationFields(eventId || ''),
     staleTime: 10000,
-    enabled: !!events?.[0].id,
+    enabled: !!eventId,
   });
 
   const { data: registrationData, isLoading: registrationDataIsLoading } = useQuery({
-    queryKey: ['registration', 'data'],
-    queryFn: () => fetchRegistrationData(events?.[0].id || ''),
+    queryKey: ['event', eventId, 'registration', 'data'],
+    queryFn: () => fetchRegistrationData(eventId || ''),
     staleTime: 10000,
-    enabled: !!events?.[0].id,
+    enabled: !!eventId,
   });
 
   if (isLoading || registrationDataIsLoading) {
@@ -62,8 +63,8 @@ function Register() {
 
   return (
     <RegisterForm
+      event={event}
       user={user}
-      events={events}
       registration={registration}
       registrationFields={registrationFields}
       registrationData={registrationData}
@@ -76,7 +77,7 @@ function RegisterForm(props: {
   registrationFields?: GetRegistrationFieldsResponse | null | undefined;
   registration?: GetRegistrationResponseType | null | undefined;
   registrationData?: GetRegistrationDataResponse | null | undefined;
-  events: DBEvent[] | null | undefined;
+  event: DBEvent | null | undefined;
 }) {
   const navigate = useNavigate();
 
@@ -92,7 +93,7 @@ function RegisterForm(props: {
     ),
     onSubmit: (form) => {
       mutateRegistrationData({
-        eventId: props.events![0].id,
+        eventId: props.event?.id || '',
         body: {
           status: 'DRAFT',
           registrationData: Object.entries(form.value).map(([key, value]) => ({
@@ -101,16 +102,21 @@ function RegisterForm(props: {
           })),
         },
       });
-      navigate('/events');
     },
   });
 
   const { mutate: mutateRegistrationData } = useMutation({
     mutationFn: postRegistrationData,
-    onSuccess: (body) => {
+    onSuccess: async (body) => {
       if (body) {
         toast.success('Registration saved successfully!');
-        queryClient.invalidateQueries({ queryKey: ['registration', 'data'] });
+        await queryClient.invalidateQueries({
+          queryKey: ['event', props.event?.id, 'registration'],
+        });
+        await queryClient.invalidateQueries({
+          queryKey: ['event', props.event?.id, 'registration', 'data'],
+        });
+        navigate(`/events/${props.event?.id}`);
       }
     },
     onError: (error) => {
@@ -141,7 +147,7 @@ function RegisterForm(props: {
       {props.user ? (
         <FlexColumn>
           <FlexRow $justifyContent="space-between">
-            <h2>Register: {props.events?.[0].name}</h2>
+            <h2>Register for {props.event?.name}</h2>
             {props.registration?.status && <Chip>{props.registration.status}</Chip>}
           </FlexRow>
           <form.Provider>

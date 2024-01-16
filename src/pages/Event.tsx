@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import fetchEventCycles from '../api/fetchEventCycles';
 import { useNavigate, useParams } from 'react-router-dom';
 import Button from '../components/button';
+import { useEffect } from 'react';
+import { fetchRegistration } from '../api';
 
 function Event() {
   const { eventId } = useParams();
@@ -14,6 +16,21 @@ function Event() {
     staleTime: 10000,
     retry: false,
   });
+
+  const { data: registration } = useQuery({
+    queryKey: ['event', eventId, 'registration'],
+    queryFn: () => fetchRegistration(eventId || ''),
+    enabled: !!eventId,
+    staleTime: 10000,
+    retry: false,
+  });
+
+  useEffect(() => {
+    if (registration === null) {
+      navigate(`/events/${eventId}/register`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventId, registration]);
 
   const handleClick = (cycleId: string) => {
     navigate(`/events/${eventId}/cycles/${cycleId}`);
