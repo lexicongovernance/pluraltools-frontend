@@ -15,7 +15,6 @@ function Results() {
     enabled: !!cycleId,
     retry: false,
   });
-  console.log('cycle:', cycle);
 
   const { data: statistics } = useQuery({
     queryKey: ['cycles', cycleId, 'forumQuestions', 0, 'statistics'],
