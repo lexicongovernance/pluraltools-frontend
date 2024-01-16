@@ -50,7 +50,7 @@ function Vote() {
     retry: false,
   });
 
-  const [availableHearts, setAvailableHearts] = useState(initialHearts ?? 0);
+  const [availableHearts, setAvailableHearts] = useState(0);
   const [localUserVotes, setLocalUserVotes] = useState<
     ResponseUserVotesType | { optionId: string; numOfVotes: number }[]
   >([]);
@@ -68,7 +68,6 @@ function Vote() {
     const givenVotes = votes
       .map((option) => option.numOfVotes)
       .reduce((prev, curr) => prev + curr, 0);
-
     setAvailableHearts(initialHearts - givenVotes);
     setLocalUserVotes(votes);
   };
@@ -91,7 +90,7 @@ function Vote() {
   }, [localUserVotes, userVotes]);
 
   useEffect(() => {
-    if (userVotes?.length && initialHearts) {
+    if (userVotes && initialHearts) {
       updateVotesAndHearts(userVotes, initialHearts);
     }
   }, [userVotes, initialHearts]);
