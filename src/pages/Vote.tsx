@@ -181,12 +181,6 @@ function Vote() {
           <Button color="primary" onClick={handleSaveVotes} disabled={!votesAreDifferent}>
             Save all votes
           </Button>
-          <Button
-            color="primary"
-            onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/results`)}
-          >
-            Results
-          </Button>
         </Grid>
       </FlexColumn>
       <Grid $columns={2} $gap="2rem">
@@ -208,6 +202,15 @@ function Vote() {
             });
           })}
       </Grid>
+      <FlexRow $alignSelf="center">
+        <Button
+          color="secondary"
+          variant="text"
+          onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/results`)}
+        >
+          see results
+        </Button>
+      </FlexRow>
     </FlexColumn>
   );
 }
