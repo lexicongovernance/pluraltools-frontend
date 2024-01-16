@@ -12,6 +12,7 @@ import useUser from '../hooks/useUser';
 import { FlexColumn, FlexRow, Grid } from '../layout/Layout.styled';
 import { ResponseUserVotesType } from '../types/CycleType';
 import fetchCycle from '../api/fetchCycle';
+import { fetchForumQuestionHearts } from '../api';
 
 function Vote() {
   const queryClient = useQueryClient();
@@ -23,25 +24,33 @@ function Vote() {
   const { cycleId, eventId } = useParams();
 
   const { data: cycle } = useQuery({
-    queryKey: ['cycles'],
+    queryKey: ['cycles', cycleId],
     queryFn: () => fetchCycle(cycleId || ''),
     enabled: !!cycleId,
     retry: false,
   });
+
+  const forumQuestion = cycle?.forumQuestions?.[0];
 
   const {
     data: userVotes,
     isLoading: isLoadingUserVotes,
     isError: isErrorUserVotes,
   } = useQuery({
-    queryKey: ['user-votes'],
-    queryFn: () => fetchUserVotes(user?.id || '', cycleId || ''),
-    enabled: !!user?.id && !!cycleId,
+    queryKey: ['question', forumQuestion?.id, 'votes'],
+    queryFn: () => fetchUserVotes(user?.id || '', forumQuestion?.id || ''),
+    enabled: !!user?.id && !!forumQuestion?.id,
     retry: false,
   });
 
-  const initialHearts = 10;
-  const [availableHearts, setAvailableHearts] = useState(initialHearts);
+  const { data: initialHearts } = useQuery({
+    queryKey: ['question', forumQuestion?.id, 'hearts'],
+    queryFn: () => fetchForumQuestionHearts(forumQuestion?.id || ''),
+    enabled: !!user?.id && !!forumQuestion?.id,
+    retry: false,
+  });
+
+  const [availableHearts, setAvailableHearts] = useState(initialHearts ?? 0);
   const [localUserVotes, setLocalUserVotes] = useState<
     ResponseUserVotesType | { optionId: string; numOfVotes: number }[]
   >([]);
@@ -55,7 +64,7 @@ function Vote() {
 
   const { formattedTime } = useCountdown(startAt, endAt);
 
-  const updateVotesAndHearts = (votes: ResponseUserVotesType) => {
+  const updateVotesAndHearts = (votes: ResponseUserVotesType, initialHearts: number) => {
     const givenVotes = votes
       .map((option) => option.numOfVotes)
       .reduce((prev, curr) => prev + curr, 0);
@@ -82,10 +91,10 @@ function Vote() {
   }, [localUserVotes, userVotes]);
 
   useEffect(() => {
-    if (userVotes?.length) {
-      updateVotesAndHearts(userVotes);
+    if (userVotes?.length && initialHearts) {
+      updateVotesAndHearts(userVotes, initialHearts);
     }
-  }, [userVotes]);
+  }, [userVotes, initialHearts]);
 
   const handleVote = (optionId: string) => {
     if (availableHearts > 0) {
@@ -119,14 +128,18 @@ function Vote() {
       return updatedLocalVotes;
     });
 
-    setAvailableHearts((prevAvailableHearts) => Math.min(initialHearts, prevAvailableHearts + 1));
+    setAvailableHearts((prevAvailableHearts) =>
+      Math.min(initialHearts ?? 0, prevAvailableHearts + 1)
+    );
   };
 
   const { mutate: mutateVote } = useMutation({
     mutationFn: postVote,
     onSuccess: (body) => {
       if (body) {
-        queryClient.invalidateQueries({ queryKey: ['user-votes'] });
+        queryClient.invalidateQueries({
+          queryKey: ['question', forumQuestion?.id, 'votes'],
+        });
       }
     },
   });
@@ -168,7 +181,7 @@ function Vote() {
           <h2>{cycle?.forumQuestions?.[0].title}</h2>
           <Countdown formattedTime={formattedTime} />
           <FlexRow $gap="0.25rem" $wrap>
-            {Array.from({ length: initialHearts }).map((_, id) => (
+            {Array.from({ length: initialHearts ?? 0 }).map((_, id) => (
               <img
                 key={id}
                 src={id < availableHearts ? '/icons/full_heart.svg' : '/icons/empty_heart.svg'}

@@ -2,11 +2,13 @@ import { ResponseUserVotesType } from '../types/CycleType';
 
 async function fetchUserVotes(
   userId: string,
-  cycleId: string
+  forumQuestionId: string
 ): Promise<ResponseUserVotesType | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/users/${userId}/cycles/${cycleId}/votes`,
+      `${
+        import.meta.env.VITE_SERVER_URL
+      }/api/users/${userId}/forum-questions/${forumQuestionId}/votes`,
       {
         credentials: 'include',
         headers: {
@@ -21,7 +23,7 @@ async function fetchUserVotes(
     const userVotes = (await response.json()) as { data: ResponseUserVotesType };
     return userVotes.data;
   } catch (error) {
-    console.error('Error fetchin user votes:', error);
+    console.error('Error fetching user votes:', error);
     return null;
   }
 }

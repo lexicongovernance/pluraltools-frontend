@@ -11,3 +11,4 @@ export { default as postRegistrationData } from './postRegistrationData';
 export { default as fetchEventCycles } from './fetchEventCycles';
 export { default as fetchEvent } from './fetchEvent';
 export { default as fetchForumQuestionStatistics } from './fetchForumQuestionStatistics';
+export { default as fetchForumQuestionHearts } from './fetchForumQuestionHearts';
