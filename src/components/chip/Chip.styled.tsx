@@ -5,7 +5,7 @@ export const StyledChip = styled.div<{ $status?: 'OPEN' | 'CLOSED' | 'RESULTS' |
   align-self: flex-end;
   background-color: ${(props) => props.$status === 'OPEN' && '#399231'};
   background-color: ${(props) => props.$status === 'CLOSED' && 'lightcoral'};
-  background-color: ${(props) => props.$status === 'RESULTS' && '#FFA800v'};
+  background-color: ${(props) => props.$status === 'RESULTS' && '#FFA800'};
   border-radius: 2rem;
   cursor: default;
   display: flex;
