@@ -148,7 +148,7 @@ function Account() {
               }}
               children={(field) => (
                 <FlexColumn $gap="0.5rem">
-                  <Label required>Group</Label>
+                  <Label required>Affiliation</Label>
                   <Select
                     name={field.name}
                     value={field.state.value}
@@ -156,7 +156,7 @@ function Account() {
                     onChange={(e) => field.handleChange(e.target.value)}
                   >
                     <option value="" disabled>
-                      Please choose a group
+                      Please choose a affiliation
                     </option>
                     {groups?.map((group) => (
                       <option key={group.id} value={group.id}>
