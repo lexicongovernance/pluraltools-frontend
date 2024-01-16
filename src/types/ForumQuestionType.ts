@@ -7,9 +7,9 @@ export type GetForumQuestionStatisticsResponse = {
     string,
     {
       optionTitle: string;
-      pluralityScore: number;
-      distinctUsers: number;
-      allocatedHearts: number;
+      pluralityScore: string;
+      distinctUsers: string;
+      allocatedHearts: string;
     }
   >;
 };
