@@ -7,7 +7,7 @@ type EventCardType = {
   eventId: string;
   src: string;
   title: string;
-  description: string | null;
+  description?: string | null;
 };
 
 function EventCard({ eventId, src, title, description }: EventCardType) {
@@ -21,7 +21,7 @@ function EventCard({ eventId, src, title, description }: EventCardType) {
       <ImageContainer>
         <img src={src} alt="Event image" />
       </ImageContainer>
-      <FlexColumn className="content" $gap="0.5rem">
+      <FlexColumn className="content" $gap="2rem">
         <Title>{title}</Title>
         {description && <Description>{description}</Description>}
         <FlexRow $alignSelf="flex-end">

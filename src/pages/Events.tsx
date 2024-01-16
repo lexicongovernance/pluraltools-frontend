@@ -13,16 +13,23 @@ function Events() {
     retry: false,
   });
 
+  const images = ['/full_node.png', '/landing-graphic.png', '/zuzalu.png'];
+
+  const eventsWithImage = events?.map((event, index) => ({
+    ...event,
+    image: images[index % images.length],
+  }));
+
   return (
     <FlexColumn $gap="4rem">
       <h2>Welcome, {user?.username}</h2>
       <Grid $columns={2} $gap="2rem">
-        {events?.map((event) => (
+        {eventsWithImage?.map((event) => (
           <EventCard
             key={event.id}
-            src="/landing-graphic.png"
+            src={event.image}
             title={event.name}
-            description={event.description}
+            // description={event.description}
             eventId={event.id}
           />
         ))}

@@ -9,9 +9,53 @@ import Chip from '../components/chip';
 import { useEffect } from 'react';
 import { fetchRegistration } from '../api';
 
+const StyledEvent = styled.div`
+  background-color: #1f2021;
+  border-radius: 1rem;
+`;
+
+const Container = styled.div`
+  padding: 2rem;
+`;
+
+const Card = styled.article`
+  background-color: #1f2021;
+  border-radius: 1rem;
+  padding: 2rem;
+`;
+
+const Title = styled.h2`
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  /* min-height: 3.5rem; */
+`;
+
+const ImageContainer = styled.div`
+  background-color: #404040;
+  border-radius: 1rem;
+  max-height: 340px;
+  overflow: hidden;
+
+  img {
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
+  }
+`;
+
 function Event() {
   const { eventId } = useParams();
   const navigate = useNavigate();
+
+  const imagePicker = (eventId: string) => {
+    if (eventId === '3710b375-bbc5-47a4-8ac9-9fbbbfe11c46') {
+      return '/zuzalu.png';
+    } else if (eventId === '5b6f447f-8a0b-4dce-8f90-ebccbcf6dc78') {
+      return '/full_node.png';
+    } else return '/landing-graphic.png';
+  };
 
   const { data: event } = useQuery({
     queryKey: ['event'],
@@ -47,67 +91,46 @@ function Event() {
     navigate(`/events/${eventId}/cycles/${cycleId}`);
   };
 
-  const Event = styled.div`
-    background-color: #1f2021;
-    border-radius: 1rem;
-  `;
-
-  const Container = styled.div`
-    padding: 2rem;
-  `;
-
-  const Card = styled.article`
-    background-color: #1f2021;
-    border-radius: 1rem;
-    padding: 2rem;
-  `;
-
-  const Title = styled.h2`
-    font-family: 'Press Start 2P', sans-serif;
-    font-size: 1.25rem;
-    line-height: 1.75rem;
-    /* min-height: 3.5rem; */
-  `;
-
   return (
     <FlexColumn $gap="2rem">
-      <Event>
+      <StyledEvent>
         <Grid $columns={2} $rows={1} $rowgap="0">
-          <img src="/landing-graphic.png" />
+          <ImageContainer>
+            <img src={imagePicker(eventId || '')} alt="Event image" />
+          </ImageContainer>
           <Container>
             <FlexColumn>
               <Title>{event?.name}</Title>
-              {/* <p>{event?.description}</p> */}
-              <p>
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nostrum doloribus
-                perspiciatis corporis vero tempore magnam eligendi, numquam culpa repellat assumenda
-                amet ullam placeat suscipit cum?
-              </p>
+              <p>{event?.description}</p>
             </FlexColumn>
           </Container>
         </Grid>
-      </Event>
+      </StyledEvent>
       <h2>Cycles</h2>
-      <Grid $columns={3}>
-        {eventCycles?.map((eventCycles) => {
-          const { title } = eventCycles.forumQuestions[0];
-          const eventEndDate = new Date(eventCycles.endAt);
-          const formattedDate = eventEndDate.toLocaleDateString();
+      {eventCycles && eventCycles?.length > 0 ? (
+        <Grid $columns={3}>
+          {eventCycles?.map((eventCycles) => {
+            const { title } = eventCycles.forumQuestions[0];
+            const eventEndDate = new Date(eventCycles.endAt);
+            const formattedDate = eventEndDate.toLocaleDateString();
 
-          return (
-            <Card key={eventCycles.id}>
-              <FlexColumn $gap="1.5rem">
-                <Chip status={eventCycles.status}>{eventCycles.status}</Chip>
-                <FlexColumn $gap="0.5rem">
-                  <h3>{title}</h3>
-                  <p>Closes on {formattedDate}</p>
+            return (
+              <Card key={eventCycles.id}>
+                <FlexColumn $gap="1.5rem">
+                  <Chip status={eventCycles.status}>{eventCycles.status}</Chip>
+                  <FlexColumn $gap="0.5rem">
+                    <h3>{title}</h3>
+                    <p>Closes on {formattedDate}</p>
+                  </FlexColumn>
+                  <Button onClick={() => handleClick(eventCycles.id)}>Go to cycle</Button>
                 </FlexColumn>
-                <Button onClick={() => handleClick(eventCycles.id)}>Go to cycle</Button>
-              </FlexColumn>
-            </Card>
-          );
-        })}
-      </Grid>
+              </Card>
+            );
+          })}
+        </Grid>
+      ) : (
+        <p>No cycles found</p>
+      )}
     </FlexColumn>
   );
 }
