@@ -10,6 +10,7 @@ import Register from './pages/Register';
 import Vote from './pages/Vote';
 import { useAppStore } from './store';
 import OnboardingPage from './pages/Onboarding';
+import Results from './pages/Results';
 
 function App() {
   const { user, isLoading } = useUser();
@@ -19,7 +20,7 @@ function App() {
 
   useEffect(() => {
     // check if user has email and name
-    if (user?.email && user?.username) {
+    if (user?.username) {
       setUserStatus('COMPLETE');
     }
   }, [user, setUserStatus]);
@@ -30,7 +31,7 @@ function App() {
     }
 
     if (onboardingStatus === 'INCOMPLETE') {
-      return <OnboardingPage />;
+      return <Navigate to="/onboarding" />;
     }
 
     if (userStatus === 'INCOMPLETE') {
@@ -52,12 +53,20 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={handleHomePage} />
-      <Route path="/" element={<OnboardingPage />} />
+      <Route path="/onboarding" element={<OnboardingPage />} />
       <Route path="/events" element={user ? <Events /> : <Navigate to="/" replace />} />
       <Route path="/events/:eventId" element={user ? <Event /> : <Navigate to="/" replace />} />
       <Route
+        path="/events/:eventId/register"
+        element={user ? <Register /> : <Navigate to="/" replace />}
+      />
+      <Route
         path="/events/:eventId/cycles/:cycleId"
         element={user ? <Vote /> : <Navigate to="/" replace />}
+      />
+      <Route
+        path="/events/:eventId/cycles/:cycleId/results"
+        element={user ? <Results /> : <Navigate to="/" replace />}
       />
       <Route path="/register" element={user ? <Register /> : <Navigate to="/" replace />} />
       <Route path="/account" element={user ? <Account /> : <Navigate to="/" replace />} />

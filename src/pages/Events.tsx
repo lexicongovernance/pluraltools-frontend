@@ -9,7 +9,7 @@ function Events() {
   const { data: events } = useQuery({
     queryKey: ['events'],
     queryFn: () => fetchEvents(),
-    staleTime: 10000,
+    staleTime: 3000,
     retry: false,
   });
 

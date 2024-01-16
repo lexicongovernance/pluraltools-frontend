@@ -16,7 +16,7 @@ async function fetchEvent(eventId: string): Promise<DBEvent | null> {
     const res = (await response.json()) as { data: DBEvent };
     return res.data;
   } catch (error) {
-    console.error('Error fetching events:', error);
+    console.error(`Error fetching event with id ${eventId}:`, error);
     return null;
   }
 }

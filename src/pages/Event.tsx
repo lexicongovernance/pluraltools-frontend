@@ -6,6 +6,8 @@ import Button from '../components/button';
 import { FlexColumn, Grid } from '../layout/Layout.styled';
 import styled from 'styled-components';
 import Chip from '../components/chip';
+import { useEffect } from 'react';
+import { fetchRegistration } from '../api';
 
 function Event() {
   const { eventId } = useParams();
@@ -26,6 +28,20 @@ function Event() {
     staleTime: 10000,
     retry: false,
   });
+
+  const { data: registration } = useQuery({
+    queryKey: ['event', eventId, 'registration'],
+    queryFn: () => fetchRegistration(eventId || ''),
+    enabled: !!eventId,
+    retry: false,
+  });
+
+  useEffect(() => {
+    if (registration === null) {
+      navigate(`/events/${eventId}/register`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventId, registration]);
 
   const handleClick = (cycleId: string) => {
     navigate(`/events/${eventId}/cycles/${cycleId}`);

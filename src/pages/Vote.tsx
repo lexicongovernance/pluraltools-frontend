@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import fetchUserVotes from '../api/fetchUserVotes';
 import postVote from '../api/postVote';
 import Button from '../components/button';
@@ -15,17 +15,17 @@ import fetchCycle from '../api/fetchCycle';
 
 function Vote() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { user } = useUser();
   const [startAt, setStartAt] = useState<string | null>(null);
   const [endAt, setEndAt] = useState<string | null>(null);
 
-  const { cycleId } = useParams();
+  const { cycleId, eventId } = useParams();
 
   const { data: cycle } = useQuery({
     queryKey: ['cycles'],
     queryFn: () => fetchCycle(cycleId || ''),
     enabled: !!cycleId,
-    staleTime: 10000,
     retry: false,
   });
 
@@ -37,7 +37,6 @@ function Vote() {
     queryKey: ['user-votes'],
     queryFn: () => fetchUserVotes(user?.id || '', cycleId || ''),
     enabled: !!user?.id && !!cycleId,
-    staleTime: 10000,
     retry: false,
   });
 
@@ -179,9 +178,14 @@ function Vote() {
               />
             ))}
           </FlexRow>
-          {/* // TODO: Disable button if there are no changes */}
           <Button color="primary" onClick={handleSaveVotes} disabled={!votesAreDifferent}>
             Save all votes
+          </Button>
+          <Button
+            color="primary"
+            onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/results`)}
+          >
+            Results
           </Button>
         </Grid>
       </FlexColumn>
