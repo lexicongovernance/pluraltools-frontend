@@ -8,3 +8,4 @@ export { default as fetchUserData } from './fetchUserData';
 export { default as logout } from './logout';
 export { default as postPcdStr } from './postPcdStr';
 export { default as postRegistrationData } from './postRegistrationData';
+export { default as fetchForumQuestionStatistics } from './fetchForumQuestionStatistics';
