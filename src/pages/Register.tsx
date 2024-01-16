@@ -33,27 +33,24 @@ function Register() {
   const { data: event } = useQuery({
     queryKey: ['event', eventId],
     queryFn: () => fetchEvent(eventId || ''),
-    staleTime: 10000,
+    enabled: !!eventId,
   });
 
   const { data: registration } = useQuery({
     queryKey: ['event', eventId, 'registration'],
     queryFn: () => fetchRegistration(eventId || ''),
-    staleTime: 10000,
     enabled: !!eventId,
   });
 
   const { data: registrationFields } = useQuery({
     queryKey: ['event', eventId, 'registration', 'fields'],
     queryFn: () => fetchRegistrationFields(eventId || ''),
-    staleTime: 10000,
     enabled: !!eventId,
   });
 
   const { data: registrationData, isLoading: registrationDataIsLoading } = useQuery({
     queryKey: ['event', eventId, 'registration', 'data'],
     queryFn: () => fetchRegistrationData(eventId || ''),
-    staleTime: 10000,
     enabled: !!eventId,
   });
 

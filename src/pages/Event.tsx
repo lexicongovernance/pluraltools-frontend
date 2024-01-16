@@ -21,7 +21,6 @@ function Event() {
     queryKey: ['event', eventId, 'registration'],
     queryFn: () => fetchRegistration(eventId || ''),
     enabled: !!eventId,
-    staleTime: 10000,
     retry: false,
   });
 

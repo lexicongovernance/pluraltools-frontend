@@ -19,7 +19,7 @@ import { useAppStore } from '../store';
 
 function Account() {
   const { user } = useUser();
-  const registrationStatus = useAppStore((state) => state.registrationStatus);
+  const userStatus = useAppStore((state) => state.userStatus);
   const setUserStatus = useAppStore((state) => state.setUserStatus);
 
   const navigate = useNavigate();
@@ -73,9 +73,9 @@ function Account() {
 
         toast.success('User data updated!');
 
-        if (registrationStatus === 'INCOMPLETE') {
+        if (userStatus === 'INCOMPLETE') {
           setUserStatus('COMPLETE');
-          navigate('/register');
+          navigate('/events');
         }
       }
     },
@@ -94,7 +94,7 @@ function Account() {
   return (
     <FlexColumn>
       <FlexRow $justifyContent="space-between">
-        <h2>{userRegistered ? 'User data' : 'Finish your registration'}</h2>
+        <h2>{userRegistered ? 'User data' : 'Complete your profile'}</h2>
         {userRegistered && <Chip>Registered</Chip>}
       </FlexRow>
       <Provider>

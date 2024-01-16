@@ -19,7 +19,7 @@ function App() {
 
   useEffect(() => {
     // check if user has email and name
-    if (user?.email && user?.username) {
+    if (user?.username) {
       setUserStatus('COMPLETE');
     }
   }, [user, setUserStatus]);

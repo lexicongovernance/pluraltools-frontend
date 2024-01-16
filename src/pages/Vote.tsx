@@ -25,7 +25,6 @@ function Vote() {
     queryKey: ['cycles'],
     queryFn: () => fetchCycle(cycleId || ''),
     enabled: !!cycleId,
-    staleTime: 10000,
     retry: false,
   });
 
@@ -37,7 +36,6 @@ function Vote() {
     queryKey: ['user-votes'],
     queryFn: () => fetchUserVotes(user?.id || '', cycleId || ''),
     enabled: !!user?.id && !!cycleId,
-    staleTime: 10000,
     retry: false,
   });
 
