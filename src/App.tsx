@@ -31,7 +31,7 @@ function App() {
     }
 
     if (onboardingStatus === 'INCOMPLETE') {
-      return <OnboardingPage />;
+      return <Navigate to="/onboarding" />;
     }
 
     if (userStatus === 'INCOMPLETE') {

@@ -23,7 +23,7 @@ function Header() {
   return (
     <SyledHeader>
       <HeaderContainer>
-        <Logo onClick={() => navigate('/home')}>
+        <Logo onClick={() => navigate('/events')}>
           Plural
           <br />
           MEV
