@@ -10,6 +10,7 @@ import Register from './pages/Register';
 import Vote from './pages/Vote';
 import { useAppStore } from './store';
 import OnboardingPage from './pages/Onboarding';
+import Results from './pages/Results';
 
 function App() {
   const { user, isLoading } = useUser();
@@ -62,6 +63,10 @@ function App() {
       <Route
         path="/events/:eventId/cycles/:cycleId"
         element={user ? <Vote /> : <Navigate to="/" replace />}
+      />
+      <Route
+        path="/events/:eventId/cycles/:cycleId/results"
+        element={user ? <Results /> : <Navigate to="/" replace />}
       />
       <Route path="/register" element={user ? <Register /> : <Navigate to="/" replace />} />
       <Route path="/account" element={user ? <Account /> : <Navigate to="/" replace />} />
