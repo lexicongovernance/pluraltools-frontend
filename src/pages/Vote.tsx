@@ -53,7 +53,7 @@ function Vote() {
     retry: false,
   });
 
-  const initialHearts = 10;
+  const initialHearts = 20;
   const [avaliableHearts, setAvaliableHearts] = useState(initialHearts);
   const [localUserVotes, setLocalUserVotes] = useState<
     ResponseUserVotesType | { optionId: string; numOfVotes: number }[]
