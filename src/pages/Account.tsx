@@ -74,7 +74,11 @@ function Account() {
         acc[curr.attributeKey] = curr.attributeValue;
         return acc;
       },
-      {} as Record<string, string>
+      {
+        institution: '',
+        publications: '',
+        'academic-credentials': '',
+      } as Record<string, string>
     ),
   };
 
@@ -241,7 +245,7 @@ function Account() {
                     onChange={(e) => field.handleChange(e.target.value)}
                   >
                     <option value="" disabled>
-                      Please choose an affiliation
+                      Please choose an academic credential
                     </option>
                     {ACADEMIC_CREDENTIALS?.map((name, idx) => (
                       <option key={idx} value={name}>
