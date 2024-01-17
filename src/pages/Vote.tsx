@@ -212,6 +212,7 @@ function Vote() {
                 <Option
                   key={questionOption.id}
                   title={questionOption.text}
+                  body={questionOption.description}
                   avaliableHearts={avaliableHearts}
                   numOfVotes={numOfVotes}
                   onVote={() => handleVote(questionOption.id)}

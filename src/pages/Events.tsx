@@ -14,11 +14,15 @@ function Events() {
     retry: false,
   });
 
-  const images = ['/berlin.png', '/landing-graphic.png', '/taipei.png'];
+  const images = {
+    'Berlin Research Community': '/berlin.png',
+    'Zuzalu Agenda Setting': '/landing-graphic.png',
+    'Full Node Meetup': '/taipei.png',
+  };
 
-  const eventsWithImage = events?.map((event, index) => ({
+  const eventsWithImage = events?.map((event) => ({
     ...event,
-    image: images[index % images.length],
+    image: images[event.name] || '/landing-graphic.png',
   }));
 
   return (

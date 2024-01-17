@@ -55,6 +55,7 @@ export type ResponseCycleType = {
       updatedAt: string;
       questionId: string;
       text: string;
+      description?: string;
       voteCount: number;
     }[];
   }[];
