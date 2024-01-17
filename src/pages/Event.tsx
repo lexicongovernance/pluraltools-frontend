@@ -45,9 +45,19 @@ const ImageContainer = styled.div`
   }
 `;
 
+const BackArrow = styled.div`
+  cursor: pointer;
+  height: 1.75rem;
+  width: 1.75rem;
+`;
+
 function Event() {
   const { eventId } = useParams();
   const navigate = useNavigate();
+
+  const handleGoBack = () => {
+    navigate(-1); // Navigate back one step in the history stack
+  };
 
   const imagePicker = (eventId: string) => {
     if (eventId === '3710b375-bbc5-47a4-8ac9-9fbbbfe11c46') {
@@ -93,6 +103,9 @@ function Event() {
 
   return (
     <FlexColumn $gap="2rem">
+      <BackArrow onClick={handleGoBack}>
+        <img src="/icons/back_arrow.svg" alt="Back arrow" />
+      </BackArrow>
       <StyledEvent>
         <Grid $columns={2} $rows={1} $rowgap="0">
           <ImageContainer>
