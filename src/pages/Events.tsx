@@ -14,7 +14,7 @@ function Events() {
     retry: false,
   });
 
-  const images = ['/full_node.png', '/landing-graphic.png', '/zuzalu.png'];
+  const images = ['/berlin.png', '/landing-graphic.png', '/taipei.png'];
 
   const eventsWithImage = events?.map((event, index) => ({
     ...event,
