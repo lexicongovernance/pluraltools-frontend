@@ -17,6 +17,9 @@ import Title from '../components/typography/Title';
 import useUser from '../hooks/useUser';
 import { FlexColumn, FlexRow } from '../layout/Layout.styled';
 import { useAppStore } from '../store';
+import fetchUserAttributes from '../api/fetchUserAttributes';
+
+const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None', 'Other'];
 
 function Account() {
   const { user } = useUser();
@@ -35,10 +38,17 @@ function Account() {
   });
 
   const { data: userGroups } = useQuery({
-    queryKey: ['user-groups'],
+    queryKey: ['user', user?.id, 'groups'],
     queryFn: () => fetchUserGroups(user?.id || ''),
     enabled: !!user?.id,
     staleTime: 10000,
+    retry: false,
+  });
+
+  const { data: userAttributes } = useQuery({
+    queryKey: ['user', user?.id, 'attributes'],
+    queryFn: () => fetchUserAttributes(user?.id || ''),
+    enabled: !!user?.id,
     retry: false,
   });
 
@@ -59,6 +69,17 @@ function Account() {
     username: user?.username || '',
     email: user?.email || '',
     group: (userGroups && userGroups[0]?.id) || '',
+    userAttributes: userAttributes?.reduce(
+      (acc, curr) => {
+        acc[curr.attributeKey] = curr.attributeValue;
+        return acc;
+      },
+      {
+        institution: '',
+        publications: '',
+        'academic-credentials': '',
+      } as Record<string, string>
+    ),
   };
 
   const form = useForm({
@@ -70,6 +91,7 @@ function Account() {
           username: value.username,
           email: value.email,
           groupIds: [value.group],
+          userAttributes: value.userAttributes ?? {},
         });
 
         toast.success('User data updated!');
@@ -162,6 +184,72 @@ function Account() {
                     {groups?.map((group) => (
                       <option key={group.id} value={group.id}>
                         {group.name}
+                      </option>
+                    ))}
+                  </Select>
+                  <ErrorText>{field.state.meta.errors}</ErrorText>
+                </FlexColumn>
+              )}
+            />
+            <Field
+              name="userAttributes.institution"
+              validatorAdapter={zodValidator}
+              validators={{
+                onChange: z.string().min(1, { message: 'Please select a value.' }),
+              }}
+              children={(field) => (
+                <FlexColumn $gap="0.5rem">
+                  <Label required>Institution</Label>
+                  <Input
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                  <ErrorText>{field.state.meta.errors}</ErrorText>
+                </FlexColumn>
+              )}
+            />
+            <Field
+              name="userAttributes.publications"
+              validatorAdapter={zodValidator}
+              validators={{
+                onChange: z.string().min(1, { message: 'Please select a value.' }),
+              }}
+              children={(field) => (
+                <FlexColumn $gap="0.5rem">
+                  <Label required>Publications</Label>
+                  <Input
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                  <ErrorText>{field.state.meta.errors}</ErrorText>
+                </FlexColumn>
+              )}
+            />
+            <Field
+              name="userAttributes.academic-credentials"
+              validatorAdapter={zodValidator}
+              validators={{
+                onChange: z.string().min(1, { message: 'Please select a value.' }),
+              }}
+              children={(field) => (
+                <FlexColumn $gap="0.5rem">
+                  <Label required>Academic Credentials</Label>
+                  <Select
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  >
+                    <option value="" disabled>
+                      Please choose an academic credential
+                    </option>
+                    {ACADEMIC_CREDENTIALS?.map((name, idx) => (
+                      <option key={idx} value={name}>
+                        {name}
                       </option>
                     ))}
                   </Select>
