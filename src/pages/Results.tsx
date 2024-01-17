@@ -130,7 +130,7 @@ function Results() {
                 $expanded={expandedIndex === index}
                 onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
               >
-                <FlexColumn $gap="2rem">
+                <FlexColumn $gap="1rem">
                   <FlexRow $justifyContent="space-between">
                     <FlexRow $gap="0.5rem">
                       {index === 0 && <Badge $type="gold" />}
