@@ -25,11 +25,11 @@ export const Body = styled.p`
 
 export const ImageContainer = styled.div`
   height: 100%;
-  background-color: red;
+  /* background-color: red; */
 
   & img {
     height: 100%;
-    width: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    /* width: 100%; */
   }
 `;
