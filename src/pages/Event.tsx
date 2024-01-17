@@ -51,6 +51,12 @@ const BackArrow = styled.div`
   width: 1.75rem;
 `;
 
+const images: Record<string, string> = {
+  'Berlin Research Community': '/berlin.png',
+  'Zuzalu Agenda Setting': '/taipei.png',
+  'Full Node Meetup': '/landing-graphic.png',
+};
+
 function Event() {
   const { eventId } = useParams();
   const navigate = useNavigate();
@@ -59,12 +65,8 @@ function Event() {
     navigate(-1); // Navigate back one step in the history stack
   };
 
-  const imagePicker = (eventId: string) => {
-    if (eventId === '3710b375-bbc5-47a4-8ac9-9fbbbfe11c46') {
-      return '/taipei.png';
-    } else if (eventId === '5b6f447f-8a0b-4dce-8f90-ebccbcf6dc78') {
-      return '/berlin.png';
-    } else return '/landing-graphic.png';
+  const imagePicker = (name: string) => {
+    return images[name] ?? '/landing-graphic.png';
   };
 
   const { data: event } = useQuery({
@@ -109,7 +111,7 @@ function Event() {
       <StyledEvent>
         <Grid $columns={2} $rows={1} $rowgap="0">
           <ImageContainer>
-            <img src={imagePicker(eventId || '')} alt="Event image" />
+            <img src={imagePicker(event?.name || '')} alt="Event image" />
           </ImageContainer>
           <Container>
             <FlexColumn>
