@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Title from '../typography/Title';
 
 export const StyledCard = styled.article`
   background-color: #1f2021;
@@ -13,7 +14,7 @@ export const Icon = styled.div`
   width: 2rem;
 `;
 
-export const Title = styled.h3`
+export const CardTitle = styled.h3`
   color: #eee;
   font-size: 1.25rem;
   font-weight: 600;
@@ -34,4 +35,9 @@ export const Body = styled.p`
   &::first-letter {
     text-transform: capitalize;
   }
+`;
+
+export const BigNumber = styled(Title)`
+  height: 100%;
+  justify-self: flex-end;
 `;
