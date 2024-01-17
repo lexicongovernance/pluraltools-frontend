@@ -191,11 +191,11 @@ function Account() {
               name="userAttributes.institution"
               validatorAdapter={zodValidator}
               validators={{
-                onChange: z.string().nullable(),
+                onChange: z.string().min(1, { message: 'Please select a value.' }),
               }}
               children={(field) => (
                 <FlexColumn $gap="0.5rem">
-                  <Label>Institution</Label>
+                  <Label required>Institution</Label>
                   <Input
                     name={field.name}
                     value={field.state.value}
@@ -210,11 +210,11 @@ function Account() {
               name="userAttributes.publications"
               validatorAdapter={zodValidator}
               validators={{
-                onChange: z.string().nullable(),
+                onChange: z.string().min(1, { message: 'Please select a value.' }),
               }}
               children={(field) => (
                 <FlexColumn $gap="0.5rem">
-                  <Label>Publications</Label>
+                  <Label required>Publications</Label>
                   <Input
                     name={field.name}
                     value={field.state.value}
@@ -229,11 +229,11 @@ function Account() {
               name="userAttributes.academic-credentials"
               validatorAdapter={zodValidator}
               validators={{
-                onChange: z.string(),
+                onChange: z.string().min(1, { message: 'Please select a value.' }),
               }}
               children={(field) => (
                 <FlexColumn $gap="0.5rem">
-                  <Label>Academic Credentials</Label>
+                  <Label required>Academic Credentials</Label>
                   <Select
                     name={field.name}
                     value={field.state.value}
