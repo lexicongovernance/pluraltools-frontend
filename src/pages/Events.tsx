@@ -14,7 +14,7 @@ function Events() {
     retry: false,
   });
 
-  const images = {
+  const images: Record<string, string> = {
     'Berlin Research Community': '/berlin.png',
     'Zuzalu Agenda Setting': '/landing-graphic.png',
     'Full Node Meetup': '/taipei.png',
