@@ -5,6 +5,7 @@ type UpdateUserType = {
   username: string;
   email?: string;
   groupIds: string[];
+  userAttributes: Record<string, string>;
 };
 
 async function updateUserData({
@@ -12,6 +13,7 @@ async function updateUserData({
   username,
   email,
   groupIds,
+  userAttributes,
 }: UpdateUserType): Promise<AuthUser | null> {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/users/${userId}`, {
@@ -24,6 +26,7 @@ async function updateUserData({
         groupIds,
         username,
         email,
+        userAttributes,
       }),
     });
 
