@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import Card from '../components/card';
+// import Card from '../components/card';
 import Hero from '../components/hero';
 import ZupassLoginButton from '../components/zupassLoginButton';
 import landing from '../data/landing';
-import { FlexColumn, Grid, MobileColumn } from '../layout/Layout.styled';
+import { FlexColumn, MobileColumn } from '../layout/Layout.styled';
 
 const Subtitle = styled.h3`
   font-family: 'Press Start 2P', sans-serif;
@@ -19,7 +19,7 @@ const Text = styled.p<{ center?: boolean }>`
   line-height: 2rem;
 `;
 
-const ListItem = styled(Text).attrs({ as: 'li' })``;
+// const ListItem = styled(Text).attrs({ as: 'li' })``;
 
 function Landing() {
   return (
