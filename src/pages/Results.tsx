@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { fetchForumQuestionStatistics } from '../api';
 import fetchCycle from '../api/fetchCycle';
@@ -41,7 +41,19 @@ const Badge = styled.div<{ $type: 'gold' | 'silver' | 'bronze' }>`
   width: 2.5rem;
 `;
 
+const BackArrow = styled.div`
+  cursor: pointer;
+  height: 1.75rem;
+  width: 1.75rem;
+`;
+
 function Results() {
+  const navigate = useNavigate();
+
+  const handleGoBack = () => {
+    navigate(-1); // Navigate back one step in the history stack
+  };
+
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   const { cycleId } = useParams();
@@ -92,6 +104,9 @@ function Results() {
 
   return (
     <FlexColumn $gap="4rem">
+      <BackArrow onClick={handleGoBack}>
+        <img src="/icons/back_arrow.svg" alt="Back arrow" />
+      </BackArrow>
       <FlexColumn $gap="3rem">
         <Title>Results for: {cycle?.forumQuestions?.[0].title}</Title>
         <Grid $columns={4}>

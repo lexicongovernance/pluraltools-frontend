@@ -1,7 +1,7 @@
 const landing = {
   hero: {
     title: 'Unlock the Future of MEV Research',
-    body: 'Shape the future of MEV research. Join Plural MEV, and be part of a groundbreaking research event where YOU decide who gets a share of 100,000 ARB in grants.',
+    body: 'Shape the future of MEV research. Join Plural Research, and be part of a groundbreaking research event where YOU decide who gets a share of 100,000 ARB in grants.',
     button: 'Get Started',
   },
   explore: {
@@ -30,7 +30,7 @@ const landing = {
   benefits: {
     title: '100,000 ARB in Grants',
     items: [
-      'Sign up with Zupass to join Plural MEV',
+      'Sign up with Zupass to join Plural Research',
       'Submit an MEV research proposal in the form of a flash talk',
       'Vote on other submissions and the entire event agenda',
       'At the event, participants vote to distribute 100,000 ARB in research grants',

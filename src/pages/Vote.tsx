@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
-import { fetchForumQuestionHearts } from '../api';
+import styled from 'styled-components';
 import fetchCycle from '../api/fetchCycle';
 import fetchUserVotes from '../api/fetchUserVotes';
 import postVote from '../api/postVote';
@@ -15,9 +15,20 @@ import useUser from '../hooks/useUser';
 import { FlexColumn, FlexRow, Grid } from '../layout/Layout.styled';
 import { ResponseUserVotesType } from '../types/CycleType';
 
+const BackArrow = styled.div`
+  cursor: pointer;
+  height: 1.75rem;
+  width: 1.75rem;
+`;
+
 function Vote() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+
+  const handleGoBack = () => {
+    navigate(-1); // Navigate back one step in the history stack
+  };
+
   const { user } = useUser();
   const [startAt, setStartAt] = useState<string | null>(null);
   const [endAt, setEndAt] = useState<string | null>(null);
@@ -165,6 +176,9 @@ function Vote() {
 
   return (
     <FlexColumn $gap="3rem">
+      <BackArrow onClick={handleGoBack}>
+        <img src="/icons/back_arrow.svg" alt="Back arrow" />
+      </BackArrow>
       <FlexColumn>
         <Grid $columns={2} $gap="2rem">
           <Title className="title">{cycle?.forumQuestions?.[0].title}</Title>

@@ -24,6 +24,7 @@ export const HeaderContainer = styled.div`
 `;
 
 export const Logo = styled.h2`
+  cursor: pointer;
   font-family: 'Press Start 2P', sans-serif;
   font-size: 1.125rem;
   line-height: 1.5rem;
