@@ -16,8 +16,8 @@ function Events() {
 
   const images: Record<string, string> = {
     'Berlin Research Community': '/berlin.png',
-    'Zuzalu Agenda Setting': '/landing-graphic.png',
-    'Full Node Meetup': '/taipei.png',
+    'Zuzalu Agenda Setting': '/taipei.png',
+    'Full Node Meetup': '/landing-graphic.png',
   };
 
   const eventsWithImage = events?.map((event) => ({

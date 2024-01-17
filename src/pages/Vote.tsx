@@ -47,7 +47,7 @@ function Vote() {
     isLoading: isLoadingUserVotes,
     isError: isErrorUserVotes,
   } = useQuery({
-    queryKey: ['user-votes'],
+    queryKey: ['votes', cycleId],
     queryFn: () => fetchUserVotes(user?.id || '', cycleId || ''),
     enabled: !!user?.id && !!cycleId,
     retry: false,
