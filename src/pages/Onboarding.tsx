@@ -1,7 +1,7 @@
-import { useAppStore } from '../store';
-import register from '../data/register';
-import { default as Onboarding } from '../components/onboarding';
 import { useNavigate } from 'react-router-dom';
+import { default as Onboarding } from '../components/onboarding';
+import onboarding from '../data/onboarding';
+import { useAppStore } from '../store';
 
 function OnboardingPage() {
   const navigate = useNavigate();
@@ -10,7 +10,7 @@ function OnboardingPage() {
     setOnboardingStatus('COMPLETE');
     navigate('/account');
   };
-  return <Onboarding data={register.onboarding} handleSkip={handleSkip} />;
+  return <Onboarding data={onboarding.data} handleSkip={handleSkip} />;
 }
 
 export default OnboardingPage;

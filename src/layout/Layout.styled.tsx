@@ -56,3 +56,9 @@ export const FlexColumn = styled(FlexRow)`
   flex-direction: column;
   /* height: 100%; */
 `;
+
+export const MobileColumn = styled(FlexColumn)`
+  max-width: 70ch;
+  /* background-color: red; */
+  margin: 0 auto;
+`;

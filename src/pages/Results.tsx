@@ -75,22 +75,22 @@ function Results() {
   const stats = [
     {
       id: 0,
-      title: 'Number of proposals:',
+      title: 'Number of proposals',
       data: statistics?.numProposals,
     },
     {
       id: 1,
-      title: 'Allocated Hearts:',
+      title: 'Allocated Hearts',
       data: statistics?.sumNumOfHearts,
     },
     {
       id: 2,
-      title: 'Number of participants:',
+      title: 'Number of participants',
       data: statistics?.numOfParticipants,
     },
     {
       id: 3,
-      title: 'Number of groups:',
+      title: 'Number of groups',
       data: statistics?.numOfGroups,
     },
   ];
@@ -111,7 +111,7 @@ function Results() {
         <Title>Results for: {cycle?.forumQuestions?.[0].title}</Title>
         <Grid $columns={4}>
           {stats.map((stat) => (
-            <Card key={stat.id} title={stat.title} body={stat.data} />
+            <Card key={stat.id} title={stat.title} bigNumber={stat.data} />
           ))}
         </Grid>
       </FlexColumn>
@@ -130,7 +130,7 @@ function Results() {
                 $expanded={expandedIndex === index}
                 onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
               >
-                <FlexColumn $gap="2rem">
+                <FlexColumn $gap="1rem">
                   <FlexRow $justifyContent="space-between">
                     <FlexRow $gap="0.5rem">
                       {index === 0 && <Badge $type="gold" />}
@@ -140,11 +140,11 @@ function Results() {
                     </FlexRow>
                     <img className="arrow" src="/arrow_down.svg" alt="Arrow icon" />
                   </FlexRow>
+                  <FlexRow>
+                    <Subtitle>Plurality score:</Subtitle>
+                    <span>{formattedPluralityScore}</span>
+                  </FlexRow>
                   <FlexColumn className="statistics">
-                    <FlexRow>
-                      <Subtitle>Plurality score:</Subtitle>
-                      <span>{formattedPluralityScore}</span>
-                    </FlexRow>
                     <FlexRow>
                       <Subtitle>Distinct voters:</Subtitle>
                       <span>{option.distinctUsers}</span>

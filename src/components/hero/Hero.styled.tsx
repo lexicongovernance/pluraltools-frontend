@@ -10,7 +10,7 @@ export const Section = styled.section`
     grid-template-columns: 1fr 1fr;
     row-gap: 0;
 
-    & img {
+    & div {
       grid-column: 2/3;
       grid-row: 1/3;
     }
@@ -21,4 +21,15 @@ export const Body = styled.p`
   font-size: 1.25rem;
   font-weight: 500;
   line-height: 2rem;
+`;
+
+export const ImageContainer = styled.div`
+  height: 100%;
+  /* background-color: red; */
+
+  & img {
+    height: 100%;
+    object-fit: contain;
+    /* width: 100%; */
+  }
 `;

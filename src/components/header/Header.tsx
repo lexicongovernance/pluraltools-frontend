@@ -35,7 +35,7 @@ function Header() {
                 <li>
                   <StyledNavLink to="/events">
                     <Button variant="text" tabIndex={-1}>
-                      Events
+                      Communities
                     </Button>
                   </StyledNavLink>
                 </li>

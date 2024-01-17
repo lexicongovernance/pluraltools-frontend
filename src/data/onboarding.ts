@@ -1,5 +1,5 @@
-const register = {
-  onboarding: [
+const onboarding = {
+  data: [
     {
       id: 0,
       title: `Privacy Ambitions`,
@@ -26,9 +26,6 @@ const register = {
       body: `With time, we hope that these PCDs can serve as a source of verified affiliations and credentials for gatherings outside of the Plural Research Society.`,
     },
   ],
-  form: {
-    title: 'Register Page',
-  },
 };
 
-export default register;
+export default onboarding;

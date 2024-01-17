@@ -61,9 +61,9 @@ function Event() {
 
   const imagePicker = (eventId: string) => {
     if (eventId === '3710b375-bbc5-47a4-8ac9-9fbbbfe11c46') {
-      return '/zuzalu.png';
+      return '/taipei.png';
     } else if (eventId === '5b6f447f-8a0b-4dce-8f90-ebccbcf6dc78') {
-      return '/full_node.png';
+      return '/berlin.png';
     } else return '/landing-graphic.png';
   };
 
