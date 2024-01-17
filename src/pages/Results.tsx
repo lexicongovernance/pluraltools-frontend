@@ -140,11 +140,11 @@ function Results() {
                     </FlexRow>
                     <img className="arrow" src="/arrow_down.svg" alt="Arrow icon" />
                   </FlexRow>
+                  <FlexRow>
+                    <Subtitle>Plurality score:</Subtitle>
+                    <span>{formattedPluralityScore}</span>
+                  </FlexRow>
                   <FlexColumn className="statistics">
-                    <FlexRow>
-                      <Subtitle>Plurality score:</Subtitle>
-                      <span>{formattedPluralityScore}</span>
-                    </FlexRow>
                     <FlexRow>
                       <Subtitle>Distinct voters:</Subtitle>
                       <span>{option.distinctUsers}</span>
