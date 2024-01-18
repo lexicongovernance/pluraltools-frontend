@@ -70,26 +70,21 @@ function Event() {
   };
 
   const { data: event } = useQuery({
-    queryKey: ['event', eventId],
+    queryKey: ['events', eventId],
     queryFn: () => fetchEvent(eventId || ''),
     enabled: !!eventId,
-    staleTime: 10000,
-    retry: false,
   });
 
   const { data: eventCycles } = useQuery({
-    queryKey: ['event', eventId, 'cycles'],
+    queryKey: ['events', eventId, 'cycles'],
     queryFn: () => fetchEventCycles(eventId || ''),
     enabled: !!eventId,
-    staleTime: 10000,
-    retry: false,
   });
 
   const { data: registration } = useQuery({
-    queryKey: ['event', eventId, 'registration'],
+    queryKey: ['events', eventId, 'registration'],
     queryFn: () => fetchRegistration(eventId || ''),
     enabled: !!eventId,
-    retry: false,
   });
 
   useEffect(() => {

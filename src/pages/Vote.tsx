@@ -36,7 +36,7 @@ function Vote() {
   const { cycleId, eventId } = useParams();
 
   const { data: cycle } = useQuery({
-    queryKey: ['cycles'],
+    queryKey: ['cycles', cycleId],
     queryFn: () => fetchCycle(cycleId || ''),
     enabled: !!cycleId,
     retry: false,
