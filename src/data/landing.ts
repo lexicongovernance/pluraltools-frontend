@@ -1,7 +1,7 @@
 const landing = {
   hero: {
-    title: 'Unlock the Future of MEV Research',
-    body: 'Shape the future of MEV research. Join Plural Research, and be part of a groundbreaking research event where YOU decide who gets a share of 100,000 ARB in grants.',
+    title: 'An Experiment in Research Independence and Innovation',
+    body: 'We are a community of open-source researchers committed to solving the hardest problems in decentralization, including the challenge of maintaining research and academic independence in the wake of technological vertical integration and hyper-financialization. Using plural mechanism design, we experiment with novel ways to surface ideas in the public interest that transcend our biases—protocol, politics, purse— while encouraging collaboration and insights across unlikely intersections where breakthroughs tend to emerge.',
     button: 'Get Started',
   },
   explore: {
@@ -42,16 +42,16 @@ const landing = {
     button: 'Register with Zupass',
   },
   innovation: {
-    title: 'An experiment in research independence and innovation',
-    body: 'We are a community of open-source researchers committed to solving the hardest problems in decentralization, including the challenge of maintaining research and academic independence in the wake of technological vertical integration and hyper-financialization. Using plural mechanism design, we experiment with novel ways to surface ideas in the public interest that transcend our biases—protocol, politics, purse— while encouraging collaboration and insights across unlikely intersections where breakthroughs tend to emerge.',
+    title: 'A Plural Approach to Research',
+    body: 'Using plural mechanism design, we experiment with novel ways to surface ideas in the public interest that transcend our biases—protocol, politics, purse— while encouraging collaboration and insights across unlikely intersections where breakthroughs tend to emerge.',
   },
   when: {
     title: 'When?',
-    body: 'Our first convening  is May 22 & 23 in Berlin, where the community is tasked to allocate 100,000 ARB in research grants. The first topic broadly is MEV, though we accept other proposals related to decentralization, including privacy,  security, identity, censorship resistance, data dignity, and partial common ownership—to name just a few. Surprise us.',
+    body: 'Our first convening is May 22 & 23 in Berlin, where the community is tasked to allocate 100,000 ARB in research grants. The first topic broadly is MEV, though we accept other proposals related to decentralization, including privacy, security, identity, censorship resistance, data dignity, and partial common ownership — to name just a few. Surprise us.',
   },
   how: {
     title: 'How?',
-    body: 'Sign up with ZuPass and register here. Early submissions before March 31 will be prioritized.',
+    body: 'Sign up with ZuPass and register by clicking the button below. Early submissions before March 31 will be prioritized.',
     button: 'Register with Zupass',
   },
   what: {
