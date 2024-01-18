@@ -116,7 +116,7 @@ function Event() {
           </Container>
         </Grid>
       </StyledEvent>
-      <h2>Cycles</h2>
+      <h2>Votes</h2>
       {eventCycles && eventCycles?.length > 0 ? (
         <Grid $columns={3}>
           {eventCycles?.map((eventCycles) => {
@@ -132,7 +132,7 @@ function Event() {
                     <h3>{title}</h3>
                     <p>Closes on {formattedDate}</p>
                   </FlexColumn>
-                  <Button onClick={() => handleClick(eventCycles.id)}>Go to cycle</Button>
+                  <Button onClick={() => handleClick(eventCycles.id)}>Go to vote</Button>
                 </FlexColumn>
               </Card>
             );
