@@ -1,7 +1,7 @@
 const landing = {
   hero: {
     title: 'An Experiment in Research Independence and Innovation',
-    body: 'We are a community of open-source researchers committed to solving the hardest problems in decentralization, including the challenge of maintaining research and academic independence in the wake of technological vertical integration and hyper-financialization. Using plural mechanism design, we experiment with novel ways to surface ideas in the public interest that transcend our biases—protocol, politics, purse— while encouraging collaboration and insights across unlikely intersections where breakthroughs tend to emerge.',
+    body: 'We are a community of open-source researchers committed to solving the hardest problems in decentralization, including the challenge of maintaining research and academic independence in the wake of technological vertical integration and hyper-financialization.',
     button: 'Get Started',
   },
   explore: {
