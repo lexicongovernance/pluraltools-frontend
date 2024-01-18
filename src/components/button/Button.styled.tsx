@@ -21,6 +21,7 @@ export const StyledButton = styled.button<ButtonProps>`
   }
 
   &:disabled {
+    background-color: #404040;
     cursor: not-allowed;
     &:hover {
       opacity: 1;
