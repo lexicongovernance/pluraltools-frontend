@@ -14,7 +14,7 @@ const StyledLabel = styled.label<LabelProps>`
     css`
       &:after {
         content: ' *';
-        color: #db4545;
+        color: var(--color-error);
       }
     `}
 `;

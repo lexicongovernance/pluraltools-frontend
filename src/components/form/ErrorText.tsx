@@ -5,7 +5,7 @@ interface ErrorTextProps {
 }
 
 const StyledErrorText = styled.div`
-  color: #db4545;
+  color: var(--color-error);
   font-size: 0.875rem;
   &::first-letter {
     text-transform: uppercase;
