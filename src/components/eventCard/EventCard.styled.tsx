@@ -10,7 +10,7 @@ export const StyledEventCard = styled.article`
 `;
 
 export const ImageContainer = styled.div`
-  background-color: #404040;
+  background-color: var(--color-skeleton-gray);
   border-radius: 1rem 1rem 0 0;
   height: 200px;
   overflow: hidden;

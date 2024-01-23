@@ -32,7 +32,7 @@ const Title = styled.h2`
 `;
 
 const ImageContainer = styled.div`
-  background-color: #404040;
+  background-color: var(--color-skeleton-gray);
   border-radius: 1rem;
   max-height: 340px;
   overflow: hidden;
