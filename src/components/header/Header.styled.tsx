@@ -45,6 +45,6 @@ export const StyledNavLink = styled(NavLink)`
   padding-bottom: 0.5rem;
   border-bottom: 3px solid transparent;
   &.active {
-    border-bottom: 3px solid #fff;
+    border-bottom: 3px solid var(--color-white);
   }
 `;
