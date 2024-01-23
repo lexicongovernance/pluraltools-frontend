@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import Title from '../typography/Title';
 
 export const StyledCard = styled.article`
-  background-color: #1f2021;
+  background-color: var(--color-dark-gray);
   border-radius: 1rem;
   padding: 2rem;
   text-align: center;

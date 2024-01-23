@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const StyledEventCard = styled.article`
-  background-color: #1f2021;
+  background-color: var(--color-dark-gray);
   border-radius: 1rem;
 
   .content {

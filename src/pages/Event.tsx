@@ -10,7 +10,7 @@ import { useEffect } from 'react';
 import { fetchRegistration } from '../api';
 
 const StyledEvent = styled.div`
-  background-color: #1f2021;
+  background-color: var(--color-dark-gray);
   border-radius: 1rem;
 `;
 
@@ -19,7 +19,7 @@ const Container = styled.div`
 `;
 
 const Card = styled.article`
-  background-color: #1f2021;
+  background-color: var(--color-dark-gray);
   border-radius: 1rem;
   padding: 2rem;
 `;
