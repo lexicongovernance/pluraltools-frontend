@@ -3,7 +3,7 @@ import { ButtonProps } from '../../types/ButtonType';
 
 export const StyledButton = styled.button<ButtonProps>`
   align-self: ${(props) => (props.center ? 'center' : 'flex-start')};
-  background-color: #759de9;
+  background-color: var(--color-primary);
   background-color: ${(props) => props.color === 'secondary' && '#06060C'};
   background: ${(props) => props.variant === 'text' && 'none'};
   border-radius: 0.5rem;
