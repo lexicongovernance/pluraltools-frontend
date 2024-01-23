@@ -6,9 +6,21 @@
   padding: 0;
 }
 
+:root {
+  --color-primary: #759de9;
+  --color-secondary: #121212;
+  --color-dark-gray: #1f2021;
+  --color-white: #ffffff;
+  --color-silver-blue: #3d4f61;
+  --color-skeleton-gray: #404040;
+  --color-success: #86c04c;
+  --color-warning: #d99d28;
+  --color-error: #db4545;
+}
+
 body {
-  background-color: #121212;
-  color: #fff;
+  background-color: var(--color-secondary);
+  color: var(--color-white);
   font-family: 'Raleway', sans-serif;
   line-height: 1.6;
 }
