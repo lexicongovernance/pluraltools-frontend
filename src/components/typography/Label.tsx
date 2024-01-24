@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 const StyledLabel = styled.p`
-  font-weight: medium;
   font-size: 1rem;
+  font-weight: 500;
   line-height: 1.375rem;
 `;
 
