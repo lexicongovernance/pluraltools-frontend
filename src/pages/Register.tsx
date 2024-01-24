@@ -15,7 +15,7 @@ import Button from '../components/button';
 import Chip from '../components/chip';
 import ErrorText from '../components/form/ErrorText';
 import Input from '../components/form/Input';
-import Label from '../components/form/Label';
+import Label from '../components/typography/Label';
 import Select from '../components/form/Select';
 import Title from '../components/typography/Title';
 import useUser from '../hooks/useUser';
@@ -264,7 +264,7 @@ function TextInput(props: {
 }) {
   return (
     <FlexColumn $gap="0.5rem">
-      <Label htmlFor={props.name} required={!!props.required}>
+      <Label htmlFor={props.name} $required={!!props.required}>
         {props.name}
       </Label>
       <Input
@@ -293,7 +293,7 @@ function SelectInput(props: {
 }) {
   return (
     <FlexColumn $gap="0.5rem">
-      <Label htmlFor={props.name} required={!!props.required}>
+      <Label htmlFor={props.name} $required={!!props.required}>
         {props.name}
       </Label>
       <Select
