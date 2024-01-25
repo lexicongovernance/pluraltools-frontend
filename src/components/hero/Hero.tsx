@@ -1,7 +1,7 @@
-import ZupassLoginButton from '../zupassLoginButton';
-import { Section, Body, ImageContainer } from './Hero.styled';
 import { FlexColumn } from '../../layout/Layout.styled';
 import Heading from '../typography/Heading';
+import ZupassLoginButton from '../zupassLoginButton';
+import { Body, ImageContainer, Section } from './Hero.styled';
 
 type HeroProps = {
   data: {
@@ -15,7 +15,7 @@ function Hero({ data }: HeroProps) {
   return (
     <Section>
       <ImageContainer>
-        <img src="/berlin.png" alt="Graphic" />
+        <img src="/images/berlin.png" alt="Berlin graphic" />
       </ImageContainer>
       <FlexColumn $gap={'3rem'}>
         <FlexColumn $gap={'2rem'}>
