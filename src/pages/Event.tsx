@@ -1,48 +1,22 @@
 import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import styled from 'styled-components';
+import { fetchRegistration } from '../api';
 import fetchEvent from '../api/fetchEvent';
 import fetchEventCycles from '../api/fetchEventCycles';
 import Button from '../components/button';
-import { FlexColumn, Grid } from '../layout/Layout.styled';
-import styled from 'styled-components';
 import Chip from '../components/chip';
-import { useEffect } from 'react';
-import { fetchRegistration } from '../api';
-
-const StyledEvent = styled.div`
-  background-color: var(--color-dark-gray);
-  border-radius: 1rem;
-`;
-
-const Container = styled.div`
-  padding: 2rem;
-`;
+import EventCard from '../components/eventCard';
+import Subtext from '../components/typography/Subtext';
+import Subtitle from '../components/typography/Subtitle';
+import Title from '../components/typography/Title';
+import { FlexColumn, Grid } from '../layout/Layout.styled';
 
 const Card = styled.article`
   background-color: var(--color-dark-gray);
   border-radius: 1rem;
   padding: 2rem;
-`;
-
-const Title = styled.h2`
-  font-family: 'Press Start 2P', sans-serif;
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-  /* min-height: 3.5rem; */
-`;
-
-const ImageContainer = styled.div`
-  background-color: var(--color-skeleton-gray);
-  border-radius: 1rem;
-  max-height: 340px;
-  overflow: hidden;
-
-  img {
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    width: 100%;
-  }
 `;
 
 const BackArrow = styled.div`
@@ -51,22 +25,12 @@ const BackArrow = styled.div`
   width: 1.75rem;
 `;
 
-const images: Record<string, string> = {
-  'Berlin Research Community': '/berlin.png',
-  'Zuzalu Agenda Setting': '/taipei.png',
-  'Full Node Meetup': '/landing-graphic.png',
-};
-
 function Event() {
   const { eventId } = useParams();
   const navigate = useNavigate();
 
   const handleGoBack = () => {
     navigate(-1); // Navigate back one step in the history stack
-  };
-
-  const imagePicker = (name: string) => {
-    return images[name] ?? '/landing-graphic.png';
   };
 
   const { data: event } = useQuery({
@@ -103,44 +67,39 @@ function Event() {
       <BackArrow onClick={handleGoBack}>
         <img src="/icons/back_arrow.svg" alt="Back arrow" />
       </BackArrow>
-      <StyledEvent>
-        <Grid $columns={2} $rows={1} $rowgap="0">
-          <ImageContainer>
-            <img src={imagePicker(event?.name || '')} alt="Event image" />
-          </ImageContainer>
-          <Container>
-            <FlexColumn>
-              <Title>{event?.name}</Title>
-              <p>{event?.description}</p>
-            </FlexColumn>
-          </Container>
-        </Grid>
-      </StyledEvent>
-      <h2>Votes</h2>
-      {eventCycles && eventCycles?.length > 0 ? (
-        <Grid $columns={3}>
-          {eventCycles?.map((eventCycles) => {
-            const { title } = eventCycles.forumQuestions[0];
-            const eventEndDate = new Date(eventCycles.endAt);
-            const formattedDate = eventEndDate.toLocaleDateString();
+      <EventCard
+        $direction="row"
+        src={event?.image_url}
+        title={event?.name}
+        description={event?.description}
+      />
+      <FlexColumn>
+        <Title>Votes</Title>
+        {eventCycles && eventCycles?.length > 0 ? (
+          <Grid $columns={3}>
+            {eventCycles?.map((eventCycles) => {
+              const { title } = eventCycles.forumQuestions[0];
+              const eventEndDate = new Date(eventCycles.endAt);
+              const formattedDate = eventEndDate.toLocaleDateString();
 
-            return (
-              <Card key={eventCycles.id}>
-                <FlexColumn $gap="1.5rem">
-                  <Chip status={eventCycles.status}>{eventCycles.status}</Chip>
-                  <FlexColumn $gap="0.5rem">
-                    <h3>{title}</h3>
-                    <p>Closes on {formattedDate}</p>
+              return (
+                <Card key={eventCycles.id}>
+                  <FlexColumn $gap="1.5rem">
+                    <Chip status={eventCycles.status}>{eventCycles.status}</Chip>
+                    <FlexColumn $gap="0.5rem">
+                      <Subtitle>{title}</Subtitle>
+                      <Subtext>Closes on {formattedDate}</Subtext>
+                    </FlexColumn>
+                    <Button onClick={() => handleClick(eventCycles.id)}>Go to vote</Button>
                   </FlexColumn>
-                  <Button onClick={() => handleClick(eventCycles.id)}>Go to vote</Button>
-                </FlexColumn>
-              </Card>
-            );
-          })}
-        </Grid>
-      ) : (
-        <p>No cycles found</p>
-      )}
+                </Card>
+              );
+            })}
+          </Grid>
+        ) : (
+          <Subtext>No cycles found</Subtext>
+        )}
+      </FlexColumn>
     </FlexColumn>
   );
 }
