@@ -1,15 +1,17 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export const StyledEventCard = styled.article`
+export const StyledEventCard = styled.article<{ $direction: 'column' | 'row' }>`
   background-color: var(--color-dark-gray);
   border-radius: 1rem;
+  display: flex;
+  flex-direction: ${(props) => props.$direction && props.$direction};
 
   .content {
     padding: 2rem;
   }
 `;
 
-export const ImageContainer = styled.div`
+export const ImageContainer = styled.div<{ $direction: 'column' | 'row' }>`
   background-color: var(--color-skeleton-gray);
   border-radius: 1rem 1rem 0 0;
   height: 200px;
@@ -21,6 +23,14 @@ export const ImageContainer = styled.div`
     object-position: center;
     width: 100%;
   }
+
+  ${(props) =>
+    props.$direction === 'row' &&
+    css`
+      margin-right: 1rem;
+      min-height: 340px;
+      min-width: 50%;
+    `}
 `;
 
 export const Title = styled.h3`
