@@ -17,7 +17,13 @@ import useUser from '../hooks/useUser';
 import { FlexColumn, FlexRow } from '../layout/Layout.styled';
 import { useAppStore } from '../store';
 
-// const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None', 'Other'];
+const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None', 'Other'];
+
+type CredentialsGroup = {
+  credential: string;
+  institution: string;
+  field: string;
+}[];
 
 function Account() {
   const { user } = useUser();
@@ -69,14 +75,22 @@ function Account() {
     group: (userGroups && userGroups[0]?.id) || '',
     userAttributes: userAttributes?.reduce(
       (acc, curr) => {
-        acc[curr.attributeKey] = curr.attributeValue;
-        return acc;
+        if (curr.attributeKey === 'credentialsGroup') {
+          const json = JSON.parse(curr.attributeValue) as CredentialsGroup;
+          acc.credentialsGroup = json;
+          return acc;
+        } else {
+          acc[curr.attributeKey as 'institution' | 'publications'] = curr.attributeValue;
+          return acc;
+        }
       },
       {
+        name: '',
         institution: '',
         publications: '',
-        'academic-credentials': '',
-      } as Record<string, string>
+        contributions: '',
+        credentialsGroup: [] as CredentialsGroup,
+      }
     ),
   };
 
@@ -119,7 +133,11 @@ function Account() {
         username: value.username,
         email: value.email,
         groupIds: [value.group],
-        userAttributes: value.userAttributes ?? {},
+        userAttributes:
+          {
+            ...value.userAttributes,
+            credentialsGroup: JSON.stringify(value.userAttributes?.credentialsGroup),
+          } ?? {},
       });
 
       toast.success('User data updated!');
@@ -145,7 +163,12 @@ function Account() {
         <FlexColumn>
           <FlexColumn $gap="0.5rem">
             <Label $required>Username</Label>
-            <Input {...register('username')} />
+            <Input {...register('username', { required: 'Username is required', minLength: 3 })} />
+            <ErrorText>{errors.username?.message}</ErrorText>
+          </FlexColumn>
+          <FlexColumn $gap="0.5rem">
+            <Label>Name</Label>
+            <Input {...register('userAttributes.name')} />
             <ErrorText>{errors.username?.message}</ErrorText>
           </FlexColumn>
           <FlexColumn $gap="0.5rem">
@@ -153,10 +176,12 @@ function Account() {
             <Input {...register('email')} />
             <ErrorText>{errors.email?.message}</ErrorText>
           </FlexColumn>
-
           <FlexColumn $gap="0.5rem">
             <Label $required>Affiliation</Label>
-            <Select {...register('group')} defaultValue={''}>
+            <Select
+              {...register('group', { required: 'Affiliation is required' })}
+              defaultValue={''}
+            >
               <option value="" disabled>
                 Please choose an affiliation
               </option>
@@ -167,6 +192,57 @@ function Account() {
               ))}
             </Select>
             <ErrorText>{errors.group?.message}</ErrorText>
+          </FlexColumn>
+          {Array.from({ length: 3 }).map((_, i) => (
+            <FlexColumn $gap="0.5rem" key={i}>
+              <Label>Credentials: {i + 1}</Label>
+              <FlexRow $gap="0.5rem">
+                <Select
+                  {...register(`userAttributes.credentialsGroup.${i}.credential` as const, {
+                    required: 'Credential is required',
+                  })}
+                  defaultValue={''}
+                >
+                  <option value="" disabled>
+                    Please choose a credential
+                  </option>
+                  {ACADEMIC_CREDENTIALS.map((credential) => (
+                    <option key={credential} value={credential}>
+                      {credential}
+                    </option>
+                  ))}
+                </Select>
+                <Input
+                  {...register(`userAttributes.credentialsGroup.${i}.institution` as const, {
+                    required: 'Institution is required',
+                  })}
+                  placeholder="Institution"
+                />
+                <Input
+                  {...register(`userAttributes.credentialsGroup.${i}.field` as const, {
+                    required: 'Field is required',
+                  })}
+                  placeholder="Field"
+                />
+              </FlexRow>
+              <ErrorText>
+                {errors.userAttributes?.credentialsGroup?.[i]?.credential?.message}
+              </ErrorText>
+              <ErrorText>
+                {errors.userAttributes?.credentialsGroup?.[i]?.institution?.message}
+              </ErrorText>
+              <ErrorText>{errors.userAttributes?.credentialsGroup?.[i]?.field?.message}</ErrorText>
+            </FlexColumn>
+          ))}
+          <FlexColumn $gap="0.5rem">
+            <Label>Publications</Label>
+            <Input {...register('userAttributes.publications')} />
+            <ErrorText>{errors.email?.message}</ErrorText>
+          </FlexColumn>
+          <FlexColumn $gap="0.5rem">
+            <Label>Publications</Label>
+            <Input {...register('userAttributes.contributions')} />
+            <ErrorText>{errors.email?.message}</ErrorText>
           </FlexColumn>
           <FlexRow $alignSelf="flex-end">
             <Button type="submit" disabled={isEqual || !isValid}>
