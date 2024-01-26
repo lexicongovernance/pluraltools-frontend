@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 export const SyledHeader = styled.header`
   align-items: center;
-  background-color: #759de9;
+  background-color: var(--color-primary);
   display: flex;
   min-height: 6rem;
   justify-content: center;
@@ -45,6 +45,6 @@ export const StyledNavLink = styled(NavLink)`
   padding-bottom: 0.5rem;
   border-bottom: 3px solid transparent;
   &.active {
-    border-bottom: 3px solid #fff;
+    border-bottom: 3px solid var(--color-white);
   }
 `;

@@ -14,28 +14,17 @@ function Events() {
     retry: false,
   });
 
-  const images: Record<string, string> = {
-    'Berlin Research Community': '/berlin.png',
-    'Zuzalu Agenda Setting': '/taipei.png',
-    'Full Node Meetup': '/landing-graphic.png',
-  };
-
-  const eventsWithImage = events?.map((event) => ({
-    ...event,
-    image: images[event.name] || '/landing-graphic.png',
-  }));
-
   return (
     <FlexColumn $gap="4rem">
       <Title>Welcome, {user?.username}</Title>
       <Grid $columns={2} $gap="2rem">
-        {eventsWithImage?.map((event) => (
+        {events?.map((event) => (
           <EventCard
             key={event.id}
-            src={event.image}
+            src={event.image_url}
             title={event.name}
-            // description={event.description}
             eventId={event.id}
+            buttonText="Go"
           />
         ))}
       </Grid>
