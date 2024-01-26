@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const StyledOption = styled.article`
-  background-color: #1f2021;
+  background-color: var(--color-dark-gray);
   border-radius: 0.75rem;
   padding: 2.5rem;
   /* min-height: 500px; */

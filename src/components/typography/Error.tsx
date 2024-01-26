@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const StyledError = styled.p`
-  color: #db4545;
+  color: var(--color-error);
   font-size: 0.875rem;
   line-height: 1rem;
 `;

@@ -6,10 +6,24 @@
   padding: 0;
 }
 
+:root {
+  --color-primary: #759de9;
+  --color-secondary: #121212;
+  --color-dark-gray: #1f2021;
+  --color-white: #ffffff;
+  --color-silver-blue: #3d4f61;
+  --color-skeleton-gray: #404040;
+  --color-success: #86c04c;
+  --color-warning: #d99d28;
+  --color-error: #db4545;
+  --font-family-main: 'Raleway', sans-serif;
+  --font-family-secondary: 'Press Start 2P', sans-serif;
+}
+
 body {
-  background-color: #121212;
-  color: #fff;
-  font-family: 'Raleway', sans-serif;
+  background-color: var(--color-secondary);
+  color: var(--color-white);
+  font-family: var(--font-family-main);
   line-height: 1.6;
 }
 
@@ -29,13 +43,6 @@ select {
 button {
   cursor: pointer;
   padding-inline: 1rem;
-}
-
-h1 {
-  font-family: 'Press Start 2P', sans-serif;
-  font-size: 2rem;
-  font-weight: 600;
-  line-height: 2.875rem;
 }
 
 a {

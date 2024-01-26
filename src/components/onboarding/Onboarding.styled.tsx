@@ -10,7 +10,7 @@ export const StyledOnboarding = styled(FlexColumn)`
 `;
 
 export const Dot = styled.div<{ active: boolean }>`
-  background-color: ${(props) => (props.active ? '#759DE9' : 'gray')};
+  background-color: ${(props) => (props.active ? 'var(--color-primary)' : 'gray')};
   border-radius: 50%;
   height: 0.5rem;
   transition: 0.2s ease-in;

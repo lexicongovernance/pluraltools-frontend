@@ -3,7 +3,7 @@ import { StyledChip } from '../chip/Chip.styled';
 
 export const StyledCountdown = styled(StyledChip)`
   align-self: flex-start;
-  background-color: #3d4f61;
+  background-color: var(--color-silver-blue);
   font-family: monospace;
   font-size: 1rem;
   text-align: center;

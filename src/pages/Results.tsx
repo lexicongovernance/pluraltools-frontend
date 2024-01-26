@@ -10,7 +10,7 @@ import Title from '../components/typography/Title';
 import { FlexColumn, FlexRow, Grid } from '../layout/Layout.styled';
 
 const ResultsCard = styled.article<{ $expanded: boolean }>`
-  background-color: #1f2021;
+  background-color: var(--color-dark-gray);
   border-radius: 1rem;
   cursor: pointer;
   padding: 2rem;

@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { FlexColumn, FlexRow } from '../../layout/Layout.styled';
 import Button from '../button';
-import { StyledOnboarding, Dot } from './Onboarding.styled'; // Importing new components
+import Body from '../typography/Body';
+import Title from '../typography/Title';
+import { Dot, StyledOnboarding } from './Onboarding.styled';
 
 type OnboardingProps = {
   data: {
@@ -25,8 +27,8 @@ function Onboarding({ data, handleSkip }: OnboardingProps) {
   return (
     <StyledOnboarding $gap="2rem" $justifyContent="space-between">
       <FlexColumn>
-        <h3>{data[currentStep].title}</h3>
-        <p>{data[currentStep].body}</p>
+        <Title>{data[currentStep].title}</Title>
+        <Body $align="center">{data[currentStep].body}</Body>
       </FlexColumn>
       <FlexColumn $gap="3rem">
         <FlexRow $alignSelf="center" $gap="0.5rem">

@@ -5,19 +5,19 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import fetchGroups from '../api/fetchGroups';
+import fetchUserAttributes from '../api/fetchUserAttributes';
 import fetchUserGroups from '../api/fetchUserGroups';
 import updateUserData from '../api/updateUserData';
 import Button from '../components/button';
 import Chip from '../components/chip';
 import ErrorText from '../components/form/ErrorText';
 import Input from '../components/form/Input';
-import Label from '../components/form/Label';
 import Select from '../components/form/Select';
+import Label from '../components/typography/Label';
 import Title from '../components/typography/Title';
 import useUser from '../hooks/useUser';
 import { FlexColumn, FlexRow } from '../layout/Layout.styled';
 import { useAppStore } from '../store';
-import fetchUserAttributes from '../api/fetchUserAttributes';
 
 const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None', 'Other'];
 
@@ -133,7 +133,7 @@ function Account() {
               }}
               children={(field) => (
                 <FlexColumn $gap="0.5rem">
-                  <Label required>Username</Label>
+                  <Label $required>Username</Label>
                   <Input
                     name={field.name}
                     value={field.state.value}
@@ -171,7 +171,7 @@ function Account() {
               }}
               children={(field) => (
                 <FlexColumn $gap="0.5rem">
-                  <Label required>Affiliation</Label>
+                  <Label $required>Affiliation</Label>
                   <Select
                     name={field.name}
                     value={field.state.value}
@@ -199,7 +199,7 @@ function Account() {
               }}
               children={(field) => (
                 <FlexColumn $gap="0.5rem">
-                  <Label required>Institution</Label>
+                  <Label $required>Institution</Label>
                   <Input
                     name={field.name}
                     value={field.state.value}
@@ -218,7 +218,7 @@ function Account() {
               }}
               children={(field) => (
                 <FlexColumn $gap="0.5rem">
-                  <Label required>Publications</Label>
+                  <Label $required>Publications</Label>
                   <Input
                     name={field.name}
                     value={field.state.value}
@@ -237,7 +237,7 @@ function Account() {
               }}
               children={(field) => (
                 <FlexColumn $gap="0.5rem">
-                  <Label required>Academic Credentials</Label>
+                  <Label $required>Academic Credentials</Label>
                   <Select
                     name={field.name}
                     value={field.state.value}
