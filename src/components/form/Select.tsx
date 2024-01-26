@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {}
@@ -21,8 +22,8 @@ const StyledSelect = styled.select`
   }
 `;
 
-function Select({ ...props }: SelectProps) {
-  return <StyledSelect {...props} />;
-}
+const Select = React.forwardRef<HTMLSelectElement, SelectProps>((props, ref) => {
+  return <StyledSelect ref={ref} {...props} />;
+});
 
 export default Select;
