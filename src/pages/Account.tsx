@@ -48,6 +48,7 @@ function Account() {
   const { data: groups } = useQuery({
     queryKey: ['groups'],
     queryFn: fetchGroups,
+    enabled: !!user?.id,
   });
 
   const { data: userGroups, isLoading: userGroupsIsLoading } = useQuery({
@@ -136,7 +137,6 @@ function AccountForm({
     control,
     register,
     formState: { errors, isValid },
-    getValues,
     handleSubmit,
   } = useForm({
     defaultValues: initialUser,
@@ -155,11 +155,10 @@ function AccountForm({
         username: value.username,
         email: value.email,
         groupIds: [value.group],
-        userAttributes:
-          {
-            ...value.userAttributes,
-            credentialsGroup: JSON.stringify(value.userAttributes?.credentialsGroup),
-          } ?? {},
+        userAttributes: {
+          ...value.userAttributes,
+          credentialsGroup: JSON.stringify(value.userAttributes?.credentialsGroup),
+        },
       });
 
       toast.success('User data updated!');
@@ -172,8 +171,6 @@ function AccountForm({
   };
 
   const userRegistered = userGroups && userGroups?.length > 0;
-
-  const isEqual = JSON.stringify(getValues()) === JSON.stringify(initialUser);
 
   return (
     <FlexColumn>
@@ -191,7 +188,7 @@ function AccountForm({
           <FlexColumn $gap="0.5rem">
             <Label>Name</Label>
             <Input {...register('userAttributes.name')} />
-            <ErrorText>{errors.username?.message}</ErrorText>
+            <ErrorText>{errors.userAttributes?.name?.message}</ErrorText>
           </FlexColumn>
           <FlexColumn $gap="0.5rem">
             <Label>Email</Label>
@@ -287,7 +284,7 @@ function AccountForm({
             <ErrorText>{errors.email?.message}</ErrorText>
           </FlexColumn>
           <FlexRow $alignSelf="flex-end">
-            <Button type="submit" disabled={isEqual || !isValid}>
+            <Button type="submit" disabled={!isValid}>
               Submit
             </Button>
           </FlexRow>
