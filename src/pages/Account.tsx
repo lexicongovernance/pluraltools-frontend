@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import fetchGroups from '../api/fetchGroups';
@@ -16,6 +16,8 @@ import Title from '../components/typography/Title';
 import useUser from '../hooks/useUser';
 import { FlexColumn, FlexRow } from '../layout/Layout.styled';
 import { useAppStore } from '../store';
+import { AuthUser } from '../types/AuthUserType';
+import { GetGroupsResponse } from '../types/GroupType';
 
 const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None', 'Other'];
 
@@ -25,36 +27,97 @@ type CredentialsGroup = {
   field: string;
 }[];
 
+type UserAttributes = {
+  name: string;
+  institution: string;
+  publications: string;
+  contributions: string;
+  credentialsGroup: CredentialsGroup;
+};
+
+type InitialUser = {
+  username: string;
+  email: string;
+  group: string;
+  userAttributes: UserAttributes | undefined;
+};
+
 function Account() {
-  const { user } = useUser();
-  const userStatus = useAppStore((state) => state.userStatus);
-  const setUserStatus = useAppStore((state) => state.setUserStatus);
-
-  const navigate = useNavigate();
-
-  const queryClient = useQueryClient();
+  const { user, isLoading: userIsLoading } = useUser();
 
   const { data: groups } = useQuery({
     queryKey: ['groups'],
     queryFn: fetchGroups,
-    staleTime: 10000,
-    retry: false,
   });
 
-  const { data: userGroups } = useQuery({
+  const { data: userGroups, isLoading: userGroupsIsLoading } = useQuery({
     queryKey: ['user', user?.id, 'groups'],
     queryFn: () => fetchUserGroups(user?.id || ''),
     enabled: !!user?.id,
-    staleTime: 10000,
-    retry: false,
   });
 
-  const { data: userAttributes } = useQuery({
+  const { data: userAttributes, isLoading: userAttributesIsLoading } = useQuery({
     queryKey: ['user', user?.id, 'attributes'],
     queryFn: () => fetchUserAttributes(user?.id || ''),
     enabled: !!user?.id,
-    retry: false,
   });
+
+  const initialUser = {
+    username: user?.username || '',
+    email: user?.email || '',
+    group: (userGroups && userGroups[0]?.id) || '',
+    userAttributes: userAttributes?.reduce(
+      (acc, curr) => {
+        if (curr.attributeKey === 'credentialsGroup') {
+          const json = JSON.parse(curr.attributeValue) as CredentialsGroup;
+          acc.credentialsGroup = json;
+          return acc;
+        } else {
+          acc[curr.attributeKey as keyof Omit<UserAttributes, 'credentialsGroup'>] =
+            curr.attributeValue;
+          return acc;
+        }
+      },
+      {
+        name: '',
+        institution: '',
+        publications: '',
+        contributions: '',
+        credentialsGroup: [
+          {
+            credential: '',
+            institution: '',
+            field: '',
+          },
+        ],
+      } as UserAttributes
+    ),
+  };
+
+  if (userIsLoading || userGroupsIsLoading || userAttributesIsLoading) {
+    return <Title>Loading...</Title>;
+  }
+
+  return (
+    <AccountForm initialUser={initialUser} user={user} groups={groups} userGroups={userGroups} />
+  );
+}
+
+function AccountForm({
+  initialUser,
+  user,
+  groups,
+  userGroups,
+}: {
+  initialUser: InitialUser;
+  user: AuthUser | null | undefined;
+  groups: GetGroupsResponse[] | null | undefined;
+  userGroups: GetGroupsResponse[] | null | undefined;
+}) {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const userStatus = useAppStore((state) => state.userStatus);
+  const setUserStatus = useAppStore((state) => state.setUserStatus);
 
   const { mutate: mutateUserData } = useMutation({
     mutationFn: updateUserData,
@@ -69,32 +132,8 @@ function Account() {
     },
   });
 
-  const initialUser = {
-    username: user?.username || '',
-    email: user?.email || '',
-    group: (userGroups && userGroups[0]?.id) || '',
-    userAttributes: userAttributes?.reduce(
-      (acc, curr) => {
-        if (curr.attributeKey === 'credentialsGroup') {
-          const json = JSON.parse(curr.attributeValue) as CredentialsGroup;
-          acc.credentialsGroup = json;
-          return acc;
-        } else {
-          acc[curr.attributeKey as 'institution' | 'publications'] = curr.attributeValue;
-          return acc;
-        }
-      },
-      {
-        name: '',
-        institution: '',
-        publications: '',
-        contributions: '',
-        credentialsGroup: [] as CredentialsGroup,
-      }
-    ),
-  };
-
   const {
+    control,
     register,
     formState: { errors, isValid },
     getValues,
@@ -104,27 +143,10 @@ function Account() {
     mode: 'onBlur',
   });
 
-  // const form = useForm({
-  //   defaultValues: ,
-  //   onSubmit: ({ value }) => {
-  //     if (user && user.id) {
-  //       mutateUserData({
-  //         userId: user.id,
-  //         username: value.username,
-  //         email: value.email,
-  //         groupIds: [value.group],
-  //         userAttributes: value.userAttributes ?? {},
-  //       });
-
-  //       toast.success('User data updated!');
-
-  //       if (userStatus === 'INCOMPLETE') {
-  //         setUserStatus('COMPLETE');
-  //         navigate('/events');
-  //       }
-  //     }
-  //   },
-  // });
+  const { fields, remove, insert } = useFieldArray({
+    name: 'userAttributes.credentialsGroup' as const,
+    control,
+  });
 
   const onSubmit = (value: typeof initialUser) => {
     if (user && user.id) {
@@ -193,10 +215,10 @@ function Account() {
             </Select>
             <ErrorText>{errors.group?.message}</ErrorText>
           </FlexColumn>
-          {Array.from({ length: 3 }).map((_, i) => (
-            <FlexColumn $gap="0.5rem" key={i}>
-              <Label>Credentials: {i + 1}</Label>
-              <FlexRow $gap="0.5rem">
+          <Label $required>Credentials</Label>
+          {fields.map((field, i) => (
+            <FlexColumn $gap="0.5rem" key={field.id}>
+              <FlexRow $gap="0.5rem" $alignItems="center">
                 <Select
                   {...register(`userAttributes.credentialsGroup.${i}.credential` as const, {
                     required: 'Credential is required',
@@ -224,23 +246,43 @@ function Account() {
                   })}
                   placeholder="Field"
                 />
+                <Button variant="text" onClick={() => remove(i)}>
+                  Remove
+                </Button>
               </FlexRow>
-              <ErrorText>
-                {errors.userAttributes?.credentialsGroup?.[i]?.credential?.message}
-              </ErrorText>
-              <ErrorText>
-                {errors.userAttributes?.credentialsGroup?.[i]?.institution?.message}
-              </ErrorText>
-              <ErrorText>{errors.userAttributes?.credentialsGroup?.[i]?.field?.message}</ErrorText>
+              <div>
+                <ErrorText>
+                  {errors.userAttributes?.credentialsGroup?.[i]?.credential?.message}
+                </ErrorText>
+                <ErrorText>
+                  {errors.userAttributes?.credentialsGroup?.[i]?.institution?.message}
+                </ErrorText>
+                <ErrorText>
+                  {errors.userAttributes?.credentialsGroup?.[i]?.field?.message}
+                </ErrorText>
+              </div>
             </FlexColumn>
           ))}
+          {/* add a new field button */}
+          <Button
+            type="button"
+            onClick={() => {
+              insert(fields.length, {
+                credential: '',
+                institution: '',
+                field: '',
+              });
+            }}
+          >
+            Add new credential
+          </Button>
           <FlexColumn $gap="0.5rem">
-            <Label>Publications</Label>
+            <Label>Publications (URLs)</Label>
             <Input {...register('userAttributes.publications')} />
             <ErrorText>{errors.email?.message}</ErrorText>
           </FlexColumn>
           <FlexColumn $gap="0.5rem">
-            <Label>Publications</Label>
+            <Label>Contributions to MEV (URLs) </Label>
             <Input {...register('userAttributes.contributions')} />
             <ErrorText>{errors.email?.message}</ErrorText>
           </FlexColumn>
