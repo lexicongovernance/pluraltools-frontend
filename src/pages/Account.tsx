@@ -235,7 +235,7 @@ function AccountForm({
                   {...register(`userAttributes.credentialsGroup.${i}.institution` as const, {
                     required: 'Institution is required',
                   })}
-                  placeholder="Institution (e.g. University of Copenhagen)"
+                  placeholder="Institution (e.g. University of London)"
                 />
                 <Input
                   {...register(`userAttributes.credentialsGroup.${i}.field` as const, {
