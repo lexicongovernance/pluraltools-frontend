@@ -25,6 +25,7 @@ import { GetRegistrationFieldsResponse } from '../types/RegistrationFieldType';
 import { GetRegistrationResponseType } from '../types/RegistrationType';
 import { useForm, FieldErrors, UseFormRegister } from 'react-hook-form';
 import { z } from 'zod';
+import Subtitle from '../components/typography/Subtitle';
 
 function Register() {
   const { user, isLoading } = useUser();
@@ -136,6 +137,7 @@ function RegisterForm(props: {
             <Title>Register for {props.event?.name}</Title>
             {props.registration?.status && <Chip>{props.registration.status}</Chip>}
           </FlexRow>
+          <Subtitle>{props.event?.description}</Subtitle>
           <form>
             <FlexColumn $gap="0.75rem">
               {props.registrationFields?.map((regField) => (
