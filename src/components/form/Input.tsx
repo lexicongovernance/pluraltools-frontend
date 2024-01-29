@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
@@ -16,8 +17,8 @@ const StyledInput = styled.input`
   }
 `;
 
-function Input({ ...props }: InputProps) {
-  return <StyledInput {...props} />;
-}
+const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
+  return <StyledInput ref={ref} {...props} />;
+});
 
 export default Input;

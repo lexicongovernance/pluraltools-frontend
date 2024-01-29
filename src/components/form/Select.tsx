@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {}
@@ -5,7 +6,7 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {}
 const StyledSelect = styled.select`
   appearance: none;
   background-color: #3b3b3b;
-  background-image: url('/arrow_down.svg');
+  background-image: url('/icons/arrow_down.svg');
   background-position: right 0.75rem top 50%;
   background-repeat: no-repeat;
   background-size: 1.5rem;
@@ -21,8 +22,8 @@ const StyledSelect = styled.select`
   }
 `;
 
-function Select({ ...props }: SelectProps) {
-  return <StyledSelect {...props} />;
-}
+const Select = React.forwardRef<HTMLSelectElement, SelectProps>((props, ref) => {
+  return <StyledSelect ref={ref} {...props} />;
+});
 
 export default Select;

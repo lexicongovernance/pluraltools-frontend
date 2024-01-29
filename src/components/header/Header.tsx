@@ -16,7 +16,7 @@ function Header() {
     mutationFn: logout,
     onSuccess: () => {
       resetState();
-      queryClient.invalidateQueries();
+      queryClient.removeQueries();
     },
   });
 
