@@ -235,13 +235,13 @@ function AccountForm({
                   {...register(`userAttributes.credentialsGroup.${i}.institution` as const, {
                     required: 'Institution is required',
                   })}
-                  placeholder="Institution"
+                  placeholder="Institution (e.g. University of Copenhagen)"
                 />
                 <Input
                   {...register(`userAttributes.credentialsGroup.${i}.field` as const, {
                     required: 'Field is required',
                   })}
-                  placeholder="Field"
+                  placeholder="Field (e.g. Economics)"
                 />
                 <Button variant="text" onClick={() => remove(i)}>
                   Remove
@@ -275,12 +275,18 @@ function AccountForm({
           </Button>
           <FlexColumn $gap="0.5rem">
             <Label>Publications (URLs)</Label>
-            <Input {...register('userAttributes.publications')} />
+            <Input
+              {...register('userAttributes.publications')}
+              placeholder="Insert up to 5 urls separated by commas"
+            />
             <ErrorText>{errors.email?.message}</ErrorText>
           </FlexColumn>
           <FlexColumn $gap="0.5rem">
             <Label>Contributions to MEV (URLs) </Label>
-            <Input {...register('userAttributes.contributions')} />
+            <Input
+              {...register('userAttributes.contributions')}
+              placeholder="Insert up to 5 urls separated by commas"
+            />
             <ErrorText>{errors.email?.message}</ErrorText>
           </FlexColumn>
           <FlexRow $alignSelf="flex-end">
