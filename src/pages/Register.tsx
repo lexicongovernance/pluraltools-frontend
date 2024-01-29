@@ -137,7 +137,7 @@ function RegisterForm(props: {
             <Title>Register for {props.event?.name}</Title>
             {props.registration?.status && <Chip>{props.registration.status}</Chip>}
           </FlexRow>
-          <Subtitle>{props.event?.description}</Subtitle>
+          <Subtitle>{props.event?.registrationDescription}</Subtitle>
           <form>
             <FlexColumn $gap="0.75rem">
               {props.registrationFields?.map((regField) => (
