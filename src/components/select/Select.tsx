@@ -1,29 +1,22 @@
 import { useState } from 'react';
-import { Dropdown, ForwardedSearchInput, Option, SelectContainer } from './Select.styled';
+import { Dropdown, Option, SearchInput, SelectContainer } from './Select.styled';
 
 type SelectProps = {
-  options: { name: string; id: string }[];
+  options: string[];
   placeholder: string;
-  onChange?: (option: string) => void;
-  onBlur?: () => void;
-  onOptionCreate?: (option: string) => void;
-  // value can be either the id of the option or the name of the option
-  value?: string;
 };
 
-function Select({ options, placeholder, onChange, onOptionCreate, value, onBlur }: SelectProps) {
+function Select({ options, placeholder }: SelectProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(options.find((o) => o.name === value)?.name ?? '');
-  const [selectedOption, setSelectedOption] = useState<string | undefined>(
-    options.find((o) => o.id === value)?.name
-  );
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedOption, setSelectedOption] = useState<string | undefined>(undefined);
   const [creatableOption, setCreatableOption] = useState<string>('');
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputText = event.target.value;
     setSearchTerm(inputText);
 
-    if (!options.find((option) => option.name.toLowerCase() === inputText.toLowerCase())) {
+    if (!options.find((option) => option.toLowerCase() === inputText.toLowerCase())) {
       setCreatableOption(inputText);
     } else {
       setCreatableOption('');
@@ -31,7 +24,6 @@ function Select({ options, placeholder, onChange, onOptionCreate, value, onBlur 
   };
 
   const handleInputFocus = () => {
-    setSearchTerm('');
     setIsDropdownOpen(true);
   };
 
@@ -39,48 +31,36 @@ function Select({ options, placeholder, onChange, onOptionCreate, value, onBlur 
     setTimeout(() => {
       setIsDropdownOpen(false);
     }, 200);
-    onBlur?.();
   };
 
-  const handleOptionClick = (option: { id: string; name: string }) => {
+  const handleOptionClick = (option: string) => {
     setSearchTerm('');
     setCreatableOption('');
-    setSelectedOption(option.name);
+    setSelectedOption(option);
     setIsDropdownOpen(false);
-    onChange?.(option.id);
-  };
-
-  const handleOptionCreate = (option: { id: string; name: string }) => {
-    setSearchTerm('');
-    setCreatableOption('');
-    setSelectedOption(option.name);
-    setIsDropdownOpen(false);
-    onOptionCreate?.(option.id);
   };
 
   return (
     <SelectContainer>
-      <ForwardedSearchInput
+      <SearchInput
         type="text"
         placeholder={selectedOption || placeholder}
         value={searchTerm}
-        onFocus={handleInputFocus}
         onChange={handleSearchChange}
+        onFocus={handleInputFocus}
         onBlur={handleInputBlur}
       />
       {isDropdownOpen && (
         <Dropdown>
           {options
-            .filter((option) => option.name.toLowerCase().includes(searchTerm.toLowerCase()))
+            .filter((option) => option.toLowerCase().includes(searchTerm.toLowerCase()))
             .map((option, idx) => (
               <Option key={idx} onClick={() => handleOptionClick(option)}>
-                {option.name}
+                {option}
               </Option>
             ))}
-          {creatableOption && onOptionCreate && (
-            <Option
-              onClick={() => handleOptionCreate({ name: creatableOption, id: creatableOption })}
-            >
+          {creatableOption && (
+            <Option onClick={() => handleOptionClick(creatableOption)}>
               Create "{creatableOption}"
             </Option>
           )}
