@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 
 export const SelectContainer = styled.div`
@@ -29,6 +30,13 @@ export const SearchInput = styled.input`
   }
 `;
 
+export const ForwardedSearchInput = React.forwardRef<
+  HTMLInputElement,
+  React.InputHTMLAttributes<HTMLInputElement>
+>((props, ref) => {
+  return <SearchInput ref={ref} {...props} />;
+});
+
 export const Dropdown = styled.div`
   position: absolute;
   background-color: #3b3b3b;
@@ -40,7 +48,7 @@ export const Dropdown = styled.div`
   z-index: 2;
 `;
 
-export const Option = styled.div`
+export const Option = styled.option`
   padding: 0.5rem 1rem;
 
   &:hover {
