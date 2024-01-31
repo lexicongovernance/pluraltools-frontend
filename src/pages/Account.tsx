@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import fetchGroups from '../api/fetchGroups';
@@ -10,7 +10,6 @@ import Button from '../components/button';
 import Chip from '../components/chip';
 import ErrorText from '../components/form/ErrorText';
 import Input from '../components/form/Input';
-import Select from '../components/form/Select';
 import Label from '../components/typography/Label';
 import Title from '../components/typography/Title';
 import useUser from '../hooks/useUser';
@@ -18,6 +17,7 @@ import { FlexColumn, FlexRow } from '../layout/Layout.styled';
 import { useAppStore } from '../store';
 import { AuthUser } from '../types/AuthUserType';
 import { GetGroupsResponse } from '../types/GroupType';
+import Select from '../components/select';
 
 const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None', 'Other'];
 
@@ -140,7 +140,7 @@ function AccountForm({
     handleSubmit,
   } = useForm({
     defaultValues: initialUser,
-    mode: 'onBlur',
+    mode: 'all',
   });
 
   const { fields, remove, insert } = useFieldArray({
@@ -197,40 +197,47 @@ function AccountForm({
           </FlexColumn>
           <FlexColumn $gap="0.5rem">
             <Label $required>Affiliation</Label>
-            <Select
-              {...register('group', { required: 'Affiliation is required' })}
-              defaultValue={''}
-            >
-              <option value="" disabled>
-                Please choose an affiliation
-              </option>
-              {groups?.map((group) => (
-                <option key={group.id} value={group.id}>
-                  {group.name}
-                </option>
-              ))}
-            </Select>
+            <Controller
+              name="group"
+              control={control}
+              rules={{ required: 'Group is required' }}
+              render={({ field }) => (
+                <Select
+                  options={groups?.map((group) => ({ name: group.name, id: group.id })) || []}
+                  placeholder="Select group"
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  value={field.value}
+                />
+              )}
+            />
             <ErrorText>{errors.group?.message}</ErrorText>
           </FlexColumn>
           <Label $required>Credentials</Label>
           {fields.map((field, i) => (
             <FlexColumn $gap="0.5rem" key={field.id}>
               <FlexRow $gap="0.5rem" $alignItems="center">
-                <Select
-                  {...register(`userAttributes.credentialsGroup.${i}.credential` as const, {
-                    required: 'Credential is required',
-                  })}
-                  defaultValue={''}
-                >
-                  <option value="" disabled>
-                    Please choose a credential
-                  </option>
-                  {ACADEMIC_CREDENTIALS.map((credential) => (
-                    <option key={credential} value={credential}>
-                      {credential}
-                    </option>
-                  ))}
-                </Select>
+                <Controller
+                  name={
+                    `userAttributes.credentialsGroup.${i}.credential` as `userAttributes.credentialsGroup.${number}.credential`
+                  }
+                  control={control}
+                  rules={{ required: 'Credential is required' }}
+                  render={({ field }) => (
+                    <Select
+                      options={
+                        ACADEMIC_CREDENTIALS.map((credential) => ({
+                          name: credential,
+                          id: credential,
+                        })) || []
+                      }
+                      placeholder="Select credential"
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                      value={field.value}
+                    />
+                  )}
+                />
                 <Input
                   {...register(`userAttributes.credentialsGroup.${i}.institution` as const, {
                     required: 'Institution is required',
