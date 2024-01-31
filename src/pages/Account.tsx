@@ -235,6 +235,7 @@ function AccountForm({
                       onChange={field.onChange}
                       onBlur={field.onBlur}
                       value={field.value}
+                      onOptionCreate={field.onChange}
                     />
                   )}
                 />
