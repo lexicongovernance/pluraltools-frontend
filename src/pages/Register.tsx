@@ -98,14 +98,11 @@ function RegisterForm(props: {
   });
 
   const sortedRegistrationFields = useMemo(() => {
-    const sortedFields = [...props.registrationFields || []];
-  
+    const sortedFields = [...(props.registrationFields || [])];
+
     // Sort by field_display_rank in ascending order
-    sortedFields.sort((a, b) => (a.field_display_rank || 0) - (b.field_display_rank || 0));
-    
-    console.log('Original Fields:', props.registrationFields);
-    console.log('Sorted Fields:', sortedFields);
-  
+    sortedFields.sort((a, b) => (a.fieldDisplayRank || 0) - (b.fieldDisplayRank || 0));
+
     return sortedFields;
   }, [props.registrationFields]);
 
