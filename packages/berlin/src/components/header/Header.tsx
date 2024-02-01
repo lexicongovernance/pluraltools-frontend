@@ -18,11 +18,13 @@ import ZupassLoginButton from '../zupassButton/ZupassLoginButton';
 
 // Styled components
 import {
+  DesktopButtons,
   HeaderContainer,
   LogoContainer,
   LogoImage,
   LogoSubtext,
   LogoText,
+  MenuButton,
   NavButtons,
   NavContainer,
   SyledHeader,
@@ -59,19 +61,24 @@ function Header() {
         </LogoContainer>
         <NavContainer>
           <NavButtons>
-            {user ? (
-              <>
-                <NavButton to="/communities" $color="secondary">
-                  Communities
-                </NavButton>
-                <NavButton to="/account" $color="secondary">
-                  Account
-                </NavButton>
-                <Button onClick={mutateLogout}>Log out</Button>
-              </>
-            ) : (
-              <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
-            )}
+            <DesktopButtons>
+              {user ? (
+                <>
+                  <NavButton to="/communities" $color="secondary">
+                    Communities
+                  </NavButton>
+                  <NavButton to="/account" $color="secondary">
+                    Account
+                  </NavButton>
+                  <Button onClick={mutateLogout}>Log out</Button>
+                </>
+              ) : (
+                <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
+              )}
+            </DesktopButtons>
+            <MenuButton>
+              <img src={`/icons/menu-${theme}.svg`} />
+            </MenuButton>
             <ThemeButton onClick={toggleTheme}>
               <img src={`/icons/toggle-${theme}.svg`} height={20} width={20} />
             </ThemeButton>
