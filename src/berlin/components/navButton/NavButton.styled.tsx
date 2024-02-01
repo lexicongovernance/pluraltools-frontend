@@ -5,6 +5,6 @@ export const NavItem = styled.li``;
 
 export const StyledNavLink = styled(NavLink)`
   &.active {
-    border-bottom: 3px solid var(--color-black);
+    box-shadow: 0 2px 0 0 var(--color-black);
   }
 `;

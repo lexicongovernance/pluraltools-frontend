@@ -4,7 +4,9 @@ export const StyledButton = styled.button<{ $color: 'primary' | 'secondary' }>`
   border-radius: 0.5rem;
   border: none;
   font-family: var(--font-family-button);
+  font-size: 1rem;
   font-weight: 600;
+  line-height: 1.25rem;
   padding-block: 0.5rem;
   padding-inline: 1rem;
   text-transform: uppercase;
