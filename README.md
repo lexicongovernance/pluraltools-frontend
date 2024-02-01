@@ -17,4 +17,4 @@ Naming conventions:
 3. start a [backend server](https://github.com/lexicongovernance/forum-backend)
 4. create a .env.local from the .env skeleton, make sure to have the correct VITE_SERVER_URL
 5. pnpm i
-6. pnpm dev
+6. pnpm core:dev or pnpm berlin:dev
