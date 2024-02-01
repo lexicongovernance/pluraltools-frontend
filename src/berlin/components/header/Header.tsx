@@ -73,11 +73,7 @@ function Header() {
               <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
             )}
             <ThemeButton onClick={toggleTheme}>
-              {theme === 'light' ? (
-                <img src="/icons/sun.svg" height={20} width={20} />
-              ) : (
-                <img src="/icons/moon.svg" height={20} width={20} />
-              )}
+              <img src={`/icons/toggle-${theme}.svg`} height={20} width={20} />
             </ThemeButton>
           </NavButtons>
         </NavContainer>
