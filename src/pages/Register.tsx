@@ -26,6 +26,7 @@ import { GetRegistrationResponseType } from '../types/RegistrationType';
 import { useForm, FieldErrors, UseFormRegister } from 'react-hook-form';
 import { z } from 'zod';
 import Subtitle from '../components/typography/Subtitle';
+import { useMemo } from 'react';
 
 function Register() {
   const { user, isLoading } = useUser();
@@ -96,6 +97,18 @@ function RegisterForm(props: {
     mode: 'onBlur',
   });
 
+  const sortedRegistrationFields = useMemo(() => {
+    const sortedFields = [...props.registrationFields || []];
+  
+    // Sort by field_display_rank in ascending order
+    sortedFields.sort((a, b) => (a.field_display_rank || 0) - (b.field_display_rank || 0));
+    
+    console.log('Original Fields:', props.registrationFields);
+    console.log('Sorted Fields:', sortedFields);
+  
+    return sortedFields;
+  }, [props.registrationFields]);
+
   const { mutate: mutateRegistrationData } = useMutation({
     mutationFn: postRegistrationData,
     onSuccess: async (body) => {
@@ -140,7 +153,7 @@ function RegisterForm(props: {
           <Subtitle>{props.event?.registrationDescription}</Subtitle>
           <form>
             <FlexColumn $gap="0.75rem">
-              {props.registrationFields?.map((regField) => (
+              {sortedRegistrationFields.map((regField) => (
                 <FormField
                   key={regField.id}
                   disabled={props.registration?.status === 'PUBLISHED'}
