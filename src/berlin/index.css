@@ -9,8 +9,8 @@
 :root {
   --color-black: #222222;
   --color-white: #ffffff;
-  --font-family-title: 'Playfair', serif;
-  --font-family-body: 'Playfair Display', serif;
+  --font-family-title: 'Playfair Display', serif;
+  --font-family-body: 'Playfair', serif;
   --font-family-button: 'Raleway', sans-serif;
 }
 
