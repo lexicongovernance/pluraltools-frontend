@@ -15,6 +15,6 @@ Naming conventions:
 1. install [nodejs v20](https://nodejs.org/en/download)
 2. install [pnpm](https://pnpm.io/installation#using-npm)
 3. start a [backend server](https://github.com/lexicongovernance/forum-backend)
-4. create a .env.local from the .env skeleton, make sure to have the correct VITE_SERVER_URL
+4. create a .env.local from the .env skeleton inside the relevant package, make sure to have the correct VITE_SERVER_URL
 5. pnpm i
-6. pnpm dev
+6. pnpm core:dev or pnpm berlin:dev

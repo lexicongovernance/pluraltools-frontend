@@ -1,14 +1,19 @@
 {
-  "name": "forum-frontend",
+  "name": "lexicon-frontend",
   "private": true,
-  "version": "0.1.1",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "format": "npx prettier . --write",
-    "preview": "vite preview"
+    "core:dev": "pnpm -r --filter core dev",
+    "core:build": "pnpm -r --filter core build",
+    "core:lint": "pnpm -r --filter core lint",
+    "core:format": "pnpm -r --filter core format",
+    "core:preview": "pnpm -r --filter core preview",
+    "berlin:dev": "pnpm -r --filter berlin dev",
+    "berlin:build": "pnpm -r --filter berlin build",
+    "berlin:lint": "pnpm -r --filter berlin lint",
+    "berlin:format": "pnpm -r --filter berlin format",
+    "berlin:preview": "pnpm -r --filter berlin preview"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
