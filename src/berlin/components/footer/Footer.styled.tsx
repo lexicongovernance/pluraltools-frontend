@@ -2,15 +2,14 @@ import styled from 'styled-components';
 
 export const SyledFooter = styled.footer`
   align-items: center;
-  background-color: var(--color-black);
   display: flex;
-  height: 6rem;
   justify-content: center;
+  min-height: 8rem;
+  padding-block: 2rem;
 `;
 
 export const FooterContainer = styled.div`
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  width: min(90%, 1080px);
+  background-color: var(--color-white);
+  width: min(85%, 1080px);
+  text-align: center;
 `;
