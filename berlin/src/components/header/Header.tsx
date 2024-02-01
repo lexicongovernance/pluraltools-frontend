@@ -3,13 +3,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
 // Store
-import { useAppStore } from '../../../store';
+import { useAppStore } from '../../store';
 
 // API
-import { logout } from '../../../api';
+import { logout } from '../../api';
 
 // Hooks
-import useUser from '../../../hooks/useUser';
+import useUser from '../../hooks/useUser';
 
 // Components
 import Button from '../button';

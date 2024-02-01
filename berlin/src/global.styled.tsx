@@ -1,5 +1,5 @@
 import { ThemeProvider, createGlobalStyle } from 'styled-components';
-import { useAppStore } from '../store';
+import { useAppStore } from './store';
 
 export const GlobalStyle = createGlobalStyle`
 *,

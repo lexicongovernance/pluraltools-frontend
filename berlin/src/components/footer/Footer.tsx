@@ -1,4 +1,4 @@
-import { useAppStore } from '../../../store';
+import { useAppStore } from '../../store';
 import { FlexColumn } from '../containers/FlexColum.styled';
 import { FlexRow } from '../containers/FlexRow.styled';
 import { Copy, FooterContainer, SyledFooter } from './Footer.styled';
