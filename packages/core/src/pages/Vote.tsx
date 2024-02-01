@@ -181,7 +181,7 @@ function Vote() {
       </BackArrow>
       <FlexColumn>
         <Grid $columns={2} $gap="2rem">
-          <Title className="title">{cycle?.forumQuestions?.[0].title}</Title>
+          <Title className="title">{cycle?.forumQuestions?.[0].questionTitle}</Title>
           <Countdown formattedTime={formattedTime} />
           <FlexRow $gap="0.25rem" $wrap>
             {Array.from({ length: initialHearts }).map((_, id) => (
@@ -211,8 +211,8 @@ function Vote() {
               return (
                 <Option
                   key={questionOption.id}
-                  title={questionOption.text}
-                  body={questionOption.description}
+                  title={questionOption.optionTitle}
+                  body={questionOption.optionSubTitle}
                   avaliableHearts={avaliableHearts}
                   numOfVotes={numOfVotes}
                   onVote={() => handleVote(questionOption.id)}
