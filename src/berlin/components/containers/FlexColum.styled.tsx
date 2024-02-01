@@ -1,9 +1,14 @@
 import styled from 'styled-components';
 
-export const FlexColumn = styled.div`
+type FlexColumnProps = {
+  $gap?: string;
+};
+
+export const FlexColumn = styled.div<FlexColumnProps>`
   align-items: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 1rem;
+
+  gap: ${(props) => (props.$gap && props.$gap) || '1rem'};
 `;
