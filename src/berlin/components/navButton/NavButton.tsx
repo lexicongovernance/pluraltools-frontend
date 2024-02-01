@@ -1,13 +1,20 @@
-import { NavLink } from 'react-router-dom';
-import { NavItem } from './NavButton.styled';
+import { StyledNavLink } from './NavButton.styled';
+import Button from '../button';
 
-function NavButton() {
+type NavButtonProps = {
+  to: string;
+  $color?: 'primary' | 'secondary';
+  children: React.ReactNode;
+  onClick?: () => void;
+};
+
+function NavButton({ to, children, $color = 'primary', onClick }: NavButtonProps) {
   return (
-    <NavItem>
-      <NavLink to="/">
-        <button>Communities</button>
-      </NavLink>
-    </NavItem>
+    <StyledNavLink to={to} tabIndex={-1}>
+      <Button onClick={onClick} $color={$color}>
+        {children}
+      </Button>
+    </StyledNavLink>
   );
 }
 
