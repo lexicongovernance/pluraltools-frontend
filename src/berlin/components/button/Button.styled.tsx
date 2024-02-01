@@ -7,6 +7,7 @@ export const StyledButton = styled.button<{ $color: 'primary' | 'secondary' }>`
   font-weight: 600;
   padding-block: 0.5rem;
   padding-inline: 1rem;
+  text-transform: uppercase;
   transition: ease 0.25s;
 
   ${(props) =>
