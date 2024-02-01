@@ -1,40 +1,50 @@
-// import logout from '../../api/logout';
-// import Button from '../button';
-// import { useMutation, useQueryClient } from '@tanstack/react-query';
-// import ZupassLoginButton from '../zupassLoginButton';
-import { NavLink } from 'react-router-dom';
+// React and third-party libraries
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+
+// Store
+import { useAppStore } from '../../../store';
+
+// API
+import { logout } from '../../../api';
+
+// Hooks
+import useUser from '../../../hooks/useUser';
+
+// Components
+import Button from '../button';
+import NavButton from '../navButton';
+import ZupassLoginButton from '../zupassButton/ZupassLoginButton';
+
+// Styled components
 import {
   HeaderContainer,
   LogoContainer,
   LogoImage,
   LogoSubtext,
   LogoText,
-  NavButton,
   NavButtons,
   NavContainer,
   SyledHeader,
 } from './Header.styled';
-// import useUser from '../../hooks/useUser';
-// import { useNavigate } from 'react-router-dom';
-// import { useAppStore } from '../../store';
 
 function Header() {
-  // const queryClient = useQueryClient();
-  // const navigate = useNavigate();
-  // const { user } = useUser();
-  // const resetState = useAppStore((state) => state.reset);
-  // const { mutate: mutateLogout } = useMutation({
-  //   mutationFn: logout,
-  //   onSuccess: () => {
-  //     resetState();
-  //     queryClient.removeQueries();
-  //   },
-  // });
+  const queryClient = useQueryClient();
+  const user = useUser();
+  const navigate = useNavigate();
+  const resetState = useAppStore((state) => state.reset);
+  const { mutate: mutateLogout } = useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      resetState();
+      queryClient.removeQueries();
+    },
+  });
 
   return (
     <SyledHeader>
       <HeaderContainer>
-        <LogoContainer>
+        <LogoContainer onClick={() => navigate('/communities')}>
           <LogoImage
             src="/logos/logo.png"
             alt="Plural Research logo, a prism with a rainbow over mountains"
@@ -46,64 +56,22 @@ function Header() {
         </LogoContainer>
         <NavContainer>
           <NavButtons>
-            <NavButton>
-              <NavLink to="/">
-                <button>Communities</button>
-              </NavLink>
-            </NavButton>
-            <NavButton>
-              <NavLink to="/">
-                <button>Account</button>
-              </NavLink>
-            </NavButton>
-            <NavButton>
-              <NavLink to="/">
-                <button>Log out</button>
-              </NavLink>
-            </NavButton>
+            {user ? (
+              <>
+                <NavButton to="/communities" $color="secondary">
+                  Communities
+                </NavButton>
+                <NavButton to="/account" $color="secondary">
+                  Account
+                </NavButton>
+                <Button onClick={mutateLogout}>Log out</Button>
+              </>
+            ) : (
+              <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
+            )}
           </NavButtons>
         </NavContainer>
       </HeaderContainer>
-      {/* <HeaderContainer>
-        <Logo onClick={() => navigate('/events')}>
-          Plural
-          <br />
-          Research
-        </Logo>
-        <nav>
-          <NavButtons>
-            {user ? (
-              <>
-                <li>
-                  <StyledNavLink to="/events">
-                    <Button variant="text" tabIndex={-1}>
-                      Communities
-                    </Button>
-                  </StyledNavLink>
-                </li>
-                <li>
-                  <StyledNavLink to="/account">
-                    <Button variant="text" tabIndex={-1}>
-                      Account
-                    </Button>
-                  </StyledNavLink>
-                </li>
-                <li>
-                  <Button color="secondary" onClick={mutateLogout}>
-                    Log out
-                  </Button>
-                </li>
-              </>
-            ) : (
-              <>
-                <li>
-                  <ZupassLoginButton color="secondary">Login with Zupass</ZupassLoginButton>
-                </li>
-              </>
-            )}
-          </NavButtons>
-        </nav>
-      </HeaderContainer> */}
     </SyledHeader>
   );
 }

@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 export const SyledHeader = styled.header`
   align-items: center;
-  background-color: var(--color-black);
   display: flex;
   justify-content: center;
   min-height: 10rem;
@@ -20,6 +19,7 @@ export const HeaderContainer = styled.div`
 `;
 
 export const LogoContainer = styled.div`
+  cursor: pointer;
   column-gap: 1rem;
   display: grid;
   grid-template-columns: 6rem 6.5rem 4rem;
@@ -56,14 +56,12 @@ export const LogoSubtext = styled.h2`
 export const NavContainer = styled.nav`
   align-items: center;
   display: flex;
-  background-color: coral;
 `;
 
 export const NavButtons = styled.ul`
   display: flex;
   gap: 1rem;
   list-style: none;
-  background-color: pink;
 `;
 
 export const NavButton = styled.li``;
