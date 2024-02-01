@@ -46,16 +46,17 @@ export type ResponseCycleType = {
     id: string;
     createdAt: string;
     updatedAt: string;
-    description: string | null;
+    questionSubTitle: string | null;
     cycleId: string;
-    title: string;
+    questionTitle: string;
     questionOptions: {
       id: string;
       createdAt: string;
       updatedAt: string;
       questionId: string;
-      text: string;
-      description?: string;
+      optionTitle: string;
+      optionSubTitle?: string;
+      accepted: boolean;
       voteCount: number;
     }[];
   }[];

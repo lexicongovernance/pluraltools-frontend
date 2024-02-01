@@ -69,7 +69,7 @@ function Event() {
       </BackArrow>
       <EventCard
         $direction="row"
-        src={event?.image_url}
+        src={event?.imageUrl}
         title={event?.name}
         description={event?.description}
       />
@@ -78,7 +78,7 @@ function Event() {
         {eventCycles && eventCycles?.length > 0 ? (
           <Grid $columns={3}>
             {eventCycles?.map((eventCycles) => {
-              const { title } = eventCycles.forumQuestions[0];
+              const { questionTitle } = eventCycles.forumQuestions[0];
               const eventEndDate = new Date(eventCycles.endAt);
               const formattedDate = eventEndDate.toLocaleDateString();
 
@@ -87,7 +87,7 @@ function Event() {
                   <FlexColumn $gap="1.5rem">
                     <Chip status={eventCycles.status}>{eventCycles.status}</Chip>
                     <FlexColumn $gap="0.5rem">
-                      <Subtitle>{title}</Subtitle>
+                      <Subtitle>{questionTitle}</Subtitle>
                       <Subtext>Closes on {formattedDate}</Subtext>
                     </FlexColumn>
                     <Button onClick={() => handleClick(eventCycles.id)}>Go to vote</Button>
