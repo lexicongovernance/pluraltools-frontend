@@ -25,8 +25,4 @@ export const StyledButton = styled.button<{ $color: 'primary' | 'secondary' }>`
       background-color: var(--color-white);
       color: var(--color-black);
     `}
-
-  &:hover {
-    opacity: 0.8;
-  }
 `;

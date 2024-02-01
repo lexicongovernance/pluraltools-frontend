@@ -40,6 +40,13 @@ select {
 
 button {
   cursor: pointer;
+  transition: opacity 0.2s ease-out;
+
+  &:hover {
+  opacity: 0.8;
+  transition: opacity 0.2s ease-in;
+
+  }
 }
 
 a {
