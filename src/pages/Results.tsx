@@ -108,7 +108,7 @@ function Results() {
         <img src="/icons/back_arrow.svg" alt="Back arrow" />
       </BackArrow>
       <FlexColumn $gap="3rem">
-        <Title>Results for: {cycle?.forumQuestions?.[0].title}</Title>
+        <Title>Results for: {cycle?.forumQuestions?.[0].questionTitle}</Title>
         <Grid $columns={4}>
           {stats.map((stat) => (
             <Card key={stat.id} title={stat.title} bigNumber={stat.data} />

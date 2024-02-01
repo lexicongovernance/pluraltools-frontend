@@ -21,7 +21,7 @@ function Events() {
         {events?.map((event) => (
           <EventCard
             key={event.id}
-            src={event.image_url}
+            src={event.imageUrl}
             title={event.name}
             eventId={event.id}
             buttonText="Go"
