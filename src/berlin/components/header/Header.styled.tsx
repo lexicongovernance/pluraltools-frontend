@@ -1,5 +1,5 @@
-// import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
+import Button from '../button/Button';
 
 export const SyledHeader = styled.header`
   align-items: center;
@@ -64,12 +64,4 @@ export const NavButtons = styled.ul`
   list-style: none;
 `;
 
-export const NavButton = styled.li``;
-
-// export const StyledNavLink = styled(NavLink)`
-//   padding-bottom: 0.5rem;
-//   border-bottom: 3px solid transparent;
-//   &.active {
-//     border-bottom: 3px solid var(--color-white);
-//   }
-// `;
+export const ThemeButton = styled(Button)``;

@@ -26,11 +26,14 @@ import {
   NavButtons,
   NavContainer,
   SyledHeader,
+  ThemeButton,
 } from './Header.styled';
 
 function Header() {
   const queryClient = useQueryClient();
   const user = useUser();
+  const theme = useAppStore((state) => state.theme);
+  const toggleTheme = useAppStore((state) => state.toggleTheme);
   const navigate = useNavigate();
   const resetState = useAppStore((state) => state.reset);
   const { mutate: mutateLogout } = useMutation({
@@ -69,6 +72,13 @@ function Header() {
             ) : (
               <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
             )}
+            <ThemeButton onClick={toggleTheme}>
+              {theme === 'light' ? (
+                <img src="/icons/sun.svg" height={20} width={20} />
+              ) : (
+                <img src="/icons/moon.svg" height={20} width={20} />
+              )}
+            </ThemeButton>
           </NavButtons>
         </NavContainer>
       </HeaderContainer>
