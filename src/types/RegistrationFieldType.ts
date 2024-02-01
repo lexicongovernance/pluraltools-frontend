@@ -9,5 +9,6 @@ export type GetRegistrationFieldsResponse = {
   eventId: string;
   type: 'SELECT' | 'TEXT' | 'NUMBER' | 'DATE' | 'BOOLEAN';
   required: boolean | null;
+  fieldDisplayRank: number | null;
   registrationFieldOptions: RegistrationFieldOption[];
 }[];
