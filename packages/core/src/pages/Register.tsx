@@ -26,7 +26,7 @@ import { GetRegistrationResponseType } from '../types/RegistrationType';
 import { useForm, FieldErrors, UseFormRegister } from 'react-hook-form';
 import { z } from 'zod';
 import Subtitle from '../components/typography/Subtitle';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 function Register() {
   const { user, isLoading } = useUser();
@@ -239,6 +239,16 @@ function TextInput(props: {
   register: UseFormRegister<Record<string, string>>;
   errors: FieldErrors<Record<string, string>>;
 }) {
+  const [charCount, setCharCount] = useState(0);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = event.target.value;
+    setCharCount(inputValue.length);
+    props.register(props.id, {
+      value: inputValue,
+    });
+  };
+
   return (
     <FlexColumn $gap="0.5rem">
       <Label htmlFor={props.name} $required={!!props.required}>
@@ -267,8 +277,14 @@ function TextInput(props: {
           },
         })}
         disabled={props.disabled}
+        onChange={handleInputChange}
       />
       {props.errors?.[props.id] && <ErrorText>{props.errors?.[props.id]?.message}</ErrorText>}
+      {props.characterLimit > 0 && (
+        <p>
+          {charCount}/{props.characterLimit} characters
+        </p>
+      )}
     </FlexColumn>
   );
 }
