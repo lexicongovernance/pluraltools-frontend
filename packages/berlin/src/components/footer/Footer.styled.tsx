@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { FlexColumn } from '../containers/FlexColum.styled';
 
 export const SyledFooter = styled.footer`
   align-items: center;
@@ -8,7 +9,7 @@ export const SyledFooter = styled.footer`
   padding-block: 2rem;
 `;
 
-export const FooterContainer = styled.div`
+export const FooterContainer = styled(FlexColumn)`
   background-color: var(--color-white);
   width: min(85%, 1080px);
   text-align: center;

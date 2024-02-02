@@ -15,8 +15,10 @@ import { useAppStore } from '../store';
 import { AuthUser } from '../types/AuthUserType';
 import { GetGroupsResponse } from '../types/GroupType';
 import Select from '../components/select';
+import { fetchEvents } from '../api';
+import { DBEvent } from '../types/DBEventType';
 
-const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None', 'Other'];
+const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None'];
 
 type CredentialsGroup = {
   credential: string;
@@ -27,8 +29,9 @@ type CredentialsGroup = {
 type UserAttributes = {
   name: string;
   institution: string;
-  publications: string;
-  contributions: string;
+  role: string;
+  publications: { value: string }[];
+  contributions: { value: string }[];
   credentialsGroup: CredentialsGroup;
 };
 
@@ -41,6 +44,12 @@ type InitialUser = {
 
 function Account() {
   const { user, isLoading: userIsLoading } = useUser();
+
+  const { data: events } = useQuery({
+    queryKey: ['events'],
+    queryFn: fetchEvents,
+    enabled: !!user?.id,
+  });
 
   const { data: groups } = useQuery({
     queryKey: ['groups'],
@@ -70,17 +79,26 @@ function Account() {
           const json = JSON.parse(curr.attributeValue) as CredentialsGroup;
           acc.credentialsGroup = json;
           return acc;
+        } else if (curr.attributeKey === 'publications' || curr.attributeKey === 'contributions') {
+          const json = JSON.parse(curr.attributeValue) as { value: string }[];
+          acc[curr.attributeKey] = json;
+          return acc;
         } else {
-          acc[curr.attributeKey as keyof Omit<UserAttributes, 'credentialsGroup'>] =
-            curr.attributeValue;
+          acc[
+            curr.attributeKey as keyof Omit<
+              UserAttributes,
+              'credentialsGroup' | 'publications' | 'contributions'
+            >
+          ] = curr.attributeValue;
           return acc;
         }
       },
       {
         name: '',
         institution: '',
-        publications: '',
-        contributions: '',
+        role: '',
+        publications: [{ value: '' }],
+        contributions: [{ value: '' }],
         credentialsGroup: [
           {
             credential: '',
@@ -97,7 +115,13 @@ function Account() {
   }
 
   return (
-    <AccountForm initialUser={initialUser} user={user} groups={groups} userGroups={userGroups} />
+    <AccountForm
+      initialUser={initialUser}
+      user={user}
+      groups={groups}
+      userGroups={userGroups}
+      events={events}
+    />
   );
 }
 
@@ -106,11 +130,13 @@ function AccountForm({
   user,
   groups,
   userGroups,
+  events,
 }: {
   initialUser: InitialUser;
   user: AuthUser | null | undefined;
   groups: GetGroupsResponse[] | null | undefined;
   userGroups: GetGroupsResponse[] | null | undefined;
+  events: DBEvent[] | null | undefined;
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -135,13 +161,37 @@ function AccountForm({
     register,
     formState: { errors, isValid },
     handleSubmit,
+    setValue,
+    trigger,
   } = useForm({
     defaultValues: initialUser,
     mode: 'all',
   });
 
-  const { fields, remove, insert } = useFieldArray({
+  const {
+    fields: fieldsCredentialsGroup,
+    remove: removeCredentialsGroup,
+    insert: insertCredentialsGroup,
+  } = useFieldArray({
     name: 'userAttributes.credentialsGroup' as const,
+    control,
+  });
+
+  const {
+    fields: fieldsPublications,
+    remove: removePublications,
+    insert: insertPublications,
+  } = useFieldArray({
+    name: 'userAttributes.publications' as const,
+    control,
+  });
+
+  const {
+    fields: fieldsContributions,
+    remove: removeContributions,
+    insert: insertContributions,
+  } = useFieldArray({
+    name: 'userAttributes.contributions' as const,
     control,
   });
 
@@ -155,6 +205,8 @@ function AccountForm({
         userAttributes: {
           ...value.userAttributes,
           credentialsGroup: JSON.stringify(value.userAttributes?.credentialsGroup),
+          publications: JSON.stringify(value.userAttributes?.publications),
+          contributions: JSON.stringify(value.userAttributes?.contributions),
         },
       });
 
@@ -162,7 +214,11 @@ function AccountForm({
 
       if (userStatus === 'INCOMPLETE') {
         setUserStatus('COMPLETE');
-        navigate('/events');
+        if (events?.length === 1) {
+          navigate(`/events/${events[0].id}/register`);
+        } else {
+          navigate('/events');
+        }
       }
     }
   };
@@ -210,89 +266,155 @@ function AccountForm({
             />
             <ErrorText>{errors.group?.message}</ErrorText>
           </FlexColumn>
-          <Label $required>Credentials</Label>
-          {fields.map((field, i) => (
-            <FlexColumn $gap="0.5rem" key={field.id}>
-              <FlexRow $gap="0.5rem" $alignItems="center">
-                <Controller
-                  name={
-                    `userAttributes.credentialsGroup.${i}.credential` as `userAttributes.credentialsGroup.${number}.credential`
-                  }
-                  control={control}
-                  rules={{ required: 'Credential is required' }}
-                  render={({ field }) => (
-                    <Select
-                      options={
-                        ACADEMIC_CREDENTIALS.map((credential) => ({
-                          name: credential,
-                          id: credential,
-                        })) || []
-                      }
-                      placeholder="Select credential"
-                      onChange={field.onChange}
-                      onBlur={field.onBlur}
-                      value={field.value}
-                      onOptionCreate={field.onChange}
-                    />
-                  )}
-                />
-                <Input
-                  {...register(`userAttributes.credentialsGroup.${i}.institution` as const, {
-                    required: 'Institution is required',
-                  })}
-                  placeholder="Institution (e.g. University of London)"
-                />
-                <Input
-                  {...register(`userAttributes.credentialsGroup.${i}.field` as const, {
-                    required: 'Field is required',
-                  })}
-                  placeholder="Field (e.g. Economics)"
-                />
-                <Button variant="text" onClick={() => remove(i)}>
-                  Remove
-                </Button>
-              </FlexRow>
-              <div>
-                <ErrorText>
-                  {errors.userAttributes?.credentialsGroup?.[i]?.credential?.message}
-                </ErrorText>
-                <ErrorText>
-                  {errors.userAttributes?.credentialsGroup?.[i]?.institution?.message}
-                </ErrorText>
-                <ErrorText>
-                  {errors.userAttributes?.credentialsGroup?.[i]?.field?.message}
-                </ErrorText>
-              </div>
-            </FlexColumn>
-          ))}
-          {/* add a new field button */}
-          <Button
-            type="button"
-            onClick={() => {
-              insert(fields.length, {
-                credential: '',
-                institution: '',
-                field: '',
-              });
-            }}
-          >
-            Add new credential
-          </Button>
+          <FlexColumn $gap="0.5rem">
+            <Label>Role</Label>
+            <Input
+              {...register('userAttributes.role')}
+              placeholder="e.g. Founder, Developer, Researcher"
+            />
+            <ErrorText>{errors.userAttributes?.name?.message}</ErrorText>
+          </FlexColumn>
+          <FlexColumn $gap="0.5rem">
+            <Label $required>Academic Credentials</Label>
+            {fieldsCredentialsGroup.map((field, i) => (
+              <FlexColumn $gap="0.5rem" key={field.id}>
+                <FlexRow $gap="0.5rem" $alignItems="center">
+                  <Controller
+                    name={
+                      `userAttributes.credentialsGroup.${i}.credential` as `userAttributes.credentialsGroup.${number}.credential`
+                    }
+                    control={control}
+                    rules={{ required: 'Credential is required' }}
+                    render={({ field }) => (
+                      <Select
+                        options={
+                          ACADEMIC_CREDENTIALS.map((credential) => ({
+                            name: credential,
+                            id: credential,
+                          })) || []
+                        }
+                        placeholder="Select or create credential"
+                        onChange={(value) => {
+                          field.onChange(value);
+                          // Check if selected credential is 'None' and set default values accordingly
+                          if (value === 'None') {
+                            setValue(`userAttributes.credentialsGroup.${i}.institution`, 'None');
+                            setValue(`userAttributes.credentialsGroup.${i}.field`, 'None');
+                            // Manually trigger validation
+                            trigger(`userAttributes.credentialsGroup.${i}.institution`);
+                            trigger(`userAttributes.credentialsGroup.${i}.field`);
+                          }
+                        }}
+                        onBlur={field.onBlur}
+                        value={field.value}
+                        onOptionCreate={field.onChange}
+                      />
+                    )}
+                  />
+                  <Input
+                    {...register(`userAttributes.credentialsGroup.${i}.institution` as const, {
+                      required: 'Institution is required',
+                    })}
+                    placeholder="Institution (e.g. University of London)"
+                  />
+                  <Input
+                    {...register(`userAttributes.credentialsGroup.${i}.field` as const, {
+                      required: 'Field is required',
+                    })}
+                    placeholder="Field (e.g. Economics)"
+                  />
+                  <Button variant="text" onClick={() => removeCredentialsGroup(i)}>
+                    Remove
+                  </Button>
+                </FlexRow>
+                <div>
+                  <ErrorText>
+                    {errors.userAttributes?.credentialsGroup?.[i]?.credential?.message}
+                  </ErrorText>
+                  <ErrorText>
+                    {errors.userAttributes?.credentialsGroup?.[i]?.institution?.message}
+                  </ErrorText>
+                  <ErrorText>
+                    {errors.userAttributes?.credentialsGroup?.[i]?.field?.message}
+                  </ErrorText>
+                </div>
+              </FlexColumn>
+            ))}
+            {/* add a new field button */}
+            <Button
+              type="button"
+              onClick={() => {
+                insertCredentialsGroup(fieldsCredentialsGroup.length, {
+                  credential: '',
+                  institution: '',
+                  field: '',
+                });
+              }}
+            >
+              Add new credential
+            </Button>
+          </FlexColumn>
           <FlexColumn $gap="0.5rem">
             <Label>Publications (URLs)</Label>
-            <Input
-              {...register('userAttributes.publications')}
-              placeholder="Insert up to 5 urls separated by commas"
-            />
-            <ErrorText>{errors.email?.message}</ErrorText>
+            {fieldsPublications.map((field, i) => (
+              <FlexColumn $gap="0.5rem" key={field.id}>
+                <FlexRow $gap="0.5rem" $alignItems="center">
+                  <Input
+                    {...register(`userAttributes.publications.${i}.value` as const, {
+                      required: 'URL is required',
+                    })}
+                    placeholder="URL"
+                  />
+                  <Button variant="text" onClick={() => removePublications(i)}>
+                    Remove
+                  </Button>
+                </FlexRow>
+                <div>
+                  <ErrorText>{errors.userAttributes?.publications?.[i]?.value?.message}</ErrorText>
+                </div>
+              </FlexColumn>
+            ))}
+            {/* add a new field button */}
+            <Button
+              type="button"
+              onClick={() => {
+                insertPublications(fieldsPublications.length, {
+                  value: '',
+                });
+              }}
+            >
+              Add new publication
+            </Button>
           </FlexColumn>
           <FlexColumn $gap="0.5rem">
             <Label>Contributions to MEV (URLs) </Label>
-            <Input
-              {...register('userAttributes.contributions')}
-              placeholder="Insert up to 5 urls separated by commas"
-            />
-            <ErrorText>{errors.email?.message}</ErrorText>
+            {fieldsContributions.map((field, i) => (
+              <FlexColumn $gap="0.5rem" key={field.id}>
+                <FlexRow $gap="0.5rem" $alignItems="center">
+                  <Input
+                    {...register(`userAttributes.contributions.${i}.value` as const)}
+                    placeholder="URL"
+                  />
+                  <Button variant="text" onClick={() => removeContributions(i)}>
+                    Remove
+                  </Button>
+                </FlexRow>
+                <div>
+                  <ErrorText>{errors.userAttributes?.contributions?.[i]?.value?.message}</ErrorText>
+                </div>
+              </FlexColumn>
+            ))}
+            {/* add a new field button */}
+            <Button
+              type="button"
+              onClick={() => {
+                insertContributions(fieldsContributions.length, {
+                  value: '',
+                });
+              }}
+            >
+              Add new contribution
+            </Button>
           </FlexColumn>
           <FlexRow $alignSelf="flex-end">
             <Button type="submit" disabled={!isValid}>

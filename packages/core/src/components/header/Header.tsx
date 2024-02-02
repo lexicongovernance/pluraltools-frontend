@@ -14,9 +14,10 @@ function Header() {
   const resetState = useAppStore((state) => state.reset);
   const { mutate: mutateLogout } = useMutation({
     mutationFn: logout,
-    onSuccess: () => {
+    onSuccess: async () => {
       resetState();
-      queryClient.removeQueries();
+      await queryClient.invalidateQueries();
+      await queryClient.removeQueries();
     },
   });
 
