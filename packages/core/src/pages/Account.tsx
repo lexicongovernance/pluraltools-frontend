@@ -19,7 +19,7 @@ import { AuthUser } from '../types/AuthUserType';
 import { GetGroupsResponse } from '../types/GroupType';
 import Select from '../components/select';
 
-const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None', 'Other'];
+const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None'];
 
 type CredentialsGroup = {
   credential: string;
@@ -213,7 +213,7 @@ function AccountForm({
             />
             <ErrorText>{errors.group?.message}</ErrorText>
           </FlexColumn>
-          <Label $required>Credentials</Label>
+          <Label $required>Academic Credentials</Label>
           {fields.map((field, i) => (
             <FlexColumn $gap="0.5rem" key={field.id}>
               <FlexRow $gap="0.5rem" $alignItems="center">
@@ -231,7 +231,7 @@ function AccountForm({
                           id: credential,
                         })) || []
                       }
-                      placeholder="Select credential"
+                      placeholder="Select or create credential"
                       onChange={field.onChange}
                       onBlur={field.onBlur}
                       value={field.value}
