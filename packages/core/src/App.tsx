@@ -68,7 +68,6 @@ function App() {
         path="/events/:eventId/cycles/:cycleId/results"
         element={user ? <Results /> : <Navigate to="/" replace />}
       />
-      <Route path="/register" element={user ? <Register /> : <Navigate to="/" replace />} />
       <Route path="/account" element={user ? <Account /> : <Navigate to="/" replace />} />
       <Route path="/popup" element={<PassportPopupRedirect />} />
     </Routes>

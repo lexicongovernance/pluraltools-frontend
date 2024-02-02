@@ -17,6 +17,9 @@ import { Title } from '../components/typography/Title.styled';
 import useUser from '../hooks/useUser';
 import { AuthUser } from '../types/AuthUserType';
 import { GetGroupsResponse } from '../types/GroupType';
+import { DBEvent } from '../types/DBEventType';
+import { fetchEvents } from '../api';
+import { useNavigate } from 'react-router-dom';
 
 const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None', 'Other'];
 
@@ -60,6 +63,12 @@ function Account() {
   const { data: userAttributes, isLoading: userAttributesIsLoading } = useQuery({
     queryKey: ['user', user?.id, 'attributes'],
     queryFn: () => fetchUserAttributes(user?.id || ''),
+    enabled: !!user?.id,
+  });
+
+  const { data: events } = useQuery({
+    queryKey: ['events'],
+    queryFn: fetchEvents,
     enabled: !!user?.id,
   });
 
@@ -108,18 +117,21 @@ function Account() {
     return <Title>Loading...</Title>;
   }
 
-  return <AccountForm initialUser={initialUser} user={user} groups={groups} />;
+  return <AccountForm initialUser={initialUser} user={user} groups={groups} events={events} />;
 }
 
 function AccountForm({
   initialUser,
   user,
   groups,
+  events,
 }: {
   initialUser: InitialUser;
   user: AuthUser | null | undefined;
   groups: GetGroupsResponse[] | null | undefined;
+  events: DBEvent[] | null | undefined;
 }) {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { mutate: mutateUserData } = useMutation({
@@ -188,6 +200,10 @@ function AccountForm({
       });
 
       toast.success('User data updated!');
+
+      if (events?.length ?? 0 > 1) {
+        navigate(`/events/${events?.[0].id}/register`);
+      }
     }
   };
 

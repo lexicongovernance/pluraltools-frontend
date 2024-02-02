@@ -54,7 +54,10 @@ function App() {
       <Route path="/" element={handleHomePage} />
       <Route path="/onboarding" element={user ? <Onboarding /> : <Navigate to="/" replace />} />
       <Route path="/account" element={user ? <Account /> : <Navigate to="/" replace />} />
-      <Route path="/register" element={user ? <Register /> : <Navigate to="/" replace />} />
+      <Route
+        path="/events/:eventId/register"
+        element={user ? <Register /> : <Navigate to="/" replace />}
+      />
       <Route path="/popup" element={<PassportPopupRedirect />} />
     </Routes>
   );
