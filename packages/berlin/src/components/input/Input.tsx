@@ -4,20 +4,26 @@ import { Error } from '../typography/Error.styled';
 import Label from '../typography/Label';
 import { StyledInput } from './Input.styled';
 
-type InputProps = {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   defaultValue?: string;
   label?: string;
   required?: boolean;
   placeholder: string;
   errors?: string[];
-};
+}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ placeholder, defaultValue, errors, label, required }, ref) => {
+  ({ placeholder, defaultValue, errors, label, required, ...props }, ref) => {
     return (
       <FlexColumn $gap="0.5rem">
         {label && <Label $required={required}>{label}</Label>}
-        <StyledInput type="text" placeholder={placeholder} defaultValue={defaultValue} ref={ref} />
+        <StyledInput
+          type="text"
+          placeholder={placeholder}
+          defaultValue={defaultValue}
+          ref={ref}
+          {...props}
+        />
         {errors && (
           <FlexColumn $gap="0.25rem">
             {errors.map((error, i) => (
