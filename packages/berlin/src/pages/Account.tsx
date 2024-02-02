@@ -20,6 +20,7 @@ import { GetGroupsResponse } from '../types/GroupType';
 import { DBEvent } from '../types/DBEventType';
 import { fetchEvents } from '../api';
 import { useNavigate } from 'react-router-dom';
+import { useAppStore } from '../store';
 
 const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None', 'Other'];
 
@@ -132,6 +133,7 @@ function AccountForm({
   events: DBEvent[] | null | undefined;
 }) {
   const navigate = useNavigate();
+  const theme = useAppStore((state) => state.theme);
   const queryClient = useQueryClient();
 
   const { mutate: mutateUserData } = useMutation({
@@ -210,154 +212,167 @@ function AccountForm({
   return (
     <FlexColumn>
       <Title>Complete your registration</Title>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Input
-          label="Username"
-          placeholder="Enter your Username"
-          required
-          {...register('username', { required: 'Username is required', minLength: 3 })}
-          errors={errors.username ? [errors.username.message ?? ''] : []}
-        />
-        <Input label="Name" placeholder="Enter your Name" {...register('userAttributes.name')} />
-        <Input label="Email" placeholder="Enter your Email" {...register('email')} />
-        <Controller
-          name="group"
-          control={control}
-          rules={{ required: 'Affiliation is required' }}
-          render={({ field }) => (
-            <FlexColumn>
-              <Select
-                options={groups?.map((group) => ({ name: group.name, id: group.id })) || []}
-                label="Affiliation"
-                placeholder="Select an affiliation"
-                required
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                value={field.value}
-              />
-
-              <FlexColumn $gap="0.25rem">
-                {[errors.group?.message ?? ''].map((error, i) => (
-                  <Error key={i}>{error}</Error>
-                ))}
+      <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%' }}>
+        <FlexColumn>
+          <Input
+            label="Username"
+            placeholder="Enter your Username"
+            required
+            {...register('username', { required: 'Username is required', minLength: 3 })}
+            errors={errors.username ? [errors.username.message ?? ''] : []}
+          />
+          <Input label="Name" placeholder="Enter your Name" {...register('userAttributes.name')} />
+          <Input label="Email" placeholder="Enter your Email" {...register('email')} />
+          <Input label="Role" placeholder="Enter your role" {...register('userAttributes.role')} />
+          <Controller
+            name="group"
+            control={control}
+            rules={{ required: 'Affiliation is required' }}
+            render={({ field }) => (
+              <FlexColumn $gap="0.5rem">
+                <Select
+                  options={groups?.map((group) => ({ name: group.name, id: group.id })) || []}
+                  label="Affiliation"
+                  placeholder="Select an affiliation"
+                  required
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  value={field.value}
+                />
+                <FlexColumn $gap="0.25rem">
+                  {[errors.group?.message ?? ''].map((error, i) => (
+                    <Error key={i}>{error}</Error>
+                  ))}
+                </FlexColumn>
               </FlexColumn>
-            </FlexColumn>
-          )}
-        />
-        <Input label="Role" placeholder="Enter your role" {...register('userAttributes.role')} />
-        <FlexColumn>
-          <FlexColumn $gap="0.5rem">
-            <Label $required>Credentials</Label>
-            {fieldsCredentialsGroup.map((field, i) => (
-              <FlexRow key={field.id}>
-                <Controller
-                  name={
-                    `userAttributes.credentialsGroup.${i}.credential` as `userAttributes.credentialsGroup.${number}.credential`
-                  }
-                  control={control}
-                  rules={{ required: 'Credential is required' }}
-                  render={({ field }) => (
-                    <FlexColumn>
-                      <Select
-                        options={
-                          ACADEMIC_CREDENTIALS.map((credential) => ({
-                            name: credential,
-                            id: credential,
-                          })) || []
-                        }
-                        onChange={field.onChange}
-                        onBlur={field.onBlur}
-                        value={field.value}
-                        onOptionCreate={field.onChange}
-                        placeholder="Select your credential"
-                      />
-                      <FlexColumn $gap="0.25rem">
-                        {[
-                          errors.userAttributes?.credentialsGroup?.[i]?.credential?.message ?? '',
-                        ].map((error, i) => (
-                          <Error key={i}>{error}</Error>
-                        ))}
+            )}
+          />
+          <FlexColumn>
+            <FlexColumn $gap="0.5rem">
+              <Label $required>Credentials</Label>
+              {fieldsCredentialsGroup.map((field, i) => (
+                <FlexRow key={field.id}>
+                  <Controller
+                    name={
+                      `userAttributes.credentialsGroup.${i}.credential` as `userAttributes.credentialsGroup.${number}.credential`
+                    }
+                    control={control}
+                    rules={{ required: 'Credential is required' }}
+                    render={({ field }) => (
+                      <FlexColumn $gap="0.5rem">
+                        <Select
+                          options={
+                            ACADEMIC_CREDENTIALS.map((credential) => ({
+                              name: credential,
+                              id: credential,
+                            })) || []
+                          }
+                          onChange={field.onChange}
+                          onBlur={field.onBlur}
+                          value={field.value}
+                          onOptionCreate={field.onChange}
+                          placeholder="Select your credential"
+                        />
+                        <FlexColumn $gap="0.25rem">
+                          {[
+                            errors.userAttributes?.credentialsGroup?.[i]?.credential?.message ?? '',
+                          ].map((error, i) => (
+                            <Error key={i}>{error}</Error>
+                          ))}
+                        </FlexColumn>
                       </FlexColumn>
-                    </FlexColumn>
-                  )}
-                />
-                <Input
-                  placeholder="Institution (e.g. University of London)"
-                  {...register(`userAttributes.credentialsGroup.${i}.institution` as const, {
-                    required: 'Institution is required',
-                  })}
-                  errors={[
-                    errors.userAttributes?.credentialsGroup?.[i]?.institution?.message ?? '',
-                  ]}
-                />
-                <Input
-                  placeholder="Field (e.g. Economics)"
-                  {...register(`userAttributes.credentialsGroup.${i}.field` as const, {
-                    required: 'Field is required',
-                  })}
-                  errors={[errors.userAttributes?.credentialsGroup?.[i]?.field?.message ?? '']}
-                />
-                <Button onClick={() => removeCredentialsGroup(i)}>Remove</Button>
-              </FlexRow>
-            ))}
+                    )}
+                  />
+                  <Input
+                    placeholder="Institution (e.g. University of London)"
+                    {...register(`userAttributes.credentialsGroup.${i}.institution` as const, {
+                      required: 'Institution is required',
+                    })}
+                    errors={[
+                      errors.userAttributes?.credentialsGroup?.[i]?.institution?.message ?? '',
+                    ]}
+                  />
+                  <Input
+                    placeholder="Field (e.g. Economics)"
+                    {...register(`userAttributes.credentialsGroup.${i}.field` as const, {
+                      required: 'Field is required',
+                    })}
+                    errors={[errors.userAttributes?.credentialsGroup?.[i]?.field?.message ?? '']}
+                  />
+                  <Button onClick={() => removeCredentialsGroup(i)} $color="secondary">
+                    <div style={{ width: 24 }}>
+                      <img src={`/icons/trash-${theme}.svg`} height={24} width={24} />
+                    </div>
+                  </Button>
+                </FlexRow>
+              ))}
+            </FlexColumn>
+            <Button
+              onClick={() => {
+                insertCredentialsGroup(fieldsCredentialsGroup.length, {
+                  credential: '',
+                  institution: '',
+                  field: '',
+                });
+              }}
+            >
+              Add credential
+            </Button>
           </FlexColumn>
-          <Button
-            onClick={() => {
-              insertCredentialsGroup(fieldsCredentialsGroup.length, {
-                credential: '',
-                institution: '',
-                field: '',
-              });
-            }}
-          >
-            Add credential
+          <FlexColumn>
+            <FlexColumn $gap="0.5rem">
+              <Label $required>Publications</Label>
+              {fieldsPublications.map((field, i) => (
+                <FlexRow key={field.id}>
+                  <Input
+                    placeholder="Insert up to 5 urls separated by commas"
+                    {...register(`userAttributes.publications.${i}.value` as const)}
+                  />
+                  <Button onClick={() => removePublications(i)} $color="secondary">
+                    <div style={{ width: 24 }}>
+                      <img src={`/icons/trash-${theme}.svg`} height={24} width={24} />
+                    </div>
+                  </Button>
+                </FlexRow>
+              ))}
+            </FlexColumn>
+            <Button
+              onClick={() => {
+                insertPublications(fieldsPublications.length, { value: '' });
+              }}
+            >
+              Add publication
+            </Button>
+          </FlexColumn>
+          <FlexColumn>
+            <FlexColumn $gap="0.5rem">
+              <Label $required>Contributions to MEV</Label>
+              {fieldsContributions.map((field, i) => (
+                <FlexRow key={field.id}>
+                  <Input
+                    placeholder="Insert up to 5 urls separated by commas"
+                    {...register(`userAttributes.contributions.${i}.value` as const)}
+                  />
+                  <Button onClick={() => removeContributions(i)} $color="secondary">
+                    <div style={{ width: 24 }}>
+                      <img src={`/icons/trash-${theme}.svg`} height={24} width={24} />
+                    </div>
+                  </Button>
+                </FlexRow>
+              ))}
+            </FlexColumn>
+            <Button
+              onClick={() => {
+                insertContributions(fieldsContributions.length, { value: '' });
+              }}
+            >
+              Add contribution
+            </Button>
+          </FlexColumn>
+          <Button type="submit" disabled={!isValid}>
+            Submit
           </Button>
         </FlexColumn>
-        <FlexColumn>
-          <FlexColumn $gap="0.5rem">
-            <Label $required>Publications</Label>
-            {fieldsPublications.map((field, i) => (
-              <FlexRow key={field.id}>
-                <Input
-                  placeholder="Insert up to 5 urls separated by commas"
-                  {...register(`userAttributes.publications.${i}.value` as const)}
-                />
-                <Button onClick={() => removePublications(i)}>Remove</Button>
-              </FlexRow>
-            ))}
-          </FlexColumn>
-          <Button
-            onClick={() => {
-              insertPublications(fieldsPublications.length, { value: '' });
-            }}
-          >
-            Add publication
-          </Button>
-        </FlexColumn>
-        <FlexColumn>
-          <FlexColumn $gap="0.5rem">
-            <Label $required>Contributions to MEV</Label>
-            {fieldsContributions.map((field, i) => (
-              <FlexRow key={field.id}>
-                <Input
-                  placeholder="Insert up to 5 urls separated by commas"
-                  {...register(`userAttributes.contributions.${i}.value` as const)}
-                />
-                <Button onClick={() => removeContributions(i)}>Remove</Button>
-              </FlexRow>
-            ))}
-          </FlexColumn>
-          <Button
-            onClick={() => {
-              insertContributions(fieldsContributions.length, { value: '' });
-            }}
-          >
-            Add contribution
-          </Button>
-        </FlexColumn>
-        <Button type="submit" disabled={!isValid}>
-          Submit
-        </Button>
       </form>
     </FlexColumn>
   );
