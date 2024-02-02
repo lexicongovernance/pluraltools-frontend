@@ -143,7 +143,7 @@ function RegisterForm(props: {
     <FlexColumn>
       <Title>Register for {props.event?.name}</Title>
       <Subtitle>{props.event?.registrationDescription}</Subtitle>
-      <form>
+      <form style={{ width: '100%' }}>
         <FlexColumn $gap="0.75rem">
           {sortedRegistrationFields.map((regField) => (
             <FormField
