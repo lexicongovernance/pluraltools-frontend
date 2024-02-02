@@ -260,7 +260,7 @@ function TextInput(props: {
           validate: (value) => {
             // validate character limit (0 character limit is no character limit)
             if (props.characterLimit > 0 && value.length > props.characterLimit) {
-              return `Exceeds character limit of ${props.characterLimit}`;
+              return `Character count of ${charCount} exceeds character limit of ${props.characterLimit}`;
             }
             // validate required
             if (!props.required) {
@@ -279,11 +279,14 @@ function TextInput(props: {
         disabled={props.disabled}
         onChange={handleInputChange}
       />
-      {props.errors?.[props.id] && <ErrorText>{props.errors?.[props.id]?.message}</ErrorText>}
-      {props.characterLimit > 0 && (
-        <p>
-          {charCount}/{props.characterLimit} characters
-        </p>
+      {props.errors?.[props.id] ? (
+        <ErrorText>{props.errors?.[props.id]?.message}</ErrorText>
+      ) : (
+        props.characterLimit > 0 && (
+          <p style={{ color: '#999999', fontSize: '14px' }}>
+            {charCount}/{props.characterLimit} characters
+          </p>
+        )
       )}
     </FlexColumn>
   );
