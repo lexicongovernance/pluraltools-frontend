@@ -12,7 +12,7 @@ type InputProps = {
 
 function Input({ label, required, placeholder, errors }: InputProps) {
   return (
-    <FlexColumn $align="flex-start" $gap="0.5rem">
+    <FlexColumn $gap="0.5rem">
       {label && <Label $required={required}>{label}</Label>}
       <StyledInput type="text" placeholder={placeholder} />
       {errors && (
