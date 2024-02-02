@@ -47,8 +47,8 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={handleHomePage} />
-      <Route path="/onboarding" element={<Onboarding />} />
-      <Route path="/account" element={<Account />} />
+      <Route path="/onboarding" element={user ? <Onboarding /> : <Navigate to="/" replace />} />
+      <Route path="/account" element={user ? <Account /> : <Navigate to="/" replace />} />
       <Route path="/popup" element={<PassportPopupRedirect />} />
     </Routes>
   );
