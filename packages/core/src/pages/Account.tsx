@@ -278,7 +278,7 @@ function AccountForm({
             <ErrorText>{errors.userAttributes?.name?.message}</ErrorText>
           </FlexColumn>
           <FlexColumn $gap="0.5rem">
-            <Label $required>Account Credentials</Label>
+            <Label $required>Academic Credentials</Label>
             {fieldsCredentialsGroup.map((field, i) => (
               <FlexColumn $gap="0.5rem" key={field.id}>
                 <FlexRow $gap="0.5rem" $alignItems="center">
