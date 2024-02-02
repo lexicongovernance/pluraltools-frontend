@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import {fetchGroups, fetchUserAttributes, fetchUserGroups, updateUserData} from 'api';
+import { fetchGroups, fetchUserAttributes, fetchUserGroups, updateUserData } from 'api';
 import Button from '../components/button';
 import Chip from '../components/chip';
 import ErrorText from '../components/form/ErrorText';
@@ -15,7 +15,7 @@ import { useAppStore } from '../store';
 import { AuthUser } from '../types/AuthUserType';
 import { GetGroupsResponse } from '../types/GroupType';
 import Select from '../components/select';
-import { fetchEvents } from '../api';
+import { fetchEvents } from 'api';
 import { DBEvent } from '../types/DBEventType';
 
 const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None'];

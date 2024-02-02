@@ -14,7 +14,7 @@ import {
   fetchRegistrationData,
   fetchRegistrationFields,
   postRegistrationData,
-} from '../api';
+} from 'api';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AuthUser } from '../types/AuthUserType';
 import { GetRegistrationFieldsResponse } from '../types/RegistrationFieldType';

@@ -96,7 +96,11 @@ importers:
 
   packages/api: {}
 
-  packages/berlin: {}
+  packages/berlin:
+    dependencies:
+      api:
+        specifier: workspace:*
+        version: link:../api
 
   packages/core:
     dependencies:
