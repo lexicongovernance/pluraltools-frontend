@@ -1,14 +1,19 @@
 // React and third-party libraries
+import { ReactNode, useEffect, useMemo } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
+
+// Hooks
+import useUser from './hooks/useUser';
+
+// Store
+import { useAppStore } from './store';
 
 // Pages
 import Account from './pages/Account';
 import Landing from './pages/Landing';
 import Onboarding from './pages/Onboarding';
+import Register from './pages/Onboarding';
 import PassportPopupRedirect from './pages/Popup';
-import useUser from './hooks/useUser';
-import { useAppStore } from './store';
-import { ReactNode, useEffect, useMemo } from 'react';
 
 function App() {
   const { user, isLoading } = useUser();
@@ -49,6 +54,7 @@ function App() {
       <Route path="/" element={handleHomePage} />
       <Route path="/onboarding" element={user ? <Onboarding /> : <Navigate to="/" replace />} />
       <Route path="/account" element={user ? <Account /> : <Navigate to="/" replace />} />
+      <Route path="/register" element={user ? <Register /> : <Navigate to="/" replace />} />
       <Route path="/popup" element={<PassportPopupRedirect />} />
     </Routes>
   );
