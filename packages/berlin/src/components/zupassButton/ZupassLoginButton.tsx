@@ -7,7 +7,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchNonce, postPcdStr } from '../../../src/api';
+import { fetchNonce, postPcdStr } from 'api';
 import handleSignatureRequest from '../../../src/utils/handleSignatureRequest';
 import Button from '../button';
 
