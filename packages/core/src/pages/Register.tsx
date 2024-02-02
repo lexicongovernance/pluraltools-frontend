@@ -7,7 +7,7 @@ import {
   fetchRegistrationData,
   fetchRegistrationFields,
   postRegistrationData,
-} from '../api';
+} from 'api';
 import Button from '../components/button';
 import Chip from '../components/chip';
 import ErrorText from '../components/form/ErrorText';

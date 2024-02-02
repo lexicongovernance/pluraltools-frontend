@@ -1,6 +1,6 @@
-import { AuthUser } from '../types/AuthUserType';
+import { GetUserResponse } from './types/UserType';
 
-async function fetchUserData(): Promise<AuthUser | null> {
+async function fetchUserData(): Promise<GetUserResponse | null> {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/users`, {
       credentials: 'include',
@@ -13,7 +13,7 @@ async function fetchUserData(): Promise<AuthUser | null> {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    const user = (await response.json()) as { data: AuthUser };
+    const user = (await response.json()) as { data: GetUserResponse };
     return user.data;
   } catch (error) {
     console.error('Error fetching user:', error);

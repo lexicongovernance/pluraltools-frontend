@@ -1,9 +1,9 @@
-import { ResponseUserVotesType } from '../types/CycleType';
+import { GetUserVotesResponse } from './types/UserVotesType';
 
 async function fetchUserVotes(
   userId: string,
   cycleId: string
-): Promise<ResponseUserVotesType | null> {
+): Promise<GetUserVotesResponse | null> {
   try {
     const response = await fetch(
       `${import.meta.env.VITE_SERVER_URL}/api/users/${userId}/cycles/${cycleId}/votes`,
@@ -18,7 +18,7 @@ async function fetchUserVotes(
       throw new Error(`HTTP Error! Status: ${response.status}`);
     }
 
-    const userVotes = (await response.json()) as { data: ResponseUserVotesType };
+    const userVotes = (await response.json()) as { data: GetUserVotesResponse };
     return userVotes.data;
   } catch (error) {
     console.error('Error fetchin user votes:', error);

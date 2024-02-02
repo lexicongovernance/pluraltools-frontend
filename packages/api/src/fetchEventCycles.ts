@@ -1,6 +1,6 @@
-import { ResponseCycleType } from '../types/CycleType';
+import { GetCyclesResponse } from './types/CycleType';
 
-async function fetchEventCycles(eventId: string): Promise<ResponseCycleType | null> {
+async function fetchEventCycles(eventId: string): Promise<GetCyclesResponse | null> {
   try {
     const response = await fetch(
       `${import.meta.env.VITE_SERVER_URL}/api/events/${eventId}/cycles`,
@@ -16,7 +16,7 @@ async function fetchEventCycles(eventId: string): Promise<ResponseCycleType | nu
       throw new Error(`HTTP Error! Status: ${response.status}`);
     }
 
-    const cycle = (await response.json()) as { data: ResponseCycleType };
+    const cycle = (await response.json()) as { data: GetCyclesResponse };
     return cycle.data;
   } catch (error) {
     console.error('Error fetching cycles:', error);

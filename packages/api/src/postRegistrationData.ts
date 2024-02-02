@@ -1,7 +1,7 @@
 import {
   PostRegistrationDataRequest,
   PostRegistrationDataResponse,
-} from '../types/RegistrationDataType';
+} from './types/RegistrationDataType';
 
 async function postRegistrationData({
   body,

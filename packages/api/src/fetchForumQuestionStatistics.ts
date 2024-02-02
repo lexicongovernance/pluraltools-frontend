@@ -1,4 +1,4 @@
-import { GetForumQuestionStatisticsResponse } from '../types/ForumQuestionType';
+import { GetForumQuestionStatisticsResponse } from './types/ForumQuestionType';
 
 async function fetchForumQuestionStatistics(
   questionId: string

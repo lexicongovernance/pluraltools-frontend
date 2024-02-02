@@ -1,4 +1,4 @@
-import logout from '../../api/logout';
+import { logout } from 'api';
 import Button from '../button';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import ZupassLoginButton from '../zupassLoginButton';

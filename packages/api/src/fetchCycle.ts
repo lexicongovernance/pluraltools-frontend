@@ -1,6 +1,6 @@
-import { ResponseCycleType } from '../types/CycleType';
+import { GetCyclesResponse } from './types/CycleType';
 
-async function fetchCycle(cycleId: string): Promise<ResponseCycleType[number] | null> {
+async function fetchCycle(cycleId: string): Promise<GetCyclesResponse[number] | null> {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/cycles/${cycleId}`, {
       credentials: 'include',
@@ -13,7 +13,7 @@ async function fetchCycle(cycleId: string): Promise<ResponseCycleType[number] | 
       throw new Error(`HTTP Error! Status: ${response.status}`);
     }
 
-    const cycle = (await response.json()) as { data: ResponseCycleType[number] };
+    const cycle = (await response.json()) as { data: GetCyclesResponse[number] };
     return cycle.data;
   } catch (error) {
     console.error('Error fetching cycles:', error);

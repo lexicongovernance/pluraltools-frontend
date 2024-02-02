@@ -1,4 +1,4 @@
-import { GetGroupsResponse } from '../types/GroupType';
+import { GetGroupsResponse } from './types/GroupType';
 
 async function fetchUserGroups(userId: string): Promise<GetGroupsResponse[] | null> {
   try {
