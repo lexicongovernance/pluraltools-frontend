@@ -31,7 +31,7 @@ function Onboarding() {
   };
 
   return (
-    <FlexColumn $align="flex-start" $gap="3rem">
+    <FlexColumn $gap="3rem">
       <Title>{data[step].title}</Title>
       <BodyContent content={data[step].body} />
       <Dots dots={data.length} activeDotIndex={step} />

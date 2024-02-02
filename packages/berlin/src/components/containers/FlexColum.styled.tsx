@@ -11,6 +11,6 @@ export const FlexColumn = styled.div<FlexColumnProps>`
   justify-content: center;
   width: 100%;
 
-  align-items: ${(props) => (props.$align && props.$align) || 'center'};
+  align-items: ${(props) => (props.$align && props.$align) || 'flex-start'};
   gap: ${(props) => (props.$gap && props.$gap) || '1rem'};
 `;
