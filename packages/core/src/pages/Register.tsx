@@ -158,6 +158,7 @@ function RegisterForm(props: {
                   required={regField.required}
                   id={regField.id}
                   name={regField.name}
+                  characterLimit={regField.characterLimit}
                   options={regField.registrationFieldOptions}
                   type={regField.type}
                   register={register}
@@ -187,6 +188,7 @@ function FormField({
   options,
   disabled,
   register,
+  characterLimit,
 }: {
   id: string;
   name: string;
@@ -196,6 +198,7 @@ function FormField({
   disabled: boolean;
   register: UseFormRegister<Record<string, string>>;
   errors: FieldErrors<Record<string, string>>;
+  characterLimit: number;
 }) {
   switch (type) {
     case 'TEXT':
@@ -207,6 +210,7 @@ function FormField({
           required={required}
           disabled={disabled}
           errors={errors}
+          characterLimit={characterLimit}
         />
       );
     case 'SELECT':
@@ -230,6 +234,7 @@ function TextInput(props: {
   id: string;
   name: string;
   required: boolean | null;
+  characterLimit: number;
   disabled: boolean;
   register: UseFormRegister<Record<string, string>>;
   errors: FieldErrors<Record<string, string>>;
@@ -243,6 +248,11 @@ function TextInput(props: {
         type="text"
         {...props.register(props.id, {
           validate: (value) => {
+            // validate character limit (0 character limit is no character limit)
+            if (props.characterLimit > 0 && value.length > props.characterLimit) {
+              return `Exceeds character limit of ${props.characterLimit}`;
+            }
+            // validate required
             if (!props.required) {
               return true;
             }
