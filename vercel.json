@@ -1,3 +1,8 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/berlin/index.html" }]
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/packages/core/index.html"
+    }
+  ]
 }
