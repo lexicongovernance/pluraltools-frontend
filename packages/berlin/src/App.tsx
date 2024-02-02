@@ -5,6 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 import Account from './pages/Account';
 import Landing from './pages/Landing';
 import Onboarding from './pages/Onboarding';
+import PassportPopupRedirect from './pages/Popup';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/account" element={<Account />} />
+      <Route path="/popup" element={<PassportPopupRedirect />} />
     </Routes>
   );
 }

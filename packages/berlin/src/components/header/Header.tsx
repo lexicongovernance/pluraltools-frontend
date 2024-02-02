@@ -33,7 +33,7 @@ import {
 
 function Header() {
   const queryClient = useQueryClient();
-  const user = useUser();
+  const { user } = useUser();
   const theme = useAppStore((state) => state.theme);
   const toggleTheme = useAppStore((state) => state.toggleTheme);
   const navigate = useNavigate();
@@ -49,7 +49,7 @@ function Header() {
   return (
     <SyledHeader>
       <HeaderContainer>
-        <LogoContainer onClick={() => navigate('/communities')}>
+        <LogoContainer onClick={() => navigate('/')}>
           <LogoImage
             src="/logos/logo.png"
             alt="Plural Research logo, a prism with a rainbow over mountains"
