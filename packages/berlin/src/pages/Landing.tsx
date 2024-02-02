@@ -8,7 +8,7 @@ import { Bold } from '../components/typography/Bold.styled';
 
 function Landing() {
   return (
-    <FlexColumn $align="flex-start" $gap="2rem">
+    <FlexColumn $gap="2rem">
       <Body>
         We are a <Bold>community of open-source researchers</Bold> committed to solving the hardest
         problems in decentralization, including the challenge of maintaining research and academic

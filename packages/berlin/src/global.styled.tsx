@@ -11,9 +11,10 @@ export const GlobalStyle = createGlobalStyle`
 }
 
 :root {
-  --color-black: ${(props) => props.theme.backgroundColor};
-  --color-white: ${(props) => props.theme.textColor};
+  --color-white: ${(props) => props.theme.backgroundColor};
+  --color-black: ${(props) => props.theme.textColor};
   --color-gray:  ${(props) => props.theme.gray};
+  --color-error: #DB4545;
   --font-family-title: 'Playfair Display', serif;
   --font-family-body: 'Playfair', serif;
   --font-family-button: 'Raleway', sans-serif;
@@ -67,12 +68,12 @@ const ThemedApp = ({ children }: ThemedAppProps) => {
     light: {
       backgroundColor: '#ffffff',
       textColor: '#222222',
-      gray: '#444444',
+      gray: '#dddddd',
     },
     dark: {
       backgroundColor: '#222222',
       textColor: '#ffffff',
-      gray: '#dddddd',
+      gray: '#444444',
     },
   };
 

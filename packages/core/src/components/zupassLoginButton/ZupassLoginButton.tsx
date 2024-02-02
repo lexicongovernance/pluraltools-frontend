@@ -52,10 +52,9 @@ function ZupassLoginButton({ children, ...props }: ZupassLoginButtonProps) {
   const onProofVerified = (valid: boolean) => {
     setSignatureProofValid(valid);
   };
-  // Hook for getting the signature proof
-  // TODO: Do we need this?
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { signatureProof } = useSemaphoreSignatureProof(pcdStr, onProofVerified);
+
+  // Verify the signature proof
+  useSemaphoreSignatureProof(pcdStr, onProofVerified);
 
   useEffect(() => {
     if (signatureProofValid && pcdStr) {
