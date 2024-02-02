@@ -249,6 +249,7 @@ function TextInput(props: {
             return v.error.errors[0].message;
           },
         })}
+        errors={[props.errors?.[props.id]?.message ?? '']}
         disabled={props.disabled}
       />
     </FlexColumn>
