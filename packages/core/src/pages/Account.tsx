@@ -251,7 +251,7 @@ function AccountForm({
             <Label>Role</Label>
             <Input
               {...register('userAttributes.role')}
-              placeholder="e.g., Founder, Developer, Researcher"
+              placeholder="e.g. Founder, Developer, Researcher"
             />
             <ErrorText>{errors.userAttributes?.name?.message}</ErrorText>
           </FlexColumn>
