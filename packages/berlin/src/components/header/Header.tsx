@@ -40,9 +40,10 @@ function Header() {
   const resetState = useAppStore((state) => state.reset);
   const { mutate: mutateLogout } = useMutation({
     mutationFn: logout,
-    onSuccess: () => {
+    onSuccess: async () => {
       resetState();
-      queryClient.removeQueries();
+      await queryClient.invalidateQueries();
+      await queryClient.removeQueries();
     },
   });
 
@@ -64,9 +65,6 @@ function Header() {
             <DesktopButtons>
               {user ? (
                 <>
-                  <NavButton to="/communities" $color="secondary">
-                    Communities
-                  </NavButton>
                   <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>
