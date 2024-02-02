@@ -21,7 +21,7 @@ import Select from '../components/select';
 import { fetchEvents } from '../api';
 import { DBEvent } from '../types/DBEventType';
 
-const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None', 'Other'];
+const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None'];
 
 type CredentialsGroup = {
   credential: string;
@@ -164,6 +164,8 @@ function AccountForm({
     register,
     formState: { errors, isValid },
     handleSubmit,
+    setValue,
+    trigger,
   } = useForm({
     defaultValues: initialUser,
     mode: 'all',
@@ -276,7 +278,7 @@ function AccountForm({
             <ErrorText>{errors.userAttributes?.name?.message}</ErrorText>
           </FlexColumn>
           <FlexColumn $gap="0.5rem">
-            <Label $required>Credentials</Label>
+            <Label $required>Academic Credentials</Label>
             {fieldsCredentialsGroup.map((field, i) => (
               <FlexColumn $gap="0.5rem" key={field.id}>
                 <FlexRow $gap="0.5rem" $alignItems="center">
@@ -294,8 +296,18 @@ function AccountForm({
                             id: credential,
                           })) || []
                         }
-                        placeholder="Select credential"
-                        onChange={field.onChange}
+                        placeholder="Select or create credential"
+                        onChange={(value) => {
+                          field.onChange(value);
+                          // Check if selected credential is 'None' and set default values accordingly
+                          if (value === 'None') {
+                            setValue(`userAttributes.credentialsGroup.${i}.institution`, 'None');
+                            setValue(`userAttributes.credentialsGroup.${i}.field`, 'None');
+                            // Manually trigger validation
+                            trigger(`userAttributes.credentialsGroup.${i}.institution`);
+                            trigger(`userAttributes.credentialsGroup.${i}.field`);
+                          }
+                        }}
                         onBlur={field.onBlur}
                         value={field.value}
                         onOptionCreate={field.onChange}
