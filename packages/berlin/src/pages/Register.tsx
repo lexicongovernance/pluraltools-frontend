@@ -231,6 +231,8 @@ function TextInput(props: {
     <FlexColumn $gap="0.5rem">
       <Input
         type="text"
+        label={props.name}
+        required={!!props.required}
         placeholder="Enter a value"
         {...props.register(props.id, {
           validate: (value) => {
@@ -270,7 +272,9 @@ function SelectInput(props: {
         control={props.control}
         render={({ field }) => (
           <Select
+            label={props.name}
             placeholder="Choose a value"
+            required={!!props.required}
             options={props.options.map((option) => ({ id: option.id, name: option.value }))}
             disabled={props.disabled}
             {...field}
