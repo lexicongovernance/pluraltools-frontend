@@ -17,7 +17,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <FlexColumn $gap="0.5rem">
         {label && <Label $required={required}>{label}</Label>}
         <StyledInput type="text" placeholder={placeholder} ref={ref} {...props} />
-        {errors && (
+        {errors && errors?.length > 0 && (
           <FlexColumn $gap="0.25rem">
             {errors.map((error, i) => (
               <Error key={i}>{error}</Error>
