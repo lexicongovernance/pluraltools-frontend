@@ -9,6 +9,7 @@ export const FlexRow = styled.div<FlexRowProps>`
   display: flex;
   flex-direction: row;
   justify-content: center;
+  width: 100%;
 
   gap: ${(props) => props.$gap || '1rem'};
 `;
