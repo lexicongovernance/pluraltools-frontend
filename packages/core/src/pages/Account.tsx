@@ -18,6 +18,8 @@ import { useAppStore } from '../store';
 import { AuthUser } from '../types/AuthUserType';
 import { GetGroupsResponse } from '../types/GroupType';
 import Select from '../components/select';
+import { fetchEvents } from '../api';
+import { DBEvent } from '../types/DBEventType';
 
 const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None', 'Other'];
 
@@ -44,6 +46,12 @@ type InitialUser = {
 
 function Account() {
   const { user, isLoading: userIsLoading } = useUser();
+
+  const { data: events } = useQuery({
+    queryKey: ['events'],
+    queryFn: fetchEvents,
+    enabled: !!user?.id,
+  });
 
   const { data: groups } = useQuery({
     queryKey: ['groups'],
@@ -100,7 +108,13 @@ function Account() {
   }
 
   return (
-    <AccountForm initialUser={initialUser} user={user} groups={groups} userGroups={userGroups} />
+    <AccountForm
+      initialUser={initialUser}
+      user={user}
+      groups={groups}
+      userGroups={userGroups}
+      events={events}
+    />
   );
 }
 
@@ -109,11 +123,13 @@ function AccountForm({
   user,
   groups,
   userGroups,
+  events,
 }: {
   initialUser: InitialUser;
   user: AuthUser | null | undefined;
   groups: GetGroupsResponse[] | null | undefined;
   userGroups: GetGroupsResponse[] | null | undefined;
+  events: DBEvent[] | null | undefined;
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -165,7 +181,11 @@ function AccountForm({
 
       if (userStatus === 'INCOMPLETE') {
         setUserStatus('COMPLETE');
-        navigate('/events');
+        if (events?.length === 1) {
+          navigate(`/events/${events[0].id}/register`);
+        } else {
+          navigate('/events');
+        }
       }
     }
   };
