@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/packages/core/index.html"
+      "destination": "/index.html"
     }
   ]
 }
