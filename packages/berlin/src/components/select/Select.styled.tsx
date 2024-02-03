@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { FlexColumn } from '../containers/FlexColum.styled';
 
 export const SelectContainer = styled.div`
   position: relative;
@@ -57,4 +58,12 @@ export const Option = styled.option`
     background-color: var(--color-gray);
     cursor: pointer;
   }
+`;
+
+export const LabelContainer = styled(FlexColumn)`
+  margin-bottom: 0.5rem;
+`;
+
+export const ErrorsContainer = styled(FlexColumn)`
+  margin-top: 0.5rem;
 `;
