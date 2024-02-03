@@ -223,7 +223,7 @@ function AccountForm({
           />
           <Input label="Name" placeholder="Enter your Name" {...register('userAttributes.name')} />
           <Input label="Email" placeholder="Enter your Email" {...register('email')} />
-          <Input label="Role" placeholder="Enter your role" {...register('userAttributes.role')} />
+          <Input label="Role" placeholder="Enter your Role (e.g., Founder, Developer, Researcher)" {...register('userAttributes.role')} />
           <Controller
             name="group"
             control={control}
@@ -284,7 +284,7 @@ function AccountForm({
                     )}
                   />
                   <Input
-                    placeholder="Institution (e.g. University of London)"
+                    placeholder="Institution (e.g., MIT)"
                     {...register(`userAttributes.credentialsGroup.${i}.institution` as const, {
                       required: 'Institution is required',
                     })}
@@ -293,7 +293,7 @@ function AccountForm({
                     ]}
                   />
                   <Input
-                    placeholder="Field (e.g. Economics)"
+                    placeholder="Field (e.g., Economics)"
                     {...register(`userAttributes.credentialsGroup.${i}.field` as const, {
                       required: 'Field is required',
                     })}
