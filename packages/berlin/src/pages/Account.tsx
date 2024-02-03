@@ -325,7 +325,7 @@ function AccountForm({
               {fieldsPublications.map((field, i) => (
                 <FlexRow key={field.id}>
                   <Input
-                    placeholder="Insert up to 5 urls separated by commas"
+                    placeholder="Add a relevant paper as a URL"
                     {...register(`userAttributes.publications.${i}.value` as const)}
                   />
                   <Button onClick={() => removePublications(i)} $color="secondary">
@@ -350,7 +350,7 @@ function AccountForm({
               {fieldsContributions.map((field, i) => (
                 <FlexRow key={field.id}>
                   <Input
-                    placeholder="Insert up to 5 urls separated by commas"
+                    placeholder="Add an MEV contribution as a URL"
                     {...register(`userAttributes.contributions.${i}.value` as const)}
                   />
                   <Button onClick={() => removeContributions(i)} $color="secondary">
