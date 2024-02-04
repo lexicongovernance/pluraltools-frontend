@@ -11,7 +11,6 @@ import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
 import Input from '../components/input';
 import Select from '../components/select';
-import { Error } from '../components/typography/Error.styled';
 import Label from '../components/typography/Label';
 import { Title } from '../components/typography/Title.styled';
 import useUser from '../hooks/useUser';
@@ -223,7 +222,6 @@ function AccountForm({
           />
           <Input label="Name" placeholder="Enter your Name" {...register('userAttributes.name')} />
           <Input label="Email" placeholder="Enter your Email" {...register('email')} />
-          <Input label="Role" placeholder="Enter your Role (e.g., Founder, Developer, Researcher)" {...register('userAttributes.role')} />
           <Controller
             name="group"
             control={control}
@@ -238,15 +236,12 @@ function AccountForm({
                   onChange={field.onChange}
                   onBlur={field.onBlur}
                   value={field.value}
+                  errors={[errors.group?.message ?? '']}
                 />
-                <FlexColumn $gap="0.25rem">
-                  {[errors.group?.message ?? ''].map((error, i) => (
-                    <Error key={i}>{error}</Error>
-                  ))}
-                </FlexColumn>
               </FlexColumn>
             )}
           />
+          <Input label="Role" placeholder="Enter your role (e.g., Founder, Researcher)" {...register('userAttributes.role')} />
           <FlexColumn>
             <FlexColumn $gap="0.5rem">
               <Label $required>Credentials</Label>
@@ -272,14 +267,10 @@ function AccountForm({
                           value={field.value}
                           onOptionCreate={field.onChange}
                           placeholder="Select your credential"
-                        />
-                        <FlexColumn $gap="0.25rem">
-                          {[
+                          errors={[
                             errors.userAttributes?.credentialsGroup?.[i]?.credential?.message ?? '',
-                          ].map((error, i) => (
-                            <Error key={i}>{error}</Error>
-                          ))}
-                        </FlexColumn>
+                          ]}
+                        />
                       </FlexColumn>
                     )}
                   />
