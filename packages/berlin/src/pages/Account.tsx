@@ -241,7 +241,7 @@ function AccountForm({
               </FlexColumn>
             )}
           />
-          <Input label="Role" placeholder="Enter your role" {...register('userAttributes.role')} />
+          <Input label="Role" placeholder="Enter your role (e.g., Founder, Researcher)" {...register('userAttributes.role')} />
           <FlexColumn>
             <FlexColumn $gap="0.5rem">
               <Label $required>Credentials</Label>
@@ -275,7 +275,7 @@ function AccountForm({
                     )}
                   />
                   <Input
-                    placeholder="Institution (e.g. University of London)"
+                    placeholder="Institution (e.g., MIT)"
                     {...register(`userAttributes.credentialsGroup.${i}.institution` as const, {
                       required: 'Institution is required',
                     })}
@@ -284,7 +284,7 @@ function AccountForm({
                     ]}
                   />
                   <Input
-                    placeholder="Field (e.g. Economics)"
+                    placeholder="Field (e.g., Economics)"
                     {...register(`userAttributes.credentialsGroup.${i}.field` as const, {
                       required: 'Field is required',
                     })}
@@ -316,7 +316,7 @@ function AccountForm({
               {fieldsPublications.map((field, i) => (
                 <FlexRow key={field.id}>
                   <Input
-                    placeholder="Insert up to 5 urls separated by commas"
+                    placeholder="Add a relevant paper as a URL"
                     {...register(`userAttributes.publications.${i}.value` as const)}
                   />
                   <Button onClick={() => removePublications(i)} $color="secondary">
@@ -341,7 +341,7 @@ function AccountForm({
               {fieldsContributions.map((field, i) => (
                 <FlexRow key={field.id}>
                   <Input
-                    placeholder="Insert up to 5 urls separated by commas"
+                    placeholder="Add an MEV contribution as a URL"
                     {...register(`userAttributes.contributions.${i}.value` as const)}
                   />
                   <Button onClick={() => removeContributions(i)} $color="secondary">
