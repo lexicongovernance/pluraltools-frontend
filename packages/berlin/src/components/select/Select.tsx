@@ -1,13 +1,22 @@
 import { useState } from 'react';
-import { Dropdown, ForwardedSearchInput, Option, SelectContainer } from './Select.styled';
+import {
+  Dropdown,
+  ErrorsContainer,
+  ForwardedSearchInput,
+  LabelContainer,
+  Option,
+  SelectContainer,
+} from './Select.styled';
 import Label from '../typography/Label';
 import { useAppStore } from '../../store';
+import { Error } from '../typography/Error.styled';
 
 type SelectProps = {
   label?: string;
   required?: boolean;
   options: { name: string; id: string }[];
   placeholder: string;
+  errors?: string[];
   onChange?: (option: string) => void;
   onBlur?: () => void;
   onOptionCreate?: (option: string) => void;
@@ -19,6 +28,7 @@ function Select({
   required,
   options,
   placeholder,
+  errors,
   onChange,
   onOptionCreate,
   value,
@@ -73,7 +83,11 @@ function Select({
 
   return (
     <SelectContainer>
-      {label && <Label $required={required}>{label}</Label>}
+      {label && (
+        <LabelContainer>
+          <Label $required={required}>{label}</Label>{' '}
+        </LabelContainer>
+      )}
       <ForwardedSearchInput
         type="text"
         placeholder={selectedOption || placeholder}
@@ -100,6 +114,13 @@ function Select({
             </Option>
           )}
         </Dropdown>
+      )}
+      {errors && errors?.length > 0 && errors[0] !== '' && (
+        <ErrorsContainer $gap="0.25rem">
+          {errors.map((error, i) => (
+            <Error key={i}>{error}</Error>
+          ))}
+        </ErrorsContainer>
       )}
     </SelectContainer>
   );
