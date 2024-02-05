@@ -62,7 +62,11 @@ function ZupassLoginButton({ children, ...props }: ZupassLoginButtonProps) {
 
       requestUser(import.meta.env.VITE_ZUPASS_SERVER_URL, signInPayload.uuid).then((user) => {
         if (user.success) {
-          mutateVerify(pcdStr);
+          mutateVerify({
+            email: user.value.email,
+            uuid: user.value.uuid,
+            pcdStr: JSON.parse(pcdStr).pcd,
+          });
         }
       });
     }
