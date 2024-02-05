@@ -241,7 +241,11 @@ function AccountForm({
               </FlexColumn>
             )}
           />
-          <Input label="Role" placeholder="Enter your role (e.g., Founder, Researcher)" {...register('userAttributes.role')} />
+          <Input
+            label="Role"
+            placeholder="Enter your role (e.g., Founder, Researcher)"
+            {...register('userAttributes.role')}
+          />
           <FlexColumn>
             <FlexColumn $gap="0.5rem">
               <Label $required>Credentials</Label>
