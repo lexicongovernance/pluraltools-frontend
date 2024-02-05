@@ -53,7 +53,7 @@ function Header() {
         <LogoContainer onClick={() => navigate('/')}>
           <LogoImage
             src="/logos/logo.png"
-            alt="Plural Research Experiment logo, a prism with a rainbow over mountains"
+            alt="Plural Research Experiment logo, a prism with an incoming light beam and a rainbow"
             height={96}
             width={96}
           />
