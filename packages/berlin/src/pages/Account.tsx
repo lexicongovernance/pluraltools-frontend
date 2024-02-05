@@ -229,7 +229,16 @@ function AccountForm({
             render={({ field }) => (
               <FlexColumn $gap="0.5rem">
                 <Select
-                  options={groups?.map((group) => ({ name: group.name, id: group.id })) || []}
+                  options={groups
+                    ?.sort((a, b) => {
+                      // Place "None" and or "Other" at the beginning (Other before None)
+                      if (a.name === 'None' || a.name === 'Other') return -1;
+                      if (b.name === 'None' || b.name === 'Other') return 1;
+                
+                      // Sort the rest in ascending order based on the name
+                      return a.name.localeCompare(b.name);
+                    })
+                    .map((group) => ({ name: group.name, id: group.id })) || []}
                   label="Affiliation"
                   placeholder="Select an affiliation"
                   required
