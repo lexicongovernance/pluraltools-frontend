@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchEvents } from '../api';
+import { fetchEvents } from 'api';
 import EventCard from '../components/eventCard';
 import Title from '../components/typography/Title';
 import useUser from '../hooks/useUser';

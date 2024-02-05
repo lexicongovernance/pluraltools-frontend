@@ -10,7 +10,7 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { postPcdStr } from '../../../src/api';
+import { postPcdStr } from 'api';
 import Button from '../button';
 
 type ZupassLoginButtonProps = {

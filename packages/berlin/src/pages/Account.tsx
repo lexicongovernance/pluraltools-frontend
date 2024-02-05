@@ -2,10 +2,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import fetchGroups from '../api/fetchGroups';
-import fetchUserAttributes from '../api/fetchUserAttributes';
-import fetchUserGroups from '../api/fetchUserGroups';
-import updateUserData from '../api/updateUserData';
+import {
+  fetchGroups,
+  fetchUserAttributes,
+  fetchUserGroups,
+  updateUserData,
+  fetchEvents,
+} from 'api';
 import Button from '../components/button';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
@@ -17,7 +20,6 @@ import useUser from '../hooks/useUser';
 import { AuthUser } from '../types/AuthUserType';
 import { GetGroupsResponse } from '../types/GroupType';
 import { DBEvent } from '../types/DBEventType';
-import { fetchEvents } from '../api';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store';
 

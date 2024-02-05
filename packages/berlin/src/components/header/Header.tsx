@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../../store';
 
 // API
-import { logout } from '../../api';
+import { logout } from 'api';
 
 // Hooks
 import useUser from '../../hooks/useUser';
