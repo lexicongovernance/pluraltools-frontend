@@ -19,7 +19,7 @@ export const useAppStore = create<AppState>()(
       (set) => ({
         onboardingStatus: 'INCOMPLETE',
         userStatus: 'INCOMPLETE',
-        theme: 'light', // Default theme is light
+        theme: 'dark', // Default theme is dark
         setUserStatus: (status: COMPLETION_STATUS) => set(() => ({ userStatus: status })),
         setOnboardingStatus: (status: COMPLETION_STATUS) =>
           set(() => ({ onboardingStatus: status })),
