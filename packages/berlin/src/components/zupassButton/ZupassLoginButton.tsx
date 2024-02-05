@@ -1,29 +1,27 @@
 import {
+  openSignedZuzaluSignInPopup,
   usePCDMultiplexer,
   usePendingPCD,
   useSemaphoreSignatureProof,
   useZupassPopupMessages,
+  SignInMessagePayload,
+  requestUser,
 } from '@pcd/passport-interface';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchNonce, postPcdStr } from '../../../src/api';
-import handleSignatureRequest from '../../../src/utils/handleSignatureRequest';
+import { postPcdStr } from '../../../src/api';
 import Button from '../button';
 
 type ZupassLoginButtonProps = {
   children: React.ReactNode;
 };
 
+const POPUP_URL = window.location.origin + '/popup';
+
 function ZupassLoginButton({ children, ...props }: ZupassLoginButtonProps) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-
-  const { refetch } = useQuery({
-    queryKey: ['nonce'],
-    queryFn: fetchNonce,
-    enabled: false,
-  });
 
   const { mutate: mutateVerify } = useMutation({
     mutationFn: postPcdStr,
@@ -58,17 +56,21 @@ function ZupassLoginButton({ children, ...props }: ZupassLoginButtonProps) {
   const { signatureProof } = useSemaphoreSignatureProof(pcdStr, onProofVerified);
 
   useEffect(() => {
-    if (signatureProofValid && pcdStr) {
-      mutateVerify(pcdStr);
+    if (signatureProofValid && signatureProof && pcdStr) {
+      // get user from zupass server
+      const signInPayload = JSON.parse(signatureProof?.claim.signedMessage) as SignInMessagePayload;
+
+      requestUser(import.meta.env.VITE_ZUPASS_SERVER_URL, signInPayload.uuid).then((user) => {
+        if (user.success) {
+          mutateVerify(pcdStr);
+        }
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signatureProofValid, pcdStr]);
+  }, [signatureProofValid, pcdStr, signatureProof]);
 
-  const handleLoginClick = async () => {
-    const nonce = await refetch();
-    if (nonce.data) {
-      handleSignatureRequest(nonce.data);
-    }
+  const handleLoginClick = () => {
+    openSignedZuzaluSignInPopup(import.meta.env.VITE_ZUPASS_URL, POPUP_URL, 'Lexicon');
   };
 
   return (
