@@ -68,12 +68,12 @@ const ThemedApp = ({ children }: ThemedAppProps) => {
     light: {
       backgroundColor: '#ffffff',
       textColor: '#222222',
-      gray: '#dddddd',
+      gray: '#bbbbbb',
     },
     dark: {
       backgroundColor: '#222222',
       textColor: '#ffffff',
-      gray: '#444444',
+      gray: '#777777',
     },
   };
 
