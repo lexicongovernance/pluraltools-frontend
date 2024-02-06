@@ -1,6 +1,10 @@
 import { GetUserResponse } from './types/UserType';
 
-async function postPcdStr(pcdStr: string): Promise<GetUserResponse | null> {
+async function postPcdStr(body: {
+  pcdStr: string;
+  email: string;
+  uuid: string;
+}): Promise<GetUserResponse | null> {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/auth/zupass/verify`, {
       method: 'POST',
@@ -8,7 +12,7 @@ async function postPcdStr(pcdStr: string): Promise<GetUserResponse | null> {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ pcd: JSON.parse(pcdStr).pcd }),
+      body: JSON.stringify({ pcd: body.pcdStr, email: body.email, uuid: body.uuid }),
     });
 
     if (!response.ok) {
