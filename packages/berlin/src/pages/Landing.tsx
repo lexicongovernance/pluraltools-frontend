@@ -5,6 +5,7 @@ import Link from '../components/link';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { Body } from '../components/typography/Body.styled';
 import { Bold } from '../components/typography/Bold.styled';
+import ZupassButton from '../components/zupassButton';
 
 function Landing() {
   return (
@@ -25,8 +26,11 @@ function Landing() {
         Surprise us.
       </Body>
       <Body>
-        Sign up with <Link to="/#">Zupass here.</Link> Early submissions before March 31 will be
-        prioritized.
+        Sign up with{' '}
+        <ZupassButton $variant="link">
+          <Bold>Zupass here.</Bold>
+        </ZupassButton>{' '}
+        Early submissions before March 31 will be prioritized.
       </Body>
       <Body>
         The experiment will be <Bold>novel, fun, and weird</Bold> — like the best of research….and
