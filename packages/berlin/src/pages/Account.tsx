@@ -1,27 +1,38 @@
-// Components
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+// React and third-party libraries
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+
+// API Calls
 import {
+  fetchEvents,
   fetchGroups,
   fetchUserAttributes,
   fetchUserGroups,
   updateUserData,
-  fetchEvents,
 } from 'api';
-import Button from '../components/button';
+
+// Components
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
-import Input from '../components/input';
-import Select from '../components/select';
-import Label from '../components/typography/Label';
 import { Title } from '../components/typography/Title.styled';
+import Button from '../components/button';
+import IconButton from '../components/iconButton';
+import Input from '../components/input';
+import Label from '../components/typography/Label';
+import Select from '../components/select';
+
+// Hooks
 import useUser from '../hooks/useUser';
+
+// Types
 import { AuthUser } from '../types/AuthUserType';
-import { GetGroupsResponse } from '../types/GroupType';
 import { DBEvent } from '../types/DBEventType';
+import { GetGroupsResponse } from '../types/GroupType';
 import { formatGroups } from '../utils/formatGroups';
-import { useNavigate } from 'react-router-dom';
+
+// Store
 import { useAppStore } from '../store';
 
 const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None'];
@@ -237,7 +248,10 @@ function AccountForm({
             render={({ field }) => (
               <FlexColumn $gap="0.5rem">
                 <Select
-                  options={formatGroups(groups).map((group) => ({ name: group.name, id: group.id }))}
+                  options={formatGroups(groups).map((group) => ({
+                    name: group.name,
+                    id: group.id,
+                  }))}
                   label="Affiliation"
                   placeholder="Select an affiliation"
                   required
@@ -254,73 +268,69 @@ function AccountForm({
             placeholder="Enter your role (e.g., Founder, Researcher)"
             {...register('userAttributes.role')}
           />
-          <FlexColumn>
-            <FlexColumn $gap="0.5rem">
-              <Label $required>Academic Credentials</Label>
-              {fieldsCredentialsGroup.map((field, i) => (
-                <FlexRow key={field.id}>
-                  <Controller
-                    name={
-                      `userAttributes.credentialsGroup.${i}.credential` as `userAttributes.credentialsGroup.${number}.credential`
-                    }
-                    control={control}
-                    rules={{ required: 'Credential is required' }}
-                    render={({ field }) => (
-                      <FlexColumn $gap="0.5rem">
-                        <Select
-                          options={
-                            ACADEMIC_CREDENTIALS.map((credential) => ({
-                              name: credential,
-                              id: credential,
-                            })) || []
-                          }
-                          onChange={(value) => {
-                            field.onChange(value);
-                            // Check if selected credential is 'None' and set default values accordingly
-                            if (value === 'None') {
-                              setValue(`userAttributes.credentialsGroup.${i}.institution`, 'None');
-                              setValue(`userAttributes.credentialsGroup.${i}.field`, 'None');
-                              // Manually trigger validation
-                              trigger(`userAttributes.credentialsGroup.${i}.institution`);
-                              trigger(`userAttributes.credentialsGroup.${i}.field`);
-                            }
-                          }}
-                          onBlur={field.onBlur}
-                          value={field.value}
-                          onOptionCreate={field.onChange}
-                          placeholder="Select or create credential"
-                          errors={[
-                            errors.userAttributes?.credentialsGroup?.[i]?.credential?.message ?? '',
-                          ]}
-                        />
-                      </FlexColumn>
-                    )}
-                  />
-                  <Input
-                    placeholder="Institution (e.g., MIT)"
-                    {...register(`userAttributes.credentialsGroup.${i}.institution` as const, {
-                      required: 'Institution is required',
-                    })}
-                    errors={[
-                      errors.userAttributes?.credentialsGroup?.[i]?.institution?.message ?? '',
-                    ]}
-                  />
-                  <Input
-                    placeholder="Field (e.g., Economics)"
-                    {...register(`userAttributes.credentialsGroup.${i}.field` as const, {
-                      required: 'Field is required',
-                    })}
-                    errors={[errors.userAttributes?.credentialsGroup?.[i]?.field?.message ?? '']}
-                  />
-                  <Button onClick={() => removeCredentialsGroup(i)} $color="secondary">
-                    <div style={{ width: 24 }}>
-                      <img src={`/icons/trash-${theme}.svg`} height={24} width={24} />
-                    </div>
-                  </Button>
-                </FlexRow>
-              ))}
-            </FlexColumn>
-            <Button
+          <FlexColumn $gap="0.5rem">
+            <Label $required>Academic Credentials</Label>
+            {fieldsCredentialsGroup.map((field, i) => (
+              <FlexRow key={field.id}>
+                <Controller
+                  name={
+                    `userAttributes.credentialsGroup.${i}.credential` as `userAttributes.credentialsGroup.${number}.credential`
+                  }
+                  control={control}
+                  rules={{ required: 'Credential is required' }}
+                  render={({ field }) => (
+                    <Select
+                      options={
+                        ACADEMIC_CREDENTIALS.map((credential) => ({
+                          name: credential,
+                          id: credential,
+                        })) || []
+                      }
+                      onChange={(value) => {
+                        field.onChange(value);
+                        // Check if selected credential is 'None' and set default values accordingly
+                        if (value === 'None') {
+                          setValue(`userAttributes.credentialsGroup.${i}.institution`, 'None');
+                          setValue(`userAttributes.credentialsGroup.${i}.field`, 'None');
+                          // Manually trigger validation
+                          trigger(`userAttributes.credentialsGroup.${i}.institution`);
+                          trigger(`userAttributes.credentialsGroup.${i}.field`);
+                        }
+                      }}
+                      onBlur={field.onBlur}
+                      value={field.value}
+                      onOptionCreate={field.onChange}
+                      placeholder="Select or create your credential"
+                      errors={[
+                        errors.userAttributes?.credentialsGroup?.[i]?.credential?.message ?? '',
+                      ]}
+                    />
+                  )}
+                />
+                <Input
+                  placeholder="Institution (e.g., MIT)"
+                  {...register(`userAttributes.credentialsGroup.${i}.institution` as const, {
+                    required: 'Institution is required',
+                  })}
+                  errors={[
+                    errors.userAttributes?.credentialsGroup?.[i]?.institution?.message ?? '',
+                  ]}
+                />
+                <Input
+                  placeholder="Field (e.g., Economics)"
+                  {...register(`userAttributes.credentialsGroup.${i}.field` as const, {
+                    required: 'Field is required',
+                  })}
+                  errors={[errors.userAttributes?.credentialsGroup?.[i]?.field?.message ?? '']}
+                />
+                <IconButton
+                  onClick={() => removeCredentialsGroup(i)}
+                  $color="secondary"
+                  icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash icon' }}
+                />
+              </FlexRow>
+            ))}
+            <IconButton
               onClick={() => {
                 insertCredentialsGroup(fieldsCredentialsGroup.length, {
                   credential: '',
@@ -328,59 +338,51 @@ function AccountForm({
                   field: '',
                 });
               }}
-            >
-              Add credential
-            </Button>
+              $color="secondary"
+              icon={{ src: `/icons/add-${theme}.svg`, alt: 'Add icon' }}
+            />
           </FlexColumn>
-          <FlexColumn>
-            <FlexColumn $gap="0.5rem">
-              <Label $required>Publications</Label>
-              {fieldsPublications.map((field, i) => (
-                <FlexRow key={field.id}>
-                  <Input
-                    placeholder="Add a relevant paper as a URL"
-                    {...register(`userAttributes.publications.${i}.value` as const)}
-                  />
-                  <Button onClick={() => removePublications(i)} $color="secondary">
-                    <div style={{ width: 24 }}>
-                      <img src={`/icons/trash-${theme}.svg`} height={24} width={24} />
-                    </div>
-                  </Button>
-                </FlexRow>
-              ))}
-            </FlexColumn>
-            <Button
-              onClick={() => {
-                insertPublications(fieldsPublications.length, { value: '' });
-              }}
-            >
-              Add publication
-            </Button>
+          <FlexColumn $gap="0.5rem">
+            <Label $required>Publications</Label>
+            {fieldsPublications.map((field, i) => (
+              <FlexRow key={field.id}>
+                <Input
+                  placeholder="Add a relevant paper as a URL"
+                  {...register(`userAttributes.publications.${i}.value` as const)}
+                />
+                <IconButton
+                  onClick={() => removePublications(i)}
+                  $color="secondary"
+                  icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash icon' }}
+                />
+              </FlexRow>
+            ))}
+            <IconButton
+              onClick={() => insertPublications(fieldsPublications.length, { value: '' })}
+              $color="secondary"
+              icon={{ src: `/icons/add-${theme}.svg`, alt: 'Add icon' }}
+            />
           </FlexColumn>
-          <FlexColumn>
-            <FlexColumn $gap="0.5rem">
-              <Label $required>Contributions to MEV</Label>
-              {fieldsContributions.map((field, i) => (
-                <FlexRow key={field.id}>
-                  <Input
-                    placeholder="Add an MEV contribution as a URL"
-                    {...register(`userAttributes.contributions.${i}.value` as const)}
-                  />
-                  <Button onClick={() => removeContributions(i)} $color="secondary">
-                    <div style={{ width: 24 }}>
-                      <img src={`/icons/trash-${theme}.svg`} height={24} width={24} />
-                    </div>
-                  </Button>
-                </FlexRow>
-              ))}
-            </FlexColumn>
-            <Button
-              onClick={() => {
-                insertContributions(fieldsContributions.length, { value: '' });
-              }}
-            >
-              Add contribution
-            </Button>
+          <FlexColumn $gap="0.5rem">
+            <Label $required>Contributions to MEV</Label>
+            {fieldsContributions.map((field, i) => (
+              <FlexRow key={field.id}>
+                <Input
+                  placeholder="Add an MEV contribution as a URL"
+                  {...register(`userAttributes.contributions.${i}.value` as const)}
+                />
+                <IconButton
+                  onClick={() => removeContributions(i)}
+                  $color="secondary"
+                  icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash icon' }}
+                />
+              </FlexRow>
+            ))}
+            <IconButton
+              onClick={() => insertContributions(fieldsContributions.length, { value: '' })}
+              $color="secondary"
+              icon={{ src: `/icons/add-${theme}.svg`, alt: 'Add icon' }}
+            />
           </FlexColumn>
           <Button type="submit" disabled={!isValid}>
             Submit
