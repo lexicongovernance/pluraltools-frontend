@@ -25,7 +25,7 @@ export const LogoContainer = styled.div`
     cursor: pointer;
     column-gap: 1rem;
     display: grid;
-    grid-template-columns: 6rem 6.5rem 4rem;
+    grid-template-columns: 6rem 11rem;
     grid-template-rows: 3.5rem 2rem;
     row-gap: 0.5rem;
   }
@@ -58,10 +58,10 @@ export const LogoSubtext = styled.h2`
   @media (min-width: 640px) {
     display: block;
     font-family: var(--font-family-body);
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     font-style: italic;
-    font-weight: 500;
-    grid-column: 2/4;
+    font-weight: 600;
+    grid-column: 2/3;
     grid-row: 2/3;
     line-height: 1rem;
   }

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../../store';
 
 // API
-import { logout } from '../../api';
+import { logout } from 'api';
 
 // Hooks
 import useUser from '../../hooks/useUser';
@@ -53,11 +53,11 @@ function Header() {
         <LogoContainer onClick={() => navigate('/')}>
           <LogoImage
             src="/logos/logo.png"
-            alt="Plural Research logo, a prism with a rainbow over mountains"
+            alt="Plural Research Experiment logo, a prism with an incoming light beam and a rainbow"
             height={96}
             width={96}
           />
-          <LogoText>Plural Research</LogoText>
+          <LogoText>Plural Research Expirement</LogoText>
           <LogoSubtext>An experiment in research independence and innovation</LogoSubtext>
         </LogoContainer>
         <NavContainer>
