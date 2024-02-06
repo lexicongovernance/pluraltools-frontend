@@ -12,11 +12,7 @@ type IconButtonProps = {
 
 function IconButton({ $color, icon, onClick }: IconButtonProps) {
   return (
-    <Button
-      onClick={onClick}
-      $color={$color}
-      style={{ paddingBlock: '0.25rem', paddingInline: '0.5rem' }}
-    >
+    <Button onClick={onClick} $color={$color} style={{ padding: 0 }}>
       <IconContainer $height={24} $width={24}>
         <Icon src={icon.src} alt={icon.alt} height={24} width={24} />
       </IconContainer>
