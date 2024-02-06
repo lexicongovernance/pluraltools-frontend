@@ -12,10 +12,11 @@ import handleSignatureRequest from '../../../src/utils/handleSignatureRequest';
 import Button from '../button';
 
 type ZupassLoginButtonProps = {
+  $variant?: 'contained' | 'link';
   children: React.ReactNode;
 };
 
-function ZupassLoginButton({ children, ...props }: ZupassLoginButtonProps) {
+function ZupassLoginButton({ children, $variant, ...props }: ZupassLoginButtonProps) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -73,7 +74,7 @@ function ZupassLoginButton({ children, ...props }: ZupassLoginButtonProps) {
 
   return (
     <>
-      <Button onClick={handleLoginClick} {...props}>
+      <Button onClick={handleLoginClick} {...props} $variant={$variant}>
         {children}
       </Button>
     </>
