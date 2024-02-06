@@ -20,6 +20,7 @@ import { GetGroupsResponse } from '../types/GroupType';
 import Select from '../components/select';
 import { fetchEvents } from '../api';
 import { DBEvent } from '../types/DBEventType';
+import { formatGroups } from '../utils/formatGroups';
 
 const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None'];
 
@@ -259,16 +260,7 @@ function AccountForm({
               rules={{ required: 'Group is required' }}
               render={({ field }) => (
                 <Select
-                  options={groups
-                  ?.sort((a, b) => {
-                    // Place "None" and or "Other" at the beginning (Other before None)
-                    if (a.name === 'None' || a.name === 'Other') return -1;
-                    if (b.name === 'None' || b.name === 'Other') return 1;
-              
-                    // Sort the rest in ascending order based on the name
-                    return a.name.localeCompare(b.name);
-                  })
-                  .map((group) => ({ name: group.name, id: group.id })) || []}
+                  options={formatGroups(groups).map((group) => ({ name: group.name, id: group.id }))}
                   placeholder="Select group"
                   onChange={field.onChange}
                   onBlur={field.onBlur}

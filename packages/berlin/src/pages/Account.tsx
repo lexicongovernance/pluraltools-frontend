@@ -17,6 +17,7 @@ import useUser from '../hooks/useUser';
 import { AuthUser } from '../types/AuthUserType';
 import { GetGroupsResponse } from '../types/GroupType';
 import { DBEvent } from '../types/DBEventType';
+import { formatGroups } from '../utils/formatGroups';
 import { fetchEvents } from '../api';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store';
@@ -229,16 +230,7 @@ function AccountForm({
             render={({ field }) => (
               <FlexColumn $gap="0.5rem">
                 <Select
-                  options={groups
-                    ?.sort((a, b) => {
-                      // Place "None" and or "Other" at the beginning (Other before None)
-                      if (a.name === 'None' || a.name === 'Other') return -1;
-                      if (b.name === 'None' || b.name === 'Other') return 1;
-                
-                      // Sort the rest in ascending order based on the name
-                      return a.name.localeCompare(b.name);
-                    })
-                    .map((group) => ({ name: group.name, id: group.id })) || []}
+                  options={formatGroups(groups).map((group) => ({ name: group.name, id: group.id }))}
                   label="Affiliation"
                   placeholder="Select an affiliation"
                   required
