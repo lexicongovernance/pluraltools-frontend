@@ -28,6 +28,7 @@ import { RegistrationFieldOption } from '../types/RegistrationFieldOptionType';
 import Input from '../components/input';
 import Select from '../components/select';
 import { Error } from '../components/typography/Error.styled';
+import CharacterCounter from '../components/typography/CharacterCount.styled';
 import { z } from 'zod';
 
 function Register() {
@@ -280,9 +281,7 @@ function TextInput(props: {
         <Error>{props.errors?.[props.id]?.message}</Error>
       ) : (
         props.characterLimit > 0 && (
-          <p style={{ color: '#999999', fontSize: '14px' }}>
-            {charCount}/{props.characterLimit} characters
-          </p>
+          <CharacterCounter count={charCount} limit={props.characterLimit} />
         )
       )}
     </FlexColumn>
