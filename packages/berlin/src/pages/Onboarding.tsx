@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
+import { Bold } from '../components/typography/Bold.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
 import { Title } from '../components/typography/Title.styled';
@@ -48,16 +49,19 @@ function Onboarding() {
 export default Onboarding;
 
 type BodyContentProps = {
-  content: string | string[];
+  content: string | { id: number; title: string; text: string }[];
 };
 
 function BodyContent({ content }: BodyContentProps) {
   if (Array.isArray(content)) {
     return (
       <ul>
-        {content.map((item, index) => (
-          <li key={index}>
-            <Body>{item}</Body>
+        {content.map((item) => (
+          <li key={item.id}>
+            <Body>
+              <Bold>{item.title}</Bold>
+              {item.text}
+            </Body>
             <br />
           </li>
         ))}
