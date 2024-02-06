@@ -34,7 +34,7 @@ import { GetGroupsResponse } from '../types/GroupType';
 // Store
 import { useAppStore } from '../store';
 
-const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None', 'Other'];
+const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None'];
 
 type CredentialsGroup = {
   credential: string;
@@ -90,7 +90,10 @@ function Account() {
     email: user?.email || '',
     group: (userGroups && userGroups[0]?.id) || '',
     userAttributes: userAttributes?.reduce(
-      (acc, curr) => {
+      (
+        acc: { [x: string]: any; credentialsGroup: CredentialsGroup },
+        curr: { attributeKey: string; attributeValue: string }
+      ) => {
         if (curr.attributeKey === 'credentialsGroup') {
           const json = JSON.parse(curr.attributeValue) as CredentialsGroup;
           acc.credentialsGroup = json;
@@ -166,6 +169,8 @@ function AccountForm({
     register,
     formState: { errors, isValid },
     handleSubmit,
+    setValue,
+    trigger,
   } = useForm({
     defaultValues: initialUser,
     mode: 'all',
