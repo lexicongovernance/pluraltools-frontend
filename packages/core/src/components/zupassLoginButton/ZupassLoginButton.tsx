@@ -1,28 +1,27 @@
 import {
+  openSignedZuzaluSignInPopup,
   usePCDMultiplexer,
   usePendingPCD,
   useSemaphoreSignatureProof,
   useZupassPopupMessages,
+  SignInMessagePayload,
+  requestUser,
 } from '@pcd/passport-interface';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { fetchNonce, postPcdStr } from 'api';
-import { ButtonProps } from '../../types/ButtonType';
-import handleSignatureRequest from '../../utils/handleSignatureRequest';
-import Button from '../button';
 import { useNavigate } from 'react-router-dom';
-interface ZupassLoginButtonProps extends ButtonProps {
+import { postPcdStr } from 'api';
+import Button from '../button';
+
+type ZupassLoginButtonProps = {
   children: React.ReactNode;
-}
+};
+
+const POPUP_URL = window.location.origin + '/popup';
+
 function ZupassLoginButton({ children, ...props }: ZupassLoginButtonProps) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-
-  const { refetch } = useQuery({
-    queryKey: ['nonce'],
-    queryFn: fetchNonce,
-    enabled: false,
-  });
 
   const { mutate: mutateVerify } = useMutation({
     mutationFn: postPcdStr,
@@ -51,22 +50,31 @@ function ZupassLoginButton({ children, ...props }: ZupassLoginButtonProps) {
   const onProofVerified = (valid: boolean) => {
     setSignatureProofValid(valid);
   };
-
-  // Verify the signature proof
-  useSemaphoreSignatureProof(pcdStr, onProofVerified);
+  // Hook for getting the signature proof
+  // TODO: Do we need this?
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { signatureProof } = useSemaphoreSignatureProof(pcdStr, onProofVerified);
 
   useEffect(() => {
-    if (signatureProofValid && pcdStr) {
-      mutateVerify(pcdStr);
+    if (signatureProofValid && signatureProof && pcdStr) {
+      // get user from zupass server
+      const signInPayload = JSON.parse(signatureProof?.claim.signedMessage) as SignInMessagePayload;
+
+      requestUser(import.meta.env.VITE_ZUPASS_SERVER_URL, signInPayload.uuid).then((user) => {
+        if (user.success) {
+          mutateVerify({
+            email: user.value.email,
+            uuid: user.value.uuid,
+            pcdStr: JSON.parse(pcdStr).pcd,
+          });
+        }
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signatureProofValid, pcdStr]);
+  }, [signatureProofValid, pcdStr, signatureProof]);
 
-  const handleLoginClick = async () => {
-    const nonce = await refetch();
-    if (nonce.data) {
-      handleSignatureRequest(nonce.data);
-    }
+  const handleLoginClick = () => {
+    openSignedZuzaluSignInPopup(import.meta.env.VITE_ZUPASS_URL, POPUP_URL, 'Lexicon');
   };
 
   return (
