@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import Button from '../button/Button';
 
 export const SyledHeader = styled.header`
@@ -78,12 +78,21 @@ export const NavButtons = styled.ul`
   list-style: none;
 `;
 
-export const DesktopButtons = styled.ul`
+export const DesktopButtons = styled.div`
   display: none;
   @media (min-width: 1080px) {
     display: flex;
     gap: 1rem;
-    list-style: none;
+  }
+`;
+
+export const MobileButtons = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%;
+  @media (min-width: 1080px) {
+    display: none;
   }
 `;
 
@@ -99,4 +108,37 @@ export const MenuButton = styled.button`
   @media (min-width: 1080px) {
     display: none;
   }
+`;
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+const fadeOut = keyframes`
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+`;
+
+export const BurgerMenuContainer = styled.nav<{ $isOpen: boolean }>`
+  align-items: center;
+  background-color: var(--color-white);
+  bottom: 0;
+  height: calc(100% - 160px);
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  width: 100%;
+  z-index: 999;
+
+  display: ${(props) => (props.$isOpen ? 'flex' : 'none')};
+  animation: ${fadeIn} 0.3s ease-out;
 `;

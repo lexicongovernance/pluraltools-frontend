@@ -1,4 +1,5 @@
 // React and third-party libraries
+import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,6 +19,7 @@ import ZupassLoginButton from '../zupassButton/ZupassLoginButton';
 
 // Styled components
 import {
+  BurgerMenuContainer,
   DesktopButtons,
   HeaderContainer,
   LogoContainer,
@@ -25,6 +27,7 @@ import {
   LogoSubtext,
   LogoText,
   MenuButton,
+  MobileButtons,
   NavButtons,
   NavContainer,
   SyledHeader,
@@ -46,6 +49,8 @@ function Header() {
       await queryClient.removeQueries();
     },
   });
+
+  const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState(false);
 
   return (
     <SyledHeader>
@@ -74,7 +79,7 @@ function Header() {
                 <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
               )}
             </DesktopButtons>
-            <MenuButton>
+            <MenuButton onClick={() => setIsBurgerMenuOpen(!isBurgerMenuOpen)}>
               <img src={`/icons/menu-${theme}.svg`} />
             </MenuButton>
             <ThemeButton onClick={toggleTheme}>
@@ -82,6 +87,22 @@ function Header() {
             </ThemeButton>
           </NavButtons>
         </NavContainer>
+        <BurgerMenuContainer $isOpen={isBurgerMenuOpen} onClick={() => setIsBurgerMenuOpen(false)}>
+          <NavButtons>
+            <MobileButtons>
+              {user ? (
+                <>
+                  <NavButton to="/account" $color="secondary">
+                    Account
+                  </NavButton>
+                  <Button onClick={mutateLogout}>Log out</Button>
+                </>
+              ) : (
+                <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
+              )}
+            </MobileButtons>
+          </NavButtons>
+        </BurgerMenuContainer>
       </HeaderContainer>
     </SyledHeader>
   );
