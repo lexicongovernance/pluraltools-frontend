@@ -23,7 +23,7 @@ import { DBEvent } from '../types/DBEventType';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store';
 
-const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None', 'Other'];
+const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None'];
 
 type CredentialsGroup = {
   credential: string;
@@ -79,7 +79,10 @@ function Account() {
     email: user?.email || '',
     group: (userGroups && userGroups[0]?.id) || '',
     userAttributes: userAttributes?.reduce(
-      (acc, curr) => {
+      (
+        acc: { [x: string]: any; credentialsGroup: CredentialsGroup },
+        curr: { attributeKey: string; attributeValue: string }
+      ) => {
         if (curr.attributeKey === 'credentialsGroup') {
           const json = JSON.parse(curr.attributeValue) as CredentialsGroup;
           acc.credentialsGroup = json;
@@ -155,6 +158,8 @@ function AccountForm({
     register,
     formState: { errors, isValid },
     handleSubmit,
+    setValue,
+    trigger,
   } = useForm({
     defaultValues: initialUser,
     mode: 'all',
@@ -243,10 +248,14 @@ function AccountForm({
               </FlexColumn>
             )}
           />
-          <Input label="Role" placeholder="Enter your role (e.g., Founder, Researcher)" {...register('userAttributes.role')} />
+          <Input
+            label="Role"
+            placeholder="Enter your role (e.g., Founder, Researcher)"
+            {...register('userAttributes.role')}
+          />
           <FlexColumn>
             <FlexColumn $gap="0.5rem">
-              <Label $required>Credentials</Label>
+              <Label $required>Academic Credentials</Label>
               {fieldsCredentialsGroup.map((field, i) => (
                 <FlexRow key={field.id}>
                   <Controller
@@ -264,11 +273,21 @@ function AccountForm({
                               id: credential,
                             })) || []
                           }
-                          onChange={field.onChange}
+                          onChange={(value) => {
+                            field.onChange(value);
+                            // Check if selected credential is 'None' and set default values accordingly
+                            if (value === 'None') {
+                              setValue(`userAttributes.credentialsGroup.${i}.institution`, 'None');
+                              setValue(`userAttributes.credentialsGroup.${i}.field`, 'None');
+                              // Manually trigger validation
+                              trigger(`userAttributes.credentialsGroup.${i}.institution`);
+                              trigger(`userAttributes.credentialsGroup.${i}.field`);
+                            }
+                          }}
                           onBlur={field.onBlur}
                           value={field.value}
                           onOptionCreate={field.onChange}
-                          placeholder="Select your credential"
+                          placeholder="Select or create credential"
                           errors={[
                             errors.userAttributes?.credentialsGroup?.[i]?.credential?.message ?? '',
                           ]}
