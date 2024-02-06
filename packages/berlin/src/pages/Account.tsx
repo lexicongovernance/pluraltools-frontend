@@ -277,7 +277,17 @@ function AccountForm({
                           id: credential,
                         })) || []
                       }
-                      onChange={field.onChange}
+                      onChange={(value) => {
+                        field.onChange(value);
+                        // Check if selected credential is 'None' and set default values accordingly
+                        if (value === 'None') {
+                          setValue(`userAttributes.credentialsGroup.${i}.institution`, 'None');
+                          setValue(`userAttributes.credentialsGroup.${i}.field`, 'None');
+                          // Manually trigger validation
+                          trigger(`userAttributes.credentialsGroup.${i}.institution`);
+                          trigger(`userAttributes.credentialsGroup.${i}.field`);
+                        }
+                      }}
                       onBlur={field.onBlur}
                       value={field.value}
                       onOptionCreate={field.onChange}
