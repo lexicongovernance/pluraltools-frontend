@@ -6,10 +6,12 @@ const CharacterCount = styled.p`
   line-height: 1rem;
 `;
 
-export default function CharacterCounter({ count, limit }: { count: number; limit: number }) {
+function CharacterCounter({ count, limit }: { count: number; limit: number }) {
   return (
     <CharacterCount>
       {count}/{limit} characters
     </CharacterCount>
   );
 }
+
+export default CharacterCounter
