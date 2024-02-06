@@ -26,7 +26,7 @@ import { GetRegistrationResponseType } from '../types/RegistrationType';
 import { useForm, FieldErrors, UseFormRegister } from 'react-hook-form';
 import { z } from 'zod';
 import Subtitle from '../components/typography/Subtitle';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 function Register() {
   const { user, isLoading } = useUser();
@@ -158,6 +158,7 @@ function RegisterForm(props: {
                   required={regField.required}
                   id={regField.id}
                   name={regField.name}
+                  characterLimit={regField.characterLimit}
                   options={regField.registrationFieldOptions}
                   type={regField.type}
                   register={register}
@@ -187,6 +188,7 @@ function FormField({
   options,
   disabled,
   register,
+  characterLimit,
 }: {
   id: string;
   name: string;
@@ -196,6 +198,7 @@ function FormField({
   disabled: boolean;
   register: UseFormRegister<Record<string, string>>;
   errors: FieldErrors<Record<string, string>>;
+  characterLimit: number;
 }) {
   switch (type) {
     case 'TEXT':
@@ -207,6 +210,7 @@ function FormField({
           required={required}
           disabled={disabled}
           errors={errors}
+          characterLimit={characterLimit}
         />
       );
     case 'SELECT':
@@ -230,10 +234,21 @@ function TextInput(props: {
   id: string;
   name: string;
   required: boolean | null;
+  characterLimit: number;
   disabled: boolean;
   register: UseFormRegister<Record<string, string>>;
   errors: FieldErrors<Record<string, string>>;
 }) {
+  const [charCount, setCharCount] = useState(0);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = event.target.value;
+    setCharCount(inputValue.length);
+    props.register(props.id, {
+      value: inputValue,
+    });
+  };
+
   return (
     <FlexColumn $gap="0.5rem">
       <Label htmlFor={props.name} $required={!!props.required}>
@@ -243,6 +258,11 @@ function TextInput(props: {
         type="text"
         {...props.register(props.id, {
           validate: (value) => {
+            // validate character limit (0 character limit is no character limit)
+            if (props.characterLimit > 0 && value.length > props.characterLimit) {
+              return `Character count of ${charCount} exceeds character limit of ${props.characterLimit}`;
+            }
+            // validate required
             if (!props.required) {
               return true;
             }
@@ -257,8 +277,17 @@ function TextInput(props: {
           },
         })}
         disabled={props.disabled}
+        onChange={handleInputChange}
       />
-      {props.errors?.[props.id] && <ErrorText>{props.errors?.[props.id]?.message}</ErrorText>}
+      {props.errors?.[props.id] ? (
+        <ErrorText>{props.errors?.[props.id]?.message}</ErrorText>
+      ) : (
+        props.characterLimit > 0 && (
+          <p style={{ color: '#999999', fontSize: '14px' }}>
+            {charCount}/{props.characterLimit} characters
+          </p>
+        )
+      )}
     </FlexColumn>
   );
 }
