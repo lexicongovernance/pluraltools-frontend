@@ -270,24 +270,22 @@ function AccountForm({
                   control={control}
                   rules={{ required: 'Credential is required' }}
                   render={({ field }) => (
-                    <FlexColumn $gap="0.5rem">
-                      <Select
-                        options={
-                          ACADEMIC_CREDENTIALS.map((credential) => ({
-                            name: credential,
-                            id: credential,
-                          })) || []
-                        }
-                        onChange={field.onChange}
-                        onBlur={field.onBlur}
-                        value={field.value}
-                        onOptionCreate={field.onChange}
-                        placeholder="Select your credential"
-                        errors={[
-                          errors.userAttributes?.credentialsGroup?.[i]?.credential?.message ?? '',
-                        ]}
-                      />
-                    </FlexColumn>
+                    <Select
+                      options={
+                        ACADEMIC_CREDENTIALS.map((credential) => ({
+                          name: credential,
+                          id: credential,
+                        })) || []
+                      }
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                      value={field.value}
+                      onOptionCreate={field.onChange}
+                      placeholder="Select your credential"
+                      errors={[
+                        errors.userAttributes?.credentialsGroup?.[i]?.credential?.message ?? '',
+                      ]}
+                    />
                   )}
                 />
                 <Input
