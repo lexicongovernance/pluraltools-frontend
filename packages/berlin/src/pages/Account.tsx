@@ -1,26 +1,37 @@
-// Components
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+// React and third-party libraries
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+
+// API Calls
 import {
+  fetchEvents,
   fetchGroups,
   fetchUserAttributes,
   fetchUserGroups,
   updateUserData,
-  fetchEvents,
 } from 'api';
-import Button from '../components/button';
+
+// Components
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
-import Input from '../components/input';
-import Select from '../components/select';
-import Label from '../components/typography/Label';
 import { Title } from '../components/typography/Title.styled';
+import Button from '../components/button';
+import IconButton from '../components/iconButton';
+import Input from '../components/input';
+import Label from '../components/typography/Label';
+import Select from '../components/select';
+
+// Hooks
 import useUser from '../hooks/useUser';
+
+// Types
 import { AuthUser } from '../types/AuthUserType';
-import { GetGroupsResponse } from '../types/GroupType';
 import { DBEvent } from '../types/DBEventType';
-import { useNavigate } from 'react-router-dom';
+import { GetGroupsResponse } from '../types/GroupType';
+
+// Store
 import { useAppStore } from '../store';
 
 const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None', 'Other'];
@@ -243,7 +254,11 @@ function AccountForm({
               </FlexColumn>
             )}
           />
-          <Input label="Role" placeholder="Enter your role (e.g., Founder, Researcher)" {...register('userAttributes.role')} />
+          <Input
+            label="Role"
+            placeholder="Enter your role (e.g., Founder, Researcher)"
+            {...register('userAttributes.role')}
+          />
           <FlexColumn>
             <FlexColumn $gap="0.5rem">
               <Label $required>Credentials</Label>
@@ -292,11 +307,11 @@ function AccountForm({
                     })}
                     errors={[errors.userAttributes?.credentialsGroup?.[i]?.field?.message ?? '']}
                   />
-                  <Button onClick={() => removeCredentialsGroup(i)} $color="secondary">
-                    <div style={{ width: 24 }}>
-                      <img src={`/icons/trash-${theme}.svg`} height={24} width={24} />
-                    </div>
-                  </Button>
+                  <IconButton
+                    onClick={() => removeCredentialsGroup(i)}
+                    $color="secondary"
+                    icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash icon' }}
+                  />
                 </FlexRow>
               ))}
             </FlexColumn>
@@ -321,11 +336,11 @@ function AccountForm({
                     placeholder="Add a relevant paper as a URL"
                     {...register(`userAttributes.publications.${i}.value` as const)}
                   />
-                  <Button onClick={() => removePublications(i)} $color="secondary">
-                    <div style={{ width: 24 }}>
-                      <img src={`/icons/trash-${theme}.svg`} height={24} width={24} />
-                    </div>
-                  </Button>
+                  <IconButton
+                    onClick={() => removePublications(i)}
+                    $color="secondary"
+                    icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash icon' }}
+                  />
                 </FlexRow>
               ))}
             </FlexColumn>
@@ -346,11 +361,11 @@ function AccountForm({
                     placeholder="Add an MEV contribution as a URL"
                     {...register(`userAttributes.contributions.${i}.value` as const)}
                   />
-                  <Button onClick={() => removeContributions(i)} $color="secondary">
-                    <div style={{ width: 24 }}>
-                      <img src={`/icons/trash-${theme}.svg`} height={24} width={24} />
-                    </div>
-                  </Button>
+                  <IconButton
+                    onClick={() => removeContributions(i)}
+                    $color="secondary"
+                    icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash icon' }}
+                  />
                 </FlexRow>
               ))}
             </FlexColumn>
