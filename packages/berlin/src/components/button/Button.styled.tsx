@@ -1,6 +1,11 @@
 import styled, { css } from 'styled-components';
 
-export const StyledButton = styled.button<{ $color: 'primary' | 'secondary' }>`
+type StyledButtonProps = {
+  $color: 'primary' | 'secondary';
+  $variant: 'text' | 'contained' | 'outlined' | 'link';
+};
+
+export const StyledButton = styled.button<StyledButtonProps>`
   border-radius: 0.5rem;
   border: none;
   font-family: var(--font-family-button);
@@ -24,5 +29,18 @@ export const StyledButton = styled.button<{ $color: 'primary' | 'secondary' }>`
     css`
       background-color: var(--color-white);
       color: var(--color-black);
+    `}
+
+    ${(props) =>
+    props.$variant === 'link' &&
+    css`
+      background-color: transparent;
+      color: var(--color-black);
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+      text-decoration: underline;
+      text-transform: inherit;
+      padding: 0;
     `}
 `;
