@@ -260,7 +260,7 @@ function AccountForm({
             {...register('userAttributes.role')}
           />
           <FlexColumn $gap="0.5rem">
-            <Label $required>Credentials</Label>
+            <Label $required>Academic Credentials</Label>
             {fieldsCredentialsGroup.map((field, i) => (
               <FlexRow key={field.id}>
                 <Controller
