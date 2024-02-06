@@ -6,7 +6,12 @@ const CharacterCount = styled.p`
   line-height: 1rem;
 `;
 
-function CharacterCounter({ count, limit }: { count: number; limit: number }) {
+type CharacterCounterProps = { 
+  count: number; 
+  limit: number 
+}
+
+function CharacterCounter({ count, limit }: CharacterCounterProps) {
   return (
     <CharacterCount>
       {count}/{limit} characters
