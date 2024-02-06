@@ -20,6 +20,7 @@ import useUser from '../hooks/useUser';
 import { AuthUser } from '../types/AuthUserType';
 import { GetGroupsResponse } from '../types/GroupType';
 import { DBEvent } from '../types/DBEventType';
+import { formatGroups } from '../utils/formatGroups';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store';
 
@@ -236,7 +237,7 @@ function AccountForm({
             render={({ field }) => (
               <FlexColumn $gap="0.5rem">
                 <Select
-                  options={groups?.map((group) => ({ name: group.name, id: group.id })) || []}
+                  options={formatGroups(groups).map((group) => ({ name: group.name, id: group.id }))}
                   label="Affiliation"
                   placeholder="Select an affiliation"
                   required
