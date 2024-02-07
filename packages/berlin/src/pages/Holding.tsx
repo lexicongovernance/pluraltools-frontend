@@ -1,11 +1,11 @@
 // React and third-party libraries
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 // Components
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { Body } from '../components/typography/Body.styled';
 import Link from '../components/link';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 // API Calls
 import { fetchEvents } from 'api';
