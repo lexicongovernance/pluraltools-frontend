@@ -6,18 +6,27 @@ type ButtonProps = {
   type?: 'button' | 'submit';
   disabled?: boolean;
   $color?: 'primary' | 'secondary';
+  $variant?: 'text' | 'contained' | 'outlined' | 'link';
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 function Button({
-  children,
-  onClick,
   $color = 'primary',
-  type = 'button',
+  $variant = 'contained',
+  children,
   disabled = false,
+  onClick,
+  type = 'button',
   ...props
 }: ButtonProps) {
   return (
-    <StyledButton onClick={onClick} type={type} $color={$color} disabled={disabled} {...props}>
+    <StyledButton
+      onClick={onClick}
+      type={type}
+      $color={$color}
+      disabled={disabled}
+      $variant={$variant}
+      {...props}
+    >
       {children}
     </StyledButton>
   );

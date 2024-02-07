@@ -14,12 +14,13 @@ import { postPcdStr } from 'api';
 import Button from '../button';
 
 type ZupassLoginButtonProps = {
+  $variant?: 'contained' | 'link';
   children: React.ReactNode;
 };
 
 const POPUP_URL = window.location.origin + '/popup';
 
-function ZupassLoginButton({ children, ...props }: ZupassLoginButtonProps) {
+function ZupassLoginButton({ children, $variant, ...props }: ZupassLoginButtonProps) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -79,7 +80,7 @@ function ZupassLoginButton({ children, ...props }: ZupassLoginButtonProps) {
 
   return (
     <>
-      <Button onClick={handleLoginClick} {...props}>
+      <Button onClick={handleLoginClick} {...props} $variant={$variant}>
         {children}
       </Button>
     </>
