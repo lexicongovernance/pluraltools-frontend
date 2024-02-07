@@ -59,7 +59,10 @@ function App() {
         path="/events/:eventId/register"
         element={user ? <Register /> : <Navigate to="/" replace />}
       />
-      <Route path="/holding" element={<Holding />} />
+      <Route
+        path="/events/:eventId/holding"
+        element={user ? <Holding /> : <Navigate to="/" replace />}
+      />
       <Route path="/popup" element={<PassportPopupRedirect />} />
     </Routes>
   );

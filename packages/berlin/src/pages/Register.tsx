@@ -139,7 +139,7 @@ function RegisterForm(props: {
         })),
       },
     });
-    navigate(`/holding`);
+    navigate(`/events/${props.event?.id}/holding`);
   };
 
   return (
