@@ -1,4 +1,5 @@
 // React and third-party libraries
+import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,6 +19,8 @@ import ZupassLoginButton from '../zupassButton/ZupassLoginButton';
 
 // Styled components
 import {
+  Bar,
+  BurgerMenuContainer,
   DesktopButtons,
   HeaderContainer,
   LogoContainer,
@@ -25,6 +28,7 @@ import {
   LogoSubtext,
   LogoText,
   MenuButton,
+  MobileButtons,
   NavButtons,
   NavContainer,
   SyledHeader,
@@ -47,6 +51,8 @@ function Header() {
     },
   });
 
+  const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState(false);
+
   return (
     <SyledHeader>
       <HeaderContainer>
@@ -68,20 +74,38 @@ function Header() {
                   <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>
-                  <Button onClick={mutateLogout}>Log out</Button>
+                  <Button onClick={() => mutateLogout()}>Log out</Button>
                 </>
               ) : (
                 <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
               )}
             </DesktopButtons>
-            <MenuButton>
-              <img src={`/icons/menu-${theme}.svg`} />
+            <MenuButton onClick={() => setIsBurgerMenuOpen(!isBurgerMenuOpen)}>
+              <Bar isOpen={isBurgerMenuOpen} />
+              <Bar isOpen={isBurgerMenuOpen} />
+              <Bar isOpen={isBurgerMenuOpen} />
             </MenuButton>
             <ThemeButton onClick={toggleTheme}>
               <img src={`/icons/toggle-${theme}.svg`} height={20} width={20} />
             </ThemeButton>
           </NavButtons>
         </NavContainer>
+        <BurgerMenuContainer $isOpen={isBurgerMenuOpen} onClick={() => setIsBurgerMenuOpen(false)}>
+          <NavButtons>
+            <MobileButtons>
+              {user ? (
+                <>
+                  <NavButton to="/account" $color="secondary">
+                    Account
+                  </NavButton>
+                  <Button onClick={() => mutateLogout()}>Log out</Button>
+                </>
+              ) : (
+                <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
+              )}
+            </MobileButtons>
+          </NavButtons>
+        </BurgerMenuContainer>
       </HeaderContainer>
     </SyledHeader>
   );
