@@ -13,6 +13,7 @@ import Account from './pages/Account';
 import Landing from './pages/Landing';
 import Onboarding from './pages/Onboarding';
 import PassportPopupRedirect from './pages/Popup';
+import Holding from './pages/Holding';
 import Register from './pages/Register';
 
 function App() {
@@ -57,6 +58,10 @@ function App() {
       <Route
         path="/events/:eventId/register"
         element={user ? <Register /> : <Navigate to="/" replace />}
+      />
+      <Route
+        path="/events/:eventId/holding"
+        element={user ? <Holding /> : <Navigate to="/" replace />}
       />
       <Route path="/popup" element={<PassportPopupRedirect />} />
     </Routes>

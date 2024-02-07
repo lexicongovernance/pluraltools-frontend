@@ -5,11 +5,12 @@ import { Underline } from '../typography/Underline.styled';
 type LinkProps = {
   children: React.ReactNode;
   to: string;
+  onClick?: () => void;
 };
 
-function Link({ children, to }: LinkProps) {
+function Link({ children, to, onClick }: LinkProps) {
   return (
-    <RouterLink to={to}>
+    <RouterLink to={to} onClick={onClick}>
       <Bold>
         <Underline>{children}</Underline>
       </Bold>

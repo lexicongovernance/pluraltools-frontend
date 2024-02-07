@@ -81,6 +81,7 @@ function RegisterForm(props: {
   registrationData?: GetRegistrationDataResponse | null | undefined;
   event: DBEvent | null | undefined;
 }) {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const {
@@ -138,6 +139,7 @@ function RegisterForm(props: {
         })),
       },
     });
+    navigate(`/events/${props.event?.id}/holding`);
   };
 
   return (
