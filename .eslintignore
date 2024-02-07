@@ -1,0 +1,3 @@
+# exclude .js files from linting
+/dist/
+.eslintrc.cjs
