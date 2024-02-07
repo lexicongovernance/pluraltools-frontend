@@ -62,7 +62,7 @@ function Header() {
             height={96}
             width={96}
           />
-          <LogoText>Plural Research Expirement</LogoText>
+          <LogoText>Plural Research Experiment</LogoText>
           <LogoSubtext>An experiment in research independence and innovation</LogoSubtext>
         </LogoContainer>
         <NavContainer>

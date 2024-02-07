@@ -31,15 +31,15 @@ function App() {
     }
 
     if (onboardingStatus === 'INCOMPLETE') {
-      return <Navigate to="/onboarding" />;
+      return <Navigate to="/onboarding" replace />;
     }
 
     if (userStatus === 'INCOMPLETE') {
-      return <Navigate to="/account" />;
+      return <Navigate to="/account" replace />;
     }
 
     if (userStatus === 'COMPLETE') {
-      return <Navigate to="/events" />;
+      return <Navigate to="/events" replace />;
     }
 
     return <Landing />;
