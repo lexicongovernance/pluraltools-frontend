@@ -14,6 +14,7 @@ import Landing from './pages/Landing';
 import Onboarding from './pages/Onboarding';
 import Register from './pages/Register';
 import PassportPopupRedirect from './pages/Popup';
+import Holding from './pages/Holding';
 
 function App() {
   const { user, isLoading } = useUser();
@@ -58,6 +59,7 @@ function App() {
         path="/events/:eventId/register"
         element={user ? <Register /> : <Navigate to="/" replace />}
       />
+      <Route path="/holding" element={<Holding />} />
       <Route path="/popup" element={<PassportPopupRedirect />} />
     </Routes>
   );
