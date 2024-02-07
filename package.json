@@ -16,6 +16,12 @@
     "format:fix": "prettier --write \"packages/**/*.{ts,md}\"",
     "lint": "eslint ."
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": "^20"
+  },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
     "@pcd/passport-interface": "^0.8.0",
