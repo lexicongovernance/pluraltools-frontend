@@ -74,13 +74,17 @@ function Header() {
                   <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>
-                  <Button onClick={mutateLogout}>Log out</Button>
+                  <Button onClick={void mutateLogout}>Log out</Button>
                 </>
               ) : (
                 <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
               )}
             </DesktopButtons>
-            <BurgerIcon onClick={() => setIsBurgerMenuOpen(!isBurgerMenuOpen)} />
+            <MenuButton onClick={() => setIsBurgerMenuOpen(!isBurgerMenuOpen)}>
+              <Bar isOpen={isBurgerMenuOpen} />
+              <Bar isOpen={isBurgerMenuOpen} />
+              <Bar isOpen={isBurgerMenuOpen} />
+            </MenuButton>
             <ThemeButton onClick={toggleTheme}>
               <img src={`/icons/toggle-${theme}.svg`} height={20} width={20} />
             </ThemeButton>
@@ -94,7 +98,7 @@ function Header() {
                   <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>
-                  <Button onClick={mutateLogout}>Log out</Button>
+                  <Button onClick={void mutateLogout}>Log out</Button>
                 </>
               ) : (
                 <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
@@ -108,24 +112,3 @@ function Header() {
 }
 
 export default Header;
-
-type BurgerIconProps = {
-  onClick: () => void;
-};
-
-function BurgerIcon({ onClick }: BurgerIconProps) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleClick = () => {
-    setIsOpen(!isOpen);
-    onClick();
-  };
-
-  return (
-    <MenuButton onClick={handleClick}>
-      <Bar isOpen={isOpen} />
-      <Bar isOpen={isOpen} />
-      <Bar isOpen={isOpen} />
-    </MenuButton>
-  );
-}
