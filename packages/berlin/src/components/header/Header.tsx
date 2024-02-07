@@ -74,7 +74,7 @@ function Header() {
                   <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>
-                  <Button onClick={mutateLogout}>Log out</Button>
+                  <Button onClick={() => mutateLogout()}>Log out</Button>
                 </>
               ) : (
                 <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
@@ -98,7 +98,7 @@ function Header() {
                   <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>
-                  <Button onClick={mutateLogout}>Log out</Button>
+                  <Button onClick={() => mutateLogout()}>Log out</Button>
                 </>
               ) : (
                 <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
