@@ -91,10 +91,7 @@ function Account() {
     email: user?.email || '',
     group: (userGroups && userGroups[0]?.id) || '',
     userAttributes: userAttributes?.reduce(
-      (
-        acc: { [x: string]: any; credentialsGroup: CredentialsGroup },
-        curr: { attributeKey: string; attributeValue: string }
-      ) => {
+      (acc, curr) => {
         if (curr.attributeKey === 'credentialsGroup') {
           const json = JSON.parse(curr.attributeValue) as CredentialsGroup;
           acc.credentialsGroup = json;
