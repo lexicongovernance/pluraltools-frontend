@@ -98,15 +98,39 @@ export const MobileButtons = styled.div`
 
 export const ThemeButton = styled(Button)``;
 
-export const MenuButton = styled.button`
-  display: block;
-  background-color: var(--color-white);
-  border: none;
+export const MenuButton = styled.div`
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
   height: 2.25rem;
+  justify-content: center;
   width: 2.25rem;
 
   @media (min-width: 1080px) {
     display: none;
+  }
+`;
+
+export const Bar = styled.div<{ isOpen: boolean }>`
+  background-color: var(--color-black);
+  border-radius: 8px;
+  height: 3px;
+  margin: 2px 0;
+  transition: 0.4s;
+  width: 27px;
+
+  &:first-child {
+    transform: ${({ isOpen }) => (isOpen ? 'rotate(-45deg) translateY(10px)' : '')};
+  }
+
+  &:nth-child(2) {
+    opacity: ${({ isOpen }) => (isOpen ? '0' : '1')};
+    transition: 0.2s;
+  }
+
+  &:nth-child(3) {
+    transform: ${({ isOpen }) => (isOpen ? 'rotate(45deg) translateY(-10px)' : '')};
   }
 `;
 
@@ -119,19 +143,11 @@ const fadeIn = keyframes`
   }
 `;
 
-const fadeOut = keyframes`
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-`;
-
 export const BurgerMenuContainer = styled.nav<{ $isOpen: boolean }>`
   align-items: center;
   background-color: var(--color-white);
   bottom: 0;
+  display: flex;
   height: calc(100% - 160px);
   justify-content: center;
   left: 0;

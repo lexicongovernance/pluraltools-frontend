@@ -19,6 +19,7 @@ import ZupassLoginButton from '../zupassButton/ZupassLoginButton';
 
 // Styled components
 import {
+  Bar,
   BurgerMenuContainer,
   DesktopButtons,
   HeaderContainer,
@@ -79,9 +80,7 @@ function Header() {
                 <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
               )}
             </DesktopButtons>
-            <MenuButton onClick={() => setIsBurgerMenuOpen(!isBurgerMenuOpen)}>
-              <img src={`/icons/menu-${theme}.svg`} />
-            </MenuButton>
+            <BurgerIcon onClick={() => setIsBurgerMenuOpen(!isBurgerMenuOpen)} />
             <ThemeButton onClick={toggleTheme}>
               <img src={`/icons/toggle-${theme}.svg`} height={20} width={20} />
             </ThemeButton>
@@ -109,3 +108,24 @@ function Header() {
 }
 
 export default Header;
+
+type BurgerIconProps = {
+  onClick: () => void;
+};
+
+function BurgerIcon({ onClick }: BurgerIconProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+    onClick();
+  };
+
+  return (
+    <MenuButton onClick={handleClick}>
+      <Bar isOpen={isOpen} />
+      <Bar isOpen={isOpen} />
+      <Bar isOpen={isOpen} />
+    </MenuButton>
+  );
+}
