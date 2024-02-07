@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 // Components
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { Body } from '../components/typography/Body.styled';
+import { Title } from '../components/typography/Title.styled';
 import Link from '../components/link';
 
 // API Calls
@@ -30,7 +31,7 @@ function Holding() {
 
   return (
     <FlexColumn $gap="2rem">
-      <Body>Thank you for submitting!</Body>
+      <Title>Thank you for submitting!</Title>
       <Body>We might not be able to accommodate everyone given limited space, but we hope to.</Body>
       <Body>We will inform you of the status by April 15, at the latest.</Body>
       <Body>
