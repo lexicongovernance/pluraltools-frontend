@@ -12,9 +12,9 @@ import { useAppStore } from './store';
 import Account from './pages/Account';
 import Landing from './pages/Landing';
 import Onboarding from './pages/Onboarding';
-import Register from './pages/Register';
 import PassportPopupRedirect from './pages/Popup';
 import Holding from './pages/Holding';
+import Register from './pages/Register';
 
 function App() {
   const { user, isLoading } = useUser();
@@ -35,11 +35,11 @@ function App() {
     }
 
     if (onboardingStatus === 'INCOMPLETE') {
-      return <Navigate to="/onboarding" />;
+      return <Navigate to="/onboarding" replace />;
     }
 
     if (userStatus === 'INCOMPLETE') {
-      return <Navigate to="/account" />;
+      return <Navigate to="/account" replace />;
     }
 
     return <Landing />;
