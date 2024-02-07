@@ -1,7 +1,7 @@
 import { GetForumQuestionStatisticsResponse } from './types/ForumQuestionType';
 
 async function fetchForumQuestionStatistics(
-  questionId: string
+  questionId: string,
 ): Promise<GetForumQuestionStatisticsResponse | null> {
   try {
     const response = await fetch(
@@ -11,7 +11,7 @@ async function fetchForumQuestionStatistics(
         headers: {
           'Content-Type': 'application/json',
         },
-      }
+      },
     );
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);

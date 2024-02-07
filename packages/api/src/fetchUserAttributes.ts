@@ -9,7 +9,7 @@ async function fetchUserAttributes(userId: string): Promise<GetUserAttributesRes
         headers: {
           'Content-Type': 'application/json',
         },
-      }
+      },
     );
 
     if (!response.ok) {

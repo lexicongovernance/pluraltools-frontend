@@ -9,7 +9,7 @@ async function fetchRegistration(eventId: string): Promise<GetRegistrationRespon
         headers: {
           'Content-Type': 'application/json',
         },
-      }
+      },
     );
 
     if (!response.ok) {

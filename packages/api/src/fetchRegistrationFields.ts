@@ -1,7 +1,7 @@
 import { GetRegistrationFieldsResponse } from './types/RegistrationFieldType';
 
 async function fetchRegistrationFields(
-  eventId: string
+  eventId: string,
 ): Promise<GetRegistrationFieldsResponse | null> {
   try {
     const response = await fetch(
@@ -11,7 +11,7 @@ async function fetchRegistrationFields(
         headers: {
           'Content-Type': 'application/json',
         },
-      }
+      },
     );
 
     if (!response.ok) {

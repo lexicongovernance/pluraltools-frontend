@@ -9,7 +9,7 @@ async function fetchEventCycles(eventId: string): Promise<GetCyclesResponse | nu
         headers: {
           'Content-Type': 'application/json',
         },
-      }
+      },
     );
 
     if (!response.ok) {

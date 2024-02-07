@@ -26,7 +26,7 @@ export const useAppStore = create<AppState>()(
         toggleTheme: () => set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
         reset: () => set(() => ({ userStatus: 'INCOMPLETE' })),
       }),
-      { name: 'lexicon-store' }
-    )
-  )
+      { name: 'lexicon-store' },
+    ),
+  ),
 );
