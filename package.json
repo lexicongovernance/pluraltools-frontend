@@ -7,13 +7,13 @@
     "core:dev": "pnpm -r --filter core dev",
     "core:build": "pnpm -r --filter core build",
     "core:lint": "pnpm -r --filter core lint",
-    "core:format": "pnpm -r --filter core format",
     "core:preview": "pnpm -r --filter core preview",
     "berlin:dev": "pnpm -r --filter berlin dev",
     "berlin:build": "pnpm -r --filter berlin build",
     "berlin:lint": "pnpm -r --filter berlin lint",
-    "berlin:format": "pnpm -r --filter berlin format",
-    "berlin:preview": "pnpm -r --filter berlin preview"
+    "berlin:preview": "pnpm -r --filter berlin preview",
+    "format": "prettier --check \"packages/**/*.{ts,md}\"",
+    "format:fix": "prettier --write \"packages/**/*.{ts,md}\""
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
