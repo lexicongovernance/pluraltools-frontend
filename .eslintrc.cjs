@@ -10,6 +10,7 @@ module.exports = {
   plugins: ['react-refresh', '@typescript-eslint'],
   root: true,
   env: { browser: true, es2020: true },
+  ignorePatterns: ['dist', '.eslintrc.cjs'],
   rules: {
     'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     '@typescript-eslint/ban-ts-comment': 'warn',
