@@ -16,6 +16,7 @@ import {
 // Components
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
+import { FlexRowToColumn } from '../components/containers/FlexRowToColumn.styled';
 import { Title } from '../components/typography/Title.styled';
 import Button from '../components/button';
 import IconButton from '../components/iconButton';
@@ -123,7 +124,7 @@ function Account() {
             field: '',
           },
         ],
-      } as UserAttributes
+      } as UserAttributes,
     ),
   };
 
@@ -268,7 +269,7 @@ function AccountForm({
           <FlexColumn $gap="0.5rem">
             <Label $required>Academic Credentials</Label>
             {fieldsCredentialsGroup.map((field, i) => (
-              <FlexRow key={field.id}>
+              <FlexRowToColumn key={field.id}>
                 <Controller
                   name={
                     `userAttributes.credentialsGroup.${i}.credential` as `userAttributes.credentialsGroup.${number}.credential`
@@ -325,7 +326,7 @@ function AccountForm({
                   $color="secondary"
                   icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash icon' }}
                 />
-              </FlexRow>
+              </FlexRowToColumn>
             ))}
             <IconButton
               onClick={() => {
