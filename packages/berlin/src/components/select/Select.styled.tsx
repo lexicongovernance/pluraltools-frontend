@@ -19,6 +19,7 @@ export const SearchInput = styled.input<{ $theme?: 'light' | 'dark' }>`
   color: var(--color-black);
   cursor: default;
   padding: 0.75rem 1rem;
+  padding-right: 2.25rem;
   width: 100%;
 
   &::placeholder {
