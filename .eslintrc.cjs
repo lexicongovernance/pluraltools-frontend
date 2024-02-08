@@ -16,9 +16,9 @@ module.exports = {
     '@typescript-eslint/ban-ts-comment': 'warn',
     '@typescript-eslint/no-var-requires': 'warn',
     '@typescript-eslint/no-explicit-any': 'warn',
-    '@tanstack/query/exhaustive-deps': 'off',
+    '@tanstack/query/exhaustive-deps': 'warn',
     '@typescript-eslint/no-unused-vars': [
-        'warn',
+        'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_ignored', ignoreRestSiblings: true },
     ],
   },
