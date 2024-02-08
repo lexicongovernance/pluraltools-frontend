@@ -30,6 +30,7 @@ import Select from '../components/select';
 import { Error } from '../components/typography/Error.styled';
 import CharacterCounter from '../components/typography/CharacterCount.styled';
 import { z } from 'zod';
+import Textarea from '../components/textarea';
 
 function Register() {
   const { user, isLoading } = useUser();
@@ -95,7 +96,7 @@ function RegisterForm(props: {
         acc[curr.registrationFieldId] = curr.value;
         return acc;
       },
-      {} as Record<string, string>
+      {} as Record<string, string>,
     ),
     mode: 'onBlur',
   });
@@ -187,7 +188,7 @@ function FormField({
   id: string;
   name: string;
   required: boolean | null;
-  type: 'TEXT' | 'SELECT' | 'NUMBER' | 'DATE' | 'BOOLEAN';
+  type: 'TEXT' | 'SELECT' | 'NUMBER' | 'DATE' | 'BOOLEAN' | 'TEXTAREA';
   options: RegistrationFieldOption[];
   disabled: boolean;
   register: UseFormRegister<Record<string, string>>;
@@ -219,6 +220,18 @@ function FormField({
           disabled={disabled}
           errors={errors}
           control={control}
+        />
+      );
+    case 'TEXTAREA':
+      return (
+        <TextAreaInput
+          id={id}
+          name={name}
+          register={register}
+          required={required}
+          disabled={disabled}
+          errors={errors}
+          characterLimit={characterLimit}
         />
       );
     default:
@@ -262,10 +275,6 @@ function TextInput(props: {
             if (props.characterLimit > 0 && value.length > props.characterLimit) {
               return `Character count of ${charCount} exceeds character limit of ${props.characterLimit}`;
             }
-            // validate required
-            if (!props.required) {
-              return true;
-            }
 
             const v = z.string().min(1, 'Value is required').safeParse(value);
 
@@ -277,6 +286,64 @@ function TextInput(props: {
           },
         })}
         disabled={props.disabled}
+        onChange={handleInputChange}
+      />
+      {props.errors?.[props.id] ? (
+        <Error>{props.errors?.[props.id]?.message}</Error>
+      ) : (
+        props.characterLimit > 0 && (
+          <CharacterCounter count={charCount} limit={props.characterLimit} />
+        )
+      )}
+    </FlexColumn>
+  );
+}
+
+function TextAreaInput(props: {
+  id: string;
+  name: string;
+  required: boolean | null;
+  characterLimit: number;
+  disabled: boolean;
+  register: UseFormRegister<Record<string, string>>;
+  errors: FieldErrors<Record<string, string>>;
+}) {
+  const [charCount, setCharCount] = useState(0);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const inputValue = event.target.value;
+    setCharCount(inputValue.length);
+    props.register(props.id, {
+      value: inputValue,
+    });
+  };
+
+  return (
+    <FlexColumn $gap="0.5rem">
+      <Textarea
+        label={props.name}
+        $required={!!props.required}
+        placeholder="Enter a value"
+        {...props.register(props.id, {
+          validate: (value) => {
+            if (!props.required) {
+              return true;
+            }
+
+            // validate character limit (0 character limit is no character limit)
+            if (props.characterLimit > 0 && value.length > props.characterLimit) {
+              return `Character count of ${charCount} exceeds character limit of ${props.characterLimit}`;
+            }
+
+            const v = z.string().min(1, 'Value is required').safeParse(value);
+
+            if (v.success) {
+              return true;
+            }
+
+            return v.error.errors[0].message;
+          },
+        })}
         onChange={handleInputChange}
       />
       {props.errors?.[props.id] ? (
