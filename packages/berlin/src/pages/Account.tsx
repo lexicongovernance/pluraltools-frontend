@@ -202,24 +202,26 @@ function AccountForm({
   });
 
   const onSubmit = (value: typeof initialUser) => {
-    if (user && user.id) {
-      mutateUserData({
-        userId: user.id,
-        username: value.username,
-        email: value.email,
-        groupIds: [value.group],
-        userAttributes: {
-          ...value.userAttributes,
-          credentialsGroup: JSON.stringify(value.userAttributes?.credentialsGroup),
-          publications: JSON.stringify(value.userAttributes?.publications),
-          contributions: JSON.stringify(value.userAttributes?.contributions),
-        },
-      });
+    if (isValid) {
+      if (user && user.id) {
+        mutateUserData({
+          userId: user.id,
+          username: value.username,
+          email: value.email,
+          groupIds: [value.group],
+          userAttributes: {
+            ...value.userAttributes,
+            credentialsGroup: JSON.stringify(value.userAttributes?.credentialsGroup),
+            publications: JSON.stringify(value.userAttributes?.publications),
+            contributions: JSON.stringify(value.userAttributes?.contributions),
+          },
+        });
 
-      toast.success('User data updated!');
+        toast.success('User data updated!');
 
-      if (events?.length ?? 0 > 1) {
-        navigate(`/events/${events?.[0].id}/register`);
+        if (events?.length ?? 0 > 1) {
+          navigate(`/events/${events?.[0].id}/register`);
+        }
       }
     }
   };
@@ -381,9 +383,7 @@ function AccountForm({
               icon={{ src: `/icons/add-${theme}.svg`, alt: 'Add icon' }}
             />
           </FlexColumn>
-          <Button type="submit" disabled={!isValid}>
-            Submit
-          </Button>
+          <Button type="submit">Submit</Button>
         </FlexColumn>
       </form>
     </FlexColumn>
