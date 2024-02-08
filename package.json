@@ -6,14 +6,19 @@
   "scripts": {
     "core:dev": "pnpm -r --filter core dev",
     "core:build": "pnpm -r --filter core build",
-    "core:lint": "pnpm -r --filter core lint",
-    "core:format": "pnpm -r --filter core format",
     "core:preview": "pnpm -r --filter core preview",
     "berlin:dev": "pnpm -r --filter berlin dev",
     "berlin:build": "pnpm -r --filter berlin build",
-    "berlin:lint": "pnpm -r --filter berlin lint",
-    "berlin:format": "pnpm -r --filter berlin format",
-    "berlin:preview": "pnpm -r --filter berlin preview"
+    "berlin:preview": "pnpm -r --filter berlin preview",
+    "format": "prettier --check \"packages/**/*.{ts,md}\"",
+    "format:fix": "prettier --write \"packages/**/*.{ts,md}\"",
+    "lint": "eslint ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": "^20"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
@@ -36,13 +41,14 @@
     "@tanstack/eslint-plugin-query": "^5.18.0",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
-    "@typescript-eslint/eslint-plugin": "^6.10.0",
-    "@typescript-eslint/parser": "^6.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
     "@vitejs/plugin-react": "^4.2.0",
-    "eslint": "^8.53.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.4",
-    "prettier": "3.1.0",
+    "prettier": "^3.1.1",
     "typescript": "^5.2.2",
     "vite": "^5.0.0",
     "vite-plugin-node-polyfills": "^0.17.0"

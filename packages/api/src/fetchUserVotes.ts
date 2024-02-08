@@ -2,7 +2,7 @@ import { GetUserVotesResponse } from './types/UserVotesType';
 
 async function fetchUserVotes(
   userId: string,
-  cycleId: string
+  cycleId: string,
 ): Promise<GetUserVotesResponse | null> {
   try {
     const response = await fetch(
@@ -12,7 +12,7 @@ async function fetchUserVotes(
         headers: {
           'Content-Type': 'application/json',
         },
-      }
+      },
     );
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);

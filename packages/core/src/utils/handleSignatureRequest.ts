@@ -30,7 +30,7 @@ const handleSignatureRequest = (nonce: string | null) => {
     args,
     {
       genericProveScreen: true,
-    }
+    },
   );
 
   openZupassPopup(POPUP_URL, constructProofUrl);

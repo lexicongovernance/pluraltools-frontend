@@ -22,7 +22,7 @@ export const useAppStore = create<AppState>()(
           set(() => ({ onboardingStatus: status })),
         reset: () => set(() => ({ userStatus: 'INCOMPLETE' })),
       }),
-      { name: 'lexicon-store' }
-    )
-  )
+      { name: 'lexicon-store' },
+    ),
+  ),
 );
