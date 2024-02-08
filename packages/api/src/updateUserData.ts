@@ -3,6 +3,8 @@ import { PutUserRequest, GetUserResponse } from './types/UserType';
 async function updateUserData({
   userId,
   username,
+  emailNotification,
+  name,
   email,
   groupIds,
   userAttributes,
@@ -19,6 +21,8 @@ async function updateUserData({
         username,
         email,
         userAttributes,
+        emailNotification,
+        name,
       }),
     });
 

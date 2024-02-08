@@ -45,7 +45,6 @@ type CredentialsGroup = {
 }[];
 
 type UserAttributes = {
-  name: string;
   institution: string;
   role: string;
   publications: { value: string }[];
@@ -55,6 +54,8 @@ type UserAttributes = {
 
 type InitialUser = {
   username: string;
+  name: string;
+  emailNotification: boolean;
   email: string;
   group: string;
   userAttributes: UserAttributes | undefined;
@@ -87,9 +88,11 @@ function Account() {
     enabled: !!user?.id,
   });
 
-  const initialUser = {
+  const initialUser: InitialUser = {
     username: user?.username || '',
+    name: user?.name || '',
     email: user?.email || '',
+    emailNotification: user?.emailNotification ?? true,
     group: (userGroups && userGroups[0]?.id) || '',
     userAttributes: userAttributes?.reduce(
       (acc, curr) => {
@@ -112,7 +115,6 @@ function Account() {
         }
       },
       {
-        name: '',
         institution: '',
         role: '',
         publications: [{ value: '' }],
@@ -208,6 +210,8 @@ function AccountForm({
         userId: user.id,
         username: value.username,
         email: value.email,
+        emailNotification: value.emailNotification,
+        name: value.name,
         groupIds: [value.group],
         userAttributes: {
           ...value.userAttributes,
@@ -225,6 +229,16 @@ function AccountForm({
     }
   };
 
+  const credentialOnChange = (value: string, i: number) => {
+    if (value === 'None') {
+      setValue(`userAttributes.credentialsGroup.${i}.institution`, 'None');
+      setValue(`userAttributes.credentialsGroup.${i}.field`, 'None');
+      // Manually trigger validation
+      trigger(`userAttributes.credentialsGroup.${i}.institution`);
+      trigger(`userAttributes.credentialsGroup.${i}.field`);
+    }
+  };
+
   return (
     <FlexColumn>
       <Title>Complete your registration</Title>
@@ -237,7 +251,7 @@ function AccountForm({
             {...register('username', { required: 'Username is required', minLength: 3 })}
             errors={errors.username ? [errors.username.message ?? ''] : []}
           />
-          <Input label="Name" placeholder="Enter your Name" {...register('userAttributes.name')} />
+          <Input label="Name" placeholder="Enter your Name" {...register('name')} />
           <Input label="Email" placeholder="Enter your Email" {...register('email')} />
           <Controller
             name="group"
@@ -287,13 +301,7 @@ function AccountForm({
                       onChange={(value) => {
                         field.onChange(value);
                         // Check if selected credential is 'None' and set default values accordingly
-                        if (value === 'None') {
-                          setValue(`userAttributes.credentialsGroup.${i}.institution`, 'None');
-                          setValue(`userAttributes.credentialsGroup.${i}.field`, 'None');
-                          // Manually trigger validation
-                          trigger(`userAttributes.credentialsGroup.${i}.institution`);
-                          trigger(`userAttributes.credentialsGroup.${i}.field`);
-                        }
+                        credentialOnChange(value, i);
                       }}
                       onBlur={field.onBlur}
                       value={field.value}
@@ -382,8 +390,18 @@ function AccountForm({
               icon={{ src: `/icons/add-${theme}.svg`, alt: 'Add icon' }}
             />
           </FlexColumn>
-
-          <Checkbox text="Agree to disagree?" $required />
+          <Controller
+            name={`emailNotification`}
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                text="Would you like to receive email notifications?"
+                {...field}
+                onClick={() => field.onChange(!field.value)}
+                value={field.value}
+              />
+            )}
+          />
           <Button type="submit" disabled={!isValid}>
             Submit
           </Button>
