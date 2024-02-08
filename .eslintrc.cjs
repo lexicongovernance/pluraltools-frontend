@@ -14,8 +14,8 @@ module.exports = {
   rules: {
     'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     '@typescript-eslint/ban-ts-comment': 'warn',
-    '@typescript-eslint/no-var-requires': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-var-requires': 'warn',
+    '@typescript-eslint/no-explicit-any': 'warn',
     '@tanstack/query/exhaustive-deps': 'off',
     '@typescript-eslint/no-unused-vars': [
         'warn',
