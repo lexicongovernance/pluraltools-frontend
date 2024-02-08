@@ -18,10 +18,12 @@ import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
 import { Title } from '../components/typography/Title.styled';
 import Button from '../components/button';
+import Checkbox from '../components/checkbox';
 import IconButton from '../components/iconButton';
 import Input from '../components/input';
 import Label from '../components/typography/Label';
 import Select from '../components/select';
+import Textarea from '../components/textarea';
 
 // Hooks
 import useUser from '../hooks/useUser';
@@ -34,7 +36,6 @@ import { formatGroups } from '../utils/formatGroups';
 
 // Store
 import { useAppStore } from '../store';
-import Checkbox from '../components/checkbox';
 
 const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None'];
 
