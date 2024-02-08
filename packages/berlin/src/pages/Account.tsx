@@ -34,6 +34,7 @@ import { formatGroups } from '../utils/formatGroups';
 
 // Store
 import { useAppStore } from '../store';
+import Checkbox from '../components/checkbox';
 
 const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None'];
 
@@ -123,7 +124,7 @@ function Account() {
             field: '',
           },
         ],
-      } as UserAttributes
+      } as UserAttributes,
     ),
   };
 
@@ -381,6 +382,8 @@ function AccountForm({
               icon={{ src: `/icons/add-${theme}.svg`, alt: 'Add icon' }}
             />
           </FlexColumn>
+
+          <Checkbox text="Agree to disagree?" $required />
           <Button type="submit" disabled={!isValid}>
             Submit
           </Button>
