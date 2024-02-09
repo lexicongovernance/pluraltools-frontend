@@ -49,11 +49,11 @@ function Onboarding() {
 export default Onboarding;
 
 type BodyContentProps = {
-  content: string | { id: number; title: string; text: string }[];
+  content: string | { id: number; title?: string; text: string }[];
 };
 
 function BodyContent({ content }: BodyContentProps) {
-  if (Array.isArray(content)) {
+  if (Array.isArray(content) && content[0].title) {
     return (
       <ul>
         {content.map((item) => (
@@ -66,6 +66,16 @@ function BodyContent({ content }: BodyContentProps) {
           </li>
         ))}
       </ul>
+    );
+  }
+
+  if (Array.isArray(content)) {
+    return (
+      <FlexColumn $gap="1.5rem">
+        {content.map((item) => (
+          <Body key={item.id}>{item.text}</Body>
+        ))}
+      </FlexColumn>
     );
   }
 
