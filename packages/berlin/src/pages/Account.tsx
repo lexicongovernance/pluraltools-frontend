@@ -15,7 +15,7 @@ import {
 
 // Components
 import { FlexColumn } from '../components/containers/FlexColum.styled';
-import { FlexRow } from '../components/containers/FlexRow.styled';
+import { FlexRowToColumn } from '../components/containers/FlexRowToColumn.styled';
 import { Title } from '../components/typography/Title.styled';
 import Button from '../components/button';
 import IconButton from '../components/iconButton';
@@ -123,7 +123,7 @@ function Account() {
             field: '',
           },
         ],
-      } as UserAttributes
+      } as UserAttributes,
     ),
   };
 
@@ -268,7 +268,7 @@ function AccountForm({
           <FlexColumn $gap="0.5rem">
             <Label $required>Academic Credentials</Label>
             {fieldsCredentialsGroup.map((field, i) => (
-              <FlexRow key={field.id}>
+              <FlexRowToColumn key={field.id}>
                 <Controller
                   name={
                     `userAttributes.credentialsGroup.${i}.credential` as `userAttributes.credentialsGroup.${number}.credential`
@@ -297,10 +297,11 @@ function AccountForm({
                       onBlur={field.onBlur}
                       value={field.value}
                       onOptionCreate={field.onChange}
-                      placeholder="Select or create your credential"
+                      placeholder="Select or create credential"
                       errors={[
                         errors.userAttributes?.credentialsGroup?.[i]?.credential?.message ?? '',
                       ]}
+                      $minWidth="208px"
                     />
                   )}
                 />
@@ -325,7 +326,7 @@ function AccountForm({
                   $color="secondary"
                   icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash icon' }}
                 />
-              </FlexRow>
+              </FlexRowToColumn>
             ))}
             <IconButton
               onClick={() => {
@@ -342,7 +343,7 @@ function AccountForm({
           <FlexColumn $gap="0.5rem">
             <Label $required>Publications</Label>
             {fieldsPublications.map((field, i) => (
-              <FlexRow key={field.id}>
+              <FlexRowToColumn key={field.id}>
                 <Input
                   placeholder="Add a relevant paper as a URL"
                   {...register(`userAttributes.publications.${i}.value` as const)}
@@ -352,7 +353,7 @@ function AccountForm({
                   $color="secondary"
                   icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash icon' }}
                 />
-              </FlexRow>
+              </FlexRowToColumn>
             ))}
             <IconButton
               onClick={() => insertPublications(fieldsPublications.length, { value: '' })}
@@ -363,7 +364,7 @@ function AccountForm({
           <FlexColumn $gap="0.5rem">
             <Label $required>Contributions to MEV</Label>
             {fieldsContributions.map((field, i) => (
-              <FlexRow key={field.id}>
+              <FlexRowToColumn key={field.id}>
                 <Input
                   placeholder="Add an MEV contribution as a URL"
                   {...register(`userAttributes.contributions.${i}.value` as const)}
@@ -373,7 +374,7 @@ function AccountForm({
                   $color="secondary"
                   icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash icon' }}
                 />
-              </FlexRow>
+              </FlexRowToColumn>
             ))}
             <IconButton
               onClick={() => insertContributions(fieldsContributions.length, { value: '' })}
