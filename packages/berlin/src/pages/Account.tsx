@@ -340,7 +340,7 @@ function AccountForm({
             />
           </FlexColumn>
           <FlexColumn $gap="0.5rem">
-            <Label $required>Publications</Label>
+            <Label >Publications</Label>
             {fieldsPublications.map((field, i) => (
               <FlexRow key={field.id}>
                 <Input
@@ -361,7 +361,7 @@ function AccountForm({
             />
           </FlexColumn>
           <FlexColumn $gap="0.5rem">
-            <Label $required>Contributions to MEV</Label>
+            <Label >Contributions to MEV</Label>
             {fieldsContributions.map((field, i) => (
               <FlexRow key={field.id}>
                 <Input
