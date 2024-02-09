@@ -15,7 +15,6 @@ import {
 
 // Components
 import { FlexColumn } from '../components/containers/FlexColum.styled';
-import { FlexRow } from '../components/containers/FlexRow.styled';
 import { FlexRowToColumn } from '../components/containers/FlexRowToColumn.styled';
 import { Title } from '../components/typography/Title.styled';
 import Button from '../components/button';
