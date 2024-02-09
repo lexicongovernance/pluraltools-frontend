@@ -202,26 +202,24 @@ function AccountForm({
   });
 
   const onSubmit = (value: typeof initialUser) => {
-    if (isValid) {
-      if (user && user.id) {
-        mutateUserData({
-          userId: user.id,
-          username: value.username,
-          email: value.email,
-          groupIds: [value.group],
-          userAttributes: {
-            ...value.userAttributes,
-            credentialsGroup: JSON.stringify(value.userAttributes?.credentialsGroup),
-            publications: JSON.stringify(value.userAttributes?.publications),
-            contributions: JSON.stringify(value.userAttributes?.contributions),
-          },
-        });
+    if (isValid && user && user.id) {
+      mutateUserData({
+        userId: user.id,
+        username: value.username,
+        email: value.email,
+        groupIds: [value.group],
+        userAttributes: {
+          ...value.userAttributes,
+          credentialsGroup: JSON.stringify(value.userAttributes?.credentialsGroup),
+          publications: JSON.stringify(value.userAttributes?.publications),
+          contributions: JSON.stringify(value.userAttributes?.contributions),
+        },
+      });
 
-        toast.success('User data updated!');
+      toast.success('User data updated!');
 
-        if (events?.length ?? 0 > 1) {
-          navigate(`/events/${events?.[0].id}/register`);
-        }
+      if (events?.length ?? 0 > 1) {
+        navigate(`/events/${events?.[0].id}/register`);
       }
     }
   };
