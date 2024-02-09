@@ -18,6 +18,7 @@ import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRowToColumn } from '../components/containers/FlexRowToColumn.styled';
 import { Title } from '../components/typography/Title.styled';
 import Button from '../components/button';
+import Checkbox from '../components/checkbox';
 import IconButton from '../components/iconButton';
 import Input from '../components/input';
 import Label from '../components/typography/Label';
@@ -44,7 +45,6 @@ type CredentialsGroup = {
 }[];
 
 type UserAttributes = {
-  name: string;
   institution: string;
   role: string;
   publications: { value: string }[];
@@ -54,6 +54,8 @@ type UserAttributes = {
 
 type InitialUser = {
   username: string;
+  name: string;
+  emailNotification: boolean;
   email: string;
   group: string;
   userAttributes: UserAttributes | undefined;
@@ -86,9 +88,11 @@ function Account() {
     enabled: !!user?.id,
   });
 
-  const initialUser = {
+  const initialUser: InitialUser = {
     username: user?.username || '',
+    name: user?.name || '',
     email: user?.email || '',
+    emailNotification: user?.emailNotification ?? true,
     group: (userGroups && userGroups[0]?.id) || '',
     userAttributes: userAttributes?.reduce(
       (acc, curr) => {
@@ -111,7 +115,6 @@ function Account() {
         }
       },
       {
-        name: '',
         institution: '',
         role: '',
         publications: [{ value: '' }],
@@ -207,6 +210,8 @@ function AccountForm({
         userId: user.id,
         username: value.username,
         email: value.email,
+        emailNotification: value.emailNotification,
+        name: value.name,
         groupIds: [value.group],
         userAttributes: {
           ...value.userAttributes,
@@ -224,6 +229,16 @@ function AccountForm({
     }
   };
 
+  const credentialOnChange = (value: string, i: number) => {
+    if (value === 'None') {
+      setValue(`userAttributes.credentialsGroup.${i}.institution`, 'None');
+      setValue(`userAttributes.credentialsGroup.${i}.field`, 'None');
+      // Manually trigger validation
+      trigger(`userAttributes.credentialsGroup.${i}.institution`);
+      trigger(`userAttributes.credentialsGroup.${i}.field`);
+    }
+  };
+
   return (
     <FlexColumn>
       <Title>Complete your registration</Title>
@@ -236,7 +251,7 @@ function AccountForm({
             {...register('username', { required: 'Username is required', minLength: 3 })}
             errors={errors.username ? [errors.username.message ?? ''] : []}
           />
-          <Input label="Name" placeholder="Enter your Name" {...register('userAttributes.name')} />
+          <Input label="Name" placeholder="Enter your Name" {...register('name')} />
           <Input label="Email" placeholder="Enter your Email" {...register('email')} />
           <Controller
             name="group"
@@ -286,13 +301,7 @@ function AccountForm({
                       onChange={(value) => {
                         field.onChange(value);
                         // Check if selected credential is 'None' and set default values accordingly
-                        if (value === 'None') {
-                          setValue(`userAttributes.credentialsGroup.${i}.institution`, 'None');
-                          setValue(`userAttributes.credentialsGroup.${i}.field`, 'None');
-                          // Manually trigger validation
-                          trigger(`userAttributes.credentialsGroup.${i}.institution`);
-                          trigger(`userAttributes.credentialsGroup.${i}.field`);
-                        }
+                        credentialOnChange(value, i);
                       }}
                       onBlur={field.onBlur}
                       value={field.value}
@@ -341,7 +350,7 @@ function AccountForm({
             />
           </FlexColumn>
           <FlexColumn $gap="0.5rem">
-            <Label >Publications</Label>
+            <Label>Publications</Label>
             {fieldsPublications.map((field, i) => (
               <FlexRowToColumn key={field.id}>
                 <Input
@@ -362,7 +371,7 @@ function AccountForm({
             />
           </FlexColumn>
           <FlexColumn $gap="0.5rem">
-            <Label >Contributions to MEV</Label>
+            <Label>Contributions to MEV</Label>
             {fieldsContributions.map((field, i) => (
               <FlexRowToColumn key={field.id}>
                 <Input
@@ -382,7 +391,21 @@ function AccountForm({
               icon={{ src: `/icons/add-${theme}.svg`, alt: 'Add icon' }}
             />
           </FlexColumn>
-          <Button type="submit">Submit</Button>
+          <Controller
+            name={`emailNotification`}
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                text="Would you like to receive email notifications?"
+                {...field}
+                onClick={() => field.onChange(!field.value)}
+                value={field.value}
+              />
+            )}
+          />
+          <Button type="submit" disabled={!isValid}>
+            Submit
+          </Button>
         </FlexColumn>
       </form>
     </FlexColumn>
