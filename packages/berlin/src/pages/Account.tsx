@@ -297,10 +297,11 @@ function AccountForm({
                       onBlur={field.onBlur}
                       value={field.value}
                       onOptionCreate={field.onChange}
-                      placeholder="Select or create your credential"
+                      placeholder="Select or create credential"
                       errors={[
                         errors.userAttributes?.credentialsGroup?.[i]?.credential?.message ?? '',
                       ]}
+                      $minWidth="208px"
                     />
                   )}
                 />

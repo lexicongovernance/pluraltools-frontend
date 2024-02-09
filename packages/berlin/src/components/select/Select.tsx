@@ -21,6 +21,7 @@ type SelectProps = {
   onBlur?: () => void;
   onOptionCreate?: (option: string) => void;
   value?: string;
+  $minWidth?: string;
 };
 
 function Select({
@@ -33,12 +34,13 @@ function Select({
   onOptionCreate,
   value,
   onBlur,
+  $minWidth,
 }: SelectProps) {
   const theme = useAppStore((state) => state.theme);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState(options.find((o) => o.name === value)?.name ?? '');
   const [selectedOption, setSelectedOption] = useState<string | undefined>(
-    options.find((o) => o.id === value)?.name
+    options.find((o) => o.id === value)?.name,
   );
   const [creatableOption, setCreatableOption] = useState<string>('');
 
@@ -82,7 +84,7 @@ function Select({
   };
 
   return (
-    <SelectContainer>
+    <SelectContainer $minWidth={$minWidth}>
       {label && (
         <LabelContainer>
           <Label $required={required}>{label}</Label>{' '}
