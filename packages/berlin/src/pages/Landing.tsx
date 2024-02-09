@@ -1,5 +1,5 @@
 // Components
-import Link from '../components/link';
+// import Link from '../components/link';
 
 // Styled components
 import { FlexColumn } from '../components/containers/FlexColum.styled';
