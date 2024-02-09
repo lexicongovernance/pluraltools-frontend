@@ -32,6 +32,7 @@ import {
   NavButtons,
   NavContainer,
   SyledHeader,
+  LogoTextContainer,
   ThemeButton,
 } from './Header.styled';
 
@@ -63,8 +64,10 @@ function Header() {
             height={96}
             width={96}
           />
-          <LogoText>Plural Research Experiment</LogoText>
-          <LogoSubtext>An experiment in research independence and innovation</LogoSubtext>
+          <LogoTextContainer>
+            <LogoText>Plural Research Experiment</LogoText>
+            <LogoSubtext>An experiment in research independence and innovation</LogoSubtext>
+          </LogoTextContainer>
         </LogoContainer>
         <NavContainer>
           <NavButtons>
