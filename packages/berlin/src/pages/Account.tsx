@@ -202,7 +202,7 @@ function AccountForm({
   });
 
   const onSubmit = (value: typeof initialUser) => {
-    if (user && user.id) {
+    if (isValid && user && user.id) {
       mutateUserData({
         userId: user.id,
         username: value.username,
@@ -382,9 +382,7 @@ function AccountForm({
               icon={{ src: `/icons/add-${theme}.svg`, alt: 'Add icon' }}
             />
           </FlexColumn>
-          <Button type="submit" disabled={!isValid}>
-            Submit
-          </Button>
+          <Button type="submit">Submit</Button>
         </FlexColumn>
       </form>
     </FlexColumn>
