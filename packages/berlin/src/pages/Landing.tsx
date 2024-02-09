@@ -15,7 +15,7 @@ function Landing() {
         problems in decentralization, including the challenge of maintaining research and academic
         independence in the wake of technological vertical integration and hyper-financialization.
         Using plural mechanism design, we experiment with novel ways to surface ideas in the public
-        interest that transcend our biases—protocol, politics, purse— while encouraging
+        interest that transcend our biases—protocol, politics, purse — while encouraging
         collaboration and insights across unlikely intersections where breakthroughs tend to emerge.
       </Body>
       <Body>
@@ -30,17 +30,17 @@ function Landing() {
         <ZupassButton $variant="link">
           <Bold>Zupass here.</Bold>
         </ZupassButton>{' '}
-        Early submissions before March 31 will be prioritized.
+        Submissions received before March 31 will get more attention.
       </Body>
       <Body>
-        The experiment will be <Bold>novel, fun, and weird</Bold> — like the best of research….and
+        The experiment will be <Bold>novel, fun, and weird</Bold> — like the best of research… and
         Berlin. Through a series of structured interactions, the community will decide how to
         prioritize research and allocate funds, relying on structured, high-bandwidth deliberations
         that surface research public goods, while elevating truth and expertise with peer
         prediction. The community is interdisciplinary, drawing on insights from science of science,
         social science, economics, complexity science, cryptography, and philosophy, among other
         intersections. The community will test and evolve these mechanisms through multiple cycles
-        of <Link to="#">feedback</Link> and <Link to="#">adaptation</Link>.
+        of <Bold>feedback</Bold> and <Bold>adaptation</Bold>.
       </Body>
     </FlexColumn>
   );
