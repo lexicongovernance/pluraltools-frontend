@@ -3,20 +3,24 @@ const onboarding = {
     {
       id: 0,
       title: `Ambitions & Trust Assumptions`,
-      body: `Our mechanisms (plural voting, peer prediction) require some social information (e.g., organizational affiliation, academic credentials) to work. Initially, this information will be stored in the community’s secure database (managed by Lexicon), and used solely for the purposes of calculating plurality scores and managing community attendance.`,
+      body: [
+        {
+          id: 0,
+          text: `Our mechanisms (plural voting, peer prediction) require some social information (e.g., organizational affiliation, academic credentials) to work. Initially, this information will be stored in the community’s secure database (managed by Lexicon), and used solely for the purposes of calculating plurality scores and managing community attendance.`,
+        },
+        {
+          id: 1,
+          text: `Our ambition is to add a ZKDF PCD (zero-knowledge data format proof-carrying data) to your Zupass, which will allow us to conduct experiments using zero-knowledge proofs and eliminate this information from our database. We welcome community participation in enhancing privacy.`,
+        },
+      ],
     },
     {
       id: 1,
-      title: `ZKDF PCDs`,
-      body: `Our ambition is to add a ZKDF PCD (zero-knowledge data format proof-carrying data) to your Zupass, which will allow us to conduct experiments using zero-knowledge proofs and eliminate this information from our database. We welcome community participation in enhancing privacy.`,
-    },
-    {
-      id: 2,
       title: `Forkability`,
       body: `Each member of the Plural Research Society who attends our community gathering will receive a credential represented as a PCD. This will enable anyone to invite members to future convenings with zero-knowledge verification.`,
     },
     {
-      id: 3,
+      id: 2,
       title: `Guiding Principles`,
       body: [
         {

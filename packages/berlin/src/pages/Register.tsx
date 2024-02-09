@@ -4,7 +4,6 @@ import Button from '../components/button';
 
 // Styled components
 import { FlexColumn } from '../components/containers/FlexColum.styled';
-import { Subtitle } from '../components/typography/Subtitle.styled';
 import { Title } from '../components/typography/Title.styled';
 
 import useUser from '../hooks/useUser';
@@ -145,8 +144,7 @@ function RegisterForm(props: {
 
   return (
     <FlexColumn>
-      <Title>Register for {props.event?.name}</Title>
-      <Subtitle>{props.event?.registrationDescription}</Subtitle>
+      <Title>{props.event?.registrationDescription}</Title>
       <form style={{ width: '100%' }}>
         <FlexColumn $gap="0.75rem">
           {sortedRegistrationFields.map((regField) => (

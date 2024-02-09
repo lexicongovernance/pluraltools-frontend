@@ -2,9 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { FlexColumn } from '../containers/FlexColum.styled';
 
-export const SelectContainer = styled.div`
+export const SelectContainer = styled.div<{ $minWidth?: string }>`
   position: relative;
   width: 100%;
+  min-width: ${(props) => props.$minWidth && props.$minWidth};
 `;
 
 export const SearchInput = styled.input<{ $theme?: 'light' | 'dark' }>`
@@ -19,6 +20,7 @@ export const SearchInput = styled.input<{ $theme?: 'light' | 'dark' }>`
   color: var(--color-black);
   cursor: default;
   padding: 0.75rem 1rem;
+  padding-right: 2.25rem;
   width: 100%;
 
   &::placeholder {

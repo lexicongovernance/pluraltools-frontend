@@ -1,9 +1,5 @@
 import styled, { css } from 'styled-components';
-
-type StyledButtonProps = {
-  $color: 'primary' | 'secondary';
-  $variant: 'text' | 'contained' | 'outlined' | 'link';
-};
+import { StyledButtonProps } from './Button.types';
 
 export const StyledButton = styled.button<StyledButtonProps>`
   border-radius: 0.5rem;
