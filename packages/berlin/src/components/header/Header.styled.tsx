@@ -41,7 +41,7 @@ export const LogoTextContainer = styled.div`
   gap: 0.5rem;
 `;
 
-export const LogoText = styled.h1`
+export const LogoTitle = styled.h1`
   display: none;
 
   @media (min-width: 640px) {
@@ -53,7 +53,7 @@ export const LogoText = styled.h1`
   }
 `;
 
-export const LogoSubtext = styled.h2`
+export const LogoSubtitle = styled.h2`
   display: none;
 
   @media (min-width: 640px) {
