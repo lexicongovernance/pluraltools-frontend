@@ -6,6 +6,9 @@ import { useNavigate } from 'react-router-dom';
 // Store
 import { useAppStore } from '../../store';
 
+// Data
+import header from '../../data/header';
+
 // API
 import { logout } from 'api';
 
@@ -25,8 +28,8 @@ import {
   HeaderContainer,
   LogoContainer,
   LogoImage,
-  LogoSubtext,
-  LogoText,
+  LogoSubtitle,
+  LogoTitle,
   MenuButton,
   MobileButtons,
   NavButtons,
@@ -58,15 +61,10 @@ function Header() {
     <SyledHeader>
       <HeaderContainer>
         <LogoContainer onClick={() => navigate('/')}>
-          <LogoImage
-            src="/logos/logo.png"
-            alt="Plural Research Experiment logo, a prism with an incoming light beam and a rainbow"
-            height={96}
-            width={96}
-          />
+          <LogoImage src={header.logo.src} alt={header.logo.alt} height={96} width={96} />
           <LogoTextContainer>
-            <LogoText>Plural Research Experiment</LogoText>
-            <LogoSubtext>An experiment in research independence and innovation</LogoSubtext>
+            <LogoTitle>{header.title}</LogoTitle>
+            <LogoSubtitle>{header.subtitle}</LogoSubtitle>
           </LogoTextContainer>
         </LogoContainer>
         <NavContainer>
