@@ -403,7 +403,7 @@ function AccountForm({
               />
             )}
           />
-          <Button type="submit" disabled={!isValid}>
+          <Button type="submit">
             Submit
           </Button>
         </FlexColumn>
