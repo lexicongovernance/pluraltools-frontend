@@ -163,7 +163,7 @@ function RegisterForm(props: {
               type={regField.type}
               register={register}
               control={control}
-              value={values[regField.id]} // Current input value
+              value={values[regField.id] ?? ''} // Current input value
             />
           ))}
         </FlexColumn>
