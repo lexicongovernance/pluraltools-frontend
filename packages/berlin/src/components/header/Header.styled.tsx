@@ -22,17 +22,17 @@ export const HeaderContainer = styled.div`
 export const LogoContainer = styled.div`
   display: block;
 
-  @media (min-width: 640px) {
-    align-items: center;
+  @media (min-width: 414px) {
     cursor: pointer;
+    align-items: center;
     display: flex;
-    gap: 1rem;
+    gap: 0.75rem;
   }
 `;
 
 export const LogoImage = styled.img`
-  height: 6rem;
-  width: 6rem;
+  height: 5rem;
+  max-width: 5rem;
 `;
 
 export const LogoTextContainer = styled.div`
@@ -44,12 +44,17 @@ export const LogoTextContainer = styled.div`
 export const LogoTitle = styled.h1`
   display: none;
 
-  @media (min-width: 640px) {
+  @media (min-width: 414px) {
     display: block;
     font-family: var(--font-family-title);
-    font-size: 1.85rem;
+    font-size: 1.75rem;
     font-weight: 600;
-    line-height: 1.75rem;
+    line-height: 1.7rem;
+    max-width: 200px;
+  }
+
+  @media (min-width: 640px) {
+    max-width: none;
   }
 `;
 
@@ -63,6 +68,7 @@ export const LogoSubtitle = styled.h2`
     font-style: italic;
     font-weight: 600;
     line-height: 1rem;
+    max-width: 300px;
   }
 `;
 
@@ -75,13 +81,17 @@ export const NavButtons = styled.ul`
   display: flex;
   gap: 1rem;
   list-style: none;
+
+  @media (min-width: 414px) {
+    gap: 0.75rem;
+  }
 `;
 
 export const DesktopButtons = styled.div`
   display: none;
   @media (min-width: 1080px) {
     display: flex;
-    gap: 1rem;
+    gap: 0.75rem;
   }
 `;
 
@@ -95,7 +105,11 @@ export const MobileButtons = styled.div`
   }
 `;
 
-export const ThemeButton = styled(Button)``;
+export const ThemeButton = styled(Button)`
+  img {
+    min-width: 20px;
+  }
+`;
 
 export const MenuButton = styled.div`
   align-items: center;
