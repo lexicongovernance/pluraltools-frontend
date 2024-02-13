@@ -1,5 +1,5 @@
 // React and third-party libraries
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -23,6 +23,7 @@ import IconButton from '../components/iconButton';
 import Input from '../components/input';
 import Label from '../components/typography/Label';
 import Select from '../components/select';
+import { DevTool } from '@hookform/devtools';
 
 // Hooks
 import useUser from '../hooks/useUser';
@@ -47,6 +48,7 @@ type CredentialsGroup = {
 type UserAttributes = {
   institution: string;
   role: string;
+  otherGroupName?: string;
   publications: { value: string }[];
   contributions: { value: string }[];
   credentialsGroup: CredentialsGroup;
@@ -204,6 +206,10 @@ function AccountForm({
     control,
   });
 
+  const watchedGroupInputId = useWatch({ control, name: 'group' });
+
+  const otherGroup = groups?.find((group) => group.name.toLocaleLowerCase() === 'other');
+
   const onSubmit = (value: typeof initialUser) => {
     if (isValid && user && user.id) {
       mutateUserData({
@@ -275,6 +281,13 @@ function AccountForm({
               </FlexColumn>
             )}
           />
+          {watchedGroupInputId === otherGroup?.id ? (
+            <Input
+              label="Other Affiliation (if applicable)"
+              placeholder="Enter your other affiliation"
+              {...register('userAttributes.otherGroupName')}
+            />
+          ) : null}
           <Input
             label="Role"
             placeholder="Enter your role (e.g., Founder, Researcher)"
@@ -403,9 +416,8 @@ function AccountForm({
               />
             )}
           />
-          <Button type="submit">
-            Submit
-          </Button>
+          <Button type="submit">Submit</Button>
+          <DevTool control={control} />
         </FlexColumn>
       </form>
     </FlexColumn>
