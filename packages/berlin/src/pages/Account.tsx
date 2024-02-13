@@ -223,7 +223,7 @@ function AccountForm({
 
       toast.success('User data updated!');
 
-      if (events?.length ?? 0 > 1) {
+      if (events?.length === 1) {
         navigate(`/events/${events?.[0].id}/register`);
       }
     }
@@ -403,9 +403,7 @@ function AccountForm({
               />
             )}
           />
-          <Button type="submit">
-            Submit
-          </Button>
+          <Button type="submit">Submit</Button>
         </FlexColumn>
       </form>
     </FlexColumn>

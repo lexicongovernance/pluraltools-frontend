@@ -15,9 +15,18 @@ import Onboarding from './pages/Onboarding';
 import PassportPopupRedirect from './pages/Popup';
 import Holding from './pages/Holding';
 import Register from './pages/Register';
+import { useQuery } from '@tanstack/react-query';
+import { fetchEvents } from 'api';
 
 function App() {
   const { user, isLoading } = useUser();
+
+  const { data: events } = useQuery({
+    queryKey: ['events'],
+    queryFn: fetchEvents,
+    enabled: !!user?.id,
+  });
+
   const onboardingStatus = useAppStore((state) => state.onboardingStatus);
   const userStatus = useAppStore((state) => state.userStatus);
   const setUserStatus = useAppStore((state) => state.setUserStatus);
@@ -42,8 +51,12 @@ function App() {
       return <Navigate to="/account" replace />;
     }
 
+    if (events?.length === 1) {
+      return <Navigate to={`/events/${events?.[0].id}/register`} />;
+    }
+
     return <Landing />;
-  }, [user, userStatus, onboardingStatus]);
+  }, [user, userStatus, onboardingStatus, events]);
 
   // This will be a loading skeleton
   if (isLoading) {

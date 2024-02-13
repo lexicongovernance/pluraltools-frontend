@@ -9,8 +9,6 @@ function useUser() {
   } = useQuery({
     queryKey: ['user'],
     queryFn: fetchUserData,
-    retry: false,
-    staleTime: 10000,
   });
 
   return { user, isLoading, isError };

@@ -13,15 +13,17 @@ import Dots from '../components/dots';
 
 // Data
 import onboarding from '../data/onboarding';
+import { useAppStore } from '../store';
 
 function Onboarding() {
   const navigate = useNavigate();
-
+  const setOnboardingStatus = useAppStore((state) => state.setOnboardingStatus);
   const [step, setStep] = useState(0);
   const { data } = onboarding;
 
   const handleSkip = () => {
     navigate('/account');
+    setOnboardingStatus('COMPLETE');
   };
 
   const handleNext = () => {
