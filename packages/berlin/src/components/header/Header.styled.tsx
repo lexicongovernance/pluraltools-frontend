@@ -13,26 +13,27 @@ export const HeaderContainer = styled.div`
   align-items: center;
   background-color: var(--color-white);
   display: flex;
-  gap: 2rem;
+  gap: 1rem;
   justify-content: space-between;
   margin-inline: auto;
-  width: min(85%, 1080px);
+  width: min(90%, 1080px);
 `;
 
 export const LogoContainer = styled.div`
-  display: block;
-
-  @media (min-width: 414px) {
-    cursor: pointer;
-    align-items: center;
-    display: flex;
-    gap: 0.75rem;
-  }
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  gap: 0.75rem;
 `;
 
 export const LogoImage = styled.img`
-  height: 5rem;
-  max-width: 5rem;
+  height: 3.5rem;
+  max-width: 3.5rem;
+
+  @media (min-width: 430px) {
+    height: 5rem;
+    max-width: 5rem;
+  }
 `;
 
 export const LogoTextContainer = styled.div`
@@ -42,15 +43,17 @@ export const LogoTextContainer = styled.div`
 `;
 
 export const LogoTitle = styled.h1`
-  display: none;
+  font-size: 1.5rem;
+  line-height: 1.65rem;
+  max-width: 118px;
 
-  @media (min-width: 414px) {
+  @media (min-width: 430px) {
     display: block;
     font-family: var(--font-family-title);
     font-size: 1.75rem;
     font-weight: 600;
-    line-height: 1.7rem;
-    max-width: 200px;
+    line-height: 1.75rem;
+    max-width: 150px;
   }
 
   @media (min-width: 640px) {
@@ -79,12 +82,8 @@ export const NavContainer = styled.nav`
 
 export const NavButtons = styled.ul`
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
   list-style: none;
-
-  @media (min-width: 414px) {
-    gap: 0.75rem;
-  }
 `;
 
 export const DesktopButtons = styled.div`
