@@ -18,7 +18,6 @@ import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRowToColumn } from '../components/containers/FlexRowToColumn.styled';
 import { Title } from '../components/typography/Title.styled';
 import Button from '../components/button';
-import Checkbox from '../components/checkbox';
 import IconButton from '../components/iconButton';
 import Input from '../components/input';
 import Label from '../components/typography/Label';
@@ -403,18 +402,6 @@ function AccountForm({
               icon={{ src: `/icons/add-${theme}.svg`, alt: 'Add icon' }}
             />
           </FlexColumn>
-          <Controller
-            name={`emailNotification`}
-            control={control}
-            render={({ field }) => (
-              <Checkbox
-                text="Would you like to receive email notifications?"
-                {...field}
-                onClick={() => field.onChange(!field.value)}
-                value={field.value}
-              />
-            )}
-          />
           <Button type="submit">Submit</Button>
         </FlexColumn>
       </form>
