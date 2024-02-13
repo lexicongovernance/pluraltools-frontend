@@ -15,11 +15,11 @@ function Landing() {
         problems in decentralization, including the challenge of maintaining research and academic
         independence in the wake of technological vertical integration and hyper-financialization.
         Using plural mechanism design, we experiment with novel ways to surface ideas in the public
-        interest that transcend our biases—protocol, politics, purse — while encouraging
+        interest that transcend our biases — protocol, politics, purse — while encouraging
         collaboration and insights across unlikely intersections where breakthroughs tend to emerge.
       </Body>
       <Body>
-        Our first convening is <Bold>May 22 & 23</Bold> in Berlin, where the community is tasked to
+        Our first convening is <Bold>May 23</Bold> in Berlin, where the community is tasked to
         allocate 100,000 ARB in research grants. The first topic broadly is MEV, though we accept
         other proposals related to decentralization, including privacy, security, identity,
         censorship resistance, data dignity, and partial common ownership—to name just a few.
