@@ -259,7 +259,7 @@ function TextInput(props: {
 
   useEffect(() => {
     setCharCount(props.value.length);
-  }, []);
+  }, [props.value.length]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
@@ -324,7 +324,7 @@ function TextAreaInput(props: {
 
   useEffect(() => {
     setCharCount(props.value.length);
-  }, []);
+  }, [props.value.length]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = event.target.value;
