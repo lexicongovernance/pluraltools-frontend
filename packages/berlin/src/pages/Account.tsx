@@ -417,7 +417,6 @@ function AccountForm({
             )}
           />
           <Button type="submit">Submit</Button>
-          <DevTool control={control} />
         </FlexColumn>
       </form>
     </FlexColumn>
