@@ -23,7 +23,6 @@ import IconButton from '../components/iconButton';
 import Input from '../components/input';
 import Label from '../components/typography/Label';
 import Select from '../components/select';
-import { DevTool } from '@hookform/devtools';
 
 // Hooks
 import useUser from '../hooks/useUser';
