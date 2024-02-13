@@ -21,7 +21,7 @@ import { GetRegistrationResponseType } from '../types/RegistrationType';
 import { GetRegistrationDataResponse } from '../types/RegistrationDataType';
 import { DBEvent } from '../types/DBEventType';
 import { Control, Controller, FieldErrors, UseFormRegister, useForm } from 'react-hook-form';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { RegistrationFieldOption } from '../types/RegistrationFieldOptionType';
 import Input from '../components/input';
@@ -89,6 +89,7 @@ function RegisterForm(props: {
     formState: { errors, isValid },
     control,
     handleSubmit,
+    getValues,
   } = useForm({
     defaultValues: props.registrationData?.reduce(
       (acc, curr) => {
@@ -99,6 +100,8 @@ function RegisterForm(props: {
     ),
     mode: 'onBlur',
   });
+
+  const values = getValues();
 
   const sortedRegistrationFields = useMemo(() => {
     const sortedFields = [...(props.registrationFields || [])];
@@ -160,6 +163,7 @@ function RegisterForm(props: {
               type={regField.type}
               register={register}
               control={control}
+              value={values[regField.id] ?? ''} // Current input value
             />
           ))}
         </FlexColumn>
@@ -182,6 +186,7 @@ function FormField({
   register,
   characterLimit,
   control,
+  value,
 }: {
   id: string;
   name: string;
@@ -193,6 +198,7 @@ function FormField({
   errors: FieldErrors<Record<string, string>>;
   characterLimit: number;
   control: Control<Record<string, string>, any>;
+  value: string;
 }) {
   switch (type) {
     case 'TEXT':
@@ -205,6 +211,7 @@ function FormField({
           disabled={disabled}
           errors={errors}
           characterLimit={characterLimit}
+          value={value}
         />
       );
     case 'SELECT':
@@ -230,6 +237,7 @@ function FormField({
           disabled={disabled}
           errors={errors}
           characterLimit={characterLimit}
+          value={value}
         />
       );
     default:
@@ -245,8 +253,13 @@ function TextInput(props: {
   disabled: boolean;
   register: UseFormRegister<Record<string, string>>;
   errors: FieldErrors<Record<string, string>>;
+  value: string;
 }) {
   const [charCount, setCharCount] = useState(0);
+
+  useEffect(() => {
+    setCharCount(props.value.length);
+  }, [props.value.length]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
@@ -305,8 +318,13 @@ function TextAreaInput(props: {
   disabled: boolean;
   register: UseFormRegister<Record<string, string>>;
   errors: FieldErrors<Record<string, string>>;
+  value: string;
 }) {
   const [charCount, setCharCount] = useState(0);
+
+  useEffect(() => {
+    setCharCount(props.value.length);
+  }, [props.value.length]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = event.target.value;
