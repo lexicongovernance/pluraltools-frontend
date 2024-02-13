@@ -11,7 +11,7 @@ export const SyledFooter = styled.footer`
 
 export const FooterContainer = styled(FlexColumn)`
   background-color: var(--color-white);
-  width: min(85%, 1080px);
+  width: min(90%, 1080px);
   text-align: center;
 `;
 
