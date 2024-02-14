@@ -21,8 +21,8 @@ function Landing() {
       <Body>
         Our first convening is <Bold>May 23</Bold> in Berlin, where the community is tasked to
         allocate 100,000 ARB in research grants. The first topic broadly is MEV, though we accept
-        other proposals related to decentralization, including privacy, security, identity,
-        censorship resistance, data dignity, and partial common ownership—to name just a few.
+        other proposals related to decentralization, including identity, security, contextual integrity (“privacy”)
+        collusion resistance, data dignity, and partial common ownership — to name just a few.
         Surprise us.
       </Body>
       <Body>
@@ -35,12 +35,12 @@ function Landing() {
       <Body>
         The experiment will be <Bold>novel, fun, and weird</Bold> — like the best of research… and
         Berlin. Through a series of structured interactions, the community will decide how to
-        prioritize research and allocate funds, relying on structured, high-bandwidth deliberations
-        that surface research public goods, while elevating truth and expertise with peer
-        prediction. The community is interdisciplinary, drawing on insights from science of science,
+        prioritize research and allocate funds, relying on high-bandwidth deliberations
+        that surface research public goods, while elevating expertise through peer
+        prediction. We will test and evolve these mechanisms through multiple cycles
+        of feedback and adaptation. The community is interdisciplinary, drawing on insights from science of science,
         social science, economics, complexity science, cryptography, and philosophy, among other
-        intersections. The community will test and evolve these mechanisms through multiple cycles
-        of <Bold>feedback</Bold> and <Bold>adaptation</Bold>.
+        intersections.
       </Body>
     </FlexColumn>
   );
