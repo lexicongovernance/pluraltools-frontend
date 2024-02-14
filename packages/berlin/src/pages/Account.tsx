@@ -1,5 +1,5 @@
 // React and third-party libraries
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -18,7 +18,6 @@ import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRowToColumn } from '../components/containers/FlexRowToColumn.styled';
 import { Title } from '../components/typography/Title.styled';
 import Button from '../components/button';
-import Checkbox from '../components/checkbox';
 import IconButton from '../components/iconButton';
 import Input from '../components/input';
 import Label from '../components/typography/Label';
@@ -35,6 +34,7 @@ import { formatGroups } from '../utils/formatGroups';
 
 // Store
 import { useAppStore } from '../store';
+import { Body } from '../components/typography/Body.styled';
 
 const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None'];
 
@@ -47,6 +47,7 @@ type CredentialsGroup = {
 type UserAttributes = {
   institution: string;
   role: string;
+  customGroupName?: string;
   publications: { value: string }[];
   contributions: { value: string }[];
   credentialsGroup: CredentialsGroup;
@@ -204,6 +205,12 @@ function AccountForm({
     control,
   });
 
+  const watchedGroupInputId = useWatch({ control, name: 'group' });
+  const customGroupName = 'Custom Affiliation';
+  const customGroup = groups?.find(
+    (group) => group.name.toLocaleLowerCase() === customGroupName.toLocaleLowerCase(),
+  );
+
   const onSubmit = (value: typeof initialUser) => {
     if (isValid && user && user.id) {
       mutateUserData({
@@ -239,6 +246,26 @@ function AccountForm({
     }
   };
 
+  const groupOnCreate = (
+    groups: GetGroupsResponse[] | null | undefined,
+    customGroupName: string,
+    value: string,
+  ) => {
+    const customGroup = groups?.find(
+      (group) => group.name.toLocaleLowerCase() === customGroupName.toLocaleLowerCase(),
+    );
+
+    if (customGroup) {
+      // set group to custom group id
+      setValue('group', customGroup?.id);
+      trigger('group');
+    }
+    // set otherGroupName to value
+    setValue('userAttributes.customGroupName', value);
+    trigger('userAttributes.customGroupName');
+  };
+
+  console.log(watchedGroupInputId, customGroup?.id);
   return (
     <FlexColumn>
       <Title>Complete your registration</Title>
@@ -269,9 +296,16 @@ function AccountForm({
                   required
                   onChange={field.onChange}
                   onBlur={field.onBlur}
+                  onOptionCreate={(value) => groupOnCreate(groups, customGroupName, value)}
                   value={field.value}
                   errors={[errors.group?.message ?? '']}
                 />
+                {watchedGroupInputId === customGroup?.id && (
+                  <Body>
+                    Your chosen affiliation, {initialUser.userAttributes?.customGroupName}, is being
+                    processed and will be updated shortly
+                  </Body>
+                )}
               </FlexColumn>
             )}
           />
@@ -391,18 +425,6 @@ function AccountForm({
               icon={{ src: `/icons/add-${theme}.svg`, alt: 'Add icon' }}
             />
           </FlexColumn>
-          <Controller
-            name={`emailNotification`}
-            control={control}
-            render={({ field }) => (
-              <Checkbox
-                text="Would you like to receive email notifications?"
-                {...field}
-                onClick={() => field.onChange(!field.value)}
-                value={field.value}
-              />
-            )}
-          />
           <Button type="submit">Submit</Button>
         </FlexColumn>
       </form>
