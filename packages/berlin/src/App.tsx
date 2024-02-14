@@ -15,6 +15,7 @@ import Onboarding from './pages/Onboarding';
 import PassportPopupRedirect from './pages/Popup';
 import Holding from './pages/Holding';
 import Register from './pages/Register';
+import Communities from './pages/Communities';
 
 function App() {
   const { user, isLoading } = useUser();
@@ -55,6 +56,7 @@ function App() {
       <Route path="/" element={handleHomePage} />
       <Route path="/onboarding" element={user ? <Onboarding /> : <Navigate to="/" replace />} />
       <Route path="/account" element={user ? <Account /> : <Navigate to="/" replace />} />
+      <Route path="/communities" element={user ? <Communities /> : <Navigate to="/" replace />} />
       <Route
         path="/events/:eventId/register"
         element={user ? <Register /> : <Navigate to="/" replace />}
