@@ -230,7 +230,7 @@ function AccountForm({
 
       toast.success('User data updated!');
 
-      if (events?.length ?? 0 > 1) {
+      if (events?.length === 1) {
         navigate(`/events/${events?.[0].id}/register`);
       }
     }
@@ -278,7 +278,7 @@ function AccountForm({
             {...register('username', { required: 'Username is required', minLength: 3 })}
             errors={errors.username ? [errors.username.message ?? ''] : []}
           />
-          <Input label="Name" placeholder="Enter your Name" {...register('name')} />
+          <Input label="Name" placeholder="(First name, Last name)" {...register('name')} />
           <Input label="Email" placeholder="Enter your Email" {...register('email')} />
           <Controller
             name="group"

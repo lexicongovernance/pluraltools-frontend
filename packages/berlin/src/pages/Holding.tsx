@@ -15,16 +15,19 @@ function Holding() {
   const handleRegistrationClick = () => {
     navigate(`/events/${eventId}/register`);
     window.location.reload();
-  }
+  };
 
   return (
     <FlexColumn $gap="2rem">
       <Title>Thank you for submitting!</Title>
       <Body>We might not be able to accommodate everyone given limited space, but we hope to.</Body>
-      <Body>We will inform you of the status by April 15, at the latest.</Body>
+      <Body>We will notify participants on a rolling-basis.</Body>
       <Body>
         If you need to edit your submission, then{' '}
-        <Link to= "#" onClick={handleRegistrationClick}>click here</Link>.
+        <Link to="#" onClick={handleRegistrationClick}>
+          click here
+        </Link>
+        .
       </Body>
     </FlexColumn>
   );
