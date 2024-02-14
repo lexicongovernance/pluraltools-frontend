@@ -340,7 +340,7 @@ function AccountForm({
                       onBlur={field.onBlur}
                       value={field.value}
                       onOptionCreate={field.onChange}
-                      placeholder="Select or create credential"
+                      placeholder={field.value ? field.value : "Select or create credential"}
                       errors={[
                         errors.userAttributes?.credentialsGroup?.[i]?.credential?.message ?? '',
                       ]}
