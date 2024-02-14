@@ -1,12 +1,16 @@
 // React and third-party libraries
 import { ReactNode, useEffect, useMemo } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 
 // Hooks
 import useUser from './hooks/useUser';
 
 // Store
 import { useAppStore } from './store';
+
+// API
+import { fetchEvents } from 'api';
 
 // Pages
 import Account from './pages/Account';
@@ -15,8 +19,6 @@ import Onboarding from './pages/Onboarding';
 import PassportPopupRedirect from './pages/Popup';
 import Holding from './pages/Holding';
 import Register from './pages/Register';
-import { useQuery } from '@tanstack/react-query';
-import { fetchEvents } from 'api';
 import Communities from './pages/Communities';
 
 function App() {
