@@ -19,7 +19,7 @@ function Landing() {
         collaboration and insights across unlikely intersections where breakthroughs tend to emerge.
       </Body>
       <Body>
-        Our first convening is <Bold>May 23</Bold> in Berlin, where the community is tasked to
+        Our first convening is <Bold>May 23 in Berlin</Bold>, where the community is tasked to
         allocate 100,000 ARB in research grants. The first topic broadly is MEV, though we accept
         other proposals related to decentralization, including identity, security, contextual integrity (“privacy”)
         collusion resistance, data dignity, and partial common ownership — to name just a few.
