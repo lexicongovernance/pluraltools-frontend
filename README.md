@@ -1,30 +1,20 @@
-# React + TypeScript + Vite
+# Lexicon forum front-end
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### PNPM + Vite + React + TS + Styled Components
 
-Currently, two official plugins are available:
+Naming conventions:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Folders on kebab-case.
 
-## Expanding the ESLint configuration
+- Components, context on PascalCase.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- Hooks, index and other files on camelCase.
 
-- Configure the top-level `parserOptions` property like this:
+### For developers
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+1. install [nodejs v20](https://nodejs.org/en/download)
+2. install [pnpm](https://pnpm.io/installation#using-npm)
+3. start a [backend server](https://github.com/lexicongovernance/forum-backend)
+4. create a .env.local from the .env skeleton inside the relevant package, make sure to have the correct VITE_SERVER_URL
+5. pnpm i
+6. pnpm core:dev or pnpm berlin:dev
