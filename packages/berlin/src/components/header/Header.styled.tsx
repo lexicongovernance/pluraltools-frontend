@@ -13,26 +13,27 @@ export const HeaderContainer = styled.div`
   align-items: center;
   background-color: var(--color-white);
   display: flex;
-  gap: 2rem;
+  gap: 1rem;
   justify-content: space-between;
   margin-inline: auto;
-  width: min(85%, 1080px);
+  width: min(90%, 1080px);
 `;
 
 export const LogoContainer = styled.div`
-  display: block;
-
-  @media (min-width: 640px) {
-    align-items: center;
-    cursor: pointer;
-    display: flex;
-    gap: 1rem;
-  }
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  gap: 0.75rem;
 `;
 
 export const LogoImage = styled.img`
-  height: 6rem;
-  width: 6rem;
+  height: 3.5rem;
+  max-width: 3.5rem;
+
+  @media (min-width: 430px) {
+    height: 5rem;
+    max-width: 5rem;
+  }
 `;
 
 export const LogoTextContainer = styled.div`
@@ -41,19 +42,26 @@ export const LogoTextContainer = styled.div`
   gap: 0.5rem;
 `;
 
-export const LogoText = styled.h1`
-  display: none;
+export const LogoTitle = styled.h1`
+  font-size: 1.5rem;
+  line-height: 1.65rem;
+  max-width: 118px;
 
-  @media (min-width: 640px) {
+  @media (min-width: 430px) {
     display: block;
     font-family: var(--font-family-title);
-    font-size: 1.85rem;
+    font-size: 1.75rem;
     font-weight: 600;
     line-height: 1.75rem;
+    max-width: 150px;
+  }
+
+  @media (min-width: 640px) {
+    max-width: none;
   }
 `;
 
-export const LogoSubtext = styled.h2`
+export const LogoSubtitle = styled.h2`
   display: none;
 
   @media (min-width: 640px) {
@@ -63,6 +71,7 @@ export const LogoSubtext = styled.h2`
     font-style: italic;
     font-weight: 600;
     line-height: 1rem;
+    max-width: 300px;
   }
 `;
 
@@ -73,7 +82,7 @@ export const NavContainer = styled.nav`
 
 export const NavButtons = styled.ul`
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
   list-style: none;
 `;
 
@@ -81,7 +90,7 @@ export const DesktopButtons = styled.div`
   display: none;
   @media (min-width: 1080px) {
     display: flex;
-    gap: 1rem;
+    gap: 0.75rem;
   }
 `;
 
@@ -95,7 +104,11 @@ export const MobileButtons = styled.div`
   }
 `;
 
-export const ThemeButton = styled(Button)``;
+export const ThemeButton = styled(Button)`
+  img {
+    min-width: 20px;
+  }
+`;
 
 export const MenuButton = styled.div`
   align-items: center;
