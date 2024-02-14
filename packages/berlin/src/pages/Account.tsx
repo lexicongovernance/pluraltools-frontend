@@ -34,6 +34,7 @@ import { formatGroups } from '../utils/formatGroups';
 
 // Store
 import { useAppStore } from '../store';
+import { Body } from '../components/typography/Body.styled';
 
 const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None'];
 
@@ -46,7 +47,7 @@ type CredentialsGroup = {
 type UserAttributes = {
   institution: string;
   role: string;
-  otherGroupName?: string;
+  customGroupName?: string;
   publications: { value: string }[];
   contributions: { value: string }[];
   credentialsGroup: CredentialsGroup;
@@ -205,8 +206,10 @@ function AccountForm({
   });
 
   const watchedGroupInputId = useWatch({ control, name: 'group' });
-
-  const otherGroup = groups?.find((group) => group.name.toLocaleLowerCase() === 'other');
+  const customGroupName = 'Custom Affiliation';
+  const customGroup = groups?.find(
+    (group) => group.name.toLocaleLowerCase() === customGroupName.toLocaleLowerCase(),
+  );
 
   const onSubmit = (value: typeof initialUser) => {
     if (isValid && user && user.id) {
@@ -243,6 +246,26 @@ function AccountForm({
     }
   };
 
+  const groupOnCreate = (
+    groups: GetGroupsResponse[] | null | undefined,
+    customGroupName: string,
+    value: string,
+  ) => {
+    const customGroup = groups?.find(
+      (group) => group.name.toLocaleLowerCase() === customGroupName.toLocaleLowerCase(),
+    );
+
+    if (customGroup) {
+      // set group to custom group id
+      setValue('group', customGroup?.id);
+      trigger('group');
+    }
+    // set otherGroupName to value
+    setValue('userAttributes.customGroupName', value);
+    trigger('userAttributes.customGroupName');
+  };
+
+  console.log(watchedGroupInputId, customGroup?.id);
   return (
     <FlexColumn>
       <Title>Complete your registration</Title>
@@ -273,19 +296,19 @@ function AccountForm({
                   required
                   onChange={field.onChange}
                   onBlur={field.onBlur}
+                  onOptionCreate={(value) => groupOnCreate(groups, customGroupName, value)}
                   value={field.value}
                   errors={[errors.group?.message ?? '']}
                 />
+                {watchedGroupInputId === customGroup?.id && (
+                  <Body>
+                    Your chosen affiliation, {initialUser.userAttributes?.customGroupName}, is being
+                    processed and will be updated shortly
+                  </Body>
+                )}
               </FlexColumn>
             )}
           />
-          {watchedGroupInputId === otherGroup?.id ? (
-            <Input
-              label="Other Affiliation (if applicable)"
-              placeholder="Enter your other affiliation"
-              {...register('userAttributes.otherGroupName')}
-            />
-          ) : null}
           <Input
             label="Role"
             placeholder="Enter your role (e.g., Founder, Researcher)"
