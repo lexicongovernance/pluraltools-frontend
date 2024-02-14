@@ -300,12 +300,13 @@ function AccountForm({
                   value={field.value}
                   errors={[errors.group?.message ?? '']}
                 />
-                {watchedGroupInputId === customGroup?.id && (
-                  <Body>
-                    Your chosen affiliation, {initialUser.userAttributes?.customGroupName}, is being
-                    processed and will be updated shortly
-                  </Body>
-                )}
+                {watchedGroupInputId === customGroup?.id &&
+                  initialUser.userAttributes?.customGroupName && (
+                    <Body>
+                      Your chosen affiliation, {initialUser.userAttributes?.customGroupName}, is
+                      being processed and will be updated shortly
+                    </Body>
+                  )}
               </FlexColumn>
             )}
           />
@@ -340,7 +341,7 @@ function AccountForm({
                       onBlur={field.onBlur}
                       value={field.value}
                       onOptionCreate={field.onChange}
-                      placeholder={field.value ? field.value : "Select or create credential"}
+                      placeholder={field.value ? field.value : 'Select or create credential'}
                       errors={[
                         errors.userAttributes?.credentialsGroup?.[i]?.credential?.message ?? '',
                       ]}
