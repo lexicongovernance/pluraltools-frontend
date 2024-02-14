@@ -57,6 +57,12 @@ function Header() {
 
   const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState(false);
 
+  // Define onClick handler to navigate to account page and trigger reload
+  const handleAccountClick = () => {
+    navigate('/account');
+    window.location.reload();
+  };
+
   return (
     <SyledHeader>
       <HeaderContainer>
@@ -72,7 +78,7 @@ function Header() {
             <DesktopButtons>
               {user ? (
                 <>
-                  <NavButton to="/account" $color="secondary">
+                  <NavButton to="#" $color="secondary" onClick={handleAccountClick}>
                     Account
                   </NavButton>
                   <Button onClick={() => mutateLogout()}>Log out</Button>
