@@ -1,10 +1,17 @@
+// React and third-party libraries
+import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+
+// API
 import { fetchEvents } from 'api';
+
+// Hooks
+import useUser from '../hooks/useUser';
+
+// Components
 import CommunityCard from '../components/communityCard';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { Title } from '../components/typography/Title.styled';
-import useUser from '../hooks/useUser';
-import { useNavigate } from 'react-router-dom';
 
 function Communities() {
   const navigate = useNavigate();
@@ -14,6 +21,7 @@ function Communities() {
     queryFn: fetchEvents,
     enabled: !!user?.id,
   });
+
   const handleClick = (communityId: string) => {
     navigate(`/communities/${communityId}`);
   };
