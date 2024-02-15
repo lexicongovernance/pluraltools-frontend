@@ -37,39 +37,33 @@ async function landingLoader(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
     queryKey: ['user'],
     queryFn: fetchUserData,
+    retry: 3,
   });
   const events = await queryClient.fetchQuery({
     queryKey: ['events'],
     queryFn: fetchEvents,
   });
 
-  console.log('in the beginning');
   if (!user) {
-    console.log('no user');
     return null;
   }
 
   if (appState.userStatus === 'INCOMPLETE' && user?.username) {
-    console.log('user incomplete and should be complete');
     useAppStore.setState({ userStatus: 'COMPLETE' });
   }
 
   if (appState.onboardingStatus === 'INCOMPLETE') {
-    console.log('onboarding incomplete');
     return redirect('/onboarding');
   }
 
   if (appState.userStatus === 'INCOMPLETE') {
-    console.log('user incomplete');
     return redirect('/account');
   }
 
   if (events?.length === 1) {
-    console.log('redirecting to event');
     return redirect(`/events/${events?.[0].id}/register`);
   }
 
-  console.log('no redirect');
   return null;
 }
 

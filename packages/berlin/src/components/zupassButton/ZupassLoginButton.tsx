@@ -11,6 +11,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { postPcdStr } from 'api';
 import { useEffect, useState } from 'react';
 import Button from '../button';
+import { useNavigate } from 'react-router-dom';
 
 type ZupassLoginButtonProps = {
   $variant?: 'contained' | 'link';
@@ -20,6 +21,7 @@ type ZupassLoginButtonProps = {
 const POPUP_URL = window.location.origin + '/popup';
 
 function ZupassLoginButton({ children, $variant, ...props }: ZupassLoginButtonProps) {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { mutate: mutateVerify } = useMutation({
@@ -27,6 +29,7 @@ function ZupassLoginButton({ children, $variant, ...props }: ZupassLoginButtonPr
     onSuccess: (body) => {
       if (body) {
         queryClient.invalidateQueries({ queryKey: ['user'] });
+        navigate('/');
       }
     },
   });
