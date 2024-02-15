@@ -11,9 +11,9 @@ import useUser from '../hooks/useUser';
 // Components
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { Title } from '../components/typography/Title.styled';
-import CommunityCard from '../components/communityCard';
+import EventCard from '../components/eventCard';
 
-function Communities() {
+function Events() {
   const navigate = useNavigate();
   const { user } = useUser();
   const { data: events } = useQuery({
@@ -22,24 +22,18 @@ function Communities() {
     enabled: !!user?.id,
   });
 
-  const handleClick = (communityId: string) => {
-    navigate(`/communities/${communityId}`);
+  const handleClick = (eventId: string) => {
+    navigate(`/events/${eventId}`);
   };
 
   return (
     <FlexColumn $gap="2rem">
       <Title>Welcome, {user?.username ?? 'User'}</Title>
-      {events?.map((community) => {
-        return (
-          <CommunityCard
-            key={community.id}
-            community={community}
-            onClick={() => handleClick(community.id)}
-          />
-        );
+      {events?.map((event) => {
+        return <EventCard key={event.id} event={event} onClick={() => handleClick(event.id)} />;
       })}
     </FlexColumn>
   );
 }
 
-export default Communities;
+export default Events;

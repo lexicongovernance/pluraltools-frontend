@@ -78,8 +78,8 @@ function Header() {
             <DesktopButtons>
               {user ? (
                 <>
-                  <NavButton to="/communities" $color="secondary">
-                    Communities
+                  <NavButton to="/events" $color="secondary">
+                    Events
                   </NavButton>
                   <NavButton to="#" $color="secondary" onClick={handleAccountClick}>
                     Account
@@ -105,8 +105,8 @@ function Header() {
             <MobileButtons>
               {user ? (
                 <>
-                  <NavButton to="/communities" $color="secondary">
-                    Communities
+                  <NavButton to="/events" $color="secondary">
+                    Events
                   </NavButton>
                   <NavButton to="#" $color="secondary" onClick={handleAccountClick}>
                     Account

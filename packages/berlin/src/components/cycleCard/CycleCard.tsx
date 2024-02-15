@@ -4,19 +4,21 @@ import { FlexColumn } from '../containers/FlexColum.styled';
 import { Body } from '../typography/Body.styled';
 import { Subtitle } from '../typography/Subtitle.styled';
 import { Card } from './CycleCard.styled';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 type CycleCardProps = {
   cycle: GetCycleResponse;
-  communityId: string;
 };
 
-function CycleCard({ cycle, communityId }: CycleCardProps) {
+function CycleCard({ cycle }: CycleCardProps) {
+  const { eventId } = useParams();
   const navigate = useNavigate();
+
   const eventEndDate = new Date(cycle.endAt);
   const formattedDate = eventEndDate.toLocaleDateString();
+
   const handleClick = (cycleId: string) => {
-    navigate(`/communities/${communityId}/cycles/${cycleId}`);
+    navigate(`/events/${eventId}/cycles/${cycleId}`);
   };
 
   return (
