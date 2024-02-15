@@ -116,7 +116,9 @@ function AccountForm({
         username: value.username,
         email: value.email,
         groupIds: [value.group],
-        userAttributes: {},
+        userAttributes: {
+          name: value.name,
+        },
       });
 
       toast.success('User data updated!');
