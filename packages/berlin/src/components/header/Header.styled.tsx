@@ -45,7 +45,7 @@ export const LogoTextContainer = styled.div`
 export const LogoTitle = styled.h1`
   font-size: 1.5rem;
   line-height: 1.65rem;
-  max-width: 118px;
+  /* max-width: 118px; */
 
   @media (min-width: 430px) {
     display: block;
@@ -53,7 +53,7 @@ export const LogoTitle = styled.h1`
     font-size: 1.75rem;
     font-weight: 600;
     line-height: 1.75rem;
-    max-width: 150px;
+    /* max-width: 150px;   */
   }
 
   @media (min-width: 640px) {
@@ -62,16 +62,15 @@ export const LogoTitle = styled.h1`
 `;
 
 export const LogoSubtitle = styled.h2`
-  display: none;
-
+  display: block;
+  font-family: var(--font-family-body);
+  font-size: 0.65rem;
+  font-style: italic;
+  font-weight: 600;
+  line-height: 0.75rem;
+  max-width: 300px;
   @media (min-width: 640px) {
-    display: block;
-    font-family: var(--font-family-body);
     font-size: 1rem;
-    font-style: italic;
-    font-weight: 600;
-    line-height: 1rem;
-    max-width: 300px;
   }
 `;
 
