@@ -31,7 +31,7 @@ function Community() {
         $color="secondary"
         icon={{ src: `/icons/arrow-back-${theme}.svg`, alt: 'Trash icon' }}
       />
-      {community && <CommunityCard community={community} />}
+      {community && <CommunityCard community={community} $direction="row" />}
       <Title>Votes</Title>
     </FlexColumn>
   );

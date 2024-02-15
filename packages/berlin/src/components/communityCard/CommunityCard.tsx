@@ -6,12 +6,13 @@ import Button from '../button';
 
 type CommunityCardProps = {
   community: GetEventResponse;
+  $direction?: 'row' | 'column';
   onClick?: () => void;
 };
 
-function CommunityCard({ community, onClick }: CommunityCardProps) {
+function CommunityCard({ community, $direction = 'column', onClick }: CommunityCardProps) {
   return (
-    <Card>
+    <Card $direction={$direction}>
       <ImageContainer>
         <img src={community.imageUrl} alt={community.description || `${community.name} image`} />
       </ImageContainer>
