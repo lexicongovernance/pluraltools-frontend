@@ -88,16 +88,16 @@ function Header() {
               )}
             </DesktopButtons>
             <MenuButton onClick={() => setIsBurgerMenuOpen(!isBurgerMenuOpen)}>
-              <Bar isOpen={isBurgerMenuOpen} />
-              <Bar isOpen={isBurgerMenuOpen} />
-              <Bar isOpen={isBurgerMenuOpen} />
+              <Bar $isOpen={isBurgerMenuOpen} />
+              <Bar $isOpen={isBurgerMenuOpen} />
+              <Bar $isOpen={isBurgerMenuOpen} />
             </MenuButton>
             <ThemeButton onClick={toggleTheme}>
               <img src={`/icons/toggle-${theme}.svg`} height={20} width={20} />
             </ThemeButton>
           </NavButtons>
         </NavContainer>
-        <BurgerMenuContainer $isOpen={isBurgerMenuOpen} onClick={() => setIsBurgerMenuOpen(false)}>
+        <BurgerMenuContainer $$isOpen={isBurgerMenuOpen} onClick={() => setIsBurgerMenuOpen(false)}>
           <NavButtons>
             <MobileButtons>
               {user ? (
