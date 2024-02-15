@@ -1,14 +1,4 @@
-export type Cycle = {
-  id: string;
-  eventId: string | null;
-  createdAt: string;
-  updatedAt: string;
-  status: 'OPEN' | 'CLOSED' | 'RESULTS' | null;
-  startAt: string;
-  endAt: string;
-};
-
-export type GetCyclesResponse = {
+export type GetCycleResponse = {
   id: string;
   createdAt: string;
   updatedAt: string;
@@ -33,4 +23,6 @@ export type GetCyclesResponse = {
       voteCount: number;
     }[];
   }[];
-}[];
+};
+
+export type GetCyclesResponse = GetCycleResponse[];
