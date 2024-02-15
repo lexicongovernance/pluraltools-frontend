@@ -98,6 +98,7 @@ export const MobileButtons = styled.div`
   flex-direction: column;
   gap: 1.5rem;
   height: 100%;
+  text-align: center;
   @media (min-width: 1080px) {
     display: none;
   }

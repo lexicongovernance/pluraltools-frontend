@@ -78,6 +78,9 @@ function Header() {
             <DesktopButtons>
               {user ? (
                 <>
+                  <NavButton to="/communities" $color="secondary">
+                    Communities
+                  </NavButton>
                   <NavButton to="#" $color="secondary" onClick={handleAccountClick}>
                     Account
                   </NavButton>
@@ -102,7 +105,10 @@ function Header() {
             <MobileButtons>
               {user ? (
                 <>
-                  <NavButton to="/account" $color="secondary">
+                  <NavButton to="/communities" $color="secondary">
+                    Communities
+                  </NavButton>
+                  <NavButton to="#" $color="secondary" onClick={handleAccountClick}>
                     Account
                   </NavButton>
                   <Button onClick={() => mutateLogout()}>Log out</Button>
