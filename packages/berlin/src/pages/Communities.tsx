@@ -9,9 +9,9 @@ import { fetchEvents } from 'api';
 import useUser from '../hooks/useUser';
 
 // Components
-import CommunityCard from '../components/communityCard';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { Title } from '../components/typography/Title.styled';
+import CommunityCard from '../components/communityCard';
 
 function Communities() {
   const navigate = useNavigate();
@@ -30,7 +30,13 @@ function Communities() {
     <FlexColumn $gap="2rem">
       <Title>Welcome, {user?.username ?? 'User'}</Title>
       {events?.map((community) => {
-        return <CommunityCard community={community} onClick={() => handleClick(community.id)} />;
+        return (
+          <CommunityCard
+            key={community.id}
+            community={community}
+            onClick={() => handleClick(community.id)}
+          />
+        );
       })}
     </FlexColumn>
   );
