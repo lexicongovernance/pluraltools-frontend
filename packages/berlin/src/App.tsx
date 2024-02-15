@@ -1,6 +1,6 @@
 // React and third-party libraries
 import { ReactNode, useEffect, useMemo } from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, RouterProvider, Routes, createBrowserRouter } from 'react-router-dom';
 
 // Hooks
 import useUser from './hooks/useUser';
@@ -18,7 +18,24 @@ import Register from './pages/Register';
 import { useQuery } from '@tanstack/react-query';
 import { fetchEvents } from 'api';
 
+// Components
+import BerlinLayout from './layout/index.ts';
+
+const router = createBrowserRouter([
+  {
+    element: <BerlinLayout />,
+    children: [
+      { path: '*', Component: Root },
+      { path: '/onboarding', Component: Onboarding },
+    ],
+  },
+]);
+
 function App() {
+  return <RouterProvider router={router}></RouterProvider>;
+}
+
+function Root() {
   const { user, isLoading } = useUser();
 
   const { data: events } = useQuery({
@@ -66,7 +83,6 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={handleHomePage} />
-      <Route path="/onboarding" element={user ? <Onboarding /> : <Navigate to="/" replace />} />
       <Route path="/account" element={user ? <Account /> : <Navigate to="/" replace />} />
       <Route
         path="/events/:eventId/register"

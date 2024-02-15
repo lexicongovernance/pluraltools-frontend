@@ -7,17 +7,16 @@ import Footer from '../components/footer';
 
 // Styled components
 import { Main } from './Layout.styled';
+import { Outlet } from 'react-router-dom';
 
-type LayoutProps = {
-  children: React.ReactNode;
-};
-
-function Layout({ children }: LayoutProps) {
+function Layout() {
   return (
     <>
       <Toaster position="top-center" />
       <Header />
-      <Main>{children}</Main>
+      <Main>
+        <Outlet />
+      </Main>
       <Footer />
     </>
   );
