@@ -1,100 +1,109 @@
 // React and third-party libraries
-import { ReactNode, useEffect, useMemo } from 'react';
-import { Navigate, Route, RouterProvider, Routes, createBrowserRouter } from 'react-router-dom';
+import { RouterProvider, createBrowserRouter, redirect } from 'react-router-dom';
 
 // Hooks
-import useUser from './hooks/useUser';
 
 // Store
 import { useAppStore } from './store';
 
 // Pages
+import { fetchEvents, fetchUserData } from 'api';
 import Account from './pages/Account';
+import Holding from './pages/Holding';
 import Landing from './pages/Landing';
 import Onboarding from './pages/Onboarding';
 import PassportPopupRedirect from './pages/Popup';
-import Holding from './pages/Holding';
 import Register from './pages/Register';
-import { useQuery } from '@tanstack/react-query';
-import { fetchEvents } from 'api';
 
 // Components
-import BerlinLayout from './layout/index.ts';
+import { default as BerlinLayout } from './layout/index.ts';
+import { QueryClient } from '@tanstack/react-query';
 
-const router = createBrowserRouter([
-  {
-    element: <BerlinLayout />,
-    children: [
-      { path: '*', Component: Root },
-      { path: '/onboarding', Component: Onboarding },
-    ],
-  },
-]);
-
-function App() {
-  return <RouterProvider router={router}></RouterProvider>;
-}
-
-function Root() {
-  const { user, isLoading } = useUser();
-
-  const { data: events } = useQuery({
-    queryKey: ['events'],
-    queryFn: fetchEvents,
-    enabled: !!user?.id,
+async function protectedLoader(queryClient: QueryClient) {
+  const user = await queryClient.fetchQuery({
+    queryKey: ['user'],
+    queryFn: fetchUserData,
+    staleTime: 10000,
   });
 
-  const onboardingStatus = useAppStore((state) => state.onboardingStatus);
-  const userStatus = useAppStore((state) => state.userStatus);
-  const setUserStatus = useAppStore((state) => state.setUserStatus);
+  if (!user) {
+    return redirect('/');
+  }
+  return null;
+}
 
-  useEffect(() => {
-    // check if user has email and name
-    if (user?.username) {
-      setUserStatus('COMPLETE');
-    }
-  }, [user, setUserStatus]);
+async function landingLoader(queryClient: QueryClient) {
+  const appState = useAppStore.getState();
+  const user = await queryClient.fetchQuery({
+    queryKey: ['user'],
+    queryFn: fetchUserData,
+  });
+  const events = await queryClient.fetchQuery({
+    queryKey: ['events'],
+    queryFn: fetchEvents,
+  });
 
-  const handleHomePage = useMemo((): ReactNode => {
-    if (!user) {
-      return <Landing />;
-    }
-
-    if (onboardingStatus === 'INCOMPLETE') {
-      return <Navigate to="/onboarding" replace />;
-    }
-
-    if (userStatus === 'INCOMPLETE') {
-      return <Navigate to="/account" replace />;
-    }
-
-    if (events?.length === 1) {
-      return <Navigate to={`/events/${events?.[0].id}/register`} />;
-    }
-
-    return <Landing />;
-  }, [user, userStatus, onboardingStatus, events]);
-
-  // This will be a loading skeleton
-  if (isLoading) {
-    return <h1>Loading...</h1>;
+  console.log('in the beginning');
+  if (!user) {
+    console.log('no user');
+    return null;
   }
 
-  return (
-    <Routes>
-      <Route path="/" element={handleHomePage} />
-      <Route path="/account" element={user ? <Account /> : <Navigate to="/" replace />} />
-      <Route
-        path="/events/:eventId/register"
-        element={user ? <Register /> : <Navigate to="/" replace />}
-      />
-      <Route
-        path="/events/:eventId/holding"
-        element={user ? <Holding /> : <Navigate to="/" replace />}
-      />
-      <Route path="/popup" element={<PassportPopupRedirect />} />
-    </Routes>
-  );
+  if (appState.userStatus === 'INCOMPLETE' && user?.username) {
+    console.log('user incomplete and should be complete');
+    useAppStore.setState({ userStatus: 'COMPLETE' });
+  }
+
+  if (appState.onboardingStatus === 'INCOMPLETE') {
+    console.log('onboarding incomplete');
+    return redirect('/onboarding');
+  }
+
+  if (appState.userStatus === 'INCOMPLETE') {
+    console.log('user incomplete');
+    return redirect('/account');
+  }
+
+  if (events?.length === 1) {
+    console.log('redirecting to event');
+    return redirect(`/events/${events?.[0].id}/register`);
+  }
+
+  console.log('no redirect');
+  return null;
+}
+
+const router = (queryClient: QueryClient) =>
+  createBrowserRouter([
+    {
+      element: <BerlinLayout />,
+      children: [
+        { path: '/', loader: () => landingLoader(queryClient), element: <Landing /> },
+        { path: '/popup', element: <PassportPopupRedirect /> },
+        {
+          loader: () => protectedLoader(queryClient),
+          children: [
+            { path: '/onboarding', Component: Onboarding },
+            {
+              path: '/account',
+              Component: Account,
+            },
+            {
+              path: '/events/:eventId/holding',
+              Component: Holding,
+            },
+            {
+              path: '/events/:eventId/register',
+              Component: Register,
+            },
+          ],
+        },
+      ],
+    },
+  ]);
+
+function App({ queryClient }: { queryClient: QueryClient }) {
+  return <RouterProvider router={router(queryClient)} />;
 }
 
 export default App;

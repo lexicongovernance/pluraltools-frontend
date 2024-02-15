@@ -13,7 +13,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <ThemedApp>
-        <BerlinApp />
+        <BerlinApp queryClient={queryClient} />
       </ThemedApp>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

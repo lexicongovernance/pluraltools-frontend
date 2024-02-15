@@ -1,7 +1,7 @@
 // React and third-party libraries
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
 
 // Store
 import { useAppStore } from '../../store';
@@ -52,6 +52,7 @@ function Header() {
       resetState();
       await queryClient.invalidateQueries();
       await queryClient.removeQueries();
+      redirect('/');
     },
   });
 
