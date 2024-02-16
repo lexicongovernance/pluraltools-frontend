@@ -80,7 +80,7 @@ function Header() {
                   <NavButton to="/events" $color="secondary">
                     Events
                   </NavButton>
-                  <NavButton to="#" $color="secondary" onClick={handleAccountClick}>
+                  <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>
                   <Button onClick={() => mutateLogout()}>Log out</Button>
@@ -107,7 +107,7 @@ function Header() {
                   <NavButton to="/events" $color="secondary">
                     Events
                   </NavButton>
-                  <NavButton to="#" $color="secondary" onClick={handleAccountClick}>
+                  <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>
                   <Button onClick={() => mutateLogout()}>Log out</Button>
