@@ -12,6 +12,7 @@ import { ResponseUserVotesType } from '../types/CycleType';
 import useCountdown from '../hooks/useCountdown';
 import toast from 'react-hot-toast';
 import { FlexRow } from '../components/containers/FlexRow.styled';
+import OptionCard from '../components/optionCard';
 
 const initialHearts = 20;
 
@@ -164,11 +165,26 @@ function Cycle() {
           />
         ))}
       </FlexRow>
+      <Button onClick={handleSaveVotes} disabled={!votesAreDifferent}>
+        Save all votes
+      </Button>
       {currentCycle?.questionOptions && (
-        <Grid>
-          {currentCycle.questionOptions.map((option) => (
-            <pre key={option.id}>{JSON.stringify(option, null, 2)}</pre>
-          ))}
+        <Grid $columns={2} $colgap="1.5rem">
+          {currentCycle.questionOptions.map((option) => {
+            const userVote = localUserVotes.find((vote) => vote.optionId === option.id);
+            const numOfVotes = userVote ? userVote.numOfVotes : 0;
+            return (
+              <OptionCard
+                key={option.id}
+                title={option.optionTitle}
+                body={option.optionSubTitle}
+                avaliableHearts={avaliableHearts}
+                numOfVotes={numOfVotes}
+                onVote={() => handleVote(option.id)}
+                onUnvote={() => handleUnvote(option.id)}
+              />
+            );
+          })}
         </Grid>
       )}
       <Button onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/results`)}>
