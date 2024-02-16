@@ -1,17 +1,24 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import BackButton from '../components/backButton';
-import { FlexColumn } from '../components/containers/FlexColum.styled';
-import { Title } from '../components/typography/Title.styled';
-import { fetchCycle, fetchUserVotes, postVote } from 'api';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Grid } from '../components/containers/Grid.styled';
-import Button from '../components/button';
-import useUser from '../hooks/useUser';
+// React and third-party libraries
 import { useEffect, useMemo, useState } from 'react';
-import { ResponseUserVotesType } from '../types/CycleType';
-import useCountdown from '../hooks/useCountdown';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
+
+// API
+import { fetchCycle, fetchUserVotes, postVote } from 'api';
+
+// Hooks
+import useCountdown from '../hooks/useCountdown';
+import useUser from '../hooks/useUser';
+
+// Components
+import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
+import { Grid } from '../components/containers/Grid.styled';
+import { ResponseUserVotesType } from '../types/CycleType';
+import { Title } from '../components/typography/Title.styled';
+import BackButton from '../components/backButton';
+import Button from '../components/button';
 import OptionCard from '../components/optionCard';
 
 const initialHearts = 20;
