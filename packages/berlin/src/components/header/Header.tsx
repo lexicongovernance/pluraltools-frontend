@@ -52,15 +52,14 @@ function Header() {
       resetState();
       await queryClient.invalidateQueries();
       await queryClient.removeQueries();
+      navigate('/');
     },
   });
 
   const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState(false);
 
-  // Define onClick handler to navigate to account page and trigger reload
   const handleAccountClick = () => {
     navigate('/account');
-    window.location.reload();
   };
 
   return (

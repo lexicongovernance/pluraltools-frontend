@@ -35,6 +35,7 @@ import { formatGroups } from '../utils/formatGroups';
 // Store
 import { useAppStore } from '../store';
 import { Body } from '../components/typography/Body.styled';
+import { useEffect, useMemo } from 'react';
 
 const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None'];
 
@@ -170,11 +171,16 @@ function AccountForm({
     formState: { errors, isValid },
     handleSubmit,
     setValue,
+    reset,
     trigger,
   } = useForm({
-    defaultValues: initialUser,
+    defaultValues: useMemo(() => initialUser, [initialUser]),
     mode: 'all',
   });
+
+  useEffect(() => {
+    reset(initialUser);
+  }, [initialUser, reset]);
 
   const {
     fields: fieldsCredentialsGroup,
@@ -263,7 +269,6 @@ function AccountForm({
     trigger('userAttributes.customGroupName');
   };
 
-  console.log(watchedGroupInputId, customGroup?.id);
   return (
     <FlexColumn>
       <Title>Complete your registration</Title>
@@ -290,7 +295,7 @@ function AccountForm({
                     id: group.id,
                   }))}
                   label="Affiliation"
-                  placeholder="Select an affiliation"
+                  placeholder={field.value ? field.value : 'Select or create affiliation'}
                   required
                   onChange={field.onChange}
                   onBlur={field.onBlur}
