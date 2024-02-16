@@ -1,5 +1,7 @@
 // React and third-party libraries
 import { RouterProvider, createBrowserRouter, redirect } from 'react-router-dom';
+import { fetchEvents, fetchUserData } from 'api';
+import { QueryClient } from '@tanstack/react-query';
 
 // Hooks
 
@@ -7,17 +9,13 @@ import { RouterProvider, createBrowserRouter, redirect } from 'react-router-dom'
 import { useAppStore } from './store';
 
 // Pages
-import { fetchEvents, fetchUserData } from 'api';
 import Account from './pages/Account';
 import Holding from './pages/Holding';
 import Landing from './pages/Landing';
 import Onboarding from './pages/Onboarding';
 import PassportPopupRedirect from './pages/Popup';
 import Register from './pages/Register';
-
-// Components
 import { default as BerlinLayout } from './layout/index.ts';
-import { QueryClient } from '@tanstack/react-query';
 
 async function protectedLoader(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({

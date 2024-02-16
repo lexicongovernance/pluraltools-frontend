@@ -271,7 +271,6 @@ function AccountForm({
     trigger('userAttributes.customGroupName');
   };
 
-  console.log(watchedGroupInputId, customGroup?.id);
   return (
     <FlexColumn>
       <Title>Complete your registration</Title>
@@ -298,7 +297,7 @@ function AccountForm({
                     id: group.id,
                   }))}
                   label="Affiliation"
-                  placeholder="Select an affiliation"
+                  placeholder={field.value ? field.value : 'Select or create affiliation'}
                   required
                   onChange={field.onChange}
                   onBlur={field.onBlur}

@@ -1,5 +1,6 @@
 // React and third-party libraries
 import { Toaster } from 'react-hot-toast';
+import { Outlet } from 'react-router-dom';
 
 // Components
 import Header from '../components/header';
@@ -7,7 +8,6 @@ import Footer from '../components/footer';
 
 // Styled components
 import { Main } from './Layout.styled';
-import { Outlet } from 'react-router-dom';
 
 function Layout() {
   return (
