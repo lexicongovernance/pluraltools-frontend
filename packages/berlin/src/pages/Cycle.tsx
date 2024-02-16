@@ -12,6 +12,7 @@ import useCountdown from '../hooks/useCountdown';
 import useUser from '../hooks/useUser';
 
 // Components
+import { Body } from '../components/typography/Body.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
 import { Grid } from '../components/containers/Grid.styled';
@@ -155,26 +156,28 @@ function Cycle() {
     }
   };
 
-  console.log('🚀 ~ Cycle ~ cycle:', cycle);
   const currentCycle = cycle?.forumQuestions[0];
   return (
     <FlexColumn $gap="2rem">
-      <BackButton />
-      <Title>{currentCycle?.questionTitle}</Title>
-      <FlexRow $gap="0.25rem" $wrap>
-        {Array.from({ length: initialHearts }).map((_, id) => (
-          <img
-            key={id}
-            src={id < avaliableHearts ? '/icons/heart-full.svg' : '/icons/heart-empty.svg'}
-            height={24}
-            width={24}
-            alt={id < avaliableHearts ? 'Full Heart' : 'Empty Heart'}
-          />
-        ))}
-      </FlexRow>
-      <Button onClick={handleSaveVotes} disabled={!votesAreDifferent}>
-        Save all votes
-      </Button>
+      <FlexColumn>
+        <BackButton />
+        <Title>{currentCycle?.questionTitle}</Title>
+        <Body>{formattedTime}</Body>
+        <FlexRow $gap="0.25rem" $wrap>
+          {Array.from({ length: initialHearts }).map((_, id) => (
+            <img
+              key={id}
+              src={id < avaliableHearts ? '/icons/heart-full.svg' : '/icons/heart-empty.svg'}
+              height={24}
+              width={24}
+              alt={id < avaliableHearts ? 'Full Heart' : 'Empty Heart'}
+            />
+          ))}
+        </FlexRow>
+        <Button onClick={handleSaveVotes} disabled={!votesAreDifferent}>
+          Save all votes
+        </Button>
+      </FlexColumn>
       {currentCycle?.questionOptions && (
         <Grid $columns={2} $colgap="1.5rem">
           {currentCycle.questionOptions.map((option) => {

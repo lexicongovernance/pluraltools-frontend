@@ -15,6 +15,7 @@ export const Grid = styled.section<GridProps>`
   row-gap: ${(props) => props.$rowgap || '1rem'};
   grid-template-columns: repeat(1, 1fr);
   grid-template-rows: repeat(auto, 1fr);
+  width: 100%;
 
   @media (min-width: 640px) {
     grid-template-columns: ${(props) => props.$columns && `repeat(${props.$columns || 1}, 1fr)`};
