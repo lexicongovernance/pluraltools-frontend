@@ -45,7 +45,6 @@ type CredentialsGroup = {
 }[];
 
 type UserAttributes = {
-  institution: string;
   role: string;
   customGroupName?: string;
   publications: { value: string }[];
@@ -116,7 +115,6 @@ function Account() {
         }
       },
       {
-        institution: '',
         role: '',
         publications: [{ value: '' }],
         contributions: [{ value: '' }],
