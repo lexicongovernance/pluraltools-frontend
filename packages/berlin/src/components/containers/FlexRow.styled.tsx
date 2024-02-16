@@ -4,7 +4,7 @@ type FlexRowProps = {
   $align?: 'flex-start' | 'center' | 'flex-end';
   $gap?: string;
   $justify?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around';
-  $wrap: boolean;
+  $wrap?: boolean;
 };
 
 export const FlexRow = styled.div<FlexRowProps>`
