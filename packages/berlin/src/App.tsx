@@ -21,6 +21,7 @@ import Landing from './pages/Landing';
 import Onboarding from './pages/Onboarding';
 import PassportPopupRedirect from './pages/Popup';
 import Register from './pages/Register';
+import Cycle from './pages/Cycle';
 
 function App() {
   const { user, isLoading } = useUser();
@@ -74,6 +75,10 @@ function App() {
       <Route path="/account" element={user ? <Account /> : <Navigate to="/" replace />} />
       <Route path="/events" element={user ? <Events /> : <Navigate to="/" replace />} />
       <Route path="/events/:eventId" element={user ? <Event /> : <Navigate to="/" replace />} />
+      <Route
+        path="/events/:eventId/cycles/:cycleId"
+        element={user ? <Cycle /> : <Navigate to="/" replace />}
+      />
       <Route
         path="/events/:eventId/register"
         element={user ? <Register /> : <Navigate to="/" replace />}
