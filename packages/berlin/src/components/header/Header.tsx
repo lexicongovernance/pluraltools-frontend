@@ -58,10 +58,6 @@ function Header() {
 
   const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState(false);
 
-  const handleAccountClick = () => {
-    navigate('/account');
-  };
-
   return (
     <SyledHeader>
       <HeaderContainer>
