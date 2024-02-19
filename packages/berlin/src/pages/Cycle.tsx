@@ -129,7 +129,7 @@ function Cycle() {
     mutationFn: postVote,
     onSuccess: (body) => {
       if (body) {
-        queryClient.invalidateQueries({ queryKey: ['user-votes'] });
+        queryClient.invalidateQueries({ queryKey: ['votes', cycleId] });
       }
     },
   });
