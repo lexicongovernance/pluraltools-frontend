@@ -61,27 +61,23 @@ function Results() {
   return (
     <FlexColumn $gap="2rem">
       <BackButton />
-      <FlexColumn>
-        <Title>Results for: {cycle?.forumQuestions?.[0].questionTitle}</Title>
-        <Grid $columns={4}>
-          {stats.map((stat) => (
-            <StatCard key={stat.id} title={stat.title} number={stat.data} />
-          ))}
-        </Grid>
-      </FlexColumn>
+      <Title>Results for: {cycle?.forumQuestions?.[0].questionTitle}</Title>
+      <Grid $columns={4}>
+        {stats.map((stat) => (
+          <StatCard key={stat.id} title={stat.title} number={stat.data} />
+        ))}
+      </Grid>
       <FlexColumn>
         <Title>Leaderboard</Title>
-        <FlexColumn>
-          {optionStatsArray.map((option, index) => (
-            <ResultCard
-              key={option.id}
-              index={index}
-              $expanded={expandedIndex === index}
-              option={option}
-              onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
-            />
-          ))}
-        </FlexColumn>
+        {optionStatsArray.map((option, index) => (
+          <ResultCard
+            key={option.id}
+            index={index}
+            $expanded={expandedIndex === index}
+            option={option}
+            onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
+          />
+        ))}
       </FlexColumn>
     </FlexColumn>
   );
