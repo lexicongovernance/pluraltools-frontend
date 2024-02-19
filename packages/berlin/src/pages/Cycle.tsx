@@ -186,6 +186,7 @@ function Cycle() {
             return (
               <OptionCard
                 key={option.id}
+                id={option.id}
                 title={option.optionTitle}
                 body={option.optionSubTitle}
                 avaliableHearts={avaliableHearts}

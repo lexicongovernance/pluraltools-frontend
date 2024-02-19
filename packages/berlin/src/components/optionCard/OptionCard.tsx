@@ -5,8 +5,10 @@ import { FlexRow } from '../containers/FlexRow.styled';
 import { Body } from '../typography/Body.styled';
 import { Subtitle } from '../typography/Subtitle.styled';
 import { Card } from './OptionCard.styled';
+import { useNavigate, useParams } from 'react-router-dom';
 
 type OptionProps = {
+  id: string;
   title: string;
   body?: string;
   avaliableHearts: number;
@@ -15,7 +17,17 @@ type OptionProps = {
   onUnvote: () => void;
 };
 
-function OptionCard({ title, body, avaliableHearts, numOfVotes, onVote, onUnvote }: OptionProps) {
+function OptionCard({
+  id,
+  title,
+  body,
+  avaliableHearts,
+  numOfVotes,
+  onVote,
+  onUnvote,
+}: OptionProps) {
+  const navigate = useNavigate();
+  const { eventId, cycleId } = useParams();
   const [localOptionHearts, setLocalOptionHearts] = useState(numOfVotes);
 
   useEffect(() => {
@@ -55,6 +67,13 @@ function OptionCard({ title, body, avaliableHearts, numOfVotes, onVote, onUnvote
         </Button>
         <Button $color="primary" onClick={handleVoteClick} disabled={avaliableHearts === 0}>
           Vote
+        </Button>
+        <Button
+          $color="primary"
+          onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/options/${id}`)}
+          disabled={avaliableHearts === 0}
+        >
+          comments
         </Button>
       </FlexRow>
     </Card>
