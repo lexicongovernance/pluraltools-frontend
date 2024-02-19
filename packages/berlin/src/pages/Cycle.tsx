@@ -30,7 +30,7 @@ function Cycle() {
   const { user } = useUser();
   const { eventId, cycleId } = useParams();
   const { data: cycle } = useQuery({
-    queryKey: ['cycle'],
+    queryKey: ['cycle', cycleId],
     queryFn: () => fetchCycle(cycleId || ''),
     enabled: !!cycleId,
   });
@@ -197,7 +197,10 @@ function Cycle() {
           })}
         </Grid>
       )}
-      <Button onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/results`)}>
+      <Button
+        onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/results`)}
+        $color="secondary"
+      >
         See results
       </Button>
     </FlexColumn>
