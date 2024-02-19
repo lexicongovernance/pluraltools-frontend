@@ -21,7 +21,7 @@ async function fetchUserVotes(
     const userVotes = (await response.json()) as { data: GetUserVotesResponse };
     return userVotes.data;
   } catch (error) {
-    console.error('Error fetchin user votes:', error);
+    console.error('Error fetching user votes:', error);
     return null;
   }
 }
