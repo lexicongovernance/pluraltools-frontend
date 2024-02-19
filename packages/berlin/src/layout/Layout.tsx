@@ -12,7 +12,7 @@ import { Main } from './Layout.styled';
 function Layout() {
   return (
     <>
-      <Toaster position="top-center" />
+      <Toaster position="top-center" toastOptions={{ style: { fontFamily: 'Raleway' } }} />
       <Header />
       <Main>
         <Outlet />

@@ -1,21 +1,25 @@
 // React and third-party libraries
 import { RouterProvider, createBrowserRouter, redirect } from 'react-router-dom';
-import { fetchEvents, fetchUserData } from 'api';
 import { QueryClient } from '@tanstack/react-query';
-
-// Hooks
 
 // Store
 import { useAppStore } from './store';
 
+// API
+import { fetchEvents, fetchUserData } from 'api';
+
 // Pages
+import { default as BerlinLayout } from './layout/index.ts';
 import Account from './pages/Account';
+import Cycle from './pages/Cycle.tsx';
+import Event from './pages/Event.tsx';
+import Events from './pages/Events.tsx';
 import Holding from './pages/Holding';
 import Landing from './pages/Landing';
 import Onboarding from './pages/Onboarding';
 import PassportPopupRedirect from './pages/Popup';
 import Register from './pages/Register';
-import { default as BerlinLayout } from './layout/index.ts';
+import Results from './pages/Results.tsx';
 
 async function protectedLoader(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
@@ -87,6 +91,22 @@ const router = (queryClient: QueryClient) =>
             {
               path: '/events/:eventId/register',
               Component: Register,
+            },
+            {
+              path: '/events',
+              Component: Events,
+            },
+            {
+              path: '/events/:eventId',
+              Component: Event,
+            },
+            {
+              path: '/events/:eventId/cycles/:cycleId',
+              Component: Cycle,
+            },
+            {
+              path: '/events/:eventId/cycles/:cycleId/results',
+              Component: Results,
             },
           ],
         },

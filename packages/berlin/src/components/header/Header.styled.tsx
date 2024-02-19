@@ -98,6 +98,7 @@ export const MobileButtons = styled.div`
   flex-direction: column;
   gap: 1.5rem;
   height: 100%;
+  text-align: center;
   @media (min-width: 1080px) {
     display: none;
   }
@@ -123,7 +124,7 @@ export const MenuButton = styled.div`
   }
 `;
 
-export const Bar = styled.div<{ isOpen: boolean }>`
+export const Bar = styled.div<{ $isOpen: boolean }>`
   background-color: var(--color-black);
   border-radius: 8px;
   height: 3px;
@@ -132,16 +133,16 @@ export const Bar = styled.div<{ isOpen: boolean }>`
   width: 27px;
 
   &:first-child {
-    transform: ${({ isOpen }) => (isOpen ? 'rotate(-45deg) translateY(10px)' : '')};
+    transform: ${({ $isOpen }) => ($isOpen ? 'rotate(-45deg) translateY(10px)' : '')};
   }
 
   &:nth-child(2) {
-    opacity: ${({ isOpen }) => (isOpen ? '0' : '1')};
+    opacity: ${({ $isOpen }) => ($isOpen ? '0' : '1')};
     transition: 0.2s;
   }
 
   &:nth-child(3) {
-    transform: ${({ isOpen }) => (isOpen ? 'rotate(45deg) translateY(-10px)' : '')};
+    transform: ${({ $isOpen }) => ($isOpen ? 'rotate(45deg) translateY(-10px)' : '')};
   }
 `;
 
@@ -154,7 +155,7 @@ const fadeIn = keyframes`
   }
 `;
 
-export const BurgerMenuContainer = styled.nav<{ $isOpen: boolean }>`
+export const BurgerMenuContainer = styled.nav<{ $$isOpen: boolean }>`
   align-items: center;
   background-color: var(--color-white);
   bottom: 0;
@@ -166,6 +167,6 @@ export const BurgerMenuContainer = styled.nav<{ $isOpen: boolean }>`
   width: 100%;
   z-index: 999;
 
-  display: ${(props) => (props.$isOpen ? 'flex' : 'none')};
+  display: ${(props) => (props.$$isOpen ? 'flex' : 'none')};
   animation: ${fadeIn} 0.3s ease-out;
 `;

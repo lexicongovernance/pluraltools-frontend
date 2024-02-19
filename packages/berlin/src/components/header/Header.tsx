@@ -58,10 +58,6 @@ function Header() {
 
   const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState(false);
 
-  const handleAccountClick = () => {
-    navigate('/account');
-  };
-
   return (
     <SyledHeader>
       <HeaderContainer>
@@ -77,7 +73,10 @@ function Header() {
             <DesktopButtons>
               {user ? (
                 <>
-                  <NavButton to="#" $color="secondary" onClick={handleAccountClick}>
+                  <NavButton to="/events" $color="secondary">
+                    Events
+                  </NavButton>
+                  <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>
                   <Button onClick={() => mutateLogout()}>Log out</Button>
@@ -87,20 +86,23 @@ function Header() {
               )}
             </DesktopButtons>
             <MenuButton onClick={() => setIsBurgerMenuOpen(!isBurgerMenuOpen)}>
-              <Bar isOpen={isBurgerMenuOpen} />
-              <Bar isOpen={isBurgerMenuOpen} />
-              <Bar isOpen={isBurgerMenuOpen} />
+              <Bar $isOpen={isBurgerMenuOpen} />
+              <Bar $isOpen={isBurgerMenuOpen} />
+              <Bar $isOpen={isBurgerMenuOpen} />
             </MenuButton>
             <ThemeButton onClick={toggleTheme}>
               <img src={`/icons/toggle-${theme}.svg`} height={20} width={20} />
             </ThemeButton>
           </NavButtons>
         </NavContainer>
-        <BurgerMenuContainer $isOpen={isBurgerMenuOpen} onClick={() => setIsBurgerMenuOpen(false)}>
+        <BurgerMenuContainer $$isOpen={isBurgerMenuOpen} onClick={() => setIsBurgerMenuOpen(false)}>
           <NavButtons>
             <MobileButtons>
               {user ? (
                 <>
+                  <NavButton to="/events" $color="secondary">
+                    Events
+                  </NavButton>
                   <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>
