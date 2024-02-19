@@ -19,6 +19,7 @@ import Landing from './pages/Landing';
 import Onboarding from './pages/Onboarding';
 import PassportPopupRedirect from './pages/Popup';
 import Register from './pages/Register';
+import Results from './pages/Results.tsx';
 
 async function protectedLoader(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
@@ -102,6 +103,10 @@ const router = (queryClient: QueryClient) =>
             {
               path: '/events/:eventId/cycles/:cycleId',
               Component: Cycle,
+            },
+            {
+              path: '/events/:eventId/cycles/:cycleId/results',
+              Component: Results,
             },
           ],
         },
