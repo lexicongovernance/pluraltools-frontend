@@ -68,12 +68,12 @@ function OptionCard({ title, body, avaliableHearts, numOfVotes, onVote, onUnvote
             icon={{ src: `/icons/vote-${theme}.svg`, alt: 'Vote icon' }}
           />
         </FlexRow>
-        <IconButton
+        {/* <IconButton
           onClick={() => {}}
           $padding={6}
           $color="secondary"
           icon={{ src: `/icons/comments-${theme}.svg`, alt: 'Comments icon' }}
-        />
+        /> */}
       </FlexRow>
     </Card>
   );
