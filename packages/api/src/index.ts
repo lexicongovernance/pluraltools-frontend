@@ -16,7 +16,7 @@ export { default as fetchUserGroups } from './fetchUserGroups';
 export { default as updateUserData } from './updateUserData';
 export { default as fetchCycle } from './fetchCycle';
 export { default as fetchUserVotes } from './fetchUserVotes';
-export { default as postVote } from './postVotes';
+export { default as postVotes } from './postVotes';
 export { default as postLike } from './postLike';
 export { default as deleteLike } from './deleteLike';
 export { default as fetchLikes } from './fetchLikes';
