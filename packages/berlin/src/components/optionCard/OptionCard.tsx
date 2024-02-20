@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import Button from '../button';
 import { FlexColumn } from '../containers/FlexColum.styled';
 import { FlexRow } from '../containers/FlexRow.styled';
 import { Body } from '../typography/Body.styled';
 import { Subtitle } from '../typography/Subtitle.styled';
 import { Card } from './OptionCard.styled';
+import IconButton from '../iconButton';
+import { useAppStore } from '../../store';
 
 type OptionProps = {
   title: string;
@@ -16,6 +17,7 @@ type OptionProps = {
 };
 
 function OptionCard({ title, body, avaliableHearts, numOfVotes, onVote, onUnvote }: OptionProps) {
+  const theme = useAppStore((state) => state.theme);
   const [localOptionHearts, setLocalOptionHearts] = useState(numOfVotes);
 
   useEffect(() => {
@@ -50,12 +52,28 @@ function OptionCard({ title, body, avaliableHearts, numOfVotes, onVote, onUnvote
         </FlexRow>
       </FlexColumn>
       <FlexRow>
-        <Button $color="secondary" onClick={handleUnvoteClick} disabled={localOptionHearts === 0}>
-          Unvote
-        </Button>
-        <Button $color="primary" onClick={handleVoteClick} disabled={avaliableHearts === 0}>
-          Vote
-        </Button>
+        <FlexRow>
+          <IconButton
+            onClick={handleUnvoteClick}
+            disabled={localOptionHearts === 0}
+            $padding={6}
+            $color="secondary"
+            icon={{ src: `/icons/unvote-${theme}.svg`, alt: 'Unvote icon' }}
+          />
+          <IconButton
+            onClick={handleVoteClick}
+            disabled={avaliableHearts === 0}
+            $padding={6}
+            $color="primary"
+            icon={{ src: `/icons/vote-${theme}.svg`, alt: 'Vote icon' }}
+          />
+        </FlexRow>
+        <IconButton
+          onClick={() => {}}
+          $padding={6}
+          $color="secondary"
+          icon={{ src: `/icons/comments-${theme}.svg`, alt: 'Comments icon' }}
+        />
       </FlexRow>
     </Card>
   );
