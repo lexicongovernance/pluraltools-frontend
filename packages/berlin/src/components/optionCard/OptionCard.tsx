@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FlexColumn } from '../containers/FlexColum.styled';
 import { FlexRow } from '../containers/FlexRow.styled';
 import { Body } from '../typography/Body.styled';
@@ -12,21 +12,35 @@ type OptionProps = {
   body?: string;
   avaliableHearts: number;
   numOfVotes: number;
+  pluralityScore: number;
   onVote: () => void;
   onUnvote: () => void;
 };
 
-function OptionCard({ title, body, avaliableHearts, numOfVotes, onVote, onUnvote }: OptionProps) {
+function OptionCard({
+  title,
+  body,
+  pluralityScore,
+  avaliableHearts,
+  numOfVotes,
+  onVote,
+  onUnvote,
+}: OptionProps) {
   const theme = useAppStore((state) => state.theme);
   const [localOptionHearts, setLocalOptionHearts] = useState(numOfVotes);
   const [expanded, setExpanded] = useState(false);
+
+  const formattedPluralityScore = useMemo(() => {
+    const score = parseFloat(String(pluralityScore));
+    return score % 1 === 0 ? score.toFixed(0) : score.toFixed(3);
+  }, [pluralityScore]);
 
   useEffect(() => {
     setLocalOptionHearts(numOfVotes);
   }, [numOfVotes]);
 
   const handleVoteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation(); // Stop event propagation here
+    e.stopPropagation();
     if (avaliableHearts) {
       setLocalOptionHearts((prevLocalOptionHearts) => prevLocalOptionHearts + 1);
       onVote();
@@ -34,14 +48,15 @@ function OptionCard({ title, body, avaliableHearts, numOfVotes, onVote, onUnvote
   };
 
   const handleUnvoteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation(); // Stop event propagation here
+    e.stopPropagation();
     setLocalOptionHearts((prevLocalOptionHearts) => Math.max(0, prevLocalOptionHearts - 1));
     onUnvote();
   };
 
   return (
     <Card onClick={() => setExpanded(!expanded)}>
-      <FlexColumn $gap="2rem">
+      <FlexColumn>
+        <Body>Plurality Score: {formattedPluralityScore}</Body>
         <Subtitle>{title}</Subtitle>
         <FlexRow $gap="0.25rem" $wrap>
           {localOptionHearts > 0 ? (
@@ -76,12 +91,14 @@ function OptionCard({ title, body, avaliableHearts, numOfVotes, onVote, onUnvote
             icon={{ src: `/icons/vote-${theme}.svg`, alt: 'Vote icon' }}
           />
         </FlexRow>
-        <IconButton
-          onClick={() => {}}
-          $color="secondary"
-          $flipVertical={expanded}
-          icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: 'Arrow icon' }}
-        />
+        {body && (
+          <IconButton
+            onClick={() => {}}
+            $color="secondary"
+            $flipVertical={expanded}
+            icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: 'Arrow icon' }}
+          />
+        )}
       </FlexRow>
       {expanded && body && <Body>{body}</Body>}
     </Card>

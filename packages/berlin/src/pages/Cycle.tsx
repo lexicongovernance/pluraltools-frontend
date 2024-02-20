@@ -188,6 +188,7 @@ function Cycle() {
                 title={option.optionTitle}
                 body={option.optionSubTitle}
                 avaliableHearts={avaliableHearts}
+                pluralityScore={option.voteCount}
                 numOfVotes={numOfVotes}
                 onVote={() => handleVote(option.id)}
                 onUnvote={() => handleUnvote(option.id)}
