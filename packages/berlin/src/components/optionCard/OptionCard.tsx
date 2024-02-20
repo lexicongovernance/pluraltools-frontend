@@ -1,11 +1,18 @@
+// React and third-party libraries
 import { useEffect, useMemo, useState } from 'react';
+
+// Store
+import { useAppStore } from '../../store';
+
+// Components
+import { Body } from '../typography/Body.styled';
 import { FlexColumn } from '../containers/FlexColum.styled';
 import { FlexRow } from '../containers/FlexRow.styled';
-import { Body } from '../typography/Body.styled';
 import { Subtitle } from '../typography/Subtitle.styled';
-import { Card } from './OptionCard.styled';
 import IconButton from '../iconButton';
-import { useAppStore } from '../../store';
+
+// Styled Components
+import { Card } from './OptionCard.styled';
 
 type OptionProps = {
   title: string;
@@ -53,8 +60,14 @@ function OptionCard({
     onUnvote();
   };
 
+  const handleCardClick = () => {
+    if (body) {
+      setExpanded(!expanded);
+    }
+  };
+
   return (
-    <Card onClick={() => setExpanded(!expanded)}>
+    <Card onClick={handleCardClick}>
       <FlexColumn>
         <Body>Plurality Score: {formattedPluralityScore}</Body>
         <Subtitle>{title}</Subtitle>
