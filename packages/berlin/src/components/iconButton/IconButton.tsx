@@ -7,12 +7,14 @@ type IconButtonProps = {
     src: string;
     alt: string;
   };
+  disabled?: boolean;
+  $padding?: number;
   onClick: () => void;
 } & StyledButtonProps;
 
-function IconButton({ icon, onClick, ...props }: IconButtonProps) {
+function IconButton({ icon, onClick, disabled, $padding, ...props }: IconButtonProps) {
   return (
-    <Button onClick={onClick} style={{ padding: 0 }} {...props}>
+    <Button onClick={onClick} style={{ padding: $padding }} disabled={disabled} {...props}>
       <IconContainer $height={24} $width={24}>
         <Icon src={icon.src} alt={icon.alt} height={24} width={24} />
       </IconContainer>
