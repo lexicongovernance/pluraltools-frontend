@@ -4,5 +4,5 @@ export type QuestionOption = {
   updatedAt: string;
   questionId: string;
   text: string;
-  voteCount: number;
+  voteScore: number;
 };

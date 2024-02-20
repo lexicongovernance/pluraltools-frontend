@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 // API
-import { fetchCycle, fetchUserVotes, postVote } from 'api';
+import { PostVotesRequest, fetchCycle, fetchUserVotes, postVotes } from 'api';
 
 // Hooks
 import useCountdown from '../hooks/useCountdown';
@@ -36,7 +36,7 @@ function Cycle() {
 
   const { data: userVotes } = useQuery({
     queryKey: ['votes', cycleId],
-    queryFn: () => fetchUserVotes(user?.id || '', cycleId || ''),
+    queryFn: () => fetchUserVotes(cycleId || ''),
     enabled: !!user?.id && !!cycleId,
     retry: false,
   });
@@ -124,11 +124,14 @@ function Cycle() {
     setAvaliableHearts((prevAvaliableHearts) => Math.min(initialHearts, prevAvaliableHearts + 1));
   };
 
-  const { mutate: mutateVote } = useMutation({
-    mutationFn: postVote,
+  const { mutate: mutateVotes } = useMutation({
+    mutationFn: postVotes,
     onSuccess: (body) => {
-      if (body) {
+      if (body?.errors.length) {
+        toast.error(`Failed to save votes, ${body?.errors[0].message}`);
+      } else if (body?.data.length) {
         queryClient.invalidateQueries({ queryKey: ['votes', cycleId] });
+        toast.success('Votes saved successfully!');
       }
     },
   });
@@ -137,17 +140,28 @@ function Cycle() {
     try {
       if (userVotes) {
         const serverVotesMap = new Map(userVotes.map((vote) => [vote.optionId, vote]));
+        const mutateVotesReq: PostVotesRequest = {
+          cycleId: cycleId || '',
+          votes: [],
+        };
 
         for (const localVote of localUserVotes) {
           const matchingServerVote = serverVotesMap.get(localVote.optionId);
 
           if (!matchingServerVote) {
-            mutateVote({ optionId: localVote.optionId, numOfVotes: localVote.numOfVotes });
+            mutateVotesReq.votes.push({
+              optionId: localVote.optionId,
+              numOfVotes: localVote.numOfVotes,
+            });
           } else if (matchingServerVote.numOfVotes !== localVote.numOfVotes) {
-            mutateVote({ optionId: localVote.optionId, numOfVotes: localVote.numOfVotes });
+            mutateVotesReq.votes.push({
+              optionId: localVote.optionId,
+              numOfVotes: localVote.numOfVotes,
+            });
           }
         }
-        toast.success('Votes saved successfully!');
+
+        mutateVotes(mutateVotesReq);
       }
     } catch (error) {
       toast.error('Failed to save votes, please try again');

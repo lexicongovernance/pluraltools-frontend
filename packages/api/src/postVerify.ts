@@ -1,6 +1,6 @@
 import { GetUserResponse } from './types/UserType';
 
-async function postPcdStr(body: {
+async function postVerify(body: {
   pcdStr: string;
   email: string;
   uuid: string;
@@ -22,9 +22,9 @@ async function postPcdStr(body: {
     const user = (await response.json()) as { data: GetUserResponse };
     return user.data;
   } catch (error) {
-    console.error('Error during POST request:', error);
+    console.error('Error during POST verify request:', error);
     return null;
   }
 }
 
-export default postPcdStr;
+export default postVerify;
