@@ -1,6 +1,6 @@
-import { GetUserVotesResponse, PostVoteRequest } from './types/UserVotesType';
+import { PostVotesRequest, PostVotesResponse } from './types/UserVotesType';
 
-async function postVote({ cycleId, votes }: PostVoteRequest): Promise<GetUserVotesResponse | null> {
+async function postVotes({ cycleId, votes }: PostVotesRequest): Promise<PostVotesResponse | null> {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/cycles/${cycleId}/votes`, {
       method: 'POST',
@@ -17,12 +17,12 @@ async function postVote({ cycleId, votes }: PostVoteRequest): Promise<GetUserVot
       throw new Error(`HTTP Error! Status: ${response.status}`);
     }
 
-    const vote = (await response.json()) as { data: GetUserVotesResponse };
-    return vote.data;
+    const votesRes = (await response.json()) as PostVotesResponse;
+    return votesRes;
   } catch (error) {
     console.error('Error during POST vote request:', error);
     return null;
   }
 }
 
-export default postVote;
+export default postVotes;

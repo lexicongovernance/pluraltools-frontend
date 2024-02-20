@@ -7,7 +7,12 @@ export type GetUserVotesResponse = {
   updatedAt: string;
 }[];
 
-export type PostVoteRequest = {
+export type PostVotesRequest = {
   votes: { optionId: string; numOfVotes: number }[];
   cycleId: string;
+};
+
+export type PostVotesResponse = {
+  data: GetUserVotesResponse;
+  errors: string[];
 };
