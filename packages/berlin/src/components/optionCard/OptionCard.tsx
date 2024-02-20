@@ -69,8 +69,7 @@ function OptionCard({ title, body, avaliableHearts, numOfVotes, onVote, onUnvote
           />
         </FlexRow>
         <IconButton
-          onClick={handleUnvoteClick}
-          disabled={localOptionHearts === 0}
+          onClick={() => {}}
           $padding={6}
           $color="secondary"
           icon={{ src: `/icons/comments-${theme}.svg`, alt: 'Comments icon' }}
