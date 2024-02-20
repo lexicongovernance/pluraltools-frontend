@@ -13,7 +13,7 @@ export type Option = {
   updatedAt: string;
   questionId: string;
   text: string;
-  voteCount: number;
+  voteScore: number;
 };
 
 export type Cycle = {
@@ -57,7 +57,7 @@ export type ResponseCycleType = {
       optionTitle: string;
       optionSubTitle?: string;
       accepted: boolean;
-      voteCount: number;
+      voteScore: number;
     }[];
   }[];
 }[];
