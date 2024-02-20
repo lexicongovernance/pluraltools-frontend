@@ -10,7 +10,7 @@ type IconButtonProps = {
   disabled?: boolean;
   $padding?: number;
   $flipVertical?: boolean;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 } & StyledButtonProps;
 
 function IconButton({
