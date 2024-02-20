@@ -1,5 +1,6 @@
 // React and third-party libraries
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // Store
 import { useAppStore } from '../../store';
@@ -13,7 +14,6 @@ import IconButton from '../iconButton';
 
 // Styled Components
 import { Card } from './OptionCard.styled';
-import { useNavigate, useParams } from 'react-router-dom';
 
 type OptionProps = {
   id: string;
@@ -27,6 +27,7 @@ type OptionProps = {
 };
 
 function OptionCard({
+  id,
   title,
   body,
   pluralityScore,
@@ -87,12 +88,12 @@ function OptionCard({
       </FlexColumn>
       <FlexRow>
         <FlexRow>
-          {/* <IconButton
-            onClick={() => {}}
+          <IconButton
+            onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/options/${id}`)}
             $padding={6}
             $color="secondary"
             icon={{ src: `/icons/comments-${theme}.svg`, alt: 'Comments icon' }}
-          /> */}
+          />
           <IconButton
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleUnvoteClick(e)}
             disabled={localOptionHearts === 0}
