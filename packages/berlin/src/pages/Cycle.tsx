@@ -20,6 +20,9 @@ import { Title } from '../components/typography/Title.styled';
 import BackButton from '../components/backButton';
 import Button from '../components/button';
 import OptionCard from '../components/optionCard';
+import { Subtitle } from '../components/typography/Subtitle.styled';
+import { Bold } from '../components/typography/Bold.styled';
+import Link from '../components/link';
 
 const initialHearts = 20;
 
@@ -182,8 +185,19 @@ function Cycle() {
     <FlexColumn $gap="2rem">
       <FlexColumn>
         <BackButton />
+        <Subtitle>Welcome {user?.username}! It's time to give your hearts away...</Subtitle>
+        <Body>
+          See <Link to="/">your proposal</Link>
+        </Body>
         <Title>{currentCycle?.questionTitle}</Title>
-        <Body>{formattedTime}</Body>
+        <Body>
+          {formattedTime === 'Cycle has expired'
+            ? formattedTime
+            : `Cycle closes in: ${formattedTime}`}
+        </Body>
+        <Body>
+          <Bold>Remaining hearts ({avaliableHearts}) :</Bold>
+        </Body>
         <FlexRow $gap="0.25rem" $wrap>
           {Array.from({ length: initialHearts }).map((_, id) => (
             <img
