@@ -19,7 +19,7 @@ export { default as fetchUserVotes } from './fetchUserVotes';
 export { default as postVotes } from './postVotes';
 export { default as postLike } from './postLike';
 export { default as deleteLike } from './deleteLike';
-export { default as fetchLikes } from './fetchLikes';
+export { default as fetchCommentLikes } from './fetchCommentLikes';
 export { default as fetchComments } from './fetchComments';
 export { default as postComment } from './postComment';
 export * from './types';
