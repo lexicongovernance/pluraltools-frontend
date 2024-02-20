@@ -40,7 +40,6 @@ function OptionCard({ title, body, avaliableHearts, numOfVotes, onVote, onUnvote
     <Card>
       <FlexColumn $gap="2rem">
         <Subtitle>{title}</Subtitle>
-        {body && <Body>{body}</Body>}
         <FlexRow $gap="0.25rem" $wrap>
           {localOptionHearts > 0 ? (
             Array.from({ length: localOptionHearts }).map((_, id) => (
@@ -53,6 +52,12 @@ function OptionCard({ title, body, avaliableHearts, numOfVotes, onVote, onUnvote
       </FlexColumn>
       <FlexRow>
         <FlexRow>
+          {/* <IconButton
+            onClick={() => {}}
+            $padding={6}
+            $color="secondary"
+            icon={{ src: `/icons/comments-${theme}.svg`, alt: 'Comments icon' }}
+          /> */}
           <IconButton
             onClick={handleUnvoteClick}
             disabled={localOptionHearts === 0}
@@ -68,13 +73,13 @@ function OptionCard({ title, body, avaliableHearts, numOfVotes, onVote, onUnvote
             icon={{ src: `/icons/vote-${theme}.svg`, alt: 'Vote icon' }}
           />
         </FlexRow>
-        {/* <IconButton
+        <IconButton
           onClick={() => {}}
-          $padding={6}
           $color="secondary"
-          icon={{ src: `/icons/comments-${theme}.svg`, alt: 'Comments icon' }}
-        /> */}
+          icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: '' }}
+        />
       </FlexRow>
+      {body && <Body>{body}</Body>}
     </Card>
   );
 }
