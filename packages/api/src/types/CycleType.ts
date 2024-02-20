@@ -20,7 +20,7 @@ export type GetCycleResponse = {
       optionTitle: string;
       optionSubTitle?: string;
       accepted: boolean;
-      voteCount: number;
+      voteScore: number;
     }[];
   }[];
 };

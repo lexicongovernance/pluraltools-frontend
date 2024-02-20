@@ -173,7 +173,7 @@ function Cycle() {
 
   const sortedOptions = useMemo(() => {
     const sorted = [...(currentCycle?.questionOptions ?? [])].sort(
-      (a, b) => b.voteCount - a.voteCount,
+      (a, b) => b.voteScore - a.voteScore,
     );
     return sorted;
   }, [currentCycle?.questionOptions]);
@@ -210,7 +210,7 @@ function Cycle() {
                 title={option.optionTitle}
                 body={option.optionSubTitle}
                 avaliableHearts={avaliableHearts}
-                pluralityScore={option.voteCount}
+                pluralityScore={option.voteScore}
                 numOfVotes={numOfVotes}
                 onVote={() => handleVote(option.id)}
                 onUnvote={() => handleUnvote(option.id)}

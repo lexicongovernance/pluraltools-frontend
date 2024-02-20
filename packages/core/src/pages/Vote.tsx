@@ -216,7 +216,7 @@ function Vote() {
       <Grid $columns={2} $gap="2rem">
         {cycle &&
           cycle.forumQuestions?.map((forumQuestion) => {
-            forumQuestion.questionOptions.sort((a, b) => b.voteCount - a.voteCount);
+            forumQuestion.questionOptions.sort((a, b) => b.voteScore - a.voteScore);
             return forumQuestion.questionOptions.map((questionOption) => {
               const userVote = localUserVotes.find((vote) => vote.optionId === questionOption.id);
               const numOfVotes = userVote ? userVote.numOfVotes : 0;
