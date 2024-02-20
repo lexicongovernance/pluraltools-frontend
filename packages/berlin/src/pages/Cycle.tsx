@@ -133,6 +133,8 @@ function Cycle() {
         toast.error(`Failed to save votes, ${body?.errors[0].message}`);
       } else if (body?.data.length) {
         queryClient.invalidateQueries({ queryKey: ['votes', cycleId] });
+        // this is to update the plural scores in each option
+        queryClient.invalidateQueries({ queryKey: ['cycle', cycleId] });
         toast.success('Votes saved successfully!');
       }
     },
