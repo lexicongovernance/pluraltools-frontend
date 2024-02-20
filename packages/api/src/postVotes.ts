@@ -8,9 +8,7 @@ async function postVotes({ cycleId, votes }: PostVotesRequest): Promise<PostVote
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        votes,
-      }),
+      body: JSON.stringify(votes),
     });
 
     if (!response.ok) {
