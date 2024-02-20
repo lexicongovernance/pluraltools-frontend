@@ -8,6 +8,6 @@ export type GetUserVotesResponse = {
 }[];
 
 export type PostVoteRequest = {
-  optionId: string;
-  numOfVotes: number;
+  votes: { optionId: string; numOfVotes: number }[];
+  cycleId: string;
 };
