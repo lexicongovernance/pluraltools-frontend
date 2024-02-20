@@ -369,6 +369,7 @@ function AccountForm({
                   errors={[errors.userAttributes?.credentialsGroup?.[i]?.field?.message ?? '']}
                 />
                 <IconButton
+                  $padding={0}
                   onClick={() => removeCredentialsGroup(i)}
                   $color="secondary"
                   icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash icon' }}
@@ -376,6 +377,7 @@ function AccountForm({
               </FlexRowToColumn>
             ))}
             <IconButton
+              $padding={0}
               onClick={() => {
                 insertCredentialsGroup(fieldsCredentialsGroup.length, {
                   credential: '',
@@ -396,6 +398,7 @@ function AccountForm({
                   {...register(`userAttributes.publications.${i}.value` as const)}
                 />
                 <IconButton
+                  $padding={0}
                   onClick={() => removePublications(i)}
                   $color="secondary"
                   icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash icon' }}
@@ -403,6 +406,7 @@ function AccountForm({
               </FlexRowToColumn>
             ))}
             <IconButton
+              $padding={0}
               onClick={() => insertPublications(fieldsPublications.length, { value: '' })}
               $color="secondary"
               icon={{ src: `/icons/add-${theme}.svg`, alt: 'Add icon' }}
@@ -417,6 +421,7 @@ function AccountForm({
                   {...register(`userAttributes.contributions.${i}.value` as const)}
                 />
                 <IconButton
+                  $padding={0}
                   onClick={() => removeContributions(i)}
                   $color="secondary"
                   icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash icon' }}
@@ -424,6 +429,7 @@ function AccountForm({
               </FlexRowToColumn>
             ))}
             <IconButton
+              $padding={0}
               onClick={() => insertContributions(fieldsContributions.length, { value: '' })}
               $color="secondary"
               icon={{ src: `/icons/add-${theme}.svg`, alt: 'Add icon' }}

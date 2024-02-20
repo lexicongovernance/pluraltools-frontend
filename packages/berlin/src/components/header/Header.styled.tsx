@@ -45,7 +45,6 @@ export const LogoTextContainer = styled.div`
 export const LogoTitle = styled.h1`
   font-size: 1.5rem;
   line-height: 1.65rem;
-  /* max-width: 118px; */
 
   @media (min-width: 430px) {
     display: block;
@@ -53,7 +52,6 @@ export const LogoTitle = styled.h1`
     font-size: 1.75rem;
     font-weight: 600;
     line-height: 1.75rem;
-    /* max-width: 150px;   */
   }
 
   @media (min-width: 640px) {
@@ -68,7 +66,7 @@ export const LogoSubtitle = styled.h2`
   font-style: italic;
   font-weight: 600;
   line-height: 0.75rem;
-  max-width: 300px;
+  max-width: 360px;
   @media (min-width: 640px) {
     font-size: 1rem;
   }

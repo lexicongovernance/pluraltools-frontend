@@ -10,6 +10,7 @@ function BackButton() {
       onClick={() => navigate(-1)}
       $color="secondary"
       icon={{ src: `/icons/arrow-back-${theme}.svg`, alt: 'Trash icon' }}
+      $padding={0}
     />
   );
 }

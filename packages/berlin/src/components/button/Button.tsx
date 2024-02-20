@@ -2,7 +2,7 @@ import { StyledButton } from './Button.styled';
 
 type ButtonProps = {
   children: React.ReactNode;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   type?: 'button' | 'submit';
   disabled?: boolean;
   $color?: 'primary' | 'secondary';

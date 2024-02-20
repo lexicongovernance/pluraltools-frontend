@@ -1,9 +1,17 @@
-import { useEffect, useState } from 'react';
-import Button from '../button';
+// React and third-party libraries
+import { useEffect, useMemo, useState } from 'react';
+
+// Store
+import { useAppStore } from '../../store';
+
+// Components
+import { Body } from '../typography/Body.styled';
 import { FlexColumn } from '../containers/FlexColum.styled';
 import { FlexRow } from '../containers/FlexRow.styled';
-import { Body } from '../typography/Body.styled';
 import { Subtitle } from '../typography/Subtitle.styled';
+import IconButton from '../iconButton';
+
+// Styled Components
 import { Card } from './OptionCard.styled';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -13,44 +21,60 @@ type OptionProps = {
   body?: string;
   avaliableHearts: number;
   numOfVotes: number;
+  pluralityScore: number;
   onVote: () => void;
   onUnvote: () => void;
 };
 
 function OptionCard({
-  id,
   title,
   body,
+  pluralityScore,
   avaliableHearts,
   numOfVotes,
   onVote,
   onUnvote,
 }: OptionProps) {
+  const theme = useAppStore((state) => state.theme);
+  const [localOptionHearts, setLocalOptionHearts] = useState(numOfVotes);
+  const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
   const { eventId, cycleId } = useParams();
-  const [localOptionHearts, setLocalOptionHearts] = useState(numOfVotes);
+
+  const formattedPluralityScore = useMemo(() => {
+    const score = parseFloat(String(pluralityScore));
+    return score % 1 === 0 ? score.toFixed(0) : score.toFixed(3);
+  }, [pluralityScore]);
 
   useEffect(() => {
     setLocalOptionHearts(numOfVotes);
   }, [numOfVotes]);
 
-  const handleVoteClick = () => {
+  const handleVoteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     if (avaliableHearts) {
       setLocalOptionHearts((prevLocalOptionHearts) => prevLocalOptionHearts + 1);
       onVote();
     }
   };
 
-  const handleUnvoteClick = () => {
+  const handleUnvoteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     setLocalOptionHearts((prevLocalOptionHearts) => Math.max(0, prevLocalOptionHearts - 1));
     onUnvote();
   };
 
+  const handleCardClick = () => {
+    if (body) {
+      setExpanded(!expanded);
+    }
+  };
+
   return (
-    <Card>
-      <FlexColumn $gap="2rem">
+    <Card onClick={handleCardClick}>
+      <FlexColumn>
+        <Body>Plurality Score: {formattedPluralityScore}</Body>
         <Subtitle>{title}</Subtitle>
-        {body && <Body>{body}</Body>}
         <FlexRow $gap="0.25rem" $wrap>
           {localOptionHearts > 0 ? (
             Array.from({ length: localOptionHearts }).map((_, id) => (
@@ -62,20 +86,38 @@ function OptionCard({
         </FlexRow>
       </FlexColumn>
       <FlexRow>
-        <Button $color="secondary" onClick={handleUnvoteClick} disabled={localOptionHearts === 0}>
-          Unvote
-        </Button>
-        <Button $color="primary" onClick={handleVoteClick} disabled={avaliableHearts === 0}>
-          Vote
-        </Button>
-        <Button
-          $color="primary"
-          onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/options/${id}`)}
-          disabled={avaliableHearts === 0}
-        >
-          comments
-        </Button>
+        <FlexRow>
+          {/* <IconButton
+            onClick={() => {}}
+            $padding={6}
+            $color="secondary"
+            icon={{ src: `/icons/comments-${theme}.svg`, alt: 'Comments icon' }}
+          /> */}
+          <IconButton
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleUnvoteClick(e)}
+            disabled={localOptionHearts === 0}
+            $padding={6}
+            $color="secondary"
+            icon={{ src: `/icons/unvote-${theme}.svg`, alt: 'Unvote icon' }}
+          />
+          <IconButton
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleVoteClick(e)}
+            disabled={avaliableHearts === 0}
+            $padding={6}
+            $color="primary"
+            icon={{ src: `/icons/vote-${theme}.svg`, alt: 'Vote icon' }}
+          />
+        </FlexRow>
+        {body && (
+          <IconButton
+            onClick={() => {}}
+            $color="secondary"
+            $flipVertical={expanded}
+            icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: 'Arrow icon' }}
+          />
+        )}
       </FlexRow>
+      {expanded && body && <Body>{body}</Body>}
     </Card>
   );
 }
