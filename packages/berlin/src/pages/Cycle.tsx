@@ -188,8 +188,8 @@ function Cycle() {
         <Title>{currentCycle?.questionTitle}</Title>
         <Body>
           {formattedTime === 'Cycle has expired'
-            ? formattedTime
-            : `Cycle closes in: ${formattedTime}`}
+            ? 'Vote has expired'
+            : `Vote closes in: ${formattedTime}`}
         </Body>
         <Body>
           You have <Bold>{initialHearts}</Bold> total hearts
