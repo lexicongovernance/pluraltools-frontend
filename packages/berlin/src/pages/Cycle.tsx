@@ -128,11 +128,11 @@ function Cycle() {
   const { mutate: mutateVotes } = useMutation({
     mutationFn: postVotes,
     onSuccess: (body) => {
-      if (body?.data) {
+      if (body?.errors.length) {
+        toast.error(`Failed to save votes, ${body?.errors[0].message}`);
+      } else if (body?.data.length) {
         queryClient.invalidateQueries({ queryKey: ['votes', cycleId] });
         toast.success('Votes saved successfully!');
-      } else {
-        toast.error('Failed to save votes, please try again');
       }
     },
   });

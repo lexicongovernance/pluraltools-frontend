@@ -14,5 +14,5 @@ export type PostVotesRequest = {
 
 export type PostVotesResponse = {
   data: GetUserVotesResponse;
-  errors: string[];
+  errors: { message: string }[];
 };
