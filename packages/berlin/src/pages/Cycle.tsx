@@ -15,7 +15,6 @@ import useUser from '../hooks/useUser';
 import { Body } from '../components/typography/Body.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
-import { Grid } from '../components/containers/Grid.styled';
 import { ResponseUserVotesType } from '../types/CycleType';
 import { Title } from '../components/typography/Title.styled';
 import BackButton from '../components/backButton';
@@ -179,7 +178,7 @@ function Cycle() {
         </Button>
       </FlexColumn>
       {currentCycle?.questionOptions && (
-        <Grid $columns={2} $colgap="1.5rem">
+        <FlexColumn>
           {currentCycle.questionOptions.map((option) => {
             const userVote = localUserVotes.find((vote) => vote.optionId === option.id);
             const numOfVotes = userVote ? userVote.numOfVotes : 0;
@@ -195,7 +194,7 @@ function Cycle() {
               />
             );
           })}
-        </Grid>
+        </FlexColumn>
       )}
       <Button
         onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/results`)}
