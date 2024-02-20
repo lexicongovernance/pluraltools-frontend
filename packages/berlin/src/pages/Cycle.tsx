@@ -156,6 +156,14 @@ function Cycle() {
   };
 
   const currentCycle = cycle?.forumQuestions[0];
+
+  const sortedOptions = useMemo(() => {
+    const sorted = [...(currentCycle?.questionOptions ?? [])].sort(
+      (a, b) => b.voteCount - a.voteCount,
+    );
+    return sorted;
+  }, [currentCycle?.questionOptions]);
+
   return (
     <FlexColumn $gap="2rem">
       <FlexColumn>
@@ -179,7 +187,7 @@ function Cycle() {
       </FlexColumn>
       {currentCycle?.questionOptions && (
         <FlexColumn>
-          {currentCycle.questionOptions.map((option) => {
+          {sortedOptions.map((option) => {
             const userVote = localUserVotes.find((vote) => vote.optionId === option.id);
             const numOfVotes = userVote ? userVote.numOfVotes : 0;
             return (
