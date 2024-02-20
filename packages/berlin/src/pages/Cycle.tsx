@@ -13,9 +13,11 @@ import useUser from '../hooks/useUser';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
+import { Bold } from '../components/typography/Bold.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
 import { ResponseUserVotesType } from '../types/CycleType';
+import { Subtitle } from '../components/typography/Subtitle.styled';
 import { Title } from '../components/typography/Title.styled';
 import BackButton from '../components/backButton';
 import Button from '../components/button';
@@ -182,8 +184,19 @@ function Cycle() {
     <FlexColumn $gap="2rem">
       <FlexColumn>
         <BackButton />
+        <Subtitle>Welcome {user?.username}! It's time to give your hearts away...</Subtitle>
         <Title>{currentCycle?.questionTitle}</Title>
-        <Body>{formattedTime}</Body>
+        <Body>
+          {formattedTime === 'Cycle has expired'
+            ? 'Vote has expired'
+            : `Vote closes in: ${formattedTime}`}
+        </Body>
+        <Body>
+          You have <Bold>{initialHearts}</Bold> total hearts
+        </Body>
+        <Body>
+          <Bold>Remaining hearts ({avaliableHearts}) :</Bold>
+        </Body>
         <FlexRow $gap="0.25rem" $wrap>
           {Array.from({ length: initialHearts }).map((_, id) => (
             <img
