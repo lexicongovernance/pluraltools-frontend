@@ -19,25 +19,28 @@ type OptionProps = {
 function OptionCard({ title, body, avaliableHearts, numOfVotes, onVote, onUnvote }: OptionProps) {
   const theme = useAppStore((state) => state.theme);
   const [localOptionHearts, setLocalOptionHearts] = useState(numOfVotes);
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     setLocalOptionHearts(numOfVotes);
   }, [numOfVotes]);
 
-  const handleVoteClick = () => {
+  const handleVoteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation(); // Stop event propagation here
     if (avaliableHearts) {
       setLocalOptionHearts((prevLocalOptionHearts) => prevLocalOptionHearts + 1);
       onVote();
     }
   };
 
-  const handleUnvoteClick = () => {
+  const handleUnvoteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation(); // Stop event propagation here
     setLocalOptionHearts((prevLocalOptionHearts) => Math.max(0, prevLocalOptionHearts - 1));
     onUnvote();
   };
 
   return (
-    <Card>
+    <Card onClick={() => setExpanded(!expanded)}>
       <FlexColumn $gap="2rem">
         <Subtitle>{title}</Subtitle>
         <FlexRow $gap="0.25rem" $wrap>
@@ -59,14 +62,14 @@ function OptionCard({ title, body, avaliableHearts, numOfVotes, onVote, onUnvote
             icon={{ src: `/icons/comments-${theme}.svg`, alt: 'Comments icon' }}
           /> */}
           <IconButton
-            onClick={handleUnvoteClick}
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleUnvoteClick(e)}
             disabled={localOptionHearts === 0}
             $padding={6}
             $color="secondary"
             icon={{ src: `/icons/unvote-${theme}.svg`, alt: 'Unvote icon' }}
           />
           <IconButton
-            onClick={handleVoteClick}
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleVoteClick(e)}
             disabled={avaliableHearts === 0}
             $padding={6}
             $color="primary"
@@ -76,10 +79,11 @@ function OptionCard({ title, body, avaliableHearts, numOfVotes, onVote, onUnvote
         <IconButton
           onClick={() => {}}
           $color="secondary"
-          icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: '' }}
+          $flipVertical={expanded}
+          icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: 'Arrow icon' }}
         />
       </FlexRow>
-      {body && <Body>{body}</Body>}
+      {expanded && body && <Body>{body}</Body>}
     </Card>
   );
 }

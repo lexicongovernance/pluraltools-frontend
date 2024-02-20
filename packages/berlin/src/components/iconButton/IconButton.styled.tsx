@@ -5,4 +5,7 @@ export const IconContainer = styled.div<{ $height: number; $width: number }>`
   width: ${(props) => (props.$width && `${props.$width}px`) || '24px'};
 `;
 
-export const Icon = styled.img``;
+export const Icon = styled.img<{ $flipVertical?: boolean }>`
+  transform: rotate(${(props) => (props.$flipVertical ? '180deg' : '0deg')});
+  transition: transform 0.3s ease-in-out;
+`;

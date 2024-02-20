@@ -9,14 +9,22 @@ type IconButtonProps = {
   };
   disabled?: boolean;
   $padding?: number;
-  onClick: () => void;
+  $flipVertical?: boolean;
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 } & StyledButtonProps;
 
-function IconButton({ icon, onClick, disabled, $padding, ...props }: IconButtonProps) {
+function IconButton({
+  icon,
+  onClick,
+  disabled,
+  $padding,
+  $flipVertical,
+  ...props
+}: IconButtonProps) {
   return (
-    <Button onClick={onClick} style={{ padding: $padding }} disabled={disabled} {...props}>
+    <Button onClick={() => onClick} style={{ padding: $padding }} disabled={disabled} {...props}>
       <IconContainer $height={24} $width={24}>
-        <Icon src={icon.src} alt={icon.alt} height={24} width={24} />
+        <Icon src={icon.src} alt={icon.alt} height={24} width={24} $flipVertical={$flipVertical} />
       </IconContainer>
     </Button>
   );
