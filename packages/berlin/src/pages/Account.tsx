@@ -154,10 +154,16 @@ function AccountForm({
 
   const { mutate: mutateUserData } = useMutation({
     mutationFn: updateUserData,
-    onSuccess: (body) => {
+    onSuccess: async (body) => {
       if (body) {
-        queryClient.invalidateQueries({ queryKey: ['user'] });
-        queryClient.invalidateQueries({ queryKey: ['user-groups'] });
+        await queryClient.invalidateQueries({ queryKey: ['user'] });
+        await queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'groups'] });
+
+        toast.success('User data updated!');
+
+        if (events?.length === 1) {
+          navigate(`/events/${events?.[0].id}/register`);
+        }
       }
     },
     onError: () => {
@@ -231,12 +237,6 @@ function AccountForm({
           contributions: JSON.stringify(value.userAttributes?.contributions),
         },
       });
-
-      toast.success('User data updated!');
-
-      if (events?.length === 1) {
-        navigate(`/events/${events?.[0].id}/register`);
-      }
     }
   };
 

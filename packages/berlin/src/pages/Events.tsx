@@ -23,7 +23,7 @@ function Events() {
   });
 
   const handleClick = (eventId: string) => {
-    navigate(`/events/${eventId}`);
+    navigate(`/events/${eventId}/cycles`);
   };
 
   return (
