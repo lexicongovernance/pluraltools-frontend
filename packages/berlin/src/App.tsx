@@ -85,7 +85,7 @@ async function eventsLoader(queryClient: QueryClient) {
   });
 
   if (events?.length === 1) {
-    return redirect(`/events/${events?.[0].id}`);
+    return redirect(`/events/${events?.[0].id}/cycles`);
   }
 
   return null;
