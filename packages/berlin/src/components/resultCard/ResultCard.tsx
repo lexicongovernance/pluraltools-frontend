@@ -1,5 +1,8 @@
 // React and third-party libraries
-import { useMemo } from 'react';
+import {
+  useMemo,
+  // useState
+} from 'react';
 
 // Store
 import { useAppStore } from '../../store';
@@ -34,6 +37,13 @@ function ResultCard({ $expanded, option, index, onClick }: ResultCardProps) {
     return score % 1 === 0 ? score.toFixed(0) : score.toFixed(3);
   }, [option.pluralityScore]);
 
+  // const [showGroups, setShowGroups] = useState(false);
+
+  // const handleGroupsClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  //   e.stopPropagation();
+  //   setShowGroups(!showGroups);
+  // };
+
   return (
     <Card $expanded={$expanded} onClick={onClick}>
       <FlexColumn $gap="1rem">
@@ -62,6 +72,16 @@ function ResultCard({ $expanded, option, index, onClick }: ResultCardProps) {
               <Bold>Allocated hearts:</Bold> {option.allocatedHearts}
             </Body>
           </FlexRow>
+          {/* <FlexRow onClick={(e) => handleGroupsClick(e)}>
+            <Body>
+              <Bold>Groups:</Bold>
+            </Body>
+          </FlexRow>
+          <FlexRow style={{ display: showGroups ? 'flex' : 'none' }}>
+            <ul>
+               {option.distinctGroups.map(group) => <li key={group.key}><Body>{group.name}</Body</li>}
+            </ul>
+          </FlexRow> */}
         </FlexColumn>
         {/* // TODO: Add this: {option.description && <Body>{option.description}</Body>} */}
       </FlexColumn>
