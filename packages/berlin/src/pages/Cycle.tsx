@@ -189,8 +189,10 @@ function Cycle() {
         <Subtitle>Welcome {user?.username}! It's time to give your hearts away...</Subtitle>
         <Title>{currentCycle?.questionTitle}</Title>
         <Body>
-          {formattedTime === 'Cycle has expired'
-            ? 'Vote has expired'
+         {formattedTime === 'Cycle has expired'
+            ? 'Vote has expired.'
+            : formattedTime === 'Cycle is upcoming'
+            ? 'Vote is upcoming'
             : `Vote closes in: ${formattedTime}`}
         </Body>
         <Body>

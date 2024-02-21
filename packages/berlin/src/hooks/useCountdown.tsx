@@ -10,13 +10,12 @@ const useCountdown = (startAt: string | null, endAt: string | null): Countdown =
   useEffect(() => {
     if (startAt && endAt) {
       const endTimestamp = new Date(endAt).getTime() / 1000;
-      const initialTime = Math.max(0, endTimestamp - Math.floor(Date.now() / 1000));
-      setTime(initialTime);
-
       const now = Math.floor(Date.now() / 1000);
-      const startTimePassed = now >= new Date(startAt).getTime() / 1000;
 
-      if (startTimePassed) {
+      if (now < endTimestamp) {
+        const initialTime = Math.max(0, endTimestamp - now);
+        setTime(initialTime);
+
         const timer = setInterval(() => {
           setTime((prevTime) => (prevTime && prevTime > 0 ? prevTime - 1 : 0));
         }, 1000);
@@ -33,6 +32,14 @@ const useCountdown = (startAt: string | null, endAt: string | null): Countdown =
   const calculateTime = (): string => {
     if (time === null || time <= 0) {
       return 'Cycle has expired';
+    } else if (startAt && endAt) {
+      const startTimestamp = new Date(startAt).getTime() / 1000;
+      const now = Math.floor(Date.now() / 1000);
+
+      if (now < startTimestamp) {
+        // If current time is before start time, cycle is upcoming
+        return 'Cycle is upcoming';
+      }
     }
 
     const days = Math.floor(time / 86400);
