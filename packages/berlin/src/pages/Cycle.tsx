@@ -192,7 +192,7 @@ function Cycle() {
          {formattedTime === 'Cycle has expired'
             ? 'Vote has expired.'
             : formattedTime === 'Cycle is upcoming'
-            ? 'Vote is upcoming'
+            ? 'Vote is upcoming.'
             : `Vote closes in: ${formattedTime}`}
         </Body>
         <Body>
