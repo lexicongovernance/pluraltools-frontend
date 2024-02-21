@@ -100,7 +100,7 @@ function Header() {
             <MobileButtons>
               {user ? (
                 <>
-                  <NavButton to="/events" $color="secondary">
+                  <NavButton to="/events" $color="secondary" disabled>
                     Agenda
                   </NavButton>
                   <NavButton to="/account" $color="secondary">
