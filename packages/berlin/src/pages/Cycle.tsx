@@ -214,7 +214,7 @@ function Cycle() {
           Save all votes
         </Button>
       </FlexColumn>
-      {currentCycle?.questionOptions && (
+      {currentCycle?.questionOptions.length ? (
         <FlexColumn>
           {sortedOptions.map((option) => {
             const userVote = localUserVotes.find((vote) => vote.optionId === option.id);
@@ -234,13 +234,21 @@ function Cycle() {
             );
           })}
         </FlexColumn>
+      ) : (
+        <Body>
+          <i>No options to show...</i>
+        </Body>
       )}
-      <Button
-        onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/results`)}
-        $color="secondary"
-      >
-        See results
-      </Button>
+
+      {/* // TODO: This should also check if cycle is open */}
+      {currentCycle?.questionOptions.length ? (
+        <Button
+          onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/results`)}
+          $color="secondary"
+        >
+          See results
+        </Button>
+      ) : null}
     </FlexColumn>
   );
 }
