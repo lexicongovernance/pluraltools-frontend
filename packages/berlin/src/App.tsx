@@ -6,7 +6,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { useAppStore } from './store';
 
 // API
-import { fetchEvents, fetchRegistration, fetchUserData, fetchCycle } from 'api';
+import { fetchEvents, fetchUserData, fetchCycle } from 'api';
 
 // Pages
 import { default as BerlinLayout } from './layout/index.ts';
