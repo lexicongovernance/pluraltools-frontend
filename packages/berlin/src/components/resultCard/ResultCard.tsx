@@ -72,7 +72,7 @@ function ResultCard({ $expanded, option, index, onClick }: ResultCardProps) {
               <Bold>Allocated hearts:</Bold> {option.allocatedHearts}
             </Body>
           </FlexRow>
-          {/* <FlexRow onClick={(e) => handleGroupsClick(e)}>
+          {/* // TODO: <FlexRow onClick={(e) => handleGroupsClick(e)}>
             <Body>
               <Bold>Groups:</Bold>
             </Body>
