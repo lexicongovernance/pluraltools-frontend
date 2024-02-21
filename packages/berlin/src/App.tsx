@@ -69,6 +69,19 @@ async function landingLoader(queryClient: QueryClient) {
   return null;
 }
 
+async function eventsLoader(queryClient: QueryClient) {
+  const events = await queryClient.fetchQuery({
+    queryKey: ['events'],
+    queryFn: fetchEvents,
+  });
+
+  if (events?.length === 1) {
+    return redirect(`/events/${events?.[0].id}`);
+  }
+
+  return null;
+}
+
 const router = (queryClient: QueryClient) =>
   createBrowserRouter([
     {
@@ -93,6 +106,7 @@ const router = (queryClient: QueryClient) =>
               Component: Register,
             },
             {
+              loader: () => eventsLoader(queryClient),
               path: '/events',
               Component: Events,
             },
