@@ -73,8 +73,8 @@ function Header() {
             <DesktopButtons>
               {user ? (
                 <>
-                  <NavButton to="/events" $color="secondary">
-                    AGENDA
+                  <NavButton to="/events" $color="secondary" disabled>
+                    Agenda
                   </NavButton>
                   <NavButton to="/account" $color="secondary">
                     Account
@@ -101,7 +101,7 @@ function Header() {
               {user ? (
                 <>
                   <NavButton to="/events" $color="secondary">
-                    Events
+                    Agenda
                   </NavButton>
                   <NavButton to="/account" $color="secondary">
                     Account

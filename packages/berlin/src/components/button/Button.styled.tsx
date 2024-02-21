@@ -12,6 +12,10 @@ export const StyledButton = styled.button<StyledButtonProps>`
   padding-inline: 1rem;
   text-transform: uppercase;
 
+  &:disabled {
+    cursor: not-allowed;
+  }
+
   ${(props) =>
     props.$color === 'primary' &&
     css`
