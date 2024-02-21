@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 // API
-import { fetchCycle, fetchUserVotes, postVote } from 'api';
+import { PostVotesRequest, fetchCycle, fetchUserVotes, postVotes } from 'api';
 
 // Hooks
 import useCountdown from '../hooks/useCountdown';
@@ -13,9 +13,11 @@ import useUser from '../hooks/useUser';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
+import { Bold } from '../components/typography/Bold.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
 import { ResponseUserVotesType } from '../types/CycleType';
+import { Subtitle } from '../components/typography/Subtitle.styled';
 import { Title } from '../components/typography/Title.styled';
 import BackButton from '../components/backButton';
 import Button from '../components/button';
@@ -36,7 +38,7 @@ function Cycle() {
 
   const { data: userVotes } = useQuery({
     queryKey: ['votes', cycleId],
-    queryFn: () => fetchUserVotes(user?.id || '', cycleId || ''),
+    queryFn: () => fetchUserVotes(cycleId || ''),
     enabled: !!user?.id && !!cycleId,
     retry: false,
   });
@@ -124,11 +126,16 @@ function Cycle() {
     setAvaliableHearts((prevAvaliableHearts) => Math.min(initialHearts, prevAvaliableHearts + 1));
   };
 
-  const { mutate: mutateVote } = useMutation({
-    mutationFn: postVote,
+  const { mutate: mutateVotes } = useMutation({
+    mutationFn: postVotes,
     onSuccess: (body) => {
-      if (body) {
+      if (body?.errors.length) {
+        toast.error(`Failed to save votes, ${body?.errors[0].message}`);
+      } else if (body?.data.length) {
         queryClient.invalidateQueries({ queryKey: ['votes', cycleId] });
+        // this is to update the plural scores in each option
+        queryClient.invalidateQueries({ queryKey: ['cycle', cycleId] });
+        toast.success('Votes saved successfully!');
       }
     },
   });
@@ -137,17 +144,28 @@ function Cycle() {
     try {
       if (userVotes) {
         const serverVotesMap = new Map(userVotes.map((vote) => [vote.optionId, vote]));
+        const mutateVotesReq: PostVotesRequest = {
+          cycleId: cycleId || '',
+          votes: [],
+        };
 
         for (const localVote of localUserVotes) {
           const matchingServerVote = serverVotesMap.get(localVote.optionId);
 
           if (!matchingServerVote) {
-            mutateVote({ optionId: localVote.optionId, numOfVotes: localVote.numOfVotes });
+            mutateVotesReq.votes.push({
+              optionId: localVote.optionId,
+              numOfVotes: localVote.numOfVotes,
+            });
           } else if (matchingServerVote.numOfVotes !== localVote.numOfVotes) {
-            mutateVote({ optionId: localVote.optionId, numOfVotes: localVote.numOfVotes });
+            mutateVotesReq.votes.push({
+              optionId: localVote.optionId,
+              numOfVotes: localVote.numOfVotes,
+            });
           }
         }
-        toast.success('Votes saved successfully!');
+
+        mutateVotes(mutateVotesReq);
       }
     } catch (error) {
       toast.error('Failed to save votes, please try again');
@@ -156,12 +174,31 @@ function Cycle() {
   };
 
   const currentCycle = cycle?.forumQuestions[0];
+
+  const sortedOptions = useMemo(() => {
+    const sorted = [...(currentCycle?.questionOptions ?? [])].sort(
+      (a, b) => b.voteScore - a.voteScore,
+    );
+    return sorted;
+  }, [currentCycle?.questionOptions]);
+
   return (
     <FlexColumn $gap="2rem">
       <FlexColumn>
         <BackButton />
+        <Subtitle>Welcome {user?.username}! It's time to give your hearts away...</Subtitle>
         <Title>{currentCycle?.questionTitle}</Title>
-        <Body>{formattedTime}</Body>
+        <Body>
+          {formattedTime === 'Cycle has expired'
+            ? 'Vote has expired'
+            : `Vote closes in: ${formattedTime}`}
+        </Body>
+        <Body>
+          You have <Bold>{initialHearts}</Bold> total hearts
+        </Body>
+        <Body>
+          <Bold>Remaining hearts ({avaliableHearts}) :</Bold>
+        </Body>
         <FlexRow $gap="0.25rem" $wrap>
           {Array.from({ length: initialHearts }).map((_, id) => (
             <img
@@ -179,7 +216,7 @@ function Cycle() {
       </FlexColumn>
       {currentCycle?.questionOptions && (
         <FlexColumn>
-          {currentCycle.questionOptions.map((option) => {
+          {sortedOptions.map((option) => {
             const userVote = localUserVotes.find((vote) => vote.optionId === option.id);
             const numOfVotes = userVote ? userVote.numOfVotes : 0;
             return (
@@ -189,7 +226,7 @@ function Cycle() {
                 title={option.optionTitle}
                 body={option.optionSubTitle}
                 avaliableHearts={avaliableHearts}
-                pluralityScore={option.voteCount}
+                pluralityScore={option.voteScore}
                 numOfVotes={numOfVotes}
                 onVote={() => handleVote(option.id)}
                 onUnvote={() => handleUnvote(option.id)}
