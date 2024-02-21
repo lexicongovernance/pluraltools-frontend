@@ -2,27 +2,38 @@ import { useState, useEffect } from 'react';
 
 interface Countdown {
   formattedTime: string;
+  cycleState: string;
 }
 
 const useCountdown = (startAt: string | null, endAt: string | null): Countdown => {
   const [time, setTime] = useState<number | null>(null);
+  const [cycleState, setCycleState] = useState<string>('');
 
   useEffect(() => {
     if (startAt && endAt) {
+      const startTimestamp = new Date(startAt).getTime() / 1000;
       const endTimestamp = new Date(endAt).getTime() / 1000;
-      const initialTime = Math.max(0, endTimestamp - Math.floor(Date.now() / 1000));
-      setTime(initialTime);
-
       const now = Math.floor(Date.now() / 1000);
-      const startTimePassed = now >= new Date(startAt).getTime() / 1000;
 
-      if (startTimePassed) {
-        const timer = setInterval(() => {
-          setTime((prevTime) => (prevTime && prevTime > 0 ? prevTime - 1 : 0));
-        }, 1000);
-
-        return () => clearInterval(timer);
+      if (now < startTimestamp) {
+        // Cycle is upcoming
+        setCycleState('upcoming');
+        setTime(startTimestamp - now);
+      } else if (now < endTimestamp) {
+        // Cycle is open
+        setCycleState('open');
+        setTime(endTimestamp - now);
+      } else {
+        // Cycle is closed
+        setCycleState('closed');
+        setTime(0);
       }
+
+      const timer = setInterval(() => {
+        setTime((prevTime) => (prevTime && prevTime > 0 ? prevTime - 1 : 0));
+      }, 1000);
+
+      return () => clearInterval(timer);
     }
   }, [startAt, endAt]);
 
@@ -53,7 +64,7 @@ const useCountdown = (startAt: string | null, endAt: string | null): Countdown =
     )}`;
   };
 
-  return { formattedTime: calculateTime() };
+  return { formattedTime: calculateTime(), cycleState };
 };
 
 export default useCountdown;

@@ -6,7 +6,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { useAppStore } from './store';
 
 // API
-import { fetchEvents, fetchRegistration, fetchUserData } from 'api';
+import { fetchEvents, fetchRegistration, fetchUserData, fetchCycle } from 'api';
 
 // Pages
 import { default as BerlinLayout } from './layout/index.ts';
@@ -49,23 +49,6 @@ async function userIsCompleteLoader(queryClient: QueryClient) {
   }
 }
 
-async function userIsApprovedLoader(queryClient: QueryClient, eventId?: string) {
-  const registration = await queryClient.fetchQuery({
-    queryKey: ['event', eventId, 'registration'],
-    queryFn: () => fetchRegistration(eventId || ''),
-  });
-
-  if (!registration) {
-    return redirect(`/events/${eventId}/register`);
-  }
-
-  if (registration?.status === 'APPROVED') {
-    return null;
-  }
-
-  return redirect(`/events/${eventId}/holding`);
-}
-
 async function landingLoader(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
     queryKey: ['user'],
@@ -95,6 +78,32 @@ async function landingLoader(queryClient: QueryClient) {
   return null;
 }
 
+async function eventsLoader(queryClient: QueryClient) {
+  const events = await queryClient.fetchQuery({
+    queryKey: ['events'],
+    queryFn: fetchEvents,
+  });
+
+  if (events?.length === 1) {
+    return redirect(`/events/${events?.[0].id}`);
+  }
+
+  return null;
+}
+
+async function cycleLoader(queryClient: QueryClient, eventId?: string, cycleId?: string) {
+  const cycle = await queryClient.fetchQuery({
+    queryKey: ['cycles', cycleId],
+    queryFn: () => fetchCycle(cycleId || ''),
+  });
+
+  if (cycle?.status === 'CLOSED') {
+    return redirect(`/events/${eventId}/cycles/${cycleId}/results`);
+  }
+
+  return null;
+}
+
 const router = (queryClient: QueryClient) =>
   createBrowserRouter([
     {
@@ -116,6 +125,7 @@ const router = (queryClient: QueryClient) =>
               path: '/events',
               children: [
                 {
+                  loader: () => eventsLoader(queryClient),
                   path: '',
                   Component: Events,
                 },
@@ -128,10 +138,10 @@ const router = (queryClient: QueryClient) =>
                   Component: Holding,
                 },
                 {
-                  loader: ({ params }) => userIsApprovedLoader(queryClient, params.eventId),
                   path: ':eventId/cycles',
                   children: [
                     {
+                      loader: () => cycleLoader(queryClient),
                       path: '',
                       Component: Event,
                     },

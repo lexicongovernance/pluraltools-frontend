@@ -2,7 +2,7 @@ export type GetCycleResponse = {
   id: string;
   createdAt: string;
   updatedAt: string;
-  status: 'OPEN' | 'CLOSED' | 'RESULTS' | null;
+  status: 'OPEN' | 'CLOSED' | 'UPCOMING' | null;
   startAt: string;
   endAt: string;
   forumQuestions: {

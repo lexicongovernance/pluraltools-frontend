@@ -28,7 +28,7 @@ function Results() {
     retry: false,
   });
 
-  const stats = [
+  const overallStatistics = [
     {
       id: 0,
       title: 'Number of proposals',
@@ -62,13 +62,7 @@ function Results() {
     <FlexColumn $gap="2rem">
       <BackButton />
       <Title>Results for: {cycle?.forumQuestions?.[0].questionTitle}</Title>
-      <Grid $columns={4}>
-        {stats.map((stat) => (
-          <StatCard key={stat.id} title={stat.title} number={stat.data} />
-        ))}
-      </Grid>
       <FlexColumn>
-        <Title>Leaderboard</Title>
         {optionStatsArray.map((option, index) => (
           <ResultCard
             key={option.id}
@@ -79,6 +73,12 @@ function Results() {
           />
         ))}
       </FlexColumn>
+      <Title>Overall Statistics</Title>
+      <Grid $columns={4}>
+        {overallStatistics.map((stat) => (
+          <StatCard key={stat.id} title={stat.title} number={stat.data} />
+        ))}
+      </Grid>
     </FlexColumn>
   );
 }

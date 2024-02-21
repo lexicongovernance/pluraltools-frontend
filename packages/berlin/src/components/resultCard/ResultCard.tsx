@@ -63,6 +63,7 @@ function ResultCard({ $expanded, option, index, onClick }: ResultCardProps) {
             </Body>
           </FlexRow>
         </FlexColumn>
+        {/* // TODO: Add this: {option.description && <Body>{option.description}</Body>} */}
       </FlexColumn>
     </Card>
   );

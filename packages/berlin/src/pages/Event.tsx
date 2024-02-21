@@ -7,11 +7,10 @@ import { fetchEvent, fetchEventCycles } from 'api';
 
 // Components
 import { FlexColumn } from '../components/containers/FlexColum.styled';
-import { Title } from '../components/typography/Title.styled';
-import CycleCard from '../components/cycleCard';
-import { Grid } from '../components/containers/Grid.styled';
 import BackButton from '../components/backButton';
 import EventCard from '../components/eventCard';
+import VotingCards from '../components/votingCards';
+import { useMemo } from 'react';
 
 function Event() {
   const { eventId } = useParams();
@@ -20,24 +19,33 @@ function Event() {
     queryFn: () => fetchEvent(eventId || ''),
     enabled: !!eventId,
   });
+
   const { data: eventCycles } = useQuery({
     queryKey: ['events', eventId, 'cycles'],
     queryFn: () => fetchEventCycles(eventId || ''),
     enabled: !!eventId,
   });
 
+  const openCycles = useMemo(
+    () => eventCycles?.filter((cycle) => cycle.status === 'OPEN'),
+    [eventCycles],
+  );
+  const upcomingCycles = useMemo(
+    () => eventCycles?.filter((cycle) => cycle.status === 'UPCOMING'),
+    [eventCycles],
+  );
+  const closedCycles = useMemo(
+    () => eventCycles?.filter((cycle) => cycle.status === 'CLOSED'),
+    [eventCycles],
+  );
+
   return (
     <FlexColumn $gap="2rem">
       <BackButton />
       {event && <EventCard event={event} $direction="row" />}
-      <Title>Votes</Title>
-      {eventCycles && (
-        <Grid>
-          {eventCycles.map((cycle) => (
-            <CycleCard key={cycle.id} cycle={cycle} />
-          ))}
-        </Grid>
-      )}
+      {!!openCycles?.length && <VotingCards state="open" cards={openCycles} />}
+      {!!upcomingCycles?.length && <VotingCards state="upcoming" cards={upcomingCycles} />}
+      {!!closedCycles?.length && <VotingCards state="closed" cards={closedCycles} />}
     </FlexColumn>
   );
 }
