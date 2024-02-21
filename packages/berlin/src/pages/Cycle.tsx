@@ -190,7 +190,7 @@ function Cycle() {
         <Title>{currentCycle?.questionTitle}</Title>
         <Body>
           {cycleState === 'closed'
-            ? 'Vote has expired.'
+            ? 'Vote has ended.'
             : cycleState === 'upcoming'
               ? `Vote opens in: ${formattedTime}`
               : `Vote closes in: ${formattedTime}`}
