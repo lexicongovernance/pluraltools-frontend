@@ -57,7 +57,7 @@ function Cycle() {
     }
   }, [cycle]);
 
-  const { formattedTime } = useCountdown(startAt, endAt);
+  const { formattedTime, cycleState } = useCountdown(startAt, endAt);
 
   const updateVotesAndHearts = (votes: ResponseUserVotesType) => {
     const givenVotes = votes
@@ -189,10 +189,10 @@ function Cycle() {
         <Subtitle>Welcome {user?.username}! It's time to give your hearts away...</Subtitle>
         <Title>{currentCycle?.questionTitle}</Title>
         <Body>
-         {formattedTime === 'Cycle has expired'
+          {cycleState === 'closed'
             ? 'Vote has expired.'
-            : formattedTime === 'Cycle is upcoming'
-            ? 'Vote is upcoming.'
+            : cycleState === 'upcoming'
+            ? `Vote opens in: ${formattedTime}`
             : `Vote closes in: ${formattedTime}`}
         </Body>
         <Body>

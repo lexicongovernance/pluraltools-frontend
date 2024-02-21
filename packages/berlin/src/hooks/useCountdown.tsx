@@ -2,26 +2,38 @@ import { useState, useEffect } from 'react';
 
 interface Countdown {
   formattedTime: string;
+  cycleState: string;
 }
 
 const useCountdown = (startAt: string | null, endAt: string | null): Countdown => {
   const [time, setTime] = useState<number | null>(null);
+  const [cycleState, setCycleState] = useState<string>('');
 
   useEffect(() => {
     if (startAt && endAt) {
+      const startTimestamp = new Date(startAt).getTime() / 1000;
       const endTimestamp = new Date(endAt).getTime() / 1000;
       const now = Math.floor(Date.now() / 1000);
 
-      if (now < endTimestamp) {
-        const initialTime = Math.max(0, endTimestamp - now);
-        setTime(initialTime);
-
-        const timer = setInterval(() => {
-          setTime((prevTime) => (prevTime && prevTime > 0 ? prevTime - 1 : 0));
-        }, 1000);
-
-        return () => clearInterval(timer);
+      if (now < startTimestamp) {
+        // Cycle is upcoming
+        setCycleState('upcoming');
+        setTime(startTimestamp - now);
+      } else if (now < endTimestamp) {
+        // Cycle is open
+        setCycleState('open');
+        setTime(endTimestamp - now);
+      } else {
+        // Cycle is closed
+        setCycleState('closed');
+        setTime(0);
       }
+
+      const timer = setInterval(() => {
+        setTime((prevTime) => (prevTime && prevTime > 0 ? prevTime - 1 : 0));
+      }, 1000);
+
+      return () => clearInterval(timer);
     }
   }, [startAt, endAt]);
 
@@ -32,14 +44,6 @@ const useCountdown = (startAt: string | null, endAt: string | null): Countdown =
   const calculateTime = (): string => {
     if (time === null || time <= 0) {
       return 'Cycle has expired';
-    } else if (startAt && endAt) {
-      const startTimestamp = new Date(startAt).getTime() / 1000;
-      const now = Math.floor(Date.now() / 1000);
-
-      if (now < startTimestamp) {
-        // If current time is before start time, cycle is upcoming
-        return 'Cycle is upcoming';
-      }
     }
 
     const days = Math.floor(time / 86400);
@@ -60,7 +64,7 @@ const useCountdown = (startAt: string | null, endAt: string | null): Countdown =
     )}`;
   };
 
-  return { formattedTime: calculateTime() };
+  return { formattedTime: calculateTime(), cycleState };
 };
 
 export default useCountdown;
