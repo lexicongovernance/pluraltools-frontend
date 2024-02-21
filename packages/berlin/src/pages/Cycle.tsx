@@ -134,7 +134,7 @@ function Cycle() {
       } else if (body?.data.length) {
         queryClient.invalidateQueries({ queryKey: ['votes', cycleId] });
         // this is to update the plural scores in each option
-        queryClient.invalidateQueries({ queryKey: ['cycle', cycleId] });
+        queryClient.invalidateQueries({ queryKey: ['cycles', cycleId] });
         toast.success('Votes saved successfully!');
       }
     },
