@@ -74,7 +74,7 @@ function Header() {
               {user ? (
                 <>
                   <NavButton to="/events" $color="secondary">
-                    Events
+                    AGENDA
                   </NavButton>
                   <NavButton to="/account" $color="secondary">
                     Account
