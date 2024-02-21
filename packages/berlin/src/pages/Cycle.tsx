@@ -192,8 +192,8 @@ function Cycle() {
           {cycleState === 'closed'
             ? 'Vote has expired.'
             : cycleState === 'upcoming'
-            ? `Vote opens in: ${formattedTime}`
-            : `Vote closes in: ${formattedTime}`}
+              ? `Vote opens in: ${formattedTime}`
+              : `Vote closes in: ${formattedTime}`}
         </Body>
         <Body>
           You have <Bold>{initialHearts}</Bold> total hearts
@@ -236,12 +236,14 @@ function Cycle() {
           })}
         </FlexColumn>
       )}
-      <Button
-        onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/results`)}
-        $color="secondary"
-      >
-        See results
-      </Button>
+      {cycle?.status === 'CLOSED' && (
+        <Button
+          onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/results`)}
+          $color="secondary"
+        >
+          See results
+        </Button>
+      )}
     </FlexColumn>
   );
 }
