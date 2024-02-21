@@ -31,7 +31,7 @@ function Cycle() {
   const { user } = useUser();
   const { eventId, cycleId } = useParams();
   const { data: cycle } = useQuery({
-    queryKey: ['cycle', cycleId],
+    queryKey: ['cycles', cycleId],
     queryFn: () => fetchCycle(cycleId || ''),
     enabled: !!cycleId,
   });

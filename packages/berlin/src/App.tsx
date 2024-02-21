@@ -6,7 +6,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { useAppStore } from './store';
 
 // API
-import { fetchEvents, fetchUserData } from 'api';
+import { fetchCycle, fetchEvents, fetchUserData } from 'api';
 
 // Pages
 import { default as BerlinLayout } from './layout/index.ts';
@@ -82,6 +82,19 @@ async function eventsLoader(queryClient: QueryClient) {
   return null;
 }
 
+async function cycleLoader(queryClient: QueryClient, eventId?: string, cycleId?: string) {
+  const cycle = await queryClient.fetchQuery({
+    queryKey: ['cycles', cycleId],
+    queryFn: () => fetchCycle(cycleId || ''),
+  });
+
+  if (cycle?.status === 'CLOSED') {
+    return redirect(`/events/${eventId}/cycles/${cycleId}/results`);
+  }
+
+  return null;
+}
+
 const router = (queryClient: QueryClient) =>
   createBrowserRouter([
     {
@@ -115,6 +128,7 @@ const router = (queryClient: QueryClient) =>
               Component: Event,
             },
             {
+              loader: ({ params }) => cycleLoader(queryClient, params.eventId, params.cycleId),
               path: '/events/:eventId/cycles/:cycleId',
               Component: Cycle,
             },
