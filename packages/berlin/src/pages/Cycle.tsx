@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 // API
-import { PostVotesRequest, fetchCycle, fetchUserVotes, postVotes } from 'api';
+import { GetCycleResponse, PostVotesRequest, fetchCycle, fetchUserVotes, postVotes } from 'api';
 
 // Hooks
 import useCountdown from '../hooks/useCountdown';
@@ -175,6 +175,16 @@ function Cycle() {
 
   const currentCycle = cycle?.forumQuestions[0];
 
+  const formattedWelcomeText = (cycle: GetCycleResponse | undefined | null) => {
+    if (cycle?.status === 'OPEN') {
+      return "It's time to give your hearts away...";
+    } else if (cycle?.status === 'UPCOMING') {
+      return "It's almost time to give your hearts away...";
+    } else {
+      return 'Vote has ended.';
+    }
+  };
+
   const sortedOptions = useMemo(() => {
     const sorted = [...(currentCycle?.questionOptions ?? [])].sort(
       (a, b) => b.voteScore - a.voteScore,
@@ -186,7 +196,9 @@ function Cycle() {
     <FlexColumn $gap="2rem">
       <FlexColumn>
         <BackButton />
-        <Subtitle>Welcome {user?.username}! It's time to give your hearts away...</Subtitle>
+        <Subtitle>
+          Welcome {user?.username}! {formattedWelcomeText(cycle)}
+        </Subtitle>
         <Title>{currentCycle?.questionTitle}</Title>
         <Body>
           {cycleState === 'closed'
