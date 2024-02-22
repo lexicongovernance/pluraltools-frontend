@@ -1,7 +1,5 @@
 // React and third-party libraries
-import {
-  useMemo,
-} from 'react';
+import { useMemo } from 'react';
 
 // Store
 import { useAppStore } from '../../store';
@@ -15,6 +13,7 @@ import { Subtitle } from '../typography/Subtitle.styled';
 
 // Styled Components
 import { Badge, Card } from './ResultCard.styled';
+import { Separator } from '../separator';
 
 type ResultCardProps = {
   $expanded: boolean;
@@ -74,15 +73,11 @@ function ResultCard({ $expanded, option, index, onClick }: ResultCardProps) {
           </FlexRow>
           <FlexRow>
             <Body>
-              <Bold>Group Names:</Bold>
+              <Bold>Group names:</Bold> {option.listOfGroupNames.sort().join(', ')}
             </Body>
-            </FlexRow>
-            <FlexRow style={{ display: 'flex' }}>
-              <ul>
-                {option.listOfGroupNames.sort().map((group) => <li key={group}><Body>{group}</Body></li>)}
-              </ul>
-            </FlexRow>
+          </FlexRow>
         </FlexColumn>
+        <Separator />
         {option.optionSubTitle && <Body>{option.optionSubTitle}</Body>}
       </FlexColumn>
     </Card>
