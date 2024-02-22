@@ -1,7 +1,6 @@
 // React and third-party libraries
 import {
   useMemo,
-  // useState
 } from 'react';
 
 // Store
@@ -25,6 +24,9 @@ type ResultCardProps = {
     pluralityScore: string;
     distinctUsers: string;
     allocatedHearts: string;
+    optionSubTitle: string;
+    distinctGroups: number;
+    listOfGroupNames: string[];
     id: string;
   };
   onClick: () => void;
@@ -36,13 +38,6 @@ function ResultCard({ $expanded, option, index, onClick }: ResultCardProps) {
     const score = parseFloat(option.pluralityScore);
     return score % 1 === 0 ? score.toFixed(0) : score.toFixed(3);
   }, [option.pluralityScore]);
-
-  // const [showGroups, setShowGroups] = useState(false);
-
-  // const handleGroupsClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-  //   e.stopPropagation();
-  //   setShowGroups(!showGroups);
-  // };
 
   return (
     <Card $expanded={$expanded} onClick={onClick}>
@@ -72,18 +67,23 @@ function ResultCard({ $expanded, option, index, onClick }: ResultCardProps) {
               <Bold>Allocated hearts:</Bold> {option.allocatedHearts}
             </Body>
           </FlexRow>
-          {/* // TODO: <FlexRow onClick={(e) => handleGroupsClick(e)}>
+          <FlexRow>
             <Body>
-              <Bold>Groups:</Bold>
+              <Bold>Distinct groups:</Bold> {option.distinctGroups}
             </Body>
           </FlexRow>
-          <FlexRow style={{ display: showGroups ? 'flex' : 'none' }}>
-            <ul>
-               {option.distinctGroups.map(group) => <li key={group.key}><Body>{group.name}</Body</li>}
-            </ul>
-          </FlexRow> */}
+          <FlexRow>
+            <Body>
+              <Bold>Group Names:</Bold>
+            </Body>
+            </FlexRow>
+            <FlexRow style={{ display: 'flex' }}>
+              <ul>
+                {option.listOfGroupNames.map((group) => <li key={group}><Body>{group}</Body></li>)}
+              </ul>
+            </FlexRow>
         </FlexColumn>
-        {/* // TODO: Add this: {option.description && <Body>{option.description}</Body>} */}
+        {option.optionSubTitle && <Body>{option.optionSubTitle}</Body>}
       </FlexColumn>
     </Card>
   );
