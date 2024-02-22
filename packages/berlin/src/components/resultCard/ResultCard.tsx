@@ -79,7 +79,7 @@ function ResultCard({ $expanded, option, index, onClick }: ResultCardProps) {
             </FlexRow>
             <FlexRow style={{ display: 'flex' }}>
               <ul>
-                {option.listOfGroupNames.map((group) => <li key={group}><Body>{group}</Body></li>)}
+                {option.listOfGroupNames.sort().map((group) => <li key={group}><Body>{group}</Body></li>)}
               </ul>
             </FlexRow>
         </FlexColumn>
