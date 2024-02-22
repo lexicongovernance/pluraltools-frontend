@@ -141,11 +141,12 @@ const router = (queryClient: QueryClient) =>
                   path: ':eventId/cycles',
                   children: [
                     {
-                      loader: () => cycleLoader(queryClient),
                       path: '',
                       Component: Event,
                     },
                     {
+                      loader: ({ params }) =>
+                        cycleLoader(queryClient, params.eventId, params.cycleId),
                       path: ':cycleId',
                       Component: Cycle,
                     },
