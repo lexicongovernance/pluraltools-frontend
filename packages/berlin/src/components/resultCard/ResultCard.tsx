@@ -13,6 +13,7 @@ import { Subtitle } from '../typography/Subtitle.styled';
 
 // Styled Components
 import { Badge, Card } from './ResultCard.styled';
+import { Separator } from '../separator';
 
 type ResultCardProps = {
   $expanded: boolean;
@@ -22,6 +23,9 @@ type ResultCardProps = {
     pluralityScore: string;
     distinctUsers: string;
     allocatedHearts: string;
+    optionSubTitle: string;
+    distinctGroups: number;
+    listOfGroupNames: string[];
     id: string;
   };
   onClick: () => void;
@@ -62,8 +66,19 @@ function ResultCard({ $expanded, option, index, onClick }: ResultCardProps) {
               <Bold>Allocated hearts:</Bold> {option.allocatedHearts}
             </Body>
           </FlexRow>
+          <FlexRow>
+            <Body>
+              <Bold>Distinct groups:</Bold> {option.distinctGroups}
+            </Body>
+          </FlexRow>
+          <FlexRow>
+            <Body>
+              <Bold>Group names:</Bold> {option.listOfGroupNames.sort().join(', ')}
+            </Body>
+          </FlexRow>
         </FlexColumn>
-        {/* // TODO: Add this: {option.description && <Body>{option.description}</Body>} */}
+        <Separator />
+        {option.optionSubTitle && <Body>{option.optionSubTitle}</Body>}
       </FlexColumn>
     </Card>
   );
