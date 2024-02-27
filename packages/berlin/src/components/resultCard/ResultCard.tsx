@@ -59,7 +59,12 @@ function ResultCard({ $expanded, option, index, onClick }: ResultCardProps) {
           <FlexRow $gap="0.5rem">
             <Subtitle>{option.optionTitle}</Subtitle>
           </FlexRow>
-          <img className="arrow" src={`/icons/arrow-down-${theme}.svg`} alt="Arrow icon" />
+          <IconButton
+            $padding={0}
+            $color="secondary"
+            icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: '' }}
+            $flipVertical={$expanded}
+          />
         </FlexRow>
         <FlexRow>
           <Body>

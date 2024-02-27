@@ -11,11 +11,6 @@ export const Card = styled.article<{ $expanded: boolean }>`
   transition: height 0.3s ease-in-out;
   width: 100%;
 
-  .arrow {
-    transform: rotate(${(props) => (props.$expanded ? '180deg' : '0deg')});
-    transition: transform 0.3s ease-in-out;
-  }
-
   .statistics {
     display: ${(props) => (props.$expanded ? 'flex' : 'none')};
   }
