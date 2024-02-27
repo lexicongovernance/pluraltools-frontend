@@ -1,5 +1,5 @@
 // React and third-party libraries
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 // Store
 import { useAppStore } from '../../store';
@@ -10,9 +10,10 @@ import { Bold } from '../typography/Bold.styled';
 import { FlexColumn } from '../containers/FlexColum.styled';
 import { FlexRow } from '../containers/FlexRow.styled';
 import { Subtitle } from '../typography/Subtitle.styled';
+import IconButton from '../iconButton';
 
 // Styled Components
-import { Badge, Card } from './ResultCard.styled';
+import { Badge, Card, List, ListItem } from './ResultCard.styled';
 import { Separator } from '../separator';
 
 type ResultCardProps = {
@@ -32,11 +33,21 @@ type ResultCardProps = {
 };
 
 function ResultCard({ $expanded, option, index, onClick }: ResultCardProps) {
+  const [groupsExpanded, setGroupsExpanded] = useState(false);
   const theme = useAppStore((state) => state.theme);
   const formattedPluralityScore = useMemo(() => {
     const score = parseFloat(option.pluralityScore);
     return score % 1 === 0 ? score.toFixed(0) : score.toFixed(3);
   }, [option.pluralityScore]);
+
+  const handleGroupsClick = (
+    e:
+      | React.MouseEvent<HTMLButtonElement, MouseEvent>
+      | React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
+    e.stopPropagation();
+    setGroupsExpanded(!groupsExpanded);
+  };
 
   return (
     <Card $expanded={$expanded} onClick={onClick}>
@@ -48,7 +59,12 @@ function ResultCard({ $expanded, option, index, onClick }: ResultCardProps) {
           <FlexRow $gap="0.5rem">
             <Subtitle>{option.optionTitle}</Subtitle>
           </FlexRow>
-          <img className="arrow" src={`/icons/arrow-down-${theme}.svg`} alt="Arrow icon" />
+          <IconButton
+            $padding={0}
+            $color="secondary"
+            icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: '' }}
+            $flipVertical={$expanded}
+          />
         </FlexRow>
         <FlexRow>
           <Body>
@@ -71,11 +87,29 @@ function ResultCard({ $expanded, option, index, onClick }: ResultCardProps) {
               <Bold>Distinct groups:</Bold> {option.distinctGroups}
             </Body>
           </FlexRow>
-          <FlexRow>
-            <Body>
-              <Bold>Group names:</Bold> {option.listOfGroupNames.sort().join(', ')}
-            </Body>
-          </FlexRow>
+          <FlexColumn onClick={(e) => handleGroupsClick(e)} $gap="0.5rem">
+            <FlexRow $gap="0.15rem">
+              <Body>
+                <Bold>Group names:</Bold>
+              </Body>
+              <IconButton
+                $padding={4}
+                $color="secondary"
+                onClick={(e) => handleGroupsClick(e)}
+                icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: '' }}
+                $flipVertical={groupsExpanded}
+              />
+            </FlexRow>
+            {groupsExpanded && (
+              <Body>
+                <List>
+                  {option.listOfGroupNames.sort().map((name) => (
+                    <ListItem key={name}>{name}</ListItem>
+                  ))}
+                </List>
+              </Body>
+            )}
+          </FlexColumn>
         </FlexColumn>
         <Separator />
         {option.optionSubTitle && <Body>{option.optionSubTitle}</Body>}
