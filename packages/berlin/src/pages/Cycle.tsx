@@ -17,6 +17,9 @@ import { handleSaveVotes, handleUnvote, handleVote } from '../utils/voting';
 // Types
 import { ResponseUserVotesType } from '../types/CycleType';
 
+// Store
+import { useAppStore } from '../store';
+
 // Components
 import { Body } from '../components/typography/Body.styled';
 import { Bold } from '../components/typography/Bold.styled';
@@ -47,8 +50,7 @@ function Cycle() {
     enabled: !!user?.id && !!cycleId,
     retry: false,
   });
-
-  const [avaliableHearts, setAvaliableHearts] = useState(initialHearts);
+  const { avaliableHearts, setAvaliableHearts } = useAppStore((state) => state);
   const [startAt, setStartAt] = useState<string | null>(null);
   const [endAt, setEndAt] = useState<string | null>(null);
   const [localUserVotes, setLocalUserVotes] = useState<
@@ -115,7 +117,7 @@ function Cycle() {
   };
 
   const handleUnvoteWrapper = (optionId: string) => {
-    handleUnvote(optionId, setAvaliableHearts, setLocalUserVotes);
+    handleUnvote(optionId, avaliableHearts, setAvaliableHearts, setLocalUserVotes);
   };
 
   const handleSaveVotesWrapper = () => {
