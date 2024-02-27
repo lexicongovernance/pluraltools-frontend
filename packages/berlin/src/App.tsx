@@ -6,7 +6,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { useAppStore } from './store';
 
 // API
-import { fetchEvents, fetchUserData } from 'api';
+import { fetchEvents, fetchUserData, fetchCycle } from 'api';
 
 // Pages
 import { default as BerlinLayout } from './layout/index.ts';
@@ -22,7 +22,7 @@ import Register from './pages/Register';
 import Results from './pages/Results.tsx';
 import Option from './pages/Option.tsx';
 
-async function protectedLoader(queryClient: QueryClient) {
+async function userIsLoggedInLoader(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
     queryKey: ['user'],
     queryFn: fetchUserData,
@@ -35,13 +35,27 @@ async function protectedLoader(queryClient: QueryClient) {
   return null;
 }
 
-async function landingLoader(queryClient: QueryClient) {
-  const appState = useAppStore.getState();
+async function userIsCompleteLoader(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
     queryKey: ['user'],
     queryFn: fetchUserData,
-    retry: 3,
   });
+
+  if (user?.username) {
+    useAppStore.setState({ userStatus: 'COMPLETE' });
+    return null;
+  } else {
+    useAppStore.setState({ userStatus: 'INCOMPLETE' });
+    return redirect('/account');
+  }
+}
+
+async function landingLoader(queryClient: QueryClient) {
+  const user = await queryClient.fetchQuery({
+    queryKey: ['user'],
+    queryFn: fetchUserData,
+  });
+
   const events = await queryClient.fetchQuery({
     queryKey: ['events'],
     queryFn: fetchEvents,
@@ -51,20 +65,41 @@ async function landingLoader(queryClient: QueryClient) {
     return null;
   }
 
-  if (appState.userStatus === 'INCOMPLETE' && user?.username) {
-    useAppStore.setState({ userStatus: 'COMPLETE' });
-  }
+  const userIsComplete = await userIsCompleteLoader(queryClient);
 
-  if (appState.onboardingStatus === 'INCOMPLETE') {
-    return redirect('/onboarding');
-  }
-
-  if (appState.userStatus === 'INCOMPLETE') {
-    return redirect('/account');
+  if (userIsComplete) {
+    return userIsComplete;
   }
 
   if (events?.length === 1) {
-    return redirect(`/events/${events?.[0].id}/register`);
+    console.log('landing: redirecting to cycles');
+    return redirect(`/events/${events?.[0].id}/cycles`);
+  }
+
+  return null;
+}
+
+async function eventsLoader(queryClient: QueryClient) {
+  const events = await queryClient.fetchQuery({
+    queryKey: ['events'],
+    queryFn: fetchEvents,
+  });
+
+  if (events?.length === 1) {
+    return redirect(`/events/${events?.[0].id}/cycles`);
+  }
+
+  return null;
+}
+
+async function cycleLoader(queryClient: QueryClient, eventId?: string, cycleId?: string) {
+  const cycle = await queryClient.fetchQuery({
+    queryKey: ['cycles', cycleId],
+    queryFn: () => fetchCycle(cycleId || ''),
+  });
+
+  if (cycle?.status === 'CLOSED') {
+    return redirect(`/events/${eventId}/cycles/${cycleId}/results`);
   }
 
   return null;
@@ -78,36 +113,51 @@ const router = (queryClient: QueryClient) =>
         { path: '/', loader: () => landingLoader(queryClient), element: <Landing /> },
         { path: '/popup', element: <PassportPopupRedirect /> },
         {
-          loader: () => protectedLoader(queryClient),
+          loader: () => userIsLoggedInLoader(queryClient),
           children: [
             { path: '/onboarding', Component: Onboarding },
             {
               path: '/account',
               Component: Account,
             },
+
             {
-              path: '/events/:eventId/holding',
-              Component: Holding,
-            },
-            {
-              path: '/events/:eventId/register',
-              Component: Register,
-            },
-            {
+              loader: () => userIsCompleteLoader(queryClient),
               path: '/events',
-              Component: Events,
-            },
-            {
-              path: '/events/:eventId',
-              Component: Event,
-            },
-            {
-              path: '/events/:eventId/cycles/:cycleId',
-              Component: Cycle,
-            },
-            {
-              path: '/events/:eventId/cycles/:cycleId/results',
-              Component: Results,
+              children: [
+                {
+                  loader: () => eventsLoader(queryClient),
+                  path: '',
+                  Component: Events,
+                },
+                {
+                  path: ':eventId/register',
+                  Component: Register,
+                },
+                {
+                  path: ':eventId/holding',
+                  Component: Holding,
+                },
+                {
+                  path: ':eventId/cycles',
+                  children: [
+                    {
+                      path: '',
+                      Component: Event,
+                    },
+                    {
+                      loader: ({ params }) =>
+                        cycleLoader(queryClient, params.eventId, params.cycleId),
+                      path: ':cycleId',
+                      Component: Cycle,
+                    },
+                    {
+                      path: ':cycleId/results',
+                      Component: Results,
+                    },
+                  ],
+                },
+              ],
             },
             {
               path: '/events/:eventId/cycles/:cycleId/options/:optionId',

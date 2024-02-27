@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 // API
-import { PostVotesRequest, fetchCycle, fetchUserVotes, postVotes } from 'api';
+import { GetCycleResponse, PostVotesRequest, fetchCycle, fetchUserVotes, postVotes } from 'api';
 
 // Hooks
 import useCountdown from '../hooks/useCountdown';
@@ -31,7 +31,7 @@ function Cycle() {
   const { user } = useUser();
   const { eventId, cycleId } = useParams();
   const { data: cycle } = useQuery({
-    queryKey: ['cycle', cycleId],
+    queryKey: ['cycles', cycleId],
     queryFn: () => fetchCycle(cycleId || ''),
     enabled: !!cycleId,
   });
@@ -57,7 +57,7 @@ function Cycle() {
     }
   }, [cycle]);
 
-  const { formattedTime } = useCountdown(startAt, endAt);
+  const { formattedTime, cycleState } = useCountdown(startAt, endAt);
 
   const updateVotesAndHearts = (votes: ResponseUserVotesType) => {
     const givenVotes = votes
@@ -134,7 +134,7 @@ function Cycle() {
       } else if (body?.data.length) {
         queryClient.invalidateQueries({ queryKey: ['votes', cycleId] });
         // this is to update the plural scores in each option
-        queryClient.invalidateQueries({ queryKey: ['cycle', cycleId] });
+        queryClient.invalidateQueries({ queryKey: ['cycles', cycleId] });
         toast.success('Votes saved successfully!');
       }
     },
@@ -175,6 +175,16 @@ function Cycle() {
 
   const currentCycle = cycle?.forumQuestions[0];
 
+  const formattedWelcomeText = (cycle: GetCycleResponse | undefined | null) => {
+    if (cycle?.status === 'OPEN') {
+      return "It's time to give your hearts away...";
+    } else if (cycle?.status === 'UPCOMING') {
+      return "It's almost time to give your hearts away...";
+    } else {
+      return 'Vote has ended.';
+    }
+  };
+
   const sortedOptions = useMemo(() => {
     const sorted = [...(currentCycle?.questionOptions ?? [])].sort(
       (a, b) => b.voteScore - a.voteScore,
@@ -186,12 +196,16 @@ function Cycle() {
     <FlexColumn $gap="2rem">
       <FlexColumn>
         <BackButton />
-        <Subtitle>Welcome {user?.username}! It's time to give your hearts away...</Subtitle>
+        <Subtitle>
+          Welcome {user?.username}! {formattedWelcomeText(cycle)}
+        </Subtitle>
         <Title>{currentCycle?.questionTitle}</Title>
         <Body>
-          {formattedTime === 'Cycle has expired'
-            ? 'Vote has expired'
-            : `Vote closes in: ${formattedTime}`}
+          {cycleState === 'closed'
+            ? 'Vote has ended.'
+            : cycleState === 'upcoming'
+              ? `Vote opens in: ${formattedTime}`
+              : `Vote closes in: ${formattedTime}`}
         </Body>
         <Body>
           You have <Bold>{initialHearts}</Bold> total hearts
@@ -239,16 +253,14 @@ function Cycle() {
           <i>No options to show...</i>
         </Body>
       )}
-
-      {/* // TODO: This should also check if cycle is open */}
-      {currentCycle?.questionOptions.length ? (
+      {cycle?.status === 'CLOSED' && currentCycle?.questionOptions.length && (
         <Button
           onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/results`)}
           $color="secondary"
         >
           See results
         </Button>
-      ) : null}
+      )}
     </FlexColumn>
   );
 }

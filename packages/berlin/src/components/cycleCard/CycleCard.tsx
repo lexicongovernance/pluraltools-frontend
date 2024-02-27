@@ -21,11 +21,23 @@ function CycleCard({ cycle }: CycleCardProps) {
     navigate(`/events/${eventId}/cycles/${cycleId}`);
   };
 
+  const formattedDateText = () => {
+    if (cycle.status === 'OPEN') {
+      return 'Closes on';
+    } else if (cycle.status === 'UPCOMING') {
+      return 'Opens on';
+    } else {
+      return 'Closed on';
+    }
+  };
+
   return (
     <Card>
       <FlexColumn $gap="0.5rem">
         <Subtitle>{cycle.forumQuestions[0].questionTitle}</Subtitle>
-        <Body>Closes on {formattedDate}</Body>
+        <Body>
+          {formattedDateText()} {formattedDate}
+        </Body>
       </FlexColumn>
       <Button onClick={() => handleClick(cycle.id)}>Go to vote</Button>
     </Card>
