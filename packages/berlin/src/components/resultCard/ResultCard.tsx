@@ -1,5 +1,5 @@
 // React and third-party libraries
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 // Store
 import { useAppStore } from '../../store';
@@ -10,6 +10,7 @@ import { Bold } from '../typography/Bold.styled';
 import { FlexColumn } from '../containers/FlexColum.styled';
 import { FlexRow } from '../containers/FlexRow.styled';
 import { Subtitle } from '../typography/Subtitle.styled';
+import IconButton from '../iconButton';
 
 // Styled Components
 import { Badge, Card } from './ResultCard.styled';
@@ -32,11 +33,21 @@ type ResultCardProps = {
 };
 
 function ResultCard({ $expanded, option, index, onClick }: ResultCardProps) {
+  const [groupsExpanded, setGroupsExpanded] = useState(false);
   const theme = useAppStore((state) => state.theme);
   const formattedPluralityScore = useMemo(() => {
     const score = parseFloat(option.pluralityScore);
     return score % 1 === 0 ? score.toFixed(0) : score.toFixed(3);
   }, [option.pluralityScore]);
+
+  const handleGroupsClick = (
+    e:
+      | React.MouseEvent<HTMLButtonElement, MouseEvent>
+      | React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
+    e.stopPropagation();
+    setGroupsExpanded(!groupsExpanded);
+  };
 
   return (
     <Card $expanded={$expanded} onClick={onClick}>
@@ -71,11 +82,21 @@ function ResultCard({ $expanded, option, index, onClick }: ResultCardProps) {
               <Bold>Distinct groups:</Bold> {option.distinctGroups}
             </Body>
           </FlexRow>
-          <FlexRow>
-            <Body>
-              <Bold>Group names:</Bold> {option.listOfGroupNames.sort().join(', ')}
-            </Body>
-          </FlexRow>
+          <FlexColumn onClick={(e) => handleGroupsClick(e)} $gap="0.5rem">
+            <FlexRow>
+              <Body>
+                <Bold>Group names:</Bold>
+              </Body>
+              <IconButton
+                $padding={4}
+                $color="secondary"
+                onClick={(e) => handleGroupsClick(e)}
+                icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: '' }}
+                $flipVertical={groupsExpanded}
+              />
+            </FlexRow>
+            <Body>{groupsExpanded && option.listOfGroupNames.sort().join(', ')}</Body>
+          </FlexColumn>
         </FlexColumn>
         <Separator />
         {option.optionSubTitle && <Body>{option.optionSubTitle}</Body>}
