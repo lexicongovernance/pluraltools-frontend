@@ -13,7 +13,7 @@ import { Subtitle } from '../typography/Subtitle.styled';
 import IconButton from '../iconButton';
 
 // Styled Components
-import { Badge, Card } from './ResultCard.styled';
+import { Badge, Card, List, ListItem } from './ResultCard.styled';
 import { Separator } from '../separator';
 
 type ResultCardProps = {
@@ -88,7 +88,7 @@ function ResultCard({ $expanded, option, index, onClick }: ResultCardProps) {
             </Body>
           </FlexRow>
           <FlexColumn onClick={(e) => handleGroupsClick(e)} $gap="0.5rem">
-            <FlexRow>
+            <FlexRow $gap="0.15rem">
               <Body>
                 <Bold>Group names:</Bold>
               </Body>
@@ -100,7 +100,15 @@ function ResultCard({ $expanded, option, index, onClick }: ResultCardProps) {
                 $flipVertical={groupsExpanded}
               />
             </FlexRow>
-            <Body>{groupsExpanded && option.listOfGroupNames.sort().join(', ')}</Body>
+            {groupsExpanded && (
+              <Body>
+                <List>
+                  {option.listOfGroupNames.sort().map((name) => (
+                    <ListItem key={name}>{name}</ListItem>
+                  ))}
+                </List>
+              </Body>
+            )}
           </FlexColumn>
         </FlexColumn>
         <Separator />

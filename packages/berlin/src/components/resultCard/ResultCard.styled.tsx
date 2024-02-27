@@ -25,3 +25,13 @@ export const Badge = styled.div<{ $type: 'gold' | 'silver' | 'bronze' }>`
   height: 2rem;
   width: 2rem;
 `;
+
+export const List = styled.ul`
+  list-style: none;
+`;
+export const ListItem = styled.li`
+  padding-left: 1rem;
+  &::before {
+    content: '•  ';
+  }
+`;
