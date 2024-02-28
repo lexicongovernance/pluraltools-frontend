@@ -11,11 +11,6 @@ export const Card = styled.article<{ $expanded: boolean }>`
   transition: height 0.3s ease-in-out;
   width: 100%;
 
-  .arrow {
-    transform: rotate(${(props) => (props.$expanded ? '180deg' : '0deg')});
-    transition: transform 0.3s ease-in-out;
-  }
-
   .statistics {
     display: ${(props) => (props.$expanded ? 'flex' : 'none')};
   }
@@ -29,4 +24,14 @@ export const Badge = styled.div<{ $type: 'gold' | 'silver' | 'bronze' }>`
   display: flex;
   height: 2rem;
   width: 2rem;
+`;
+
+export const List = styled.ul`
+  list-style: none;
+`;
+export const ListItem = styled.li`
+  padding-left: 1rem;
+  &::before {
+    content: '•  ';
+  }
 `;
