@@ -28,7 +28,7 @@ export const useAppStore = create<AppState>()(
           set(() => ({ onboardingStatus: status })),
         setAvaliableHearts: (hearts: number) => set(() => ({ avaliableHearts: hearts })),
         toggleTheme: () => set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
-        reset: () => set(() => ({ userStatus: 'INCOMPLETE' })),
+        reset: () => set(() => ({ userStatus: 'INCOMPLETE', avaliableHearts: 20 })),
       }),
       { name: 'lexicon-store' },
     ),
