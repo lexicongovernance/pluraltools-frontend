@@ -119,7 +119,6 @@ const router = (queryClient: QueryClient) =>
               path: '/account',
               Component: Account,
             },
-
             {
               loader: () => userIsCompleteLoader(queryClient),
               path: '/events',
