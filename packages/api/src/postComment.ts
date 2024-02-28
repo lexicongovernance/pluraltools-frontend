@@ -8,6 +8,7 @@ async function postComment({
     const response = await fetch(
       `${import.meta.env.VITE_SERVER_URL}/api/options/${questionOptionId}/comments`,
       {
+        method: 'POST',
         credentials: 'include',
         headers: {
           'Content-type': 'application/json',

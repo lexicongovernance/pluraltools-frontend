@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 
 // API
-import { fetchOption, postVotes, fetchUserVotes } from 'api';
+import { fetchOption, postVotes, fetchUserVotes, fetchComments, postComment } from 'api';
 
 // Hooks
 import useUser from '../hooks/useUser';
@@ -26,6 +26,10 @@ import { Title } from '../components/typography/Title.styled';
 import BackButton from '../components/backButton';
 import Button from '../components/button';
 import IconButton from '../components/iconButton';
+import { Subtitle } from '../components/typography/Subtitle.styled';
+import { Body } from '../components/typography/Body.styled';
+import Textarea from '../components/textarea';
+import CommentCard from '../components/commentCard';
 
 function Option() {
   const theme = useAppStore((state) => state.theme);
@@ -37,6 +41,7 @@ function Option() {
     ResponseUserVotesType | { optionId: string; numOfVotes: number }[]
   >([]);
   const [localOptionHearts, setLocalOptionHearts] = useState(0);
+  const [comment, setComment] = useState('');
 
   const { data: option, isLoading } = useQuery({
     queryKey: ['option', optionId],
@@ -48,6 +53,11 @@ function Option() {
     queryFn: () => fetchUserVotes(cycleId || ''),
     enabled: !!user?.id && !!cycleId,
     retry: false,
+  });
+  const { data: comments } = useQuery({
+    queryKey: ['comments', optionId],
+    queryFn: () => fetchComments({ optionId: optionId || '' }),
+    enabled: !!optionId,
   });
 
   useEffect(() => {
@@ -68,6 +78,15 @@ function Option() {
         // this is to update the plural scores in each option
         queryClient.invalidateQueries({ queryKey: ['cycles', cycleId] });
         toast.success('Votes saved successfully!');
+      }
+    },
+  });
+
+  const { mutate: mutateComments } = useMutation({
+    mutationFn: postComment,
+    onSuccess: (body) => {
+      if (body?.value) {
+        queryClient.invalidateQueries({ queryKey: ['comments', optionId] });
       }
     },
   });
@@ -94,6 +113,13 @@ function Option() {
       );
     }
   }, [localUserVotes, optionId, userVotes]);
+
+  const handlePostComment = () => {
+    if (optionId && comment) {
+      mutateComments({ questionOptionId: optionId, value: comment });
+      setComment('');
+    }
+  };
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -131,6 +157,14 @@ function Option() {
       <Button onClick={handleSaveVotesWrapper} disabled={!votesAreDifferent}>
         Save all votes
       </Button>
+      <Textarea
+        label="Leave a comment:"
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+      />
+      <Button onClick={handlePostComment}>Comment</Button>
+      <Title>Total comments ({comments?.length})</Title>
+      {comments && comments.map((comment) => <CommentCard key={comment.id} comment={comment} />)}
     </FlexColumn>
   );
 }
