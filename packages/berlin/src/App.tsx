@@ -6,7 +6,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { useAppStore } from './store';
 
 // API
-import { fetchEvents, fetchUserData, fetchCycle } from 'api';
+import { fetchEvents, fetchUserData, fetchCycle, fetchRegistration } from 'api';
 
 // Pages
 import { default as BerlinLayout } from './layout/index.ts';
@@ -72,14 +72,13 @@ async function landingLoader(queryClient: QueryClient) {
   }
 
   if (events?.length === 1) {
-    console.log('landing: redirecting to cycles');
     return redirect(`/events/${events?.[0].id}/cycles`);
   }
 
   return null;
 }
 
-async function eventsLoader(queryClient: QueryClient) {
+async function redirectToOnlyOneEventLoader(queryClient: QueryClient) {
   const events = await queryClient.fetchQuery({
     queryKey: ['events'],
     queryFn: fetchEvents,
@@ -92,7 +91,26 @@ async function eventsLoader(queryClient: QueryClient) {
   return null;
 }
 
-async function cycleLoader(queryClient: QueryClient, eventId?: string, cycleId?: string) {
+async function userIsAcceptedToEventLoader(queryClient: QueryClient, eventId?: string) {
+  const registration = await queryClient.fetchQuery({
+    queryKey: ['event', eventId, 'registration'],
+    queryFn: () => fetchRegistration(eventId || ''),
+  });
+
+  if (!registration) {
+    return redirect(`/events/${eventId}/register`);
+  }
+
+  if (registration?.status === 'DRAFT') {
+    return redirect(`/events/${eventId}/holding`);
+  }
+}
+
+async function redirectClosedCycleLoader(
+  queryClient: QueryClient,
+  eventId?: string,
+  cycleId?: string,
+) {
   const cycle = await queryClient.fetchQuery({
     queryKey: ['cycles', cycleId],
     queryFn: () => fetchCycle(cycleId || ''),
@@ -125,7 +143,7 @@ const router = (queryClient: QueryClient) =>
               path: '/events',
               children: [
                 {
-                  loader: () => eventsLoader(queryClient),
+                  loader: () => redirectToOnlyOneEventLoader(queryClient),
                   path: '',
                   Component: Events,
                 },
@@ -139,6 +157,7 @@ const router = (queryClient: QueryClient) =>
                 },
                 {
                   path: ':eventId/cycles',
+                  loader: ({ params }) => userIsAcceptedToEventLoader(queryClient, params.eventId),
                   children: [
                     {
                       path: '',
@@ -146,7 +165,7 @@ const router = (queryClient: QueryClient) =>
                     },
                     {
                       loader: ({ params }) =>
-                        cycleLoader(queryClient, params.eventId, params.cycleId),
+                        redirectClosedCycleLoader(queryClient, params.eventId, params.cycleId),
                       path: ':cycleId',
                       Component: Cycle,
                     },
