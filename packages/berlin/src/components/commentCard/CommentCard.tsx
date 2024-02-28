@@ -1,9 +1,9 @@
-import { Comment } from 'api';
+import { GetCommentsResponse } from 'api';
 import { Body } from '../typography/Body.styled';
 import { Card, FormattedDate, Username } from './CommentCard.styled';
 
 type CommentCardProps = {
-  comment: Comment;
+  comment: GetCommentsResponse[number];
 };
 
 function CommentCard({ comment }: CommentCardProps) {
@@ -19,7 +19,7 @@ function CommentCard({ comment }: CommentCardProps) {
 
   return (
     <Card key={comment.id}>
-      <Username>{comment.userId}</Username>
+      <Username>{comment.user?.username}</Username>
       <FormattedDate>{formattedDate}</FormattedDate>
       <Body>{comment.value}</Body>
     </Card>

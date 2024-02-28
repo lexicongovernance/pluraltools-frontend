@@ -11,7 +11,7 @@ export type GetCommentsRequest = {
   optionId: string;
 };
 
-export type GetCommentsResponse = Comment[];
+export type GetCommentsResponse = (Comment & { user?: { id: string; username: string } })[];
 
 export type PostCommentRequest = {
   value: string;
