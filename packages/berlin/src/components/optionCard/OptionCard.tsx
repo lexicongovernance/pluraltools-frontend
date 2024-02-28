@@ -1,5 +1,6 @@
 // React and third-party libraries
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // Store
 import { useAppStore } from '../../store';
@@ -15,6 +16,7 @@ import IconButton from '../iconButton';
 import { Card } from './OptionCard.styled';
 
 type OptionProps = {
+  id: string;
   title: string;
   body?: string;
   avaliableHearts: number;
@@ -25,6 +27,7 @@ type OptionProps = {
 };
 
 function OptionCard({
+  id,
   title,
   body,
   pluralityScore,
@@ -36,6 +39,8 @@ function OptionCard({
   const theme = useAppStore((state) => state.theme);
   const [localOptionHearts, setLocalOptionHearts] = useState(numOfVotes);
   const [expanded, setExpanded] = useState(false);
+  const navigate = useNavigate();
+  const { eventId, cycleId } = useParams();
 
   const formattedPluralityScore = useMemo(() => {
     const score = parseFloat(String(pluralityScore));
@@ -83,12 +88,12 @@ function OptionCard({
       </FlexColumn>
       <FlexRow>
         <FlexRow>
-          {/* <IconButton
-            onClick={() => {}}
+          <IconButton
+            onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/options/${id}`)}
             $padding={6}
             $color="secondary"
             icon={{ src: `/icons/comments-${theme}.svg`, alt: 'Comments icon' }}
-          /> */}
+          />
           <IconButton
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleUnvoteClick(e)}
             disabled={localOptionHearts === 0}

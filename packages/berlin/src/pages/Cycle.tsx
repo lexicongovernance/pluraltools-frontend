@@ -5,18 +5,26 @@ import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 // API
-import { GetCycleResponse, PostVotesRequest, fetchCycle, fetchUserVotes, postVotes } from 'api';
+import { GetCycleResponse, fetchCycle, fetchUserVotes, postVotes } from 'api';
 
 // Hooks
 import useCountdown from '../hooks/useCountdown';
 import useUser from '../hooks/useUser';
+
+// Utils
+import { handleSaveVotes, handleUnvote, handleVote } from '../utils/voting';
+
+// Types
+import { ResponseUserVotesType } from '../types/CycleType';
+
+// Store
+import { useAppStore } from '../store';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
 import { Bold } from '../components/typography/Bold.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
-import { ResponseUserVotesType } from '../types/CycleType';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import { Title } from '../components/typography/Title.styled';
 import BackButton from '../components/backButton';
@@ -42,8 +50,7 @@ function Cycle() {
     enabled: !!user?.id && !!cycleId,
     retry: false,
   });
-
-  const [avaliableHearts, setAvaliableHearts] = useState(initialHearts);
+  const { avaliableHearts, setAvaliableHearts } = useAppStore((state) => state);
   const [startAt, setStartAt] = useState<string | null>(null);
   const [endAt, setEndAt] = useState<string | null>(null);
   const [localUserVotes, setLocalUserVotes] = useState<
@@ -91,41 +98,6 @@ function Cycle() {
     }
   }, [userVotes]);
 
-  const handleVote = (optionId: string) => {
-    if (avaliableHearts > 0) {
-      setLocalUserVotes((prevLocalUserVotes) => {
-        const temp = prevLocalUserVotes.find((x) => x.optionId === optionId);
-        if (!temp) {
-          return [...prevLocalUserVotes, { optionId, numOfVotes: 1 }];
-        }
-        const updatedLocalVotes = prevLocalUserVotes.map((prevLocalUserVote) => {
-          if (prevLocalUserVote.optionId === optionId) {
-            return { ...prevLocalUserVote, numOfVotes: prevLocalUserVote.numOfVotes + 1 };
-          }
-          return prevLocalUserVote;
-        });
-        return updatedLocalVotes;
-      });
-      setAvaliableHearts((prevAvaliableHearts) => Math.max(0, prevAvaliableHearts - 1));
-    }
-  };
-
-  const handleUnvote = (optionId: string) => {
-    setLocalUserVotes((prevLocalUserVotes) => {
-      const updatedLocalVotes = prevLocalUserVotes.map((prevLocalUserVote) => {
-        if (prevLocalUserVote.optionId === optionId) {
-          const newNumOfVotes = Math.max(0, prevLocalUserVote.numOfVotes - 1);
-          return { ...prevLocalUserVote, numOfVotes: newNumOfVotes };
-        }
-        return prevLocalUserVote;
-      });
-
-      return updatedLocalVotes;
-    });
-
-    setAvaliableHearts((prevAvaliableHearts) => Math.min(initialHearts, prevAvaliableHearts + 1));
-  };
-
   const { mutate: mutateVotes } = useMutation({
     mutationFn: postVotes,
     onSuccess: (body) => {
@@ -140,37 +112,16 @@ function Cycle() {
     },
   });
 
-  const handleSaveVotes = () => {
-    try {
-      if (userVotes) {
-        const serverVotesMap = new Map(userVotes.map((vote) => [vote.optionId, vote]));
-        const mutateVotesReq: PostVotesRequest = {
-          cycleId: cycleId || '',
-          votes: [],
-        };
+  const handleVoteWrapper = (optionId: string) => {
+    handleVote(optionId, avaliableHearts, setAvaliableHearts, setLocalUserVotes);
+  };
 
-        for (const localVote of localUserVotes) {
-          const matchingServerVote = serverVotesMap.get(localVote.optionId);
+  const handleUnvoteWrapper = (optionId: string) => {
+    handleUnvote(optionId, avaliableHearts, setAvaliableHearts, setLocalUserVotes);
+  };
 
-          if (!matchingServerVote) {
-            mutateVotesReq.votes.push({
-              optionId: localVote.optionId,
-              numOfVotes: localVote.numOfVotes,
-            });
-          } else if (matchingServerVote.numOfVotes !== localVote.numOfVotes) {
-            mutateVotesReq.votes.push({
-              optionId: localVote.optionId,
-              numOfVotes: localVote.numOfVotes,
-            });
-          }
-        }
-
-        mutateVotes(mutateVotesReq);
-      }
-    } catch (error) {
-      toast.error('Failed to save votes, please try again');
-      console.error('Error saving votes:', error);
-    }
+  const handleSaveVotesWrapper = () => {
+    handleSaveVotes(userVotes, localUserVotes, cycleId, mutateVotes);
   };
 
   const currentCycle = cycle?.forumQuestions[0];
@@ -224,11 +175,11 @@ function Cycle() {
             />
           ))}
         </FlexRow>
-        <Button onClick={handleSaveVotes} disabled={!votesAreDifferent}>
+        <Button onClick={handleSaveVotesWrapper} disabled={!votesAreDifferent}>
           Save all votes
         </Button>
       </FlexColumn>
-      {currentCycle?.questionOptions && (
+      {currentCycle?.questionOptions.length ? (
         <FlexColumn>
           {sortedOptions.map((option) => {
             const userVote = localUserVotes.find((vote) => vote.optionId === option.id);
@@ -236,19 +187,24 @@ function Cycle() {
             return (
               <OptionCard
                 key={option.id}
+                id={option.id}
                 title={option.optionTitle}
                 body={option.optionSubTitle}
                 avaliableHearts={avaliableHearts}
                 pluralityScore={option.voteScore}
                 numOfVotes={numOfVotes}
-                onVote={() => handleVote(option.id)}
-                onUnvote={() => handleUnvote(option.id)}
+                onVote={() => handleVoteWrapper(option.id)}
+                onUnvote={() => handleUnvoteWrapper(option.id)}
               />
             );
           })}
         </FlexColumn>
+      ) : (
+        <Body>
+          <i>No options to show...</i>
+        </Body>
       )}
-      {cycle?.status === 'CLOSED' && (
+      {cycle?.status === 'CLOSED' && currentCycle?.questionOptions.length && (
         <Button
           onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/results`)}
           $color="secondary"

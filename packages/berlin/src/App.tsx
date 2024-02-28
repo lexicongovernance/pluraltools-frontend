@@ -20,6 +20,7 @@ import Onboarding from './pages/Onboarding';
 import PassportPopupRedirect from './pages/Popup';
 import Register from './pages/Register';
 import Results from './pages/Results.tsx';
+import Option from './pages/Option.tsx';
 
 async function userIsLoggedInLoader(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
@@ -156,6 +157,10 @@ const router = (queryClient: QueryClient) =>
                   ],
                 },
               ],
+            },
+            {
+              path: '/events/:eventId/cycles/:cycleId/options/:optionId',
+              Component: Option,
             },
           ],
         },
