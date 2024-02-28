@@ -10,6 +10,9 @@ export type GetForumQuestionStatisticsResponse = {
       pluralityScore: string;
       distinctUsers: string;
       allocatedHearts: string;
+      optionSubTitle: string;
+      distinctGroups: number;
+      listOfGroupNames: string[];
     }
   >;
 };

@@ -10,13 +10,13 @@ function Header() {
       <FooterContainer $gap="0.75rem" $align="center">
         <FlexRow $justify="center">
           <RouterLink to={'https://github.com/lexicongovernance'}>
-            <img src={`logos/lexicon-${theme}.png`} height={24} width={24} />
+            <img src={`/logos/lexicon-${theme}.png`} height={24} width={24} />
           </RouterLink>
           <RouterLink to={'https://arbitrum.foundation/grants'}>
-            <img src={`logos/arbitrum-${theme}.svg`} height={24} width={24} />
+            <img src={`/logos/arbitrum-${theme}.svg`} height={24} width={24} />
           </RouterLink>
           <RouterLink to={'https://twitter.com/pluralitylab'}>
-            <img src="logos/plurality.svg" height={24} width={24} />
+            <img src="/logos/plurality.svg" height={24} width={24} />
           </RouterLink>
         </FlexRow>
       </FooterContainer>

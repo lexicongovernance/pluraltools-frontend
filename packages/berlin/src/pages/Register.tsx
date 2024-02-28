@@ -74,6 +74,16 @@ function Register() {
   );
 }
 
+const getDefaultValues = (registrationData: GetRegistrationDataResponse | null | undefined) => {
+  return registrationData?.reduce(
+    (acc, curr) => {
+      acc[curr.registrationFieldId] = curr.value;
+      return acc;
+    },
+    {} as Record<string, string>,
+  );
+};
+
 function RegisterForm(props: {
   user: AuthUser | null | undefined;
   registrationFields?: GetRegistrationFieldsResponse | null | undefined;
@@ -90,16 +100,18 @@ function RegisterForm(props: {
     control,
     handleSubmit,
     getValues,
+    reset,
   } = useForm({
-    defaultValues: props.registrationData?.reduce(
-      (acc, curr) => {
-        acc[curr.registrationFieldId] = curr.value;
-        return acc;
-      },
-      {} as Record<string, string>,
+    defaultValues: useMemo(
+      () => getDefaultValues(props.registrationData),
+      [props.registrationData],
     ),
     mode: 'onBlur',
   });
+
+  useEffect(() => {
+    reset(getDefaultValues(props.registrationData));
+  }, [props.registrationData, reset]);
 
   const values = getValues();
 

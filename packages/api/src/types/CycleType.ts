@@ -1,18 +1,8 @@
-export type Cycle = {
-  id: string;
-  eventId: string | null;
-  createdAt: string;
-  updatedAt: string;
-  status: 'OPEN' | 'CLOSED' | 'RESULTS' | null;
-  startAt: string;
-  endAt: string;
-};
-
-export type GetCyclesResponse = {
+export type GetCycleResponse = {
   id: string;
   createdAt: string;
   updatedAt: string;
-  status: 'OPEN' | 'CLOSED' | 'RESULTS' | null;
+  status: 'OPEN' | 'CLOSED' | 'UPCOMING' | null;
   startAt: string;
   endAt: string;
   forumQuestions: {
@@ -30,7 +20,9 @@ export type GetCyclesResponse = {
       optionTitle: string;
       optionSubTitle?: string;
       accepted: boolean;
-      voteCount: number;
+      voteScore: number;
     }[];
   }[];
-}[];
+};
+
+export type GetCyclesResponse = GetCycleResponse[];

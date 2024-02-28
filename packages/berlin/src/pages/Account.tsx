@@ -35,6 +35,7 @@ import { formatGroups } from '../utils/formatGroups';
 // Store
 import { useAppStore } from '../store';
 import { Body } from '../components/typography/Body.styled';
+import { useEffect, useMemo } from 'react';
 
 const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None'];
 
@@ -153,10 +154,16 @@ function AccountForm({
 
   const { mutate: mutateUserData } = useMutation({
     mutationFn: updateUserData,
-    onSuccess: (body) => {
+    onSuccess: async (body) => {
       if (body) {
-        queryClient.invalidateQueries({ queryKey: ['user'] });
-        queryClient.invalidateQueries({ queryKey: ['user-groups'] });
+        await queryClient.invalidateQueries({ queryKey: ['user'] });
+        await queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'groups'] });
+
+        toast.success('User data updated!');
+
+        if (events?.length === 1) {
+          navigate(`/events/${events?.[0].id}/register`);
+        }
       }
     },
     onError: () => {
@@ -170,11 +177,16 @@ function AccountForm({
     formState: { errors, isValid },
     handleSubmit,
     setValue,
+    reset,
     trigger,
   } = useForm({
-    defaultValues: initialUser,
+    defaultValues: useMemo(() => initialUser, [initialUser]),
     mode: 'all',
   });
+
+  useEffect(() => {
+    reset(initialUser);
+  }, [initialUser, reset]);
 
   const {
     fields: fieldsCredentialsGroup,
@@ -225,12 +237,6 @@ function AccountForm({
           contributions: JSON.stringify(value.userAttributes?.contributions),
         },
       });
-
-      toast.success('User data updated!');
-
-      if (events?.length === 1) {
-        navigate(`/events/${events?.[0].id}/register`);
-      }
     }
   };
 
@@ -263,7 +269,6 @@ function AccountForm({
     trigger('userAttributes.customGroupName');
   };
 
-  console.log(watchedGroupInputId, customGroup?.id);
   return (
     <FlexColumn>
       <Title>Complete your registration</Title>
@@ -290,7 +295,7 @@ function AccountForm({
                     id: group.id,
                   }))}
                   label="Affiliation"
-                  placeholder="Select an affiliation"
+                  placeholder={field.value ? field.value : 'Select or create affiliation'}
                   required
                   onChange={field.onChange}
                   onBlur={field.onBlur}
@@ -364,6 +369,7 @@ function AccountForm({
                   errors={[errors.userAttributes?.credentialsGroup?.[i]?.field?.message ?? '']}
                 />
                 <IconButton
+                  $padding={0}
                   onClick={() => removeCredentialsGroup(i)}
                   $color="secondary"
                   icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash icon' }}
@@ -371,6 +377,7 @@ function AccountForm({
               </FlexRowToColumn>
             ))}
             <IconButton
+              $padding={0}
               onClick={() => {
                 insertCredentialsGroup(fieldsCredentialsGroup.length, {
                   credential: '',
@@ -391,6 +398,7 @@ function AccountForm({
                   {...register(`userAttributes.publications.${i}.value` as const)}
                 />
                 <IconButton
+                  $padding={0}
                   onClick={() => removePublications(i)}
                   $color="secondary"
                   icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash icon' }}
@@ -398,6 +406,7 @@ function AccountForm({
               </FlexRowToColumn>
             ))}
             <IconButton
+              $padding={0}
               onClick={() => insertPublications(fieldsPublications.length, { value: '' })}
               $color="secondary"
               icon={{ src: `/icons/add-${theme}.svg`, alt: 'Add icon' }}
@@ -412,6 +421,7 @@ function AccountForm({
                   {...register(`userAttributes.contributions.${i}.value` as const)}
                 />
                 <IconButton
+                  $padding={0}
                   onClick={() => removeContributions(i)}
                   $color="secondary"
                   icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash icon' }}
@@ -419,6 +429,7 @@ function AccountForm({
               </FlexRowToColumn>
             ))}
             <IconButton
+              $padding={0}
               onClick={() => insertContributions(fieldsContributions.length, { value: '' })}
               $color="secondary"
               icon={{ src: `/icons/add-${theme}.svg`, alt: 'Add icon' }}

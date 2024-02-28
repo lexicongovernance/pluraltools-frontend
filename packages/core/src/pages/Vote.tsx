@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { fetchCycle, fetchUserVotes, postVote } from 'api';
+import { PostVotesRequest, fetchCycle, fetchUserVotes, postVotes } from 'api';
 import Button from '../components/button';
 import Countdown from '../components/countdown';
 import Option from '../components/option';
@@ -46,7 +46,7 @@ function Vote() {
     isError: isErrorUserVotes,
   } = useQuery({
     queryKey: ['votes', cycleId],
-    queryFn: () => fetchUserVotes(user?.id || '', cycleId || ''),
+    queryFn: () => fetchUserVotes(cycleId || ''),
     enabled: !!user?.id && !!cycleId,
     retry: false,
   });
@@ -81,13 +81,13 @@ function Vote() {
         localUserVotes.map((vote) => ({
           optionId: vote.optionId,
           numOfVotes: vote.numOfVotes,
-        }))
+        })),
       ) !==
       JSON.stringify(
         userVotes?.map((vote) => ({
           optionId: vote.optionId,
           numOfVotes: vote.numOfVotes,
-        }))
+        })),
       )
     );
   }, [localUserVotes, userVotes]);
@@ -133,11 +133,14 @@ function Vote() {
     setAvaliableHearts((prevAvaliableHearts) => Math.min(initialHearts, prevAvaliableHearts + 1));
   };
 
-  const { mutate: mutateVote } = useMutation({
-    mutationFn: postVote,
+  const { mutate: mutateVotes } = useMutation({
+    mutationFn: postVotes,
     onSuccess: (body) => {
-      if (body) {
+      if (body?.data) {
         queryClient.invalidateQueries({ queryKey: ['user-votes'] });
+        toast.success('Votes saved successfully!');
+      } else {
+        toast.error('Failed to save votes, please try again');
       }
     },
   });
@@ -146,17 +149,28 @@ function Vote() {
     try {
       if (userVotes) {
         const serverVotesMap = new Map(userVotes.map((vote) => [vote.optionId, vote]));
+        const mutateVotesReq: PostVotesRequest = {
+          cycleId: cycleId || '',
+          votes: [],
+        };
 
         for (const localVote of localUserVotes) {
           const matchingServerVote = serverVotesMap.get(localVote.optionId);
 
           if (!matchingServerVote) {
-            mutateVote({ optionId: localVote.optionId, numOfVotes: localVote.numOfVotes });
+            mutateVotesReq.votes.push({
+              optionId: localVote.optionId,
+              numOfVotes: localVote.numOfVotes,
+            });
           } else if (matchingServerVote.numOfVotes !== localVote.numOfVotes) {
-            mutateVote({ optionId: localVote.optionId, numOfVotes: localVote.numOfVotes });
+            mutateVotesReq.votes.push({
+              optionId: localVote.optionId,
+              numOfVotes: localVote.numOfVotes,
+            });
           }
         }
-        toast.success('Votes saved successfully!');
+
+        mutateVotes(mutateVotesReq);
       }
     } catch (error) {
       toast.error('Failed to save votes, please try again');
@@ -202,7 +216,7 @@ function Vote() {
       <Grid $columns={2} $gap="2rem">
         {cycle &&
           cycle.forumQuestions?.map((forumQuestion) => {
-            forumQuestion.questionOptions.sort((a, b) => b.voteCount - a.voteCount);
+            forumQuestion.questionOptions.sort((a, b) => b.voteScore - a.voteScore);
             return forumQuestion.questionOptions.map((questionOption) => {
               const userVote = localUserVotes.find((vote) => vote.optionId === questionOption.id);
               const numOfVotes = userVote ? userVote.numOfVotes : 0;

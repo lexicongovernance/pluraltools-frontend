@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Dropdown,
   ErrorsContainer,
@@ -43,6 +43,12 @@ function Select({
     options.find((o) => o.id === value)?.name,
   );
   const [creatableOption, setCreatableOption] = useState<string>('');
+
+  useEffect(() => {
+    if (value) {
+      setSelectedOption(options.find((o) => o.id === value)?.name);
+    }
+  }, [value, options]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputText = event.target.value;

@@ -10,3 +10,5 @@ export * from './RegistrationDataType';
 export * from './RegistrationFieldType';
 export * from './RegistrationType';
 export * from './UserAttributesType';
+export * from './LikeType';
+export * from './CommentType';

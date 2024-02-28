@@ -11,10 +11,8 @@ function Holding() {
   const navigate = useNavigate();
   const { eventId } = useParams();
 
-  // Define onClick handler to navigate to registration page and trigger reload
   const handleRegistrationClick = () => {
     navigate(`/events/${eventId}/register`);
-    window.location.reload();
   };
 
   return (

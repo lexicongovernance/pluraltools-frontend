@@ -30,7 +30,7 @@ async function postRegistrationData({
     const res = (await response.json()) as { data: PostRegistrationDataResponse };
     return res.data;
   } catch (error) {
-    console.error('Error fetching nonce:', error);
+    console.error('Error posting registration data:', error);
     return null;
   }
 }

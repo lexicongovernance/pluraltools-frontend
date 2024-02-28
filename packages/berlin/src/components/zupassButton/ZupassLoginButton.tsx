@@ -1,17 +1,17 @@
 import {
+  SignInMessagePayload,
   openSignedZuzaluSignInPopup,
+  requestUser,
   usePCDMultiplexer,
   usePendingPCD,
   useSemaphoreSignatureProof,
   useZupassPopupMessages,
-  SignInMessagePayload,
-  requestUser,
 } from '@pcd/passport-interface';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { postPcdStr } from 'api';
+import { useEffect, useState } from 'react';
 import Button from '../button';
+import { useNavigate } from 'react-router-dom';
 
 type ZupassLoginButtonProps = {
   $variant?: 'contained' | 'link';
@@ -21,8 +21,8 @@ type ZupassLoginButtonProps = {
 const POPUP_URL = window.location.origin + '/popup';
 
 function ZupassLoginButton({ children, $variant, ...props }: ZupassLoginButtonProps) {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { mutate: mutateVerify } = useMutation({
     mutationFn: postPcdStr,
@@ -43,7 +43,7 @@ function ZupassLoginButton({ children, $variant, ...props }: ZupassLoginButtonPr
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, __, serverPCDStr] = usePendingPCD(
     zupassPendingPCDStr,
-    import.meta.env.VITE_ZUPASS_SERVER_URL
+    import.meta.env.VITE_ZUPASS_SERVER_URL,
   );
   const pcdStr = usePCDMultiplexer(zupassPCDStr, serverPCDStr);
 

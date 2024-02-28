@@ -11,7 +11,6 @@ export const StyledButton = styled.button<StyledButtonProps>`
   padding-block: 0.5rem;
   padding-inline: 1rem;
   text-transform: uppercase;
-  transition: ease 0.25s;
 
   ${(props) =>
     props.$color === 'primary' &&

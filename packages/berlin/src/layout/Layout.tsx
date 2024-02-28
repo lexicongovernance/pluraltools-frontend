@@ -1,5 +1,6 @@
 // React and third-party libraries
 import { Toaster } from 'react-hot-toast';
+import { Outlet } from 'react-router-dom';
 
 // Components
 import Header from '../components/header';
@@ -8,16 +9,14 @@ import Footer from '../components/footer';
 // Styled components
 import { Main } from './Layout.styled';
 
-type LayoutProps = {
-  children: React.ReactNode;
-};
-
-function Layout({ children }: LayoutProps) {
+function Layout() {
   return (
     <>
-      <Toaster position="top-center" />
+      <Toaster position="top-center" toastOptions={{ style: { fontFamily: 'Raleway' } }} />
       <Header />
-      <Main>{children}</Main>
+      <Main>
+        <Outlet />
+      </Main>
       <Footer />
     </>
   );

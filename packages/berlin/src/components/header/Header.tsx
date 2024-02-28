@@ -52,16 +52,11 @@ function Header() {
       resetState();
       await queryClient.invalidateQueries();
       await queryClient.removeQueries();
+      navigate('/');
     },
   });
 
   const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState(false);
-
-  // Define onClick handler to navigate to account page and trigger reload
-  const handleAccountClick = () => {
-    navigate('/account');
-    window.location.reload();
-  };
 
   return (
     <SyledHeader>
@@ -78,7 +73,7 @@ function Header() {
             <DesktopButtons>
               {user ? (
                 <>
-                  <NavButton to="#" $color="secondary" onClick={handleAccountClick}>
+                  <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>
                   <Button onClick={() => mutateLogout()}>Log out</Button>
@@ -88,16 +83,16 @@ function Header() {
               )}
             </DesktopButtons>
             <MenuButton onClick={() => setIsBurgerMenuOpen(!isBurgerMenuOpen)}>
-              <Bar isOpen={isBurgerMenuOpen} />
-              <Bar isOpen={isBurgerMenuOpen} />
-              <Bar isOpen={isBurgerMenuOpen} />
+              <Bar $isOpen={isBurgerMenuOpen} />
+              <Bar $isOpen={isBurgerMenuOpen} />
+              <Bar $isOpen={isBurgerMenuOpen} />
             </MenuButton>
             <ThemeButton onClick={toggleTheme}>
               <img src={`/icons/toggle-${theme}.svg`} height={20} width={20} />
             </ThemeButton>
           </NavButtons>
         </NavContainer>
-        <BurgerMenuContainer $isOpen={isBurgerMenuOpen} onClick={() => setIsBurgerMenuOpen(false)}>
+        <BurgerMenuContainer $$isOpen={isBurgerMenuOpen} onClick={() => setIsBurgerMenuOpen(false)}>
           <NavButtons>
             <MobileButtons>
               {user ? (
