@@ -22,14 +22,13 @@ import { useAppStore } from '../store';
 // Components
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
+import { Form } from '../components/containers/Form.styled';
 import { Title } from '../components/typography/Title.styled';
 import BackButton from '../components/backButton';
 import Button from '../components/button';
-import IconButton from '../components/iconButton';
-import { Subtitle } from '../components/typography/Subtitle.styled';
-import { Body } from '../components/typography/Body.styled';
-import Textarea from '../components/textarea';
 import CommentCard from '../components/commentCard';
+import IconButton from '../components/iconButton';
+import Textarea from '../components/textarea';
 
 function Option() {
   const theme = useAppStore((state) => state.theme);
@@ -58,6 +57,12 @@ function Option() {
     queryKey: ['comments', optionId],
     queryFn: () => fetchComments({ optionId: optionId || '' }),
     enabled: !!optionId,
+  });
+
+  const sortedComments = comments?.sort((a, b) => {
+    const dateA = new Date(a.createdAt).getTime();
+    const dateB = new Date(b.createdAt).getTime();
+    return dateB - dateA; // Sort by newest first
   });
 
   useEffect(() => {
@@ -108,7 +113,7 @@ function Option() {
   const votesAreDifferent = useMemo(() => {
     if (localUserVotes && userVotes) {
       return (
-        localUserVotes[0].numOfVotes !==
+        localUserVotes[0]?.numOfVotes !==
         userVotes?.find((vote) => vote.optionId === optionId)?.numOfVotes
       );
     }
@@ -155,16 +160,24 @@ function Option() {
         />
       </FlexRow>
       <Button onClick={handleSaveVotesWrapper} disabled={!votesAreDifferent}>
-        Save all votes
+        Save votes
       </Button>
-      <Textarea
-        label="Leave a comment:"
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-      />
-      <Button onClick={handlePostComment}>Comment</Button>
-      <Title>Total comments ({comments?.length})</Title>
-      {comments && comments.map((comment) => <CommentCard key={comment.id} comment={comment} />)}
+      <Form>
+        <Textarea
+          label="Leave a comment:"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />
+        <Button onClick={handlePostComment}>Comment</Button>
+      </Form>
+      {sortedComments && (
+        <>
+          <Title>Total comments ({sortedComments.length})</Title>
+          {sortedComments.map((comment) => (
+            <CommentCard key={comment.id} comment={comment} />
+          ))}
+        </>
+      )}
     </FlexColumn>
   );
 }
