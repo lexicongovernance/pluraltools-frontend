@@ -89,46 +89,51 @@ function Account() {
     enabled: !!user?.id,
   });
 
-  const initialUser: InitialUser = {
-    username: user?.username || '',
-    name: user?.name || '',
-    email: user?.email || '',
-    emailNotification: user?.emailNotification ?? true,
-    group: (userGroups && userGroups[0]?.id) || '',
-    userAttributes: userAttributes?.reduce(
-      (acc, curr) => {
-        if (curr.attributeKey === 'credentialsGroup') {
-          const json = JSON.parse(curr.attributeValue) as CredentialsGroup;
-          acc.credentialsGroup = json;
-          return acc;
-        } else if (curr.attributeKey === 'publications' || curr.attributeKey === 'contributions') {
-          const json = JSON.parse(curr.attributeValue) as { value: string }[];
-          acc[curr.attributeKey] = json;
-          return acc;
-        } else {
-          acc[
-            curr.attributeKey as keyof Omit<
-              UserAttributes,
-              'credentialsGroup' | 'publications' | 'contributions'
-            >
-          ] = curr.attributeValue;
-          return acc;
-        }
-      },
-      {
-        role: '',
-        publications: [{ value: '' }],
-        contributions: [{ value: '' }],
-        credentialsGroup: [
-          {
-            credential: '',
-            institution: '',
-            field: '',
-          },
-        ],
-      } as UserAttributes,
-    ),
-  };
+  const initialUser: InitialUser = useMemo(() => {
+    return {
+      username: user?.username || '',
+      name: user?.name || '',
+      email: user?.email || '',
+      emailNotification: user?.emailNotification ?? true,
+      group: (userGroups && userGroups[0]?.id) || '',
+      userAttributes: userAttributes?.reduce(
+        (acc, curr) => {
+          if (curr.attributeKey === 'credentialsGroup') {
+            const json = JSON.parse(curr.attributeValue) as CredentialsGroup;
+            acc.credentialsGroup = json;
+            return acc;
+          } else if (
+            curr.attributeKey === 'publications' ||
+            curr.attributeKey === 'contributions'
+          ) {
+            const json = JSON.parse(curr.attributeValue) as { value: string }[];
+            acc[curr.attributeKey] = json;
+            return acc;
+          } else {
+            acc[
+              curr.attributeKey as keyof Omit<
+                UserAttributes,
+                'credentialsGroup' | 'publications' | 'contributions'
+              >
+            ] = curr.attributeValue;
+            return acc;
+          }
+        },
+        {
+          role: '',
+          publications: [{ value: '' }],
+          contributions: [{ value: '' }],
+          credentialsGroup: [
+            {
+              credential: '',
+              institution: '',
+              field: '',
+            },
+          ],
+        } as UserAttributes,
+      ),
+    };
+  }, [user, userGroups, userAttributes]);
 
   if (userIsLoading || userGroupsIsLoading || userAttributesIsLoading) {
     return <Title>Loading...</Title>;
