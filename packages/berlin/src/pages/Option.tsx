@@ -145,14 +145,14 @@ function Option() {
       </FlexRow>
       <FlexRow>
         <IconButton
-          onClick={() => handleUnvoteWrapper(option.id)}
+          onClick={() => handleUnvoteWrapper(option?.id ?? '')}
           disabled={localOptionHearts === 0}
           $padding={6}
           $color="secondary"
           icon={{ src: `/icons/unvote-${theme}.svg`, alt: 'Unvote icon' }}
         />
         <IconButton
-          onClick={() => handleVoteWrapper(option.id)}
+          onClick={() => handleVoteWrapper(option?.id ?? '')}
           disabled={avaliableHearts === 0}
           $padding={6}
           $color="primary"
