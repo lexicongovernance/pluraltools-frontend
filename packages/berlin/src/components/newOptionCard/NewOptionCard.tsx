@@ -15,6 +15,12 @@ type NewOptionCardProps = {
     optionSubTitle?: string;
     accepted: boolean;
     voteScore: number;
+    user: {
+      username: string;
+    };
+    group: {
+      name: string;
+    };
   };
   numOfVotes: number;
   onVote: () => void;
@@ -33,10 +39,10 @@ function NewOptionCard({ option, numOfVotes, onVote, onUnvote }: NewOptionCardPr
         <Body>{option.optionTitle}</Body>
       </Proposal>
       <Author>
-        <Body>Author</Body>
+        <Body>{option.user?.username}</Body>
       </Author>
       <Affiliation>
-        <Body>Affiliation</Body>
+        <Body>{option.group?.name}</Body>
       </Affiliation>
       <Hearts>
         <FlexColumn $gap="-4px">
