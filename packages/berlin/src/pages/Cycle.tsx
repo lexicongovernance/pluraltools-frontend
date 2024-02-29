@@ -29,7 +29,8 @@ import { Subtitle } from '../components/typography/Subtitle.styled';
 import { Title } from '../components/typography/Title.styled';
 import BackButton from '../components/backButton';
 import Button from '../components/button';
-import OptionCard from '../components/optionCard';
+import CycleColumns from '../components/cycleColumns';
+import NewOptionCard from '../components/newOptionCard';
 
 const initialHearts = 20;
 
@@ -181,17 +182,14 @@ function Cycle() {
       </FlexColumn>
       {currentCycle?.questionOptions.length ? (
         <FlexColumn>
+          <CycleColumns />
           {sortedOptions.map((option) => {
             const userVote = localUserVotes.find((vote) => vote.optionId === option.id);
             const numOfVotes = userVote ? userVote.numOfVotes : 0;
             return (
-              <OptionCard
+              <NewOptionCard
                 key={option.id}
-                id={option.id}
-                title={option.optionTitle}
-                body={option.optionSubTitle}
-                avaliableHearts={avaliableHearts}
-                pluralityScore={option.voteScore}
+                option={option}
                 numOfVotes={numOfVotes}
                 onVote={() => handleVoteWrapper(option.id)}
                 onUnvote={() => handleUnvoteWrapper(option.id)}
