@@ -57,6 +57,10 @@ function Cycle() {
   const [localUserVotes, setLocalUserVotes] = useState<
     ResponseUserVotesType | { optionId: string; numOfVotes: number }[]
   >([]);
+  const [sorting, setSorting] = useState<{ column: string; order: 'desc' | 'asc' }>({
+    column: 'pluralityScore',
+    order: 'desc',
+  });
 
   useEffect(() => {
     if (cycle && cycle.startAt && cycle.endAt) {
@@ -144,6 +148,35 @@ function Cycle() {
     return sorted;
   }, [currentCycle?.questionOptions]);
 
+  const sortedOptions2 = useMemo(() => {
+    const { column, order } = sorting;
+    const sorted = [...(currentCycle?.questionOptions ?? [])].sort((a, b) => {
+      if (column === 'author') {
+        const usernameA = a.user.username.toUpperCase();
+        const usernameB = b.user.username.toUpperCase();
+        return order === 'desc'
+          ? usernameB.localeCompare(usernameA)
+          : usernameA.localeCompare(usernameB);
+      } else if (column === 'affiliation') {
+        const affiliationA = a.group.name.toUpperCase();
+        const affiliationB = b.group.name.toUpperCase();
+        return order === 'desc'
+          ? affiliationB.localeCompare(affiliationA)
+          : affiliationA.localeCompare(affiliationB);
+      } else {
+        return order === 'desc' ? b.voteScore - a.voteScore : a.voteScore - b.voteScore;
+      }
+    });
+    return sorted;
+  }, [currentCycle?.questionOptions, sorting]);
+
+  const handleColumnClick = (column: string) => {
+    setSorting((prevSorting) => ({
+      column,
+      order: prevSorting.column === column && prevSorting.order === 'asc' ? 'desc' : 'asc',
+    }));
+  };
+
   return (
     <FlexColumn $gap="2rem">
       <FlexColumn>
@@ -182,8 +215,8 @@ function Cycle() {
       </FlexColumn>
       {currentCycle?.questionOptions.length ? (
         <FlexColumn>
-          <CycleColumns />
-          {sortedOptions.map((option) => {
+          <CycleColumns onColumnClick={handleColumnClick} />
+          {sortedOptions2.map((option) => {
             const userVote = localUserVotes.find((vote) => vote.optionId === option.id);
             const numOfVotes = userVote ? userVote.numOfVotes : 0;
             return (

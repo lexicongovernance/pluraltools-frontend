@@ -2,16 +2,20 @@ import IconButton from '../iconButton';
 import { Body } from '../typography/Body.styled';
 import { Affiliation, Author, Card, Hearts, Plurality, Proposal } from './CycleColumns.styled';
 
-function CycleColumns() {
+type CycleColumnsProps = {
+  onColumnClick: (column: string) => void;
+};
+
+function CycleColumns({ onColumnClick }: CycleColumnsProps) {
   return (
     <Card>
       <Proposal>
         <Body>Proposal</Body>
       </Proposal>
-      <Author>
+      <Author onClick={() => onColumnClick('author')}>
         <Body>Author</Body>
       </Author>
-      <Affiliation>
+      <Affiliation onClick={() => onColumnClick('affiliation')}>
         <Body>Affiliation</Body>
       </Affiliation>
       <Hearts>
@@ -21,7 +25,7 @@ function CycleColumns() {
           icon={{ src: `/icons/heart-full.svg`, alt: 'Full heart' }}
         />
       </Hearts>
-      <Plurality>
+      <Plurality onClick={() => onColumnClick('voteScore')}>
         <IconButton
           $padding={0}
           $color="secondary"

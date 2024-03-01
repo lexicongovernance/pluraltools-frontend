@@ -38,6 +38,6 @@ export const Hearts = styled(FlexRow)`
 `;
 
 export const Plurality = styled(FlexRow)`
-  max-width: 5rem;
+  max-width: 5.5rem;
   padding: 1.5rem;
 `;
