@@ -156,6 +156,10 @@ function Cycle() {
         return order === 'desc'
           ? affiliationB.localeCompare(affiliationA)
           : affiliationA.localeCompare(affiliationB);
+      } else if (column === 'numOfVotes') {
+        const votesA = localUserVotes.find((vote) => vote.optionId === a.id)?.numOfVotes || 0;
+        const votesB = localUserVotes.find((vote) => vote.optionId === b.id)?.numOfVotes || 0;
+        return order === 'desc' ? votesB - votesA : votesA - votesB;
       } else {
         return order === 'desc' ? b.voteScore - a.voteScore : a.voteScore - b.voteScore;
       }

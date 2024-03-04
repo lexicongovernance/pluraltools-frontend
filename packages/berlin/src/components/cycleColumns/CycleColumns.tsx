@@ -18,7 +18,7 @@ function CycleColumns({ onColumnClick }: CycleColumnsProps) {
       <Affiliation onClick={() => onColumnClick('affiliation')}>
         <Body>Affiliation</Body>
       </Affiliation>
-      <Hearts>
+      <Hearts onClick={() => onColumnClick('numOfVotes')}>
         <IconButton
           $padding={0}
           $color="secondary"
