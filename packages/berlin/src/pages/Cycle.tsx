@@ -142,13 +142,6 @@ function Cycle() {
   };
 
   const sortedOptions = useMemo(() => {
-    const sorted = [...(currentCycle?.questionOptions ?? [])].sort(
-      (a, b) => b.voteScore - a.voteScore,
-    );
-    return sorted;
-  }, [currentCycle?.questionOptions]);
-
-  const sortedOptions2 = useMemo(() => {
     const { column, order } = sorting;
     const sorted = [...(currentCycle?.questionOptions ?? [])].sort((a, b) => {
       if (column === 'author') {
@@ -158,8 +151,8 @@ function Cycle() {
           ? usernameB.localeCompare(usernameA)
           : usernameA.localeCompare(usernameB);
       } else if (column === 'affiliation') {
-        const affiliationA = a.group.name.toUpperCase();
-        const affiliationB = b.group.name.toUpperCase();
+        const affiliationA = a.user.group.name.toUpperCase();
+        const affiliationB = b.user.group.name.toUpperCase();
         return order === 'desc'
           ? affiliationB.localeCompare(affiliationA)
           : affiliationA.localeCompare(affiliationB);
@@ -216,7 +209,7 @@ function Cycle() {
       {currentCycle?.questionOptions.length ? (
         <FlexColumn>
           <CycleColumns onColumnClick={handleColumnClick} />
-          {sortedOptions2.map((option) => {
+          {sortedOptions.map((option) => {
             const userVote = localUserVotes.find((vote) => vote.optionId === option.id);
             const numOfVotes = userVote ? userVote.numOfVotes : 0;
             return (

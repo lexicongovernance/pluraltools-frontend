@@ -22,10 +22,11 @@ export type GetCycleResponse = {
       accepted: boolean;
       voteScore: number;
       user: {
+        group: {
+          id: string;
+          name: string;
+        };
         username: string;
-      };
-      group: {
-        name: string;
       };
     }[];
   }[];
