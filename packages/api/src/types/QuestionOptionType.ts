@@ -1,14 +1,19 @@
 export type QuestionOption = {
   id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  userId: string | null;
-  registrationId: string | null;
+  createdAt: string;
+  updatedAt: string;
   questionId: string;
   optionTitle: string;
-  optionSubTitle: string | null;
-  accepted: boolean | null;
-  voteScore: string;
+  optionSubTitle?: string;
+  accepted: boolean;
+  voteScore: number;
+  user: {
+    group: {
+      id: string;
+      name: string;
+    };
+    username: string;
+  };
 };
 
 export type GetQuestionOptionRequest = {
