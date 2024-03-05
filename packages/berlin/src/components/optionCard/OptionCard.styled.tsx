@@ -8,6 +8,7 @@ export const Card = styled(FlexRow)<{ $expanded: boolean }>`
   width: 100%;
 
   .description {
+    padding: 1.5rem;
     display: ${(props) => (props.$expanded ? 'flex' : 'none')};
   }
 `;
