@@ -21,6 +21,13 @@ export type GetCycleResponse = {
       optionSubTitle?: string;
       accepted: boolean;
       voteScore: number;
+      user: {
+        group: {
+          id: string;
+          name: string;
+        };
+        username: string;
+      };
     }[];
   }[];
 };

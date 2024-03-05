@@ -1,124 +1,87 @@
-// React and third-party libraries
-import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-
-// Store
-import { useAppStore } from '../../store';
-
-// Components
+import { useMemo, useState } from 'react';
 import { Body } from '../typography/Body.styled';
+import { Affiliation, Author, Card, Hearts, Plurality, Proposal } from './OptionCard.styled';
 import { FlexColumn } from '../containers/FlexColum.styled';
-import { FlexRow } from '../containers/FlexRow.styled';
-import { Subtitle } from '../typography/Subtitle.styled';
 import IconButton from '../iconButton';
+import { useAppStore } from '../../store';
+import { FlexRow } from '../containers/FlexRow.styled';
 
-// Styled Components
-import { Card } from './OptionCard.styled';
-
-type OptionProps = {
-  id: string;
-  title: string;
-  body?: string;
-  avaliableHearts: number;
+type OptionCardProps = {
+  option: {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    questionId: string;
+    optionTitle: string;
+    optionSubTitle?: string;
+    accepted: boolean;
+    voteScore: number;
+    user: {
+      username: string;
+      group: {
+        id: string;
+        name: string;
+      };
+    };
+  };
   numOfVotes: number;
-  pluralityScore: number;
   onVote: () => void;
   onUnvote: () => void;
 };
-
-function OptionCard({
-  id,
-  title,
-  body,
-  pluralityScore,
-  avaliableHearts,
-  numOfVotes,
-  onVote,
-  onUnvote,
-}: OptionProps) {
+function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
   const theme = useAppStore((state) => state.theme);
-  const [localOptionHearts, setLocalOptionHearts] = useState(numOfVotes);
-  const [expanded, setExpanded] = useState(false);
-  const navigate = useNavigate();
-  const { eventId, cycleId } = useParams();
-
   const formattedPluralityScore = useMemo(() => {
-    const score = parseFloat(String(pluralityScore));
+    const score = parseFloat(String(option.voteScore));
     return score % 1 === 0 ? score.toFixed(0) : score.toFixed(3);
-  }, [pluralityScore]);
+  }, [option.voteScore]);
 
-  useEffect(() => {
-    setLocalOptionHearts(numOfVotes);
-  }, [numOfVotes]);
-
-  const handleVoteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    if (avaliableHearts) {
-      setLocalOptionHearts((prevLocalOptionHearts) => prevLocalOptionHearts + 1);
-      onVote();
-    }
-  };
-
-  const handleUnvoteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    setLocalOptionHearts((prevLocalOptionHearts) => Math.max(0, prevLocalOptionHearts - 1));
-    onUnvote();
-  };
-
-  const handleCardClick = () => {
-    if (body) {
-      setExpanded(!expanded);
-    }
-  };
+  const [expanded, setExpanded] = useState(false);
 
   return (
-    <Card onClick={handleCardClick}>
-      <FlexColumn>
-        <Body>Plurality Score: {formattedPluralityScore}</Body>
-        <Subtitle>{title}</Subtitle>
-        <FlexRow $gap="0.25rem" $wrap>
-          {localOptionHearts > 0 ? (
-            Array.from({ length: localOptionHearts }).map((_, id) => (
-              <img key={id} src="/icons/heart-full.svg" height={24} width={24} alt="Full Heart" />
-            ))
-          ) : (
-            <img src="/icons/heart-empty.svg" height={24} width={24} alt="Empty Heart" />
-          )}
-        </FlexRow>
-      </FlexColumn>
-      <FlexRow>
+    <Card $expanded={expanded}>
+      <FlexColumn $gap="1rem">
         <FlexRow>
-          <IconButton
-            onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/options/${id}`)}
-            $padding={6}
-            $color="secondary"
-            icon={{ src: `/icons/comments-${theme}.svg`, alt: 'Comments icon' }}
-          />
-          <IconButton
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleUnvoteClick(e)}
-            disabled={localOptionHearts === 0}
-            $padding={6}
-            $color="secondary"
-            icon={{ src: `/icons/unvote-${theme}.svg`, alt: 'Unvote icon' }}
-          />
-          <IconButton
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleVoteClick(e)}
-            disabled={avaliableHearts === 0}
-            $padding={6}
-            $color="primary"
-            icon={{ src: `/icons/vote-${theme}.svg`, alt: 'Vote icon' }}
-          />
+          <Proposal>
+            <IconButton
+              $padding={4}
+              $color="secondary"
+              onClick={() => setExpanded((e) => !e)}
+              icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: '' }}
+              $flipVertical={expanded}
+            />
+            <Body>{option.optionTitle}</Body>
+          </Proposal>
+          <Author>
+            <Body>{option.user?.username}</Body>
+          </Author>
+          <Affiliation>
+            <Body>{option.user?.group?.name}</Body>
+          </Affiliation>
+          <Hearts>
+            <FlexColumn $gap="-4px">
+              <IconButton
+                $padding={0}
+                $color="secondary"
+                icon={{ src: `/icons/upvote-${theme}.svg`, alt: 'Upvote arrow' }}
+                onClick={onVote}
+              />
+              <IconButton
+                $padding={0}
+                $color="secondary"
+                icon={{ src: `/icons/downvote-${theme}.svg`, alt: 'Downvote arrow' }}
+                onClick={onUnvote}
+              />
+            </FlexColumn>
+            <Body>{numOfVotes}</Body>
+          </Hearts>
+          <Plurality>
+            <Body>{formattedPluralityScore}</Body>
+          </Plurality>
         </FlexRow>
-        {body && (
-          <IconButton
-            onClick={() => {}}
-            $color="secondary"
-            $flipVertical={expanded}
-            icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: 'Arrow icon' }}
-          />
+        {option.optionSubTitle && (
+          <FlexRow className="description">{option.optionSubTitle}</FlexRow>
         )}
-      </FlexRow>
-      {expanded && body && <Body>{body}</Body>}
+      </FlexColumn>
     </Card>
   );
 }
