@@ -1,9 +1,10 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Body } from '../typography/Body.styled';
 import { Affiliation, Author, Card, Hearts, Plurality, Proposal } from './OptionCard.styled';
 import { FlexColumn } from '../containers/FlexColum.styled';
 import IconButton from '../iconButton';
 import { useAppStore } from '../../store';
+import { FlexRow } from '../containers/FlexRow.styled';
 
 type OptionCardProps = {
   option: {
@@ -34,37 +35,53 @@ function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
     return score % 1 === 0 ? score.toFixed(0) : score.toFixed(3);
   }, [option.voteScore]);
 
+  const [expanded, setExpanded] = useState(false);
+
   return (
-    <Card>
-      <Proposal>
-        <Body>{option.optionTitle}</Body>
-      </Proposal>
-      <Author>
-        <Body>{option.user?.username}</Body>
-      </Author>
-      <Affiliation>
-        <Body>{option.user?.group?.name}</Body>
-      </Affiliation>
-      <Hearts>
-        <FlexColumn $gap="-4px">
-          <IconButton
-            $padding={0}
-            $color="secondary"
-            icon={{ src: `/icons/upvote-${theme}.svg`, alt: 'Upvote arrow' }}
-            onClick={onVote}
-          />
-          <IconButton
-            $padding={0}
-            $color="secondary"
-            icon={{ src: `/icons/downvote-${theme}.svg`, alt: 'Downvote arrow' }}
-            onClick={onUnvote}
-          />
-        </FlexColumn>
-        <Body>{numOfVotes}</Body>
-      </Hearts>
-      <Plurality>
-        <Body>{formattedPluralityScore}</Body>
-      </Plurality>
+    <Card $expanded={expanded}>
+      <FlexColumn $gap="1rem">
+        <FlexRow>
+          <Proposal>
+            <IconButton
+              $padding={4}
+              $color="secondary"
+              onClick={() => setExpanded((e) => !e)}
+              icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: '' }}
+              $flipVertical={expanded}
+            />
+            <Body>{option.optionTitle}</Body>
+          </Proposal>
+          <Author>
+            <Body>{option.user?.username}</Body>
+          </Author>
+          <Affiliation>
+            <Body>{option.user?.group?.name}</Body>
+          </Affiliation>
+          <Hearts>
+            <FlexColumn $gap="-4px">
+              <IconButton
+                $padding={0}
+                $color="secondary"
+                icon={{ src: `/icons/upvote-${theme}.svg`, alt: 'Upvote arrow' }}
+                onClick={onVote}
+              />
+              <IconButton
+                $padding={0}
+                $color="secondary"
+                icon={{ src: `/icons/downvote-${theme}.svg`, alt: 'Downvote arrow' }}
+                onClick={onUnvote}
+              />
+            </FlexColumn>
+            <Body>{numOfVotes}</Body>
+          </Hearts>
+          <Plurality>
+            <Body>{formattedPluralityScore}</Body>
+          </Plurality>
+        </FlexRow>
+        {option.optionSubTitle && (
+          <FlexRow className="description">{option.optionSubTitle}</FlexRow>
+        )}
+      </FlexColumn>
     </Card>
   );
 }

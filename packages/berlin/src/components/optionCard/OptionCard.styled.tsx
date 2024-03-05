@@ -1,11 +1,15 @@
 import styled from 'styled-components';
 import { FlexRow } from '../containers/FlexRow.styled';
 
-export const Card = styled(FlexRow)`
+export const Card = styled(FlexRow)<{ $expanded: boolean }>`
   border-radius: 1rem;
   border: 1px solid var(--color-black);
   gap: 0;
   width: 100%;
+
+  .description {
+    display: ${(props) => (props.$expanded ? 'flex' : 'none')};
+  }
 `;
 
 export const Proposal = styled(FlexRow)`
