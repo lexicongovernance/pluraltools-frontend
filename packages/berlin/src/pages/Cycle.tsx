@@ -234,7 +234,7 @@ function Cycle() {
         </Button>
       </FlexColumn>
       {currentCycle?.questionOptions.length ? (
-        <FlexColumn>
+        <FlexColumn $gap="0">
           <CycleColumns onColumnClick={handleColumnClick} />
           {sortedOptions.map((option) => {
             const userVote = localUserVotes.find((vote) => vote.optionId === option.id);

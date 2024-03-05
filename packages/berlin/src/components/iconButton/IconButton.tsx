@@ -11,6 +11,8 @@ type IconButtonProps = {
   $padding?: number;
   $flipVertical?: boolean;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  $height?: number;
+  $width?: number;
 } & StyledButtonProps;
 
 function IconButton({
@@ -19,12 +21,20 @@ function IconButton({
   disabled,
   $padding,
   $flipVertical,
+  $height,
+  $width,
   ...props
 }: IconButtonProps) {
   return (
     <Button onClick={onClick} style={{ padding: $padding }} disabled={disabled} {...props}>
-      <IconContainer $height={24} $width={24}>
-        <Icon src={icon.src} alt={icon.alt} height={24} width={24} $flipVertical={$flipVertical} />
+      <IconContainer $height={$height || 24} $width={$height || 24}>
+        <Icon
+          src={icon.src}
+          alt={icon.alt}
+          height={$height || 24}
+          width={$height || 24}
+          $flipVertical={$flipVertical}
+        />
       </IconContainer>
     </Button>
   );

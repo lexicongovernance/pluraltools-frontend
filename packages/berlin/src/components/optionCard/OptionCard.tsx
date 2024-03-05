@@ -64,12 +64,16 @@ function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
                 $color="secondary"
                 icon={{ src: `/icons/upvote-${theme}.svg`, alt: 'Upvote arrow' }}
                 onClick={onVote}
+                $width={16}
+                $height={16}
               />
               <IconButton
                 $padding={0}
                 $color="secondary"
                 icon={{ src: `/icons/downvote-${theme}.svg`, alt: 'Downvote arrow' }}
                 onClick={onUnvote}
+                $width={16}
+                $height={16}
               />
             </FlexColumn>
             <Body>{numOfVotes}</Body>
