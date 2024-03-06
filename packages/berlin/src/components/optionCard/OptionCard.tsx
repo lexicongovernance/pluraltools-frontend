@@ -32,7 +32,7 @@ function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
   const theme = useAppStore((state) => state.theme);
   const formattedPluralityScore = useMemo(() => {
     const score = parseFloat(String(option.voteScore));
-    return score % 1 === 0 ? score.toFixed(0) : score.toFixed(3);
+    return score % 1 === 0 ? score.toFixed(0) : score.toFixed(1);
   }, [option.voteScore]);
 
   const [expanded, setExpanded] = useState(false);
