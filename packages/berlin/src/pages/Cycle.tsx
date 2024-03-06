@@ -199,7 +199,7 @@ function Cycle() {
               : `Vote closes in: ${formattedTime}`}
         </Body>
         <Body>
-          You have <Bold>({avaliableHearts})</Bold> hearts left to give away:
+          You have <Bold>{avaliableHearts}</Bold> hearts left to give away:
         </Body>
         <FlexRow $gap="0.25rem" $wrap>
           {Array.from({ length: initialHearts }).map((_, id) => (
