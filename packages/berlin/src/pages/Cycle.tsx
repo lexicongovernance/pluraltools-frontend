@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 // API
-import { GetCycleResponse, QuestionOption, fetchCycle, fetchUserVotes, postVotes } from 'api';
+import { QuestionOption, fetchCycle, fetchUserVotes, postVotes } from 'api';
 
 // Hooks
 import useCountdown from '../hooks/useCountdown';
@@ -25,7 +25,6 @@ import { Body } from '../components/typography/Body.styled';
 import { Bold } from '../components/typography/Bold.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
-import { Subtitle } from '../components/typography/Subtitle.styled';
 import { Title } from '../components/typography/Title.styled';
 import BackButton from '../components/backButton';
 import Button from '../components/button';
@@ -132,16 +131,6 @@ function Cycle() {
 
   const currentCycle = cycle?.forumQuestions[0];
 
-  const formattedWelcomeText = (cycle: GetCycleResponse | undefined | null) => {
-    if (cycle?.status === 'OPEN') {
-      return "It's time to give your hearts away...";
-    } else if (cycle?.status === 'UPCOMING') {
-      return "It's almost time to give your hearts away...";
-    } else {
-      return 'Vote has ended.';
-    }
-  };
-
   const sortByAuthor = (a: QuestionOption, b: QuestionOption, order: Order) => {
     const usernameA = a.user.username.toUpperCase();
     const usernameB = b.user.username.toUpperCase();
@@ -201,9 +190,6 @@ function Cycle() {
     <FlexColumn $gap="2rem">
       <FlexColumn>
         <BackButton />
-        <Subtitle>
-          {formattedWelcomeText(cycle)}
-        </Subtitle>
         <Title>{currentCycle?.questionTitle}</Title>
         <Body>
           {cycleState === 'closed'
