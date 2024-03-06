@@ -1,16 +1,18 @@
 // React and third-party libraries
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // API
-import { fetchEvent, fetchEventCycles } from 'api';
+import { GetCycleResponse, fetchEvent, fetchEventCycles } from 'api';
 
 // Components
-import { FlexColumn } from '../components/containers/FlexColum.styled';
-import BackButton from '../components/backButton';
-import EventCard from '../components/eventCard';
-import VotingCards from '../components/votingCards';
 import { useMemo } from 'react';
+import { Table } from '../components/Table';
+import BackButton from '../components/backButton';
+import Button from '../components/button';
+import { FlexColumn } from '../components/containers/FlexColum.styled';
+import EventCard from '../components/eventCard';
+import { Title } from '../components/typography/Title.styled';
 
 function Event() {
   const { eventId } = useParams();
@@ -30,10 +32,6 @@ function Event() {
     () => eventCycles?.filter((cycle) => cycle.status === 'OPEN'),
     [eventCycles],
   );
-  const upcomingCycles = useMemo(
-    () => eventCycles?.filter((cycle) => cycle.status === 'UPCOMING'),
-    [eventCycles],
-  );
   const closedCycles = useMemo(
     () => eventCycles?.filter((cycle) => cycle.status === 'CLOSED'),
     [eventCycles],
@@ -42,11 +40,50 @@ function Event() {
   return (
     <FlexColumn $gap="2rem">
       <BackButton />
+      {!!openCycles?.length && <CycleTable cycles={openCycles} status="open" />}
+      {!!closedCycles?.length && <CycleTable cycles={closedCycles} status="closed" />}
       {event && <EventCard event={event} $direction="row" />}
-      {!!openCycles?.length && <VotingCards state="open" cards={openCycles} />}
-      {!!upcomingCycles?.length && <VotingCards state="upcoming" cards={upcomingCycles} />}
-      {!!closedCycles?.length && <VotingCards state="closed" cards={closedCycles} />}
     </FlexColumn>
+  );
+}
+
+function CycleTable({ cycles, status }: { cycles: GetCycleResponse[]; status: 'open' | 'closed' }) {
+  const { eventId } = useParams();
+  const navigate = useNavigate();
+  const formatDate = (date: string) => {
+    const eventEndDate = new Date(date);
+    return eventEndDate.toLocaleDateString();
+  };
+  const handleClick = (cycleId: string) => {
+    navigate(`/events/${eventId}/cycles/${cycleId}`);
+  };
+
+  const formattedColumnText = () => {
+    if (status === 'open') {
+      return 'Closes on';
+    } else {
+      return 'Closed on';
+    }
+  };
+
+  return (
+    <>
+      <Title>
+        {
+          // capitalize the first letter of the status
+          status.charAt(0).toUpperCase() + status.slice(1)
+        }{' '}
+        Agendas
+      </Title>
+      <Table
+        columns={['Agenda', formattedColumnText(), 'Action']}
+        rows={cycles.map((cycle) => [
+          cycle.forumQuestions[0].questionTitle,
+          formatDate(cycle.endAt),
+          <Button onClick={() => handleClick(cycle.id)}>Go to vote</Button>,
+        ])}
+      />
+    </>
   );
 }
 
