@@ -30,7 +30,7 @@ function Landing() {
         <ZupassButton $variant="link">
           <Bold>Zupass here.</Bold>
         </ZupassButton>{' '}
-        Submissions received before March 31 will get more attention.
+        Submissions received before April 15 will get more attention.
       </Body>
       <Body>
         The experiment will be <Bold>novel, fun, and weird</Bold> — like the best of research… and
