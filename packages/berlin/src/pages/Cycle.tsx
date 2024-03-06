@@ -202,7 +202,7 @@ function Cycle() {
       <FlexColumn>
         <BackButton />
         <Subtitle>
-          Welcome {user?.username}! {formattedWelcomeText(cycle)}
+          {formattedWelcomeText(cycle)}
         </Subtitle>
         <Title>{currentCycle?.questionTitle}</Title>
         <Body>
