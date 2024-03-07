@@ -155,6 +155,7 @@ function AccountForm({
   const { mutate: mutateUserData } = useMutation({
     mutationFn: updateUserData,
     onSuccess: async (body) => {
+      console.log({ body });
       if (!body) {
         return;
       }

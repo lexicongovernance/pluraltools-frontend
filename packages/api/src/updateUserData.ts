@@ -27,6 +27,10 @@ async function updateUserData({
     });
 
     if (!response.ok) {
+      if (response.status === 400) {
+        const errors = (await response.json()) as { errors: string[] };
+        return errors;
+      }
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
