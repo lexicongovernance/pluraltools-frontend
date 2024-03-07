@@ -7,7 +7,7 @@ import { GetCycleResponse, fetchEvent, fetchEventCycles } from 'api';
 
 // Components
 import { useMemo } from 'react';
-import { Table } from '../components/Table';
+import { Table } from '../components/table';
 import BackButton from '../components/backButton';
 import Button from '../components/button';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
