@@ -8,9 +8,10 @@ export const Card = styled(FlexRow)`
 `;
 
 export const Proposal = styled(FlexRow)`
-  padding: 1.5rem;
   flex: 1;
   font-weight: bold;
+  min-width: 11rem;
+  padding: 1.5rem;
   p {
     cursor: pointer;
   }
@@ -20,9 +21,11 @@ export const Author = styled(FlexRow)`
   display: none;
   @media (min-width: 600px) {
     display: flex;
-    max-width: 10.5rem;
-    padding: 1.5rem;
     font-weight: bold;
+    max-width: 10rem;
+    min-width: 8rem;
+    padding: 1.5rem;
+
     p {
       cursor: pointer;
     }
@@ -33,9 +36,11 @@ export const Affiliation = styled(FlexRow)`
   display: none;
   @media (min-width: 600px) {
     display: flex;
-    max-width: 10.5rem;
-    padding: 1.5rem;
     font-weight: bold;
+    max-width: 10rem;
+    min-width: 8rem;
+    padding: 1.5rem;
+
     p {
       cursor: pointer;
     }
@@ -49,6 +54,6 @@ export const Hearts = styled(FlexRow)`
 `;
 
 export const Plurality = styled(FlexRow)`
-  max-width: 5rem;
+  max-width: 5.5rem;
   padding: 1.5rem;
 `;
