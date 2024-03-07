@@ -44,6 +44,7 @@ function Header() {
   const { user } = useUser();
   const theme = useAppStore((state) => state.theme);
   const toggleTheme = useAppStore((state) => state.toggleTheme);
+  const eventRegistrationStatus = useAppStore((state) => state.eventRegistrationStatus);
   const navigate = useNavigate();
   const resetState = useAppStore((state) => state.reset);
   const { mutate: mutateLogout } = useMutation({
@@ -76,6 +77,11 @@ function Header() {
                   <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>
+                  {eventRegistrationStatus === 'COMPLETE' && (
+                    <NavButton to="/events" $color="secondary">
+                      Agenda
+                    </NavButton>
+                  )}
                   <Button onClick={() => mutateLogout()}>Log out</Button>
                 </>
               ) : (
@@ -100,6 +106,11 @@ function Header() {
                   <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>
+                  {eventRegistrationStatus === 'COMPLETE' && (
+                    <NavButton to="/events" $color="secondary">
+                      Agenda
+                    </NavButton>
+                  )}
                   <Button onClick={() => mutateLogout()}>Log out</Button>
                 </>
               ) : (

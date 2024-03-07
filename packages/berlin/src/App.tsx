@@ -21,6 +21,7 @@ import PassportPopupRedirect from './pages/Popup';
 import Register from './pages/Register';
 import Results from './pages/Results.tsx';
 import Option from './pages/Option.tsx';
+import fetchUserRegistrations from 'api/src/fetchUserRegistrations.ts';
 
 async function userIsLoggedInLoader(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
@@ -56,13 +57,22 @@ async function landingLoader(queryClient: QueryClient) {
     queryFn: fetchUserData,
   });
 
+  if (!user) {
+    return null;
+  }
+
   const events = await queryClient.fetchQuery({
     queryKey: ['events'],
     queryFn: fetchEvents,
   });
 
-  if (!user) {
-    return null;
+  const registrations = await queryClient.fetchQuery({
+    queryKey: [user.id, 'registrations'],
+    queryFn: () => fetchUserRegistrations(user.id),
+  });
+
+  if (registrations?.some((r) => r.status === 'APPROVED')) {
+    useAppStore.setState({ eventRegistrationStatus: 'COMPLETE' });
   }
 
   const userIsComplete = await userIsCompleteLoader(queryClient);
