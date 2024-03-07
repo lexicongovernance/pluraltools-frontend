@@ -155,15 +155,23 @@ function AccountForm({
   const { mutate: mutateUserData } = useMutation({
     mutationFn: updateUserData,
     onSuccess: async (body) => {
-      if (body) {
-        await queryClient.invalidateQueries({ queryKey: ['user'] });
-        await queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'groups'] });
+      console.log({ body });
+      if (!body) {
+        return;
+      }
 
-        toast.success('User data updated!');
+      if ('errors' in body) {
+        toast.error(`There was an error: ${body.errors.join(', ')}`);
+        return;
+      }
 
-        if (events?.length === 1) {
-          navigate(`/events/${events?.[0].id}/register`);
-        }
+      await queryClient.invalidateQueries({ queryKey: ['user'] });
+      await queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'groups'] });
+
+      toast.success('User data updated!');
+
+      if (events?.length === 1) {
+        navigate(`/events/${events?.[0].id}/register`);
       }
     },
     onError: () => {
@@ -277,11 +285,17 @@ function AccountForm({
           <Input
             label="Username"
             placeholder="Enter your Username"
+            autoComplete="off"
             required
             {...register('username', { required: 'Username is required', minLength: 3 })}
             errors={errors.username ? [errors.username.message ?? ''] : []}
           />
-          <Input label="Name" placeholder="(First name, Last name)" {...register('name')} />
+          <Input
+            label="Name"
+            autoComplete="off"
+            placeholder="(First name, Last name)"
+            {...register('name')}
+          />
           <Input label="Email" placeholder="Enter your Email" {...register('email')} />
           <Controller
             name="group"
