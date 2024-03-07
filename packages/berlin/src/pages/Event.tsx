@@ -67,23 +67,17 @@ function CycleTable({ cycles, status }: { cycles: GetCycleResponse[]; status: 'o
   };
 
   return (
-    <>
-      <Title>
-        {
-          // capitalize the first letter of the status
-          status.charAt(0).toUpperCase() + status.slice(1)
-        }{' '}
-        Agendas
-      </Title>
+    <div>
+      <Title style={{ textTransform: 'capitalize' }}>{status} Agendas</Title>
       <Table
         columns={['Agenda', formattedColumnText(), 'Action']}
         rows={cycles.map((cycle) => [
-          cycle.forumQuestions[0].questionTitle,
+          cycle.forumQuestions?.[0]?.questionTitle,
           formatDate(cycle.endAt),
           <Button onClick={() => handleClick(cycle.id)}>Go to vote</Button>,
         ])}
       />
-    </>
+    </div>
   );
 }
 
