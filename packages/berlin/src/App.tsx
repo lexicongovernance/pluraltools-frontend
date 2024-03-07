@@ -56,14 +56,14 @@ async function landingLoader(queryClient: QueryClient) {
     queryFn: fetchUserData,
   });
 
+  if (!user) {
+    return null;
+  }
+
   const events = await queryClient.fetchQuery({
     queryKey: ['events'],
     queryFn: fetchEvents,
   });
-
-  if (!user) {
-    return null;
-  }
 
   const userIsComplete = await userIsCompleteLoader(queryClient);
 

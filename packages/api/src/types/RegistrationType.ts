@@ -5,3 +5,5 @@ export type GetRegistrationResponseType = {
   eventId?: string | undefined;
   status: RegistrationStatus;
 };
+
+export type GetRegistrationsResponseType = GetRegistrationResponseType[];
