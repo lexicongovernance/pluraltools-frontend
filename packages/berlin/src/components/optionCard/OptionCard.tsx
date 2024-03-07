@@ -39,8 +39,8 @@ function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
 
   return (
     <Card $expanded={expanded}>
-      <FlexColumn $gap="1rem">
-        <FlexRow>
+      <FlexColumn>
+        <FlexRow $gap="0">
           <Proposal>
             <IconButton
               $padding={4}

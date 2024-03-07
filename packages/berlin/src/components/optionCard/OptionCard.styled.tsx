@@ -7,21 +7,24 @@ export const Card = styled(FlexRow)<{ $expanded: boolean }>`
   width: 100%;
 
   .description {
-    padding: 1.5rem;
     display: ${(props) => (props.$expanded ? 'flex' : 'none')};
+    padding: 1.5rem;
+    padding-top: 0;
   }
 `;
 
 export const Proposal = styled(FlexRow)`
-  padding: 1.5rem;
   flex: 1;
+  min-width: 11rem;
+  padding: 1.5rem;
 `;
 
 export const Author = styled(FlexRow)`
   display: none;
   @media (min-width: 600px) {
     display: flex;
-    max-width: 10.5rem;
+    max-width: 10rem;
+    min-width: 8rem;
     padding: 1.5rem;
   }
 `;
@@ -30,7 +33,8 @@ export const Affiliation = styled(FlexRow)`
   display: none;
   @media (min-width: 600px) {
     display: flex;
-    max-width: 10.5rem;
+    max-width: 10rem;
+    min-width: 8rem;
     padding: 1.5rem;
   }
 `;
