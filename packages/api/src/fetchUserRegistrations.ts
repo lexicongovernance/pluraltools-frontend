@@ -21,7 +21,7 @@ async function fetchUserRegistrations(
     const userGroups = (await response.json()) as { data: GetRegistrationsResponseType };
     return userGroups.data;
   } catch (error) {
-    console.error('Error fetching user groups:', error);
+    console.error('Error fetching user registrations:', error);
     return null;
   }
 }

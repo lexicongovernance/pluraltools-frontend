@@ -80,7 +80,9 @@ function Header() {
             <DesktopButtons>
               {user ? (
                 <>
-                  {registrationsData?.some((r) => r.status === 'APPROVED') && (
+                  {registrationsData?.some(
+                    (registration) => registration.status === 'APPROVED',
+                  ) && (
                     <NavButton to="/events" $color="secondary">
                       Agenda
                     </NavButton>
@@ -109,7 +111,9 @@ function Header() {
             <MobileButtons>
               {user ? (
                 <>
-                  {registrationsData?.some((r) => r.status === 'APPROVED') && (
+                  {registrationsData?.some(
+                    (registration) => registration.status === 'APPROVED',
+                  ) && (
                     <NavButton to="/events" $color="secondary">
                       Agenda
                     </NavButton>
