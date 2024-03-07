@@ -1,6 +1,6 @@
 // React and third-party libraries
 import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
 // Store
@@ -38,13 +38,13 @@ import {
   LogoTextContainer,
   ThemeButton,
 } from './Header.styled';
+import fetchUserRegistrations from 'api/src/fetchUserRegistrations';
 
 function Header() {
   const queryClient = useQueryClient();
   const { user } = useUser();
   const theme = useAppStore((state) => state.theme);
   const toggleTheme = useAppStore((state) => state.toggleTheme);
-  const eventRegistrationStatus = useAppStore((state) => state.eventRegistrationStatus);
   const navigate = useNavigate();
   const resetState = useAppStore((state) => state.reset);
   const { mutate: mutateLogout } = useMutation({
@@ -55,6 +55,12 @@ function Header() {
       await queryClient.removeQueries();
       navigate('/');
     },
+  });
+
+  const { data: registrationsData } = useQuery({
+    queryKey: [user?.id, 'registrations'],
+    queryFn: () => fetchUserRegistrations(user?.id ?? ''),
+    enabled: !!user,
   });
 
   const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState(false);
@@ -74,14 +80,14 @@ function Header() {
             <DesktopButtons>
               {user ? (
                 <>
-                  <NavButton to="/account" $color="secondary">
-                    Account
-                  </NavButton>
-                  {eventRegistrationStatus === 'COMPLETE' && (
+                  {registrationsData?.some((r) => r.status === 'APPROVED') && (
                     <NavButton to="/events" $color="secondary">
                       Agenda
                     </NavButton>
                   )}
+                  <NavButton to="/account" $color="secondary">
+                    Account
+                  </NavButton>
                   <Button onClick={() => mutateLogout()}>Log out</Button>
                 </>
               ) : (
@@ -103,14 +109,14 @@ function Header() {
             <MobileButtons>
               {user ? (
                 <>
-                  <NavButton to="/account" $color="secondary">
-                    Account
-                  </NavButton>
-                  {eventRegistrationStatus === 'COMPLETE' && (
+                  {registrationsData?.some((r) => r.status === 'APPROVED') && (
                     <NavButton to="/events" $color="secondary">
                       Agenda
                     </NavButton>
                   )}
+                  <NavButton to="/account" $color="secondary">
+                    Account
+                  </NavButton>
                   <Button onClick={() => mutateLogout()}>Log out</Button>
                 </>
               ) : (

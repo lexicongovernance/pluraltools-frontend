@@ -6,7 +6,6 @@ type COMPLETION_STATUS = 'COMPLETE' | 'INCOMPLETE';
 interface AppState {
   onboardingStatus: COMPLETION_STATUS;
   userStatus: COMPLETION_STATUS;
-  eventRegistrationStatus: COMPLETION_STATUS;
   theme: 'light' | 'dark';
   avaliableHearts: number;
   setUserStatus: (status: COMPLETION_STATUS) => void;
@@ -28,8 +27,6 @@ export const useAppStore = create<AppState>()(
         setUserStatus: (status: COMPLETION_STATUS) => set(() => ({ userStatus: status })),
         setOnboardingStatus: (status: COMPLETION_STATUS) =>
           set(() => ({ onboardingStatus: status })),
-        setEventRegistrationStatus: (status: COMPLETION_STATUS) =>
-          set(() => ({ eventRegistrationStatus: status })),
         setAvaliableHearts: (hearts: number) => set(() => ({ avaliableHearts: hearts })),
         toggleTheme: () => set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
         reset: () =>
