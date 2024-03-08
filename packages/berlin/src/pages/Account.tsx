@@ -55,7 +55,8 @@ type UserAttributes = {
 
 type InitialUser = {
   username: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   emailNotification: boolean;
   email: string;
   group: string;
@@ -92,7 +93,8 @@ function Account() {
   const initialUser: InitialUser = useMemo(() => {
     return {
       username: user?.username || '',
-      name: user?.name || '',
+      firstName: user?.firstName || '',
+      lastName: user?.lastName || '',
       email: user?.email || '',
       emailNotification: user?.emailNotification ?? true,
       group: (userGroups && userGroups[0]?.id) || '',
@@ -241,7 +243,8 @@ function AccountForm({
         username: value.username,
         email: value.email,
         emailNotification: value.emailNotification,
-        name: value.name,
+        firstName: value.firstName,
+        lastName: value.lastName,
         groupIds: [value.group],
         userAttributes: {
           ...value.userAttributes,
@@ -296,10 +299,20 @@ function AccountForm({
             errors={errors.username ? [errors.username.message ?? ''] : []}
           />
           <Input
-            label="Name"
+            label="First name"
             autoComplete="off"
-            placeholder="(First name, Last name)"
-            {...register('name')}
+            placeholder="Enter your first name"
+            required
+            {...register('firstName', { required: 'First name is required' })}
+            errors={errors.firstName ? [errors.firstName.message ?? ''] : []}
+          />
+          <Input
+            label="Last name"
+            autoComplete="off"
+            placeholder="Enter your last name"
+            required
+            {...register('lastName', { required: 'Last name is required' })}
+            errors={errors.lastName ? [errors.lastName.message ?? ''] : []}
           />
           <Input label="Email" placeholder="Enter your Email" {...register('email')} />
           <Controller
