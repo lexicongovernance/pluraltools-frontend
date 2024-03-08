@@ -57,7 +57,6 @@ type InitialUser = {
   username: string;
   firstName: string;
   lastName: string;
-  emailNotification: boolean;
   email: string;
   group: string;
   userAttributes: UserAttributes | undefined;
@@ -96,7 +95,6 @@ function Account() {
       firstName: user?.firstName || '',
       lastName: user?.lastName || '',
       email: user?.email || '',
-      emailNotification: user?.emailNotification ?? true,
       group: (userGroups && userGroups[0]?.id) || '',
       userAttributes: userAttributes?.reduce(
         (acc, curr) => {
@@ -242,7 +240,6 @@ function AccountForm({
         userId: user.id,
         username: value.username,
         email: value.email,
-        emailNotification: value.emailNotification,
         firstName: value.firstName,
         lastName: value.lastName,
         groupIds: [value.group],
