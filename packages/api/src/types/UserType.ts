@@ -1,10 +1,9 @@
 export type GetUserResponse = {
   id: string;
   username: string | null;
-  email: string | null;
   firstName: string | null;
   lastName: string | null;
-  emailNotification: boolean;
+  email: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -14,7 +13,6 @@ export type PutUserRequest = {
   username: string;
   firstName: string;
   lastName: string;
-  emailNotification?: boolean;
   email?: string;
   groupIds: string[];
   userAttributes: Record<string, string>;
