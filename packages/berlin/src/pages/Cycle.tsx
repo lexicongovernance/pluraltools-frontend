@@ -132,11 +132,9 @@ function Cycle() {
   const currentCycle = cycle?.forumQuestions[0];
 
   const sortByAuthor = (a: QuestionOption, b: QuestionOption, order: Order) => {
-    const lastNameA = a.user.lastName.toUpperCase();
-    const lastNameB = b.user.lastName.toUpperCase();
-    return order === 'desc'
-      ? lastNameB.localeCompare(lastNameA)
-      : lastNameA.localeCompare(lastNameB);
+    const authorA = (a.user.lastName || a.user.username).toUpperCase();
+    const authorB = (b.user.lastName || b.user.username).toUpperCase();
+    return order === 'desc' ? authorB.localeCompare(authorA) : authorA.localeCompare(authorB);
   };
 
   const sortByAffiliation = (a: QuestionOption, b: QuestionOption, order: Order) => {
