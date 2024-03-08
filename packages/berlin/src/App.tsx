@@ -92,6 +92,11 @@ async function redirectToOnlyOneEventLoader(queryClient: QueryClient) {
 }
 
 async function userIsAcceptedToEventLoader(queryClient: QueryClient, eventId?: string) {
+  if (import.meta.env.VITE_VERCEL_ENV !== 'production') {
+    // Skip this check in development
+    return null;
+  }
+
   const registration = await queryClient.fetchQuery({
     queryKey: ['event', eventId, 'registration'],
     queryFn: () => fetchRegistration(eventId || ''),
