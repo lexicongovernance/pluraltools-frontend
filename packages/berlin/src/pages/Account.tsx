@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 
 // API Calls
 import {
+  GetUserResponse,
   fetchEvents,
   fetchGroups,
   fetchUserAttributes,
@@ -27,7 +28,6 @@ import Select from '../components/select';
 import useUser from '../hooks/useUser';
 
 // Types
-import { AuthUser } from '../types/AuthUserType';
 import { DBEvent } from '../types/DBEventType';
 import { GetGroupsResponse } from '../types/GroupType';
 import { formatGroups } from '../utils/formatGroups';
@@ -149,7 +149,7 @@ function AccountForm({
   events,
 }: {
   initialUser: InitialUser;
-  user: AuthUser | null | undefined;
+  user: GetUserResponse | null | undefined;
   groups: GetGroupsResponse[] | null | undefined;
   events: DBEvent[] | null | undefined;
 }) {
