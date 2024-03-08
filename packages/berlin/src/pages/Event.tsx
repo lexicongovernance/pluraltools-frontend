@@ -75,7 +75,7 @@ function CycleTable({ cycles, status }: { cycles: GetCycleResponse[]; status: 'o
           cycle.forumQuestions?.[0]?.questionTitle,
           formatDate(cycle.endAt),
           <Button onClick={() => handleClick(cycle.id)}>
-            {status === 'open' ? 'Vote' : 'RESULTS'}
+            {status === 'open' ? 'Vote' : 'Results'}
           </Button>,
         ])}
       />
