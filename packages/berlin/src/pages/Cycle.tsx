@@ -132,8 +132,8 @@ function Cycle() {
   const currentCycle = cycle?.forumQuestions[0];
 
   const sortByAuthor = (a: QuestionOption, b: QuestionOption, order: Order) => {
-    const lastNameA = a.user.username.toUpperCase();
-    const lastNameB = b.user.username.toUpperCase();
+    const lastNameA = a.user.lastName.toUpperCase();
+    const lastNameB = b.user.lastName.toUpperCase();
     return order === 'desc'
       ? lastNameB.localeCompare(lastNameA)
       : lastNameA.localeCompare(lastNameB);
