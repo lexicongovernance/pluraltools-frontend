@@ -83,7 +83,9 @@ function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
           </Plurality>
         </FlexRow>
         {option.optionSubTitle && (
-          <FlexRow className="description">{option.optionSubTitle}</FlexRow>
+          <FlexRow className="description">
+            <Body>{option.optionSubTitle}</Body>
+          </FlexRow>
         )}
       </FlexColumn>
     </Card>
