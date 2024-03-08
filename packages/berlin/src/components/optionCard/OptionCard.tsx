@@ -5,25 +5,10 @@ import { FlexColumn } from '../containers/FlexColum.styled';
 import IconButton from '../iconButton';
 import { useAppStore } from '../../store';
 import { FlexRow } from '../containers/FlexRow.styled';
+import { QuestionOption } from 'api';
 
 type OptionCardProps = {
-  option: {
-    id: string;
-    createdAt: string;
-    updatedAt: string;
-    questionId: string;
-    optionTitle: string;
-    optionSubTitle?: string;
-    accepted: boolean;
-    voteScore: number;
-    user: {
-      username: string;
-      group: {
-        id: string;
-        name: string;
-      };
-    };
-  };
+  option: QuestionOption;
   numOfVotes: number;
   onVote: () => void;
   onUnvote: () => void;
@@ -36,6 +21,10 @@ function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
   }, [option.voteScore]);
 
   const [expanded, setExpanded] = useState(false);
+
+  const author = option.user.lastName
+    ? `${option.user.firstName} ${option.user.lastName}`
+    : option.user.username;
 
   return (
     <Card $expanded={expanded}>
@@ -52,7 +41,7 @@ function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
             <Body>{option.optionTitle}</Body>
           </Proposal>
           <Author>
-            <Body>{option.user?.username}</Body>
+            <Body>{author}</Body>
           </Author>
           <Affiliation>
             <Body>{option.user?.group?.name}</Body>
