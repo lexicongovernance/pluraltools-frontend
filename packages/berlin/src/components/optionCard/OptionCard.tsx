@@ -22,6 +22,10 @@ function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
 
   const [expanded, setExpanded] = useState(false);
 
+  const author = option.user.lastName
+    ? `${option.user.firstName} ${option.user.lastName}`
+    : option.user.username;
+
   return (
     <Card $expanded={expanded}>
       <FlexColumn>
@@ -37,9 +41,7 @@ function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
             <Body>{option.optionTitle}</Body>
           </Proposal>
           <Author>
-            <Body>
-              {option.user?.firstName} {option.user?.lastName}
-            </Body>
+            <Body>{author}</Body>
           </Author>
           <Affiliation>
             <Body>{option.user?.group?.name}</Body>
