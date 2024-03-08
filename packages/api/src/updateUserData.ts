@@ -4,7 +4,8 @@ async function updateUserData({
   userId,
   username,
   emailNotification,
-  name,
+  firstName,
+  lastName,
   email,
   groupIds,
   userAttributes,
@@ -22,7 +23,8 @@ async function updateUserData({
         email,
         userAttributes,
         emailNotification,
-        name,
+        firstName,
+        lastName,
       }),
     });
 
