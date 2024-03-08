@@ -162,37 +162,6 @@ function Cycle() {
     return order === 'desc' ? b.voteScore - a.voteScore : a.voteScore - b.voteScore;
   };
 
-  const sortByAuthor = (a: QuestionOption, b: QuestionOption, order: Order) => {
-    const usernameA = a.user.username.toUpperCase();
-    const usernameB = b.user.username.toUpperCase();
-    return order === 'desc'
-      ? usernameB.localeCompare(usernameA)
-      : usernameA.localeCompare(usernameB);
-  };
-
-  const sortByAffiliation = (a: QuestionOption, b: QuestionOption, order: Order) => {
-    const affiliationA = a.user.group.name.toUpperCase();
-    const affiliationB = b.user.group.name.toUpperCase();
-    return order === 'desc'
-      ? affiliationB.localeCompare(affiliationA)
-      : affiliationA.localeCompare(affiliationB);
-  };
-
-  const sortByNumOfVotes = (
-    a: QuestionOption,
-    b: QuestionOption,
-    order: Order,
-    localUserVotes: LocalUserVotes,
-  ) => {
-    const votesA = localUserVotes.find((vote) => vote.optionId === a.id)?.numOfVotes || 0;
-    const votesB = localUserVotes.find((vote) => vote.optionId === b.id)?.numOfVotes || 0;
-    return order === 'desc' ? votesB - votesA : votesA - votesB;
-  };
-
-  const sortByVoteScore = (a: QuestionOption, b: QuestionOption, order: Order) => {
-    return order === 'desc' ? b.voteScore - a.voteScore : a.voteScore - b.voteScore;
-  };
-
   const sortedOptions = useMemo(() => {
     const { column, order } = sorting;
     const sorted = [...(currentCycle?.questionOptions ?? [])].sort((a, b) => {
