@@ -69,6 +69,12 @@ async function redirectOnLandingLoader(queryClient: QueryClient) {
     return null;
   }
 
+  const onboardingState = useAppStore.getState().onboardingStatus;
+
+  if (onboardingState === 'INCOMPLETE') {
+    return redirect('/onboarding');
+  }
+
   const events = await queryClient.fetchQuery({
     queryKey: ['events'],
     queryFn: fetchEvents,
