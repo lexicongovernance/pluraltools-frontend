@@ -1,8 +1,7 @@
-import { FlexColumn } from '../containers/FlexColum.styled';
-import { Grid } from '../containers/Grid.styled';
-import { Title } from '../typography/Title.styled';
-import CycleCard from '../cycleCard';
 import type { GetCycleResponse } from 'api';
+import { FlexColumn } from '../containers/FlexColum.styled';
+import CycleCard from '../cycleCard';
+import { Title } from '../typography/Title.styled';
 
 type VotingCardsProps = {
   state: string;
@@ -12,14 +11,8 @@ type VotingCardsProps = {
 function VotingCards({ state, cards }: VotingCardsProps) {
   return (
     <FlexColumn>
-      <Title style={{ textTransform: 'capitalize' }}>{state} Votes</Title>
-      {cards && (
-        <Grid $columns={2}>
-          {cards.map((card) => (
-            <CycleCard key={card.id} cycle={card} />
-          ))}
-        </Grid>
-      )}
+      <Title style={{ textTransform: 'capitalize' }}>{state} Agendas</Title>
+      {cards && cards.map((card) => <CycleCard key={card.id} cycle={card} />)}
     </FlexColumn>
   );
 }

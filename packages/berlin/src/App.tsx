@@ -22,7 +22,10 @@ import Register from './pages/Register';
 import Results from './pages/Results.tsx';
 import Option from './pages/Option.tsx';
 
-async function userIsLoggedInLoader(queryClient: QueryClient) {
+/**
+ * Redirects the user to the landing page if they are not logged in
+ */
+async function redirectToLandingLoader(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
     queryKey: ['user'],
     queryFn: fetchUserData,
@@ -35,7 +38,10 @@ async function userIsLoggedInLoader(queryClient: QueryClient) {
   return null;
 }
 
-async function userIsCompleteLoader(queryClient: QueryClient) {
+/**
+ * Redirects the user to the account page if they have not completed their profile
+ */
+async function redirectToAccount(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
     queryKey: ['user'],
     queryFn: fetchUserData,
@@ -50,22 +56,25 @@ async function userIsCompleteLoader(queryClient: QueryClient) {
   }
 }
 
-async function landingLoader(queryClient: QueryClient) {
+/**
+ * Redirects the user to the landing page to cycles or account page
+ */
+async function redirectOnLandingLoader(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
     queryKey: ['user'],
     queryFn: fetchUserData,
-  });
-
-  const events = await queryClient.fetchQuery({
-    queryKey: ['events'],
-    queryFn: fetchEvents,
   });
 
   if (!user) {
     return null;
   }
 
-  const userIsComplete = await userIsCompleteLoader(queryClient);
+  const events = await queryClient.fetchQuery({
+    queryKey: ['events'],
+    queryFn: fetchEvents,
+  });
+
+  const userIsComplete = await redirectToAccount(queryClient);
 
   if (userIsComplete) {
     return userIsComplete;
@@ -78,6 +87,9 @@ async function landingLoader(queryClient: QueryClient) {
   return null;
 }
 
+/**
+ * Redirects the user to the only event if there is only one event
+ */
 async function redirectToOnlyOneEventLoader(queryClient: QueryClient) {
   const events = await queryClient.fetchQuery({
     queryKey: ['events'],
@@ -91,7 +103,16 @@ async function redirectToOnlyOneEventLoader(queryClient: QueryClient) {
   return null;
 }
 
-async function userIsAcceptedToEventLoader(queryClient: QueryClient, eventId?: string) {
+/**
+ * Redirects the user to the register page if they are not registered
+ * Redirects the user to the holding page if they in DRAFT STATUS
+ */
+async function redirectToEventHoldingOrRegister(queryClient: QueryClient, eventId?: string) {
+  if (import.meta.env.VITE_VERCEL_ENV !== 'production') {
+    // Skip this check in development
+    return null;
+  }
+
   const registration = await queryClient.fetchQuery({
     queryKey: ['event', eventId, 'registration'],
     queryFn: () => fetchRegistration(eventId || ''),
@@ -101,12 +122,15 @@ async function userIsAcceptedToEventLoader(queryClient: QueryClient, eventId?: s
     return redirect(`/events/${eventId}/register`);
   }
 
-  if (registration?.status === 'DRAFT') {
+  if (registration?.status !== 'APPROVED') {
     return redirect(`/events/${eventId}/holding`);
   }
 }
 
-async function redirectClosedCycleLoader(
+/**
+ * Redirects the user to the results page if the cycle is closed
+ */
+async function redirectToCycleResultsLoader(
   queryClient: QueryClient,
   eventId?: string,
   cycleId?: string,
@@ -128,10 +152,10 @@ const router = (queryClient: QueryClient) =>
     {
       element: <BerlinLayout />,
       children: [
-        { path: '/', loader: () => landingLoader(queryClient), element: <Landing /> },
+        { path: '/', loader: () => redirectOnLandingLoader(queryClient), element: <Landing /> },
         { path: '/popup', element: <PassportPopupRedirect /> },
         {
-          loader: () => userIsLoggedInLoader(queryClient),
+          loader: () => redirectToLandingLoader(queryClient),
           children: [
             { path: '/onboarding', Component: Onboarding },
             {
@@ -139,7 +163,7 @@ const router = (queryClient: QueryClient) =>
               Component: Account,
             },
             {
-              loader: () => userIsCompleteLoader(queryClient),
+              loader: () => redirectToAccount(queryClient),
               path: '/events',
               children: [
                 {
@@ -157,7 +181,8 @@ const router = (queryClient: QueryClient) =>
                 },
                 {
                   path: ':eventId/cycles',
-                  loader: ({ params }) => userIsAcceptedToEventLoader(queryClient, params.eventId),
+                  loader: ({ params }) =>
+                    redirectToEventHoldingOrRegister(queryClient, params.eventId),
                   children: [
                     {
                       path: '',
@@ -165,7 +190,7 @@ const router = (queryClient: QueryClient) =>
                     },
                     {
                       loader: ({ params }) =>
-                        redirectClosedCycleLoader(queryClient, params.eventId, params.cycleId),
+                        redirectToCycleResultsLoader(queryClient, params.eventId, params.cycleId),
                       path: ':cycleId',
                       Component: Cycle,
                     },

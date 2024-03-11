@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 // API
-import { GetCycleResponse, QuestionOption, fetchCycle, fetchUserVotes, postVotes } from 'api';
+import { QuestionOption, fetchCycle, fetchUserVotes, postVotes } from 'api';
 
 // Hooks
 import useCountdown from '../hooks/useCountdown';
@@ -25,7 +25,6 @@ import { Body } from '../components/typography/Body.styled';
 import { Bold } from '../components/typography/Bold.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
-import { Subtitle } from '../components/typography/Subtitle.styled';
 import { Title } from '../components/typography/Title.styled';
 import BackButton from '../components/backButton';
 import Button from '../components/button';
@@ -132,22 +131,10 @@ function Cycle() {
 
   const currentCycle = cycle?.forumQuestions[0];
 
-  const formattedWelcomeText = (cycle: GetCycleResponse | undefined | null) => {
-    if (cycle?.status === 'OPEN') {
-      return "It's time to give your hearts away...";
-    } else if (cycle?.status === 'UPCOMING') {
-      return "It's almost time to give your hearts away...";
-    } else {
-      return 'Vote has ended.';
-    }
-  };
-
   const sortByAuthor = (a: QuestionOption, b: QuestionOption, order: Order) => {
-    const usernameA = a.user.username.toUpperCase();
-    const usernameB = b.user.username.toUpperCase();
-    return order === 'desc'
-      ? usernameB.localeCompare(usernameA)
-      : usernameA.localeCompare(usernameB);
+    const authorA = (a.user.lastName || a.user.username).toUpperCase();
+    const authorB = (b.user.lastName || b.user.username).toUpperCase();
+    return order === 'desc' ? authorB.localeCompare(authorA) : authorA.localeCompare(authorB);
   };
 
   const sortByAffiliation = (a: QuestionOption, b: QuestionOption, order: Order) => {
@@ -201,9 +188,6 @@ function Cycle() {
     <FlexColumn $gap="2rem">
       <FlexColumn>
         <BackButton />
-        <Subtitle>
-          Welcome {user?.username}! {formattedWelcomeText(cycle)}
-        </Subtitle>
         <Title>{currentCycle?.questionTitle}</Title>
         <Body>
           {cycleState === 'closed'
@@ -213,10 +197,7 @@ function Cycle() {
               : `Vote closes in: ${formattedTime}`}
         </Body>
         <Body>
-          You have <Bold>{initialHearts}</Bold> total hearts
-        </Body>
-        <Body>
-          <Bold>Remaining hearts ({avaliableHearts}) :</Bold>
+          You have <Bold>{avaliableHearts}</Bold> hearts left to give away:
         </Body>
         <FlexRow $gap="0.25rem" $wrap>
           {Array.from({ length: initialHearts }).map((_, id) => (
@@ -234,7 +215,7 @@ function Cycle() {
         </Button>
       </FlexColumn>
       {currentCycle?.questionOptions.length ? (
-        <FlexColumn>
+        <FlexColumn $gap="0">
           <CycleColumns onColumnClick={handleColumnClick} />
           {sortedOptions.map((option) => {
             const userVote = localUserVotes.find((vote) => vote.optionId === option.id);

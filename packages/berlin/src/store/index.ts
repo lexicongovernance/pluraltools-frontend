@@ -21,6 +21,7 @@ export const useAppStore = create<AppState>()(
       (set) => ({
         onboardingStatus: 'INCOMPLETE',
         userStatus: 'INCOMPLETE',
+        eventRegistrationStatus: 'INCOMPLETE',
         theme: 'dark', // Default theme is dark
         avaliableHearts: 20, // Set the initial hearts value
         setUserStatus: (status: COMPLETION_STATUS) => set(() => ({ userStatus: status })),
@@ -28,7 +29,12 @@ export const useAppStore = create<AppState>()(
           set(() => ({ onboardingStatus: status })),
         setAvaliableHearts: (hearts: number) => set(() => ({ avaliableHearts: hearts })),
         toggleTheme: () => set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
-        reset: () => set(() => ({ userStatus: 'INCOMPLETE', avaliableHearts: 20 })),
+        reset: () =>
+          set(() => ({
+            userStatus: 'INCOMPLETE',
+            eventRegistrationStatus: 'INCOMPLETE',
+            avaliableHearts: 20,
+          })),
       }),
       { name: 'lexicon-store' },
     ),

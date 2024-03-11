@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 
 // API Calls
 import {
+  GetUserResponse,
   fetchEvents,
   fetchGroups,
   fetchUserAttributes,
@@ -27,7 +28,6 @@ import Select from '../components/select';
 import useUser from '../hooks/useUser';
 
 // Types
-import { AuthUser } from '../types/AuthUserType';
 import { DBEvent } from '../types/DBEventType';
 import { GetGroupsResponse } from '../types/GroupType';
 import { formatGroups } from '../utils/formatGroups';
@@ -55,8 +55,8 @@ type UserAttributes = {
 
 type InitialUser = {
   username: string;
-  name: string;
-  emailNotification: boolean;
+  firstName: string;
+  lastName: string;
   email: string;
   group: string;
   userAttributes: UserAttributes | undefined;
@@ -92,9 +92,9 @@ function Account() {
   const initialUser: InitialUser = useMemo(() => {
     return {
       username: user?.username || '',
-      name: user?.name || '',
+      firstName: user?.firstName || '',
+      lastName: user?.lastName || '',
       email: user?.email || '',
-      emailNotification: user?.emailNotification ?? true,
       group: (userGroups && userGroups[0]?.id) || '',
       userAttributes: userAttributes?.reduce(
         (acc, curr) => {
@@ -149,7 +149,7 @@ function AccountForm({
   events,
 }: {
   initialUser: InitialUser;
-  user: AuthUser | null | undefined;
+  user: GetUserResponse | null | undefined;
   groups: GetGroupsResponse[] | null | undefined;
   events: DBEvent[] | null | undefined;
 }) {
@@ -160,15 +160,23 @@ function AccountForm({
   const { mutate: mutateUserData } = useMutation({
     mutationFn: updateUserData,
     onSuccess: async (body) => {
-      if (body) {
-        await queryClient.invalidateQueries({ queryKey: ['user'] });
-        await queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'groups'] });
+      console.log({ body });
+      if (!body) {
+        return;
+      }
 
-        toast.success('User data updated!');
+      if ('errors' in body) {
+        toast.error(`There was an error: ${body.errors.join(', ')}`);
+        return;
+      }
 
-        if (events?.length === 1) {
-          navigate(`/events/${events?.[0].id}/register`);
-        }
+      await queryClient.invalidateQueries({ queryKey: ['user'] });
+      await queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'groups'] });
+
+      toast.success('User data updated!');
+
+      if (events?.length === 1) {
+        navigate(`/events/${events?.[0].id}/register`);
       }
     },
     onError: () => {
@@ -232,8 +240,8 @@ function AccountForm({
         userId: user.id,
         username: value.username,
         email: value.email,
-        emailNotification: value.emailNotification,
-        name: value.name,
+        firstName: value.firstName,
+        lastName: value.lastName,
         groupIds: [value.group],
         userAttributes: {
           ...value.userAttributes,
@@ -282,11 +290,27 @@ function AccountForm({
           <Input
             label="Username"
             placeholder="Enter your Username"
+            autoComplete="off"
             required
             {...register('username', { required: 'Username is required', minLength: 3 })}
             errors={errors.username ? [errors.username.message ?? ''] : []}
           />
-          <Input label="Name" placeholder="(First name, Last name)" {...register('name')} />
+          <Input
+            label="First name"
+            autoComplete="off"
+            placeholder="Enter your first name"
+            required
+            {...register('firstName', { required: 'First name is required' })}
+            errors={errors.firstName ? [errors.firstName.message ?? ''] : []}
+          />
+          <Input
+            label="Last name"
+            autoComplete="off"
+            placeholder="Enter your last name"
+            required
+            {...register('lastName', { required: 'Last name is required' })}
+            errors={errors.lastName ? [errors.lastName.message ?? ''] : []}
+          />
           <Input label="Email" placeholder="Enter your Email" {...register('email')} />
           <Controller
             name="group"
