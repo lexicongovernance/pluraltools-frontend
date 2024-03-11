@@ -65,6 +65,12 @@ async function landingLoader(queryClient: QueryClient) {
     return null;
   }
 
+  const onboardingState = useAppStore.getState().onboardingStatus;
+
+  if (onboardingState === 'INCOMPLETE') {
+    return redirect('/onboarding');
+  }
+
   const userIsComplete = await userIsCompleteLoader(queryClient);
 
   if (userIsComplete) {
