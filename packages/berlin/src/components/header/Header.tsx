@@ -1,6 +1,6 @@
 // React and third-party libraries
 import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
 // Store
@@ -38,6 +38,7 @@ import {
   LogoTextContainer,
   ThemeButton,
 } from './Header.styled';
+import fetchUserRegistrations from 'api/src/fetchUserRegistrations';
 
 function Header() {
   const queryClient = useQueryClient();
@@ -54,6 +55,12 @@ function Header() {
       await queryClient.removeQueries();
       navigate('/');
     },
+  });
+
+  const { data: registrationsData } = useQuery({
+    queryKey: [user?.id, 'registrations'],
+    queryFn: () => fetchUserRegistrations(user?.id ?? ''),
+    enabled: !!user,
   });
 
   const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState(false);
@@ -73,6 +80,13 @@ function Header() {
             <DesktopButtons>
               {user ? (
                 <>
+                  {registrationsData?.some(
+                    (registration) => registration.status === 'APPROVED',
+                  ) && (
+                    <NavButton to="/events" $color="secondary">
+                      Agenda
+                    </NavButton>
+                  )}
                   <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>
@@ -97,6 +111,13 @@ function Header() {
             <MobileButtons>
               {user ? (
                 <>
+                  {registrationsData?.some(
+                    (registration) => registration.status === 'APPROVED',
+                  ) && (
+                    <NavButton to="/events" $color="secondary">
+                      Agenda
+                    </NavButton>
+                  )}
                   <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>

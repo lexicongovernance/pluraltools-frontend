@@ -8,6 +8,7 @@ import { Title } from '../components/typography/Title.styled';
 
 import useUser from '../hooks/useUser';
 import {
+  GetUserResponse,
   fetchEvent,
   fetchRegistration,
   fetchRegistrationData,
@@ -15,7 +16,6 @@ import {
   postRegistrationData,
 } from 'api';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AuthUser } from '../types/AuthUserType';
 import { GetRegistrationFieldsResponse } from '../types/RegistrationFieldType';
 import { GetRegistrationResponseType } from '../types/RegistrationType';
 import { GetRegistrationDataResponse } from '../types/RegistrationDataType';
@@ -85,7 +85,7 @@ const getDefaultValues = (registrationData: GetRegistrationDataResponse | null |
 };
 
 function RegisterForm(props: {
-  user: AuthUser | null | undefined;
+  user: GetUserResponse | null | undefined;
   registrationFields?: GetRegistrationFieldsResponse | null | undefined;
   registration?: GetRegistrationResponseType | null | undefined;
   registrationData?: GetRegistrationDataResponse | null | undefined;
