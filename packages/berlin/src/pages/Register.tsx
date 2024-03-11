@@ -30,6 +30,7 @@ import { Error } from '../components/typography/Error.styled';
 import CharacterCounter from '../components/typography/CharacterCount.styled';
 import { z } from 'zod';
 import Textarea from '../components/textarea';
+import { Body } from '../components/typography/Body.styled';
 
 function Register() {
   const { user, isLoading } = useUser();
@@ -183,6 +184,9 @@ function RegisterForm(props: {
       <Button disabled={!isValid} onClick={handleSubmit(onSubmit)}>
         Save
       </Button>
+      <Body>
+        Need more time? Feel free to come back to these questions later. The deadline is April 15th.
+      </Body>
     </FlexColumn>
   );
 }
