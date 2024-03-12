@@ -53,7 +53,7 @@ export const Dropdown = styled.div`
   z-index: 2;
 `;
 
-export const Option = styled.option`
+export const Option = styled.p`
   padding: 0.5rem 1rem;
 
   &:hover {
