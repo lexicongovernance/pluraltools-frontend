@@ -6,3 +6,8 @@ export const Main = styled.main`
   padding-block: 4rem;
   width: min(90%, 1080px);
 `;
+
+export const SafeArea = styled.div`
+  margin-inline: auto;
+  width: min(100%, 720px);
+`;

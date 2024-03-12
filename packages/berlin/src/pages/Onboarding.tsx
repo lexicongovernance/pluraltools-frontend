@@ -7,6 +7,7 @@ import { Body } from '../components/typography/Body.styled';
 import { Bold } from '../components/typography/Bold.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
+import { SafeArea } from '../layout/Layout.styled';
 import { Title } from '../components/typography/Title.styled';
 import Button from '../components/button';
 import Dots from '../components/dots';
@@ -34,17 +35,19 @@ function Onboarding() {
   };
 
   return (
-    <FlexColumn $gap="3rem">
-      <Title>{data[step].title}</Title>
-      <BodyContent content={data[step].body} />
-      <Dots dots={data.length} activeDotIndex={step} setStep={setStep} />
-      <FlexRow>
-        <Button onClick={handleSkip} $color="secondary">
-          Skip
-        </Button>
-        <Button onClick={handleNext}>Next</Button>
-      </FlexRow>
-    </FlexColumn>
+    <SafeArea>
+      <FlexColumn $gap="3rem">
+        <Title>{data[step].title}</Title>
+        <BodyContent content={data[step].body} />
+        <Dots dots={data.length} activeDotIndex={step} setStep={setStep} />
+        <FlexRow>
+          <Button onClick={handleSkip} $color="secondary">
+            Skip
+          </Button>
+          <Button onClick={handleNext}>Next</Button>
+        </FlexRow>
+      </FlexColumn>
+    </SafeArea>
   );
 }
 
