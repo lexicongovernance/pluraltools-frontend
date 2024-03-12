@@ -26,7 +26,7 @@ function Landing() {
         The <Bold>funding mandate is MEV</Bold>. We invite research proposals that explore MEV 
         narrowly and broadly — within and across execution layers (L1), rollups (L2s), oracles, 
         applications, etc. The mandate also extends to related topics such as chain abstraction, 
-        account abstraction, gas fee optimization, AI agents, ZK, trusted hardware and topics related
+        account abstraction, gas fee optimization, AI agents, ZK, trusted hardware, and topics related
         to decentralization — including richer notions of identity, contextual integrity (“privacy”), and collusion resistance.
       </Body>
       <Body>
