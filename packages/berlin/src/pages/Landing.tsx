@@ -42,15 +42,6 @@ function Landing() {
         </ZupassButton>{' '}
         Submissions received before April 15 will get more attention.
       </Body>
-      <Body>
-        The experiment will be <Bold>novel, fun, and weird</Bold> — like the best of research… and
-        Berlin. Through a series of structured interactions, the community will decide how to prioritize 
-        research and allocate funds, relying on collusion-resistant voting (plural voting), high-bandwidth 
-        deliberations, social recombination, and peer prediction. We will test and evolve these mechanisms 
-        through multiple cycles of feedback and adaptation. The community is interdisciplinary, drawing on 
-        insights from science of science, social science, economics, complexity science, cryptography, and 
-        philosophy, among other intersections.
-      </Body>
     </FlexColumn>
   );
 }
