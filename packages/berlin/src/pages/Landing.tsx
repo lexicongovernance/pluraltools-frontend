@@ -1,9 +1,9 @@
 // Styled components
-import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { Body } from '../components/typography/Body.styled';
 import { Bold } from '../components/typography/Bold.styled';
-import ZupassButton from '../components/zupassButton';
+import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { SafeArea } from '../layout/Layout.styled';
+import ZupassButton from '../components/zupassButton';
 
 function Landing() {
   return (
