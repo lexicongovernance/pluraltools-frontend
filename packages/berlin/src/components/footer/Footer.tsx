@@ -15,9 +15,7 @@ function Header() {
           <RouterLink to={'https://arbitrum.foundation/grants'}>
             <img src={`/logos/arbitrum-${theme}.svg`} height={24} width={24} />
           </RouterLink>
-          <RouterLink to={'https://twitter.com/pluralitylab'}>
-            <img src="/logos/plurality.svg" height={24} width={24} />
-          </RouterLink>
+          <img src="/logos/plurality.svg" height={24} width={24} />
         </FlexRow>
       </FooterContainer>
     </SyledFooter>
