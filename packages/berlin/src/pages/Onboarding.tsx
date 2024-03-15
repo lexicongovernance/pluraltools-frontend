@@ -60,17 +60,14 @@ type BodyContentProps = {
 function BodyContent({ content }: BodyContentProps) {
   if (Array.isArray(content) && content[0].title) {
     return (
-      <ul>
+      <FlexColumn $gap="1.5rem">
         {content.map((item) => (
-          <li key={item.id}>
-            <Body>
-              <Bold>{item.title}</Bold>
-              {item.text}
-            </Body>
-            <br />
-          </li>
+          <Body key={item.id}>
+            <Bold>{item.title}</Bold>
+            {item.text}
+          </Body>
         ))}
-      </ul>
+      </FlexColumn>
     );
   }
 
