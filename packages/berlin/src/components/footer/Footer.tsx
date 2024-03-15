@@ -1,7 +1,7 @@
 import { useAppStore } from '../../store';
 import { FlexRow } from '../containers/FlexRow.styled';
 import { Link as RouterLink } from 'react-router-dom';
-import { FooterContainer, SyledFooter } from './Footer.styled';
+import { Copy, FooterContainer, SyledFooter } from './Footer.styled';
 
 function Header() {
   const theme = useAppStore((state) => state.theme);
@@ -15,8 +15,8 @@ function Header() {
           <RouterLink to={'https://arbitrum.foundation/grants'}>
             <img src={`/logos/arbitrum-${theme}.svg`} height={24} width={24} />
           </RouterLink>
-          <img src="/logos/plurality.svg" height={24} width={24} />
         </FlexRow>
+        <Copy>A grants program funded by Plurality Labs and the Arbitrum DAO</Copy>
       </FooterContainer>
     </SyledFooter>
   );
