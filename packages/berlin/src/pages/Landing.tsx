@@ -28,15 +28,17 @@ function Landing() {
           applications, etc. The mandate also extends to related topics such as chain abstraction,
           account abstraction, gas fee optimization, AI agents, ZK, trusted hardware, and topics
           related to decentralization — including richer notions of identity, contextual integrity
-          (“privacy”), and collusion resistance.
+          (“privacy”), collusion resistance, and partial common ownership.
         </Body>
         <Body>
-          This is a community event, <Bold>where the research community decides the agenda.</Bold>{' '}
+          This is a community event, <Bold>where researchers set the agenda.</Bold>{' '}
           Through a series of structured interactions, the community will prioritize research and
-          allocate funds, relying on <Bold>deliberation, plural voting, and peer prediction</Bold>{' '}
-          to surface research in the broader public good. We expect the experiment to be novel, fun,
-          and weird — like the best of research… and Berlin. Surprise the community with your
-          proposals!
+          allocate funds, relying on plural mechanisms — <Bold>deliberation, plural voting, peer 
+          prediction, and healthy social recombination</Bold> — to surface research in the broader public good. 
+        </Body>
+        <Body>
+          The experiment will be novel, fun, and weird — like the best of research… and Berlin. Bring your laptop, 
+          sunglasses, and a towel. And surprise the community with your proposals!
         </Body>
         <Body>
           Sign up with{' '}
