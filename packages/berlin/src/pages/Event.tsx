@@ -1,4 +1,5 @@
 // React and third-party libraries
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -6,13 +7,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { GetCycleResponse, fetchEvent, fetchEventCycles } from 'api';
 
 // Components
-import { useMemo } from 'react';
+import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { Table } from '../components/table';
 import BackButton from '../components/backButton';
 import Button from '../components/button';
-import { FlexColumn } from '../components/containers/FlexColum.styled';
 import EventCard from '../components/eventCard';
-import { Title } from '../components/typography/Title.styled';
 
 function Event() {
   const { eventId } = useParams();
@@ -68,7 +67,6 @@ function CycleTable({ cycles, status }: { cycles: GetCycleResponse[]; status: 'o
 
   return (
     <div>
-      <Title style={{ textTransform: 'capitalize' }}>{status} Agendas</Title>
       <Table
         columns={['Agenda', formattedColumnText(), '']}
         rows={cycles.map((cycle) => [
