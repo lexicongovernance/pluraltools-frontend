@@ -37,8 +37,7 @@ function Landing() {
           prediction, and healthy social recombination</Bold> — to surface research in the broader public good. 
         </Body>
         <Body>
-          The experiment will be novel, fun, and weird — like the best of research… and Berlin. Bring your laptop, 
-          sunglasses, and a towel. And surprise the community with your proposals!
+          The experiment will be novel, fun, and weird — like the best of research… and Berlin. Surprise the community with your proposals!
         </Body>
         <Body>
           Sign up with{' '}
