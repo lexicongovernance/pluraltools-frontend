@@ -72,9 +72,17 @@ function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
           </Plurality>
         </FlexRow>
         {option.optionSubTitle && (
-          <FlexRow className="description">
+          <FlexColumn className="description">
             <Body>{option.optionSubTitle}</Body>
-          </FlexRow>
+            <IconButton
+              $padding={0}
+              $color="secondary"
+              icon={{ src: `/icons/comments-${theme}.svg`, alt: 'Comments icon' }}
+              onClick={onUnvote}
+              $width={24}
+              $height={24}
+            />
+          </FlexColumn>
         )}
       </FlexColumn>
     </Card>
