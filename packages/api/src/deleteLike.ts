@@ -5,7 +5,7 @@ async function deleteLike({ commentId }: DeleteLikeRequest): Promise<DeleteLikeR
     const response = await fetch(
       `${import.meta.env.VITE_SERVER_URL}/api/comments/${commentId}/likes`,
       {
-        method: 'POST',
+        method: 'DELETE',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
