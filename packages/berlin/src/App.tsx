@@ -50,10 +50,10 @@ async function redirectToAccount(queryClient: QueryClient) {
   if (user?.username) {
     useAppStore.setState({ userStatus: 'COMPLETE' });
     return null;
-  } else {
-    useAppStore.setState({ userStatus: 'INCOMPLETE' });
-    return redirect('/account');
   }
+
+  useAppStore.setState({ userStatus: 'INCOMPLETE' });
+  return redirect('/account');
 }
 
 /**
@@ -131,6 +131,8 @@ async function redirectToEventHoldingOrRegister(queryClient: QueryClient, eventI
   if (registration?.status !== 'APPROVED') {
     return redirect(`/events/${eventId}/holding`);
   }
+
+  return null;
 }
 
 /**
