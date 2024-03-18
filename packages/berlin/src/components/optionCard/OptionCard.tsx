@@ -6,6 +6,7 @@ import IconButton from '../iconButton';
 import { useAppStore } from '../../store';
 import { FlexRow } from '../containers/FlexRow.styled';
 import { QuestionOption } from 'api';
+import { useNavigate, useParams } from 'react-router-dom';
 
 type OptionCardProps = {
   option: QuestionOption;
@@ -14,7 +15,9 @@ type OptionCardProps = {
   onUnvote: () => void;
 };
 function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
+  const { eventId, cycleId } = useParams();
   const theme = useAppStore((state) => state.theme);
+  const navigate = useNavigate();
   const formattedPluralityScore = useMemo(() => {
     const score = parseFloat(String(option.voteScore));
     return score % 1 === 0 ? score.toFixed(0) : score.toFixed(1);
@@ -25,6 +28,10 @@ function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
   const author = option.user.lastName
     ? `${option.user.firstName} ${option.user.lastName}`
     : option.user.username;
+
+  const handleCommentsClick = () => {
+    navigate(`/events/${eventId}/cycles/${cycleId}/options/${option.id}`);
+  };
 
   return (
     <Card $expanded={expanded}>
@@ -72,9 +79,17 @@ function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
           </Plurality>
         </FlexRow>
         {option.optionSubTitle && (
-          <FlexRow className="description">
+          <FlexColumn className="description">
             <Body>{option.optionSubTitle}</Body>
-          </FlexRow>
+            <IconButton
+              $padding={0}
+              $color="secondary"
+              icon={{ src: `/icons/comments-${theme}.svg`, alt: 'Comments icon' }}
+              onClick={handleCommentsClick}
+              $width={24}
+              $height={24}
+            />
+          </FlexColumn>
         )}
       </FlexColumn>
     </Card>
