@@ -1,4 +1,4 @@
-import * as AlertDialog from '@radix-ui/react-alert-dialog';
+import * as Dialog from '@radix-ui/react-dialog';
 import styled, { keyframes } from 'styled-components';
 
 const overlayShow = keyframes`
@@ -21,14 +21,14 @@ const contentShow = keyframes`
   }
 `;
 
-export const AlertDialogOverlay = styled(AlertDialog.Overlay)`
+export const DialogOverlay = styled(Dialog.Overlay)`
   animation: ${overlayShow} 150ms cubic-bezier(0.16, 1, 0.3, 1);
   background-color: rgba(0, 0, 0, 0.75);
   inset: 0;
   position: fixed;
 `;
 
-export const AlertDialogContent = styled(AlertDialog.Content)`
+export const DialogContent = styled(Dialog.Content)`
   animation: ${contentShow} 150ms cubic-bezier(0.16, 1, 0.3, 1);
   background-color: var(--color-white);
   border-radius: 0.5rem;
@@ -49,6 +49,6 @@ export const AlertDialogContent = styled(AlertDialog.Content)`
   }
 `;
 
-export const AlertDialogTitle = styled(AlertDialog.Title)``;
+export const DialogTitle = styled(Dialog.Title)``;
 
-export const AlertDialogDescription = styled(AlertDialog.Description).attrs({ as: 'div' })``;
+export const DialogDescription = styled(Dialog.Description).attrs({ as: 'div' })``;

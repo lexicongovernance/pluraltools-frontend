@@ -8,14 +8,9 @@ import { FlexRowToColumn } from '../containers/FlexRowToColumn.styled';
 import Button from '../button';
 
 // Styled Components
-import {
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogOverlay,
-  AlertDialogTitle,
-} from './AlertDialog.styled';
+import { DialogContent, DialogDescription, DialogOverlay, DialogTitle } from './Dialog.styled';
 
-type AlertDialogProps = {
+type DialogProps = {
   trigger: React.ReactNode;
   title: string;
   description?: string;
@@ -23,23 +18,17 @@ type AlertDialogProps = {
   onActionClick: () => void;
 };
 
-const AlertDialog = ({
-  trigger,
-  title,
-  description,
-  actionButtonText,
-  onActionClick,
-}: AlertDialogProps) => (
+const Dialog = ({ trigger, title, description, actionButtonText, onActionClick }: DialogProps) => (
   <Root>
     <Trigger asChild>{trigger}</Trigger>
     <Portal>
-      <AlertDialogOverlay />
-      <AlertDialogContent>
+      <DialogOverlay />
+      <DialogContent>
         <FlexColumn>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>
             <Body>{description}</Body>
-          </AlertDialogDescription>
+          </DialogDescription>
           <FlexRowToColumn $gap="0.5rem" $justify="flex-end">
             <Cancel asChild>
               <Button $color="secondary">Cancel</Button>
@@ -49,9 +38,9 @@ const AlertDialog = ({
             </Action>
           </FlexRowToColumn>
         </FlexColumn>
-      </AlertDialogContent>
+      </DialogContent>
     </Portal>
   </Root>
 );
 
-export default AlertDialog;
+export default Dialog;
