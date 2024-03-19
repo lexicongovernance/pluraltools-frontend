@@ -6,11 +6,12 @@ type LinkProps = {
   children: React.ReactNode;
   to: string;
   onClick?: () => void;
+  state?: object;
 };
 
-function Link({ children, to, onClick }: LinkProps) {
+function Link({ children, to, state, onClick }: LinkProps) {
   return (
-    <RouterLink to={to} onClick={onClick}>
+    <RouterLink to={to} onClick={onClick} state={state}>
       <Bold>
         <Underline>{children}</Underline>
       </Bold>

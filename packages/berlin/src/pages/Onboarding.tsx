@@ -1,6 +1,6 @@
 // React and third-party libraries
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
@@ -15,16 +15,28 @@ import Dots from '../components/dots';
 // Data
 import onboarding from '../data/onboarding';
 import { useAppStore } from '../store';
+const { data } = onboarding;
 
 function Onboarding() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { onboardingStep, previousPath } = location.state;
   const setOnboardingStatus = useAppStore((state) => state.setOnboardingStatus);
-  const [step, setStep] = useState(0);
-  const { data } = onboarding;
+  const [step, setStep] = useState<number>(onboardingStep || 0);
+
+  useEffect(() => {
+    if (location && location.state && onboardingStep) {
+      setStep(onboardingStep);
+    }
+  }, [location, onboardingStep]);
 
   const handleSkip = () => {
-    navigate('/account');
-    setOnboardingStatus('COMPLETE');
+    if (previousPath) {
+      navigate(previousPath);
+    } else {
+      navigate('/account');
+      setOnboardingStatus('COMPLETE');
+    }
   };
 
   const handleNext = () => {

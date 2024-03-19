@@ -17,6 +17,10 @@ function Holding() {
 
   // TODO: Create functions to navigate to onboarding slides
 
+  const handleOnboardingClick = () => {
+    navigate(`/onboarding`);
+  };
+
   return (
     <FlexColumn $gap="2rem">
       <Title>Thank you for submitting!</Title>
@@ -37,15 +41,27 @@ function Holding() {
           your submission
         </Link>{' '}
         and to revisit the{' '}
-        <Link to="#" onClick={() => {}}>
+        <Link
+          to="#"
+          onClick={handleOnboardingClick}
+          state={{ onboardingStep: 2, previousPath: location.pathname }}
+        >
           community guiding principles
         </Link>
         ,{' '}
-        <Link to="#" onClick={() => {}}>
+        <Link
+          to="#"
+          onClick={handleOnboardingClick}
+          state={{ onboardingStep: 0, previousPath: location.pathname }}
+        >
           privacy ambitions and trust assumptions
         </Link>
         , and{' '}
-        <Link to="#" onClick={() => {}}>
+        <Link
+          to="#"
+          onClick={handleOnboardingClick}
+          state={{ onboardingStep: 3, previousPath: location.pathname }}
+        >
           proposal guidelines
         </Link>
         .
