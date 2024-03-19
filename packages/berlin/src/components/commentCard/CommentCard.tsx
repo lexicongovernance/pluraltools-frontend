@@ -15,6 +15,7 @@ import { useAppStore } from '../../store';
 // Components
 import { Body } from '../typography/Body.styled';
 import { FlexRow } from '../containers/FlexRow.styled';
+import AlertDialog from '../alertDialog';
 import Button from '../button';
 import IconButton from '../iconButton';
 
@@ -104,13 +105,20 @@ function CommentCard({ comment }: CommentCardProps) {
     <Card key={comment.id}>
       <FlexRow $justify="space-between">
         <Username>{comment.user?.username}</Username>
-        <IconButton
-          onClick={handleTrashClick}
-          icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash bin icon' }}
-          $color="secondary"
-          $height={20}
-          $padding={0}
-          $width={20}
+        <AlertDialog
+          trigger={
+            <IconButton
+              icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash bin icon' }}
+              $color="secondary"
+              $height={20}
+              $padding={0}
+              $width={20}
+            />
+          }
+          title="Are you sure?"
+          description="This action cannot be undone. This will permanently delete your comment from our servers."
+          onActionClick={handleTrashClick}
+          actionButtonText="Delete comment"
         />
       </FlexRow>
       <FormattedDate>{formattedDate}</FormattedDate>
