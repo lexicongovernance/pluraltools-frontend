@@ -26,6 +26,7 @@
     "@pcd/pcd-types": "^0.8.0",
     "@pcd/semaphore-identity-pcd": "^0.8.0",
     "@pcd/semaphore-signature-pcd": "^0.9.0",
+    "@radix-ui/react-alert-dialog": "^1.0.5",
     "@tanstack/react-query": "^5.13.4",
     "@tanstack/react-query-devtools": "^5.13.5",
     "react": "^18.2.0",
