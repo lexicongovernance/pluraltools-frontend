@@ -18,4 +18,11 @@ export type PostCommentRequest = {
   questionOptionId: string;
 };
 
+export type DeleteCommentRequest = {
+  optionId: string;
+  commentId: string;
+};
+
 export type PostCommentResponse = Comment;
+
+export type DeleteCommentResponse = Comment;
