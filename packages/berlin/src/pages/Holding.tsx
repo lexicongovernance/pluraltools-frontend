@@ -15,18 +15,58 @@ function Holding() {
     navigate(`/events/${eventId}/register`);
   };
 
+  // TODO: Create functions to navigate to onboarding slides
+
+  const handleOnboardingClick = () => {
+    navigate(`/onboarding`);
+  };
+
   return (
     <FlexColumn $gap="2rem">
       <Title>Thank you for submitting!</Title>
-      <Body>We might not be able to accommodate everyone given limited space, but we hope to.</Body>
-      <Body>We will notify participants on a rolling basis.</Body>
       <Body>
-        If you need to edit your submission, then{' '}
+        We might not be able to accommodate everyone, given limited space. But we hope to.
+      </Body>
+      <Body>
+        Note: For entities operating in the MEV space (searcher, builder, relay), those backed by
+        venture capital, or those controlled by parties with a financial interest, we kindly request
+        that at least one senior researcher (holding a PhD or equivalent) to represent your
+        organization at the event. This ensures a balance of expertise and experience across
+        participating entities, fostering an environment of in-depth research collaboration and
+        preventing knowledge imbalances that could hinder open exchange.
+      </Body>
+      <Body>
+        Click on the following links to edit/review{' '}
         <Link to="#" onClick={handleRegistrationClick}>
-          click here
+          your submission
+        </Link>{' '}
+        and to revisit the{' '}
+        <Link
+          to="#"
+          onClick={handleOnboardingClick}
+          state={{ onboardingStep: 2, previousPath: location.pathname }}
+        >
+          community guiding principles
+        </Link>
+        ,{' '}
+        <Link
+          to="#"
+          onClick={handleOnboardingClick}
+          state={{ onboardingStep: 0, previousPath: location.pathname }}
+        >
+          privacy ambitions and trust assumptions
+        </Link>
+        , and{' '}
+        <Link
+          to="#"
+          onClick={handleOnboardingClick}
+          state={{ onboardingStep: 3, previousPath: location.pathname }}
+        >
+          proposal guidelines
         </Link>
         .
       </Body>
+      <Body>We will notify participants on a rolling basis.</Body>
     </FlexColumn>
   );
 }
