@@ -15,8 +15,8 @@ import { useAppStore } from '../../store';
 // Components
 import { Body } from '../typography/Body.styled';
 import { FlexRow } from '../containers/FlexRow.styled';
-import AlertDialog from '../alertDialog';
 import Button from '../button';
+import Dialog from '../dialog';
 import IconButton from '../iconButton';
 
 // Styled Components
@@ -105,7 +105,7 @@ function CommentCard({ comment }: CommentCardProps) {
     <Card key={comment.id}>
       <FlexRow $justify="space-between">
         <Username>{comment.user?.username}</Username>
-        <AlertDialog
+        <Dialog
           trigger={
             <IconButton
               icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash bin icon' }}

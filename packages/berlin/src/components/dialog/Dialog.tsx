@@ -1,5 +1,5 @@
 // React and third-party libraries
-import { Root, Trigger, Portal, Cancel, Action } from '@radix-ui/react-alert-dialog';
+import { Close, Description, Portal, Root, Title, Trigger } from '@radix-ui/react-dialog';
 
 // Components
 import { Body } from '../typography/Body.styled';
@@ -8,7 +8,7 @@ import { FlexRowToColumn } from '../containers/FlexRowToColumn.styled';
 import Button from '../button';
 
 // Styled Components
-import { DialogContent, DialogDescription, DialogOverlay, DialogTitle } from './Dialog.styled';
+import { DialogContent, DialogOverlay } from './Dialog.styled';
 
 type DialogProps = {
   trigger: React.ReactNode;
@@ -23,19 +23,19 @@ const Dialog = ({ trigger, title, description, actionButtonText, onActionClick }
     <Trigger asChild>{trigger}</Trigger>
     <Portal>
       <DialogOverlay />
-      <DialogContent>
+      <DialogContent asChild>
         <FlexColumn>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
+          <Title>{title}</Title>
+          <Description asChild>
             <Body>{description}</Body>
-          </DialogDescription>
+          </Description>
           <FlexRowToColumn $gap="0.5rem" $justify="flex-end">
-            <Cancel asChild>
+            <Close asChild>
               <Button $color="secondary">Cancel</Button>
-            </Cancel>
-            <Action asChild>
+            </Close>
+            <Close asChild>
               <Button onClick={onActionClick}>{actionButtonText}</Button>
-            </Action>
+            </Close>
           </FlexRowToColumn>
         </FlexColumn>
       </DialogContent>

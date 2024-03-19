@@ -48,7 +48,3 @@ export const DialogContent = styled(Dialog.Content)`
     outline: none;
   }
 `;
-
-export const DialogTitle = styled(Dialog.Title)``;
-
-export const DialogDescription = styled(Dialog.Description).attrs({ as: 'div' })``;
