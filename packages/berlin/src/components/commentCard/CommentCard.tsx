@@ -1,9 +1,10 @@
 // React and third-party libraries
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
 
 // API
-import { GetCommentsResponse, deleteLike, fetchCommentLikes, postLike } from 'api';
+import { GetCommentsResponse, deleteComment, deleteLike, fetchCommentLikes, postLike } from 'api';
 
 // Hooks
 import useUser from '../../hooks/useUser';
@@ -15,6 +16,7 @@ import { useAppStore } from '../../store';
 import { Body } from '../typography/Body.styled';
 import { FlexRow } from '../containers/FlexRow.styled';
 import Button from '../button';
+import Dialog from '../dialog';
 import IconButton from '../iconButton';
 
 // Styled Components
@@ -25,6 +27,7 @@ type CommentCardProps = {
 };
 
 function CommentCard({ comment }: CommentCardProps) {
+  const { optionId } = useParams();
   const theme = useAppStore((state) => state.theme);
   const queryClient = useQueryClient();
   const { user } = useUser();
@@ -75,6 +78,15 @@ function CommentCard({ comment }: CommentCardProps) {
     },
   });
 
+  const { mutate: deleteCommentMutation } = useMutation({
+    mutationFn: deleteComment,
+    onSuccess: (body) => {
+      if (body) {
+        queryClient.invalidateQueries({ queryKey: ['comments'] });
+      }
+    },
+  });
+
   const handleLikeClick = () => {
     if (isCommentLiked) {
       deleteLikeMutation({ commentId: comment.id });
@@ -83,9 +95,32 @@ function CommentCard({ comment }: CommentCardProps) {
     }
   };
 
+  const handleTrashClick = () => {
+    if (optionId) {
+      deleteCommentMutation({ optionId, commentId: comment.id });
+    }
+  };
+
   return (
     <Card key={comment.id}>
-      <Username>{comment.user?.username}</Username>
+      <FlexRow $justify="space-between">
+        <Username>{comment.user?.username}</Username>
+        <Dialog
+          trigger={
+            <IconButton
+              icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash bin icon' }}
+              $color="secondary"
+              $height={20}
+              $padding={0}
+              $width={20}
+            />
+          }
+          title="Are you sure?"
+          description="This action cannot be undone. This will permanently delete your comment from our servers."
+          onActionClick={handleTrashClick}
+          actionButtonText="Delete comment"
+        />
+      </FlexRow>
       <FormattedDate>{formattedDate}</FormattedDate>
       <Body>{comment.value}</Body>
       <FlexRow $gap="0.5rem" $align="center" $justify="flex-end">
