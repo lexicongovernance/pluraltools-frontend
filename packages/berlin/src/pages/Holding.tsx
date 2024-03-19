@@ -48,7 +48,7 @@ function Holding() {
         >
           event rules
         </Link>
-        and{' '}
+        {' '}and{' '}
         <Link
           to="#"
           onClick={handleOnboardingClick}
