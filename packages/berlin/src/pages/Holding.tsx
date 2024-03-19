@@ -30,7 +30,7 @@ function Holding() {
       <Body>
         Note: For entities operating in the MEV space (searcher, builder, relay, etc.), those backed by
         venture capital, or those controlled by parties with a financial interest, we kindly request
-        that at least one senior researcher (holding a PhD or equivalent) or senior executive (e.g., CEO) to represent your
+        that at least one senior researcher (holding a PhD or equivalent) or senior executive (e.g., CEO) represent your
         organization at the event. This ensures a balance of expertise and experience across
         participating entities, fostering an environment of in-depth research collaboration and
         preventing knowledge imbalances that could hinder open exchange.
@@ -48,13 +48,13 @@ function Holding() {
         >
           event rules
         </Link>
-        ,{' '}
+        and{' '}
         <Link
           to="#"
           onClick={handleOnboardingClick}
           state={{ onboardingStep: 0, previousPath: location.pathname }}
         >
-          and trust assumptions
+          trust assumptions
         </Link>
         .
       </Body>
