@@ -1,11 +1,12 @@
-export { default as fetchCycles } from './fetchCycles';
-export { default as fetchEvents } from './fetchEvents';
+export { default as deleteComment } from './deleteComment';
 export { default as deleteLike } from './deleteLike';
 export { default as fetchCommentLikes } from './fetchCommentLikes';
 export { default as fetchComments } from './fetchComments';
 export { default as fetchCycle } from './fetchCycle';
+export { default as fetchCycles } from './fetchCycles';
 export { default as fetchEvent } from './fetchEvent';
 export { default as fetchEventCycles } from './fetchEventCycles';
+export { default as fetchEvents } from './fetchEvents';
 export { default as fetchForumQuestionStatistics } from './fetchForumQuestionStatistics';
 export { default as fetchGroups } from './fetchGroups';
 export { default as fetchOption } from './fetchOption';

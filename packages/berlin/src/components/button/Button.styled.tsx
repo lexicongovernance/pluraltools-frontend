@@ -38,4 +38,16 @@ export const StyledButton = styled.button<StyledButtonProps>`
       text-transform: inherit;
       padding: 0;
     `}
+
+    ${(props) =>
+    props.$variant === 'text' &&
+    css`
+      background-color: none;
+      color: var(--color-black);
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+      text-transform: inherit;
+      padding: 0;
+    `}
 `;

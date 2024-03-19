@@ -45,6 +45,11 @@ const onboarding = {
         },
       ],
     },
+    {
+      id: 3,
+      title: `Research Proposals`,
+      body: `After registration, you’ll be asked to submit a research proposal (essay, blogpost, paper). You’re welcome to submit a proposal you would like to research, or a proposal you want to see anyone research. At the event, we expect these proposals to change, recombine, and be improved through collective intelligence and cross-collaboration.`,
+    },
   ],
 };
 

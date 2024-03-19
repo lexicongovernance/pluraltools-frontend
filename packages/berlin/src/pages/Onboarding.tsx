@@ -1,6 +1,6 @@
 // React and third-party libraries
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
@@ -15,23 +15,40 @@ import Dots from '../components/dots';
 // Data
 import onboarding from '../data/onboarding';
 import { useAppStore } from '../store';
+const { data } = onboarding;
 
 function Onboarding() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [previousPath, setPreviousPath] = useState<string | null>(null);
   const setOnboardingStatus = useAppStore((state) => state.setOnboardingStatus);
-  const [step, setStep] = useState(0);
-  const { data } = onboarding;
+  const [step, setStep] = useState<number>(0);
+
+  useEffect(() => {
+    if (location && location.state) {
+      setPreviousPath(location.state.previousPath);
+      if (location.state.onboardingStep) {
+        setStep(location.state.onboardingStep);
+      }
+    }
+  }, [location]);
 
   const handleSkip = () => {
-    navigate('/account');
-    setOnboardingStatus('COMPLETE');
+    if (previousPath) {
+      navigate(previousPath);
+    } else {
+      navigate('/account');
+      setOnboardingStatus('COMPLETE');
+    }
   };
 
   const handleNext = () => {
-    if (step === data.length - 1) {
-      handleSkip();
+    if (step < data.length - 1) {
+      setStep((prevStep) => prevStep + 1);
+      return;
     }
-    setStep((prevStep) => prevStep + 1);
+
+    handleSkip();
   };
 
   return (
@@ -60,17 +77,14 @@ type BodyContentProps = {
 function BodyContent({ content }: BodyContentProps) {
   if (Array.isArray(content) && content[0].title) {
     return (
-      <ul>
+      <FlexColumn $gap="1.5rem">
         {content.map((item) => (
-          <li key={item.id}>
-            <Body>
-              <Bold>{item.title}</Bold>
-              {item.text}
-            </Body>
-            <br />
-          </li>
+          <Body key={item.id}>
+            <Bold>{item.title}</Bold>
+            {item.text}
+          </Body>
         ))}
-      </ul>
+      </FlexColumn>
     );
   }
 
