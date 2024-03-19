@@ -20,15 +20,18 @@ const { data } = onboarding;
 function Onboarding() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { onboardingStep, previousPath } = location.state;
+  const [previousPath, setPreviousPath] = useState<string | null>(null);
   const setOnboardingStatus = useAppStore((state) => state.setOnboardingStatus);
-  const [step, setStep] = useState<number>(onboardingStep || 0);
+  const [step, setStep] = useState<number>(0);
 
   useEffect(() => {
-    if (location && location.state && onboardingStep) {
-      setStep(onboardingStep);
+    if (location && location.state) {
+      setPreviousPath(location.state.previousPath);
+      if (location.state.onboardingStep) {
+        setStep(location.state.onboardingStep);
+      }
     }
-  }, [location, onboardingStep]);
+  }, [location]);
 
   const handleSkip = () => {
     if (previousPath) {
@@ -40,10 +43,12 @@ function Onboarding() {
   };
 
   const handleNext = () => {
-    if (step === data.length - 1) {
-      handleSkip();
+    if (step < data.length - 1) {
+      setStep((prevStep) => prevStep + 1);
+      return;
     }
-    setStep((prevStep) => prevStep + 1);
+
+    handleSkip();
   };
 
   return (
