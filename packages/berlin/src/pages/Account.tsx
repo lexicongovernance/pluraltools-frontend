@@ -244,6 +244,7 @@ function AccountForm({
         email: value.email,
         firstName: value.firstName,
         lastName: value.lastName,
+        telegram: value.telegram,
         groupIds: [value.group],
         userAttributes: {
           ...value.userAttributes,
@@ -316,6 +317,7 @@ function AccountForm({
           <Input label="Email" placeholder="Enter your Email" {...register('email')} />
           <Input
             label="Telegram"
+            autoComplete="off"
             placeholder="Enter your Telegram handle (e.g., @username)"
             {...register('telegram')}
           />
