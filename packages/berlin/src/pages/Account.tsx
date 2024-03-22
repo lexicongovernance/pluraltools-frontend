@@ -59,6 +59,7 @@ type InitialUser = {
   lastName: string;
   email: string;
   group: string;
+  telegram: string;
   userAttributes: UserAttributes | undefined;
 };
 
@@ -95,6 +96,7 @@ function Account() {
       firstName: user?.firstName || '',
       lastName: user?.lastName || '',
       email: user?.email || '',
+      telegram: user?.telegram || '',
       group: (userGroups && userGroups[0]?.id) || '',
       userAttributes: userAttributes?.reduce(
         (acc, curr) => {
@@ -312,6 +314,11 @@ function AccountForm({
             errors={errors.lastName ? [errors.lastName.message ?? ''] : []}
           />
           <Input label="Email" placeholder="Enter your Email" {...register('email')} />
+          <Input
+            label="Telegram"
+            placeholder="Enter your Telegram handle (e.g., @username)"
+            {...register('telegram')}
+          />
           <Controller
             name="group"
             control={control}

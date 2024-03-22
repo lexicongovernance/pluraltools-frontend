@@ -4,6 +4,7 @@ export type GetUserResponse = {
   firstName: string | null;
   lastName: string | null;
   email: string | null;
+  telegram: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -15,5 +16,6 @@ export type PutUserRequest = {
   lastName: string;
   email?: string;
   groupIds: string[];
+  telegram?: string;
   userAttributes: Record<string, string>;
 };
