@@ -1,13 +1,14 @@
 import { PutUserRequest, GetUserResponse } from './types/UserType';
 
 async function updateUserData({
+  email,
+  firstName,
+  groupIds,
+  lastName,
+  telegram,
+  userAttributes,
   userId,
   username,
-  firstName,
-  lastName,
-  email,
-  groupIds,
-  userAttributes,
 }: PutUserRequest): Promise<{ data: GetUserResponse } | { errors: string[] } | null> {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/users/${userId}`, {
@@ -17,12 +18,13 @@ async function updateUserData({
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        groupIds,
-        username,
         email,
-        userAttributes,
         firstName,
+        groupIds,
         lastName,
+        telegram,
+        userAttributes,
+        username,
       }),
     });
 
