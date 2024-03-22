@@ -114,11 +114,6 @@ async function redirectToOnlyOneEventLoader(queryClient: QueryClient) {
  * Redirects the user to the holding page if they in DRAFT STATUS
  */
 async function redirectToEventHoldingOrRegister(queryClient: QueryClient, eventId?: string) {
-  if (import.meta.env.VITE_VERCEL_ENV !== 'production') {
-    // Skip this check in development
-    return null;
-  }
-
   const registration = await queryClient.fetchQuery({
     queryKey: ['event', eventId, 'registration'],
     queryFn: () => fetchRegistration(eventId || ''),
