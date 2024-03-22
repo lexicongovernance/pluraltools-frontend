@@ -137,6 +137,8 @@ function RegisterForm(props: {
           queryKey: ['event', props.event?.id, 'registration', 'data'],
         });
         navigate(`/events/${props.event?.id}/holding`);
+      } else {
+        toast.error('Failed to save registration, please try again');
       }
     },
     onError: (error) => {
