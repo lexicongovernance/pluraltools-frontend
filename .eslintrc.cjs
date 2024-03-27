@@ -12,7 +12,7 @@ module.exports = {
   env: { browser: true, es2020: true },
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   rules: {
-    // 1. 'react-refresh/only-export-components': Ensure React components are exported properly
+    // 1. 'react-refresh/only-export-componnts': Ensure React components are exported properly
     //    Warn because it's important but not necessarily an error
     'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     
