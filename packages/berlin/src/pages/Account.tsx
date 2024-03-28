@@ -59,7 +59,7 @@ type InitialUser = {
   lastName: string;
   email: string;
   group: string;
-  telegram: string;
+  telegram: string | null;
   userAttributes: UserAttributes | undefined;
 };
 
@@ -96,7 +96,7 @@ function Account() {
       firstName: user?.firstName || '',
       lastName: user?.lastName || '',
       email: user?.email || '',
-      telegram: user?.telegram || '',
+      telegram: user?.telegram || null,
       group: (userGroups && userGroups[0]?.id) || '',
       userAttributes: userAttributes?.reduce(
         (acc, curr) => {
@@ -244,7 +244,7 @@ function AccountForm({
         email: value.email,
         firstName: value.firstName,
         lastName: value.lastName,
-        telegram: value.telegram,
+        telegram: value.telegram?.trim() !== '' ? value.telegram?.trim() : null,
         groupIds: [value.group],
         userAttributes: {
           ...value.userAttributes,
