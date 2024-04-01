@@ -40,7 +40,8 @@ import {
   ThemeButton,
 } from './Header.styled';
 
-const logoUrl = new URL('/logos/logo.png', import.meta.url).href;
+// const logoUrl = new URL('/logos/logo.png', import.meta.url).href;
+import logo from '../../../public/logos/logo.png';
 
 function Header() {
   const queryClient = useQueryClient();
@@ -71,7 +72,7 @@ function Header() {
     <SyledHeader>
       <HeaderContainer>
         <LogoContainer onClick={() => navigate('/')}>
-          <LogoImage src={logoUrl} alt={header.logo.alt} height={96} width={96} />
+          <LogoImage src={logo} alt={header.logo.alt} height={96} width={96} />
           <LogoTextContainer>
             <LogoTitle>{header.title}</LogoTitle>
             <LogoSubtitle>{header.subtitle}</LogoSubtitle>
