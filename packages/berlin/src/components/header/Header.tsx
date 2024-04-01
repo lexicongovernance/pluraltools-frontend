@@ -69,7 +69,12 @@ function Header() {
     <SyledHeader>
       <HeaderContainer>
         <LogoContainer onClick={() => navigate('/')}>
-          <LogoImage src={header.logo.src} alt={header.logo.alt} height={96} width={96} />
+          <LogoImage
+            src={window.location.origin + header.logo.src}
+            alt={header.logo.alt}
+            height={96}
+            width={96}
+          />
           <LogoTextContainer>
             <LogoTitle>{header.title}</LogoTitle>
             <LogoSubtitle>{header.subtitle}</LogoSubtitle>
