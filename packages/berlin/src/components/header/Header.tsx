@@ -11,6 +11,7 @@ import header from '../../data/header';
 
 // API
 import { logout } from 'api';
+import fetchUserRegistrations from 'api/src/fetchUserRegistrations';
 
 // Hooks
 import useUser from '../../hooks/useUser';
@@ -38,7 +39,8 @@ import {
   LogoTextContainer,
   ThemeButton,
 } from './Header.styled';
-import fetchUserRegistrations from 'api/src/fetchUserRegistrations';
+
+const logoUrl = new URL('/logos/logo.png', import.meta.url).href;
 
 function Header() {
   const queryClient = useQueryClient();
@@ -69,7 +71,7 @@ function Header() {
     <SyledHeader>
       <HeaderContainer>
         <LogoContainer onClick={() => navigate('/')}>
-          <LogoImage src={header.logo.src} alt={header.logo.alt} height={96} width={96} />
+          <LogoImage src={logoUrl} alt={header.logo.alt} height={96} width={96} />
           <LogoTextContainer>
             <LogoTitle>{header.title}</LogoTitle>
             <LogoSubtitle>{header.subtitle}</LogoSubtitle>
