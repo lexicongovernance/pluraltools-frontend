@@ -10,16 +10,22 @@ import styled from 'styled-components';
 
 const ImageContainer = styled.div`
   background-color: lightcoral;
-  height: 750px;
+  height: 500px;
   width: 100%;
   border-radius: 0.5rem;
   overflow: hidden;
 
   img {
     object-fit: cover;
-    object-position: 50% 70%;
     height: 100%;
     width: 100%;
+  }
+
+  @media (min-width: 600px) {
+    width: 75%;
+    img {
+      object-position: 50% 15%;
+    }
   }
 `;
 
