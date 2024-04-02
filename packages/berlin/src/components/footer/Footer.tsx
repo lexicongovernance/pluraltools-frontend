@@ -8,15 +8,26 @@ function Header() {
   return (
     <SyledFooter>
       <FooterContainer $gap="0.75rem" $align="center">
+        <Copy>A grants program funded by Plurality Labs and the Arbitrum DAO</Copy>
+        <Copy>Co-sponsored by RadicalXChange, MetaGov & De-Sci Foundation</Copy>
+        <Copy>Tooling built by Lexicon Governance</Copy>
         <FlexRow $justify="center">
-          <RouterLink to={'https://github.com/lexicongovernance'}>
-            <img src={`/logos/lexicon-${theme}.png`} height={24} width={24} />
-          </RouterLink>
           <RouterLink to={'https://arbitrum.foundation/grants'}>
             <img src={`/logos/arbitrum-${theme}.svg`} height={24} width={24} />
           </RouterLink>
+          <RouterLink to={'https://www.radicalxchange.org/'}>
+            <img src={`/logos/radicalxchange-${theme}.svg`} height={24} width={24} />
+          </RouterLink>
+          <RouterLink to={'https://metagov.org/'}>
+            <img src={`/logos/metagov-${theme}.svg`} height={24} width={24} />
+          </RouterLink>
+          <RouterLink to={'https://www.descifoundation.org/'}>
+            <img src={`/logos/desci-${theme}.svg`} height={24} width={24} />
+          </RouterLink>
+          <RouterLink to={'https://github.com/lexicongovernance'}>
+            <img src={`/logos/lexicon-${theme}.png`} height={24} width={24} />
+          </RouterLink>
         </FlexRow>
-        <Copy>A grants program funded by Plurality Labs and the Arbitrum DAO</Copy>
       </FooterContainer>
     </SyledFooter>
   );
