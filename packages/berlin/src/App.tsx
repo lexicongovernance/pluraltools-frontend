@@ -152,11 +152,11 @@ async function redirectToCycleResultsLoader(
 
 const router = (queryClient: QueryClient) =>
   createBrowserRouter([
+    { path: '/popup', element: <PassportPopupRedirect /> },
     {
       element: <BerlinLayout />,
       children: [
         { path: '/', loader: () => redirectOnLandingLoader(queryClient), element: <Landing /> },
-        { path: '/popup', element: <PassportPopupRedirect /> },
         {
           loader: () => redirectToLandingLoader(queryClient),
           children: [
