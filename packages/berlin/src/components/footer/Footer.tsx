@@ -25,7 +25,7 @@ function Header() {
             <img src={`/logos/desci-${theme}.svg`} height={24} width={24} />
           </RouterLink>
           <RouterLink to={'https://github.com/lexicongovernance'}>
-            <img src={`/logos/lexicon-${theme}.png`} height={24} width={24} />
+            <img src={`/logos/lexicon-${theme}.svg`} height={24} width={24} />
           </RouterLink>
         </FlexRow>
       </FooterContainer>
