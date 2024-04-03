@@ -69,7 +69,7 @@ function CycleTable({ cycles, status }: { cycles: GetCycleResponse[]; status: 'o
     <div>
       <Table
         columns={[
-          `${status.charAt(0).toUpperCase() + status.slice(1)} Agenda`,
+          `${status.charAt(0).toUpperCase() + status.slice(1)} Agendas`,
           formattedColumnText(),
           '',
         ]}
