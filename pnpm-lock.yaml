@@ -35,6 +35,9 @@ importers:
       react:
         specifier: ^18.2.0
         version: 18.2.0
+      react-content-loader:
+        specifier: ^7.0.0
+        version: 7.0.0(react@18.2.0)
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
@@ -3875,6 +3878,15 @@ packages:
       randombytes: 2.1.0
       safe-buffer: 5.2.1
     dev: true
+
+  /react-content-loader@7.0.0(react@18.2.0):
+    resolution: {integrity: sha512-xaBwpO7eiJyEc4ndym+g6wcruV9W2y3DKqbw4U48QFBsv0IeAVZO+aCUb8GptlDLWM8n5zi2HcFSGlj5r+53Tg==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16.0.0'
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /react-dom@18.2.0(react@18.2.0):
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
