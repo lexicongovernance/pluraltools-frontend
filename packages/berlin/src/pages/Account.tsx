@@ -36,6 +36,7 @@ import { formatGroups } from '../utils/formatGroups';
 import { useAppStore } from '../store';
 import { Body } from '../components/typography/Body.styled';
 import { useEffect, useMemo } from 'react';
+import SkeletonInput from '../components/input/Skeleton';
 
 const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None'];
 
@@ -290,6 +291,7 @@ function AccountForm({
       <Title>Complete your registration</Title>
       <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%' }}>
         <FlexColumn>
+          <SkeletonInput />
           <Input
             label="Username"
             placeholder="Enter your Username"
