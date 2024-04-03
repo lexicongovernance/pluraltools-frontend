@@ -68,7 +68,11 @@ function CycleTable({ cycles, status }: { cycles: GetCycleResponse[]; status: 'o
   return (
     <div>
       <Table
-        columns={['Agenda', formattedColumnText(), '']}
+        columns={[
+          `${status.charAt(0).toUpperCase() + status.slice(1)} Agendas`,
+          formattedColumnText(),
+          '',
+        ]}
         rows={cycles.map((cycle) => [
           cycle.forumQuestions?.[0]?.questionTitle,
           formatDate(cycle.endAt),
