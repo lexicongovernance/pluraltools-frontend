@@ -4,7 +4,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 // Components
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { Body } from '../components/typography/Body.styled';
-import { Title } from '../components/typography/Title.styled';
 import Link from '../components/link';
 import styled from 'styled-components';
 import { SafeArea } from '../layout/Layout.styled';
@@ -37,7 +36,7 @@ function Holding() {
   return (
     <SafeArea>
       <FlexColumn $gap="2rem">
-        <Title>Thank you for submitting!</Title>
+        <Body>Thank you for submitting!</Body>
         <Body>
           We might not be able to accommodate everyone, given limited space. But we hope to.
         </Body>
