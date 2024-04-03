@@ -9,17 +9,13 @@ import Link from '../components/link';
 import styled from 'styled-components';
 
 const ImageContainer = styled.div`
-  background-color: lightcoral;
-  height: 750px;
-  width: 100%;
+  aspect-ratio: 1/1;
   border-radius: 0.5rem;
   overflow: hidden;
+  width: 100%;
 
-  img {
-    object-fit: cover;
-    object-position: 50% 70%;
-    height: 100%;
-    width: 100%;
+  @media (min-width: 640px) {
+    width: 450px;
   }
 `;
 
