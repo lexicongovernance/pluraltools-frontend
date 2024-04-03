@@ -31,6 +31,7 @@ import CharacterCounter from '../components/typography/CharacterCount.styled';
 import { z } from 'zod';
 import Textarea from '../components/textarea';
 import { Body } from '../components/typography/Body.styled';
+import { SafeArea } from '../layout/Layout.styled';
 
 function Register() {
   const { user, isLoading } = useUser();
@@ -161,35 +162,38 @@ function RegisterForm(props: {
   };
 
   return (
-    <FlexColumn>
-      <Title>{props.event?.registrationDescription}</Title>
-      <form style={{ width: '100%' }}>
-        <FlexColumn $gap="0.75rem">
-          {sortedRegistrationFields.map((regField) => (
-            <FormField
-              key={regField.id}
-              disabled={props.registration?.status === 'PUBLISHED'}
-              errors={errors}
-              required={regField.required}
-              id={regField.id}
-              name={regField.name}
-              characterLimit={regField.characterLimit}
-              options={regField.registrationFieldOptions}
-              type={regField.type}
-              register={register}
-              control={control}
-              value={values[regField.id] ?? ''} // Current input value
-            />
-          ))}
-        </FlexColumn>
-      </form>
-      <Button disabled={!isValid} onClick={handleSubmit(onSubmit)}>
-        Save
-      </Button>
-      <Body>
-        Need more time? Feel free to come back to these questions later. The deadline is April 15th.
-      </Body>
-    </FlexColumn>
+    <SafeArea>
+      <FlexColumn>
+        <Title>{props.event?.registrationDescription}</Title>
+        <form style={{ width: '100%' }}>
+          <FlexColumn $gap="0.75rem">
+            {sortedRegistrationFields.map((regField) => (
+              <FormField
+                key={regField.id}
+                disabled={props.registration?.status === 'PUBLISHED'}
+                errors={errors}
+                required={regField.required}
+                id={regField.id}
+                name={regField.name}
+                characterLimit={regField.characterLimit}
+                options={regField.registrationFieldOptions}
+                type={regField.type}
+                register={register}
+                control={control}
+                value={values[regField.id] ?? ''} // Current input value
+              />
+            ))}
+          </FlexColumn>
+        </form>
+        <Button disabled={!isValid} onClick={handleSubmit(onSubmit)}>
+          Save
+        </Button>
+        <Body>
+          Need more time? Feel free to come back to these questions later. The deadline is April
+          15th.
+        </Body>
+      </FlexColumn>
+    </SafeArea>
   );
 }
 
