@@ -106,7 +106,7 @@ function Cycle() {
   const { mutate: mutateVotes } = useMutation({
     mutationFn: postVotes,
     onSuccess: (body) => {
-      if (body?.errors.length) {
+      if (body?.errors?.length) {
         toast.error(`Failed to save votes, ${body?.errors[0].message}`);
       } else if (body?.data.length) {
         queryClient.invalidateQueries({ queryKey: ['votes', cycleId] });
@@ -126,7 +126,7 @@ function Cycle() {
   };
 
   const handleSaveVotesWrapper = () => {
-    handleSaveVotes(userVotes, localUserVotes, cycleId, mutateVotes);
+    handleSaveVotes(userVotes, localUserVotes, mutateVotes);
   };
 
   const currentCycle = cycle?.forumQuestions[0];

@@ -97,7 +97,7 @@ function CommentCard({ comment }: CommentCardProps) {
 
   const handleTrashClick = () => {
     if (optionId) {
-      deleteCommentMutation({ optionId, commentId: comment.id });
+      deleteCommentMutation({ commentId: comment.id });
     }
   };
 
