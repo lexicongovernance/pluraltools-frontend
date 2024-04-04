@@ -18,6 +18,7 @@ import {
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRowToColumn } from '../components/containers/FlexRowToColumn.styled';
 import { Title } from '../components/typography/Title.styled';
+import { Subtitle } from '../components/typography/Subtitle.styled';
 import Button from '../components/button';
 import IconButton from '../components/iconButton';
 import Input from '../components/input';
@@ -287,7 +288,7 @@ function AccountForm({
 
   return (
     <FlexColumn>
-      <Title>Complete your registration</Title>
+      <Subtitle>Complete your registration</Subtitle>
       <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%' }}>
         <FlexColumn>
           <Input

@@ -17,7 +17,7 @@ export const FlexRowToColumn = styled.div<FlexRowToColumnProps>`
   gap: ${(props) => props.$gap || '1rem'};
   justify-content: ${(props) => (props.$justify && props.$justify) || 'flex-start'};
 
-  @media (min-width: 640px) {
+  @media (min-width: 600px) {
     flex-direction: row;
   }
 `;
