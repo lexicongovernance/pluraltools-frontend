@@ -1,12 +1,12 @@
 // React and third-party libraries
 import { useParams, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
 // Components
-import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { Body } from '../components/typography/Body.styled';
-import Link from '../components/link';
-import styled from 'styled-components';
+import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { SafeArea } from '../layout/Layout.styled';
+import Link from '../components/link';
 
 const ImageContainer = styled.div`
   aspect-ratio: 1/1;
@@ -26,6 +26,10 @@ function Holding() {
 
   const handleRegistrationClick = () => {
     navigate(`/events/${eventId}/register`);
+  };
+
+  const handleDataPolicyClick = () => {
+    navigate(`/data-policy`);
   };
 
   // TODO: Create functions to navigate to onboarding slides
@@ -50,9 +54,9 @@ function Holding() {
           that could hinder open exchange.
         </Body>
         <Body>
-          Click on the following links to edit/review{' '}
+          Click to{' '}
           <Link to="#" onClick={handleRegistrationClick}>
-            your submission
+            edit your submission
           </Link>{' '}
           and to revisit the{' '}
           <Link
@@ -61,14 +65,18 @@ function Holding() {
             state={{ onboardingStep: 2, previousPath: location.pathname }}
           >
             event rules
-          </Link>{' '}
-          and{' '}
+          </Link>
+          ,{' '}
           <Link
             to="#"
             onClick={handleOnboardingClick}
             state={{ onboardingStep: 0, previousPath: location.pathname }}
           >
             trust assumptions
+          </Link>
+          , and the community’s{' '}
+          <Link to="#" onClick={handleDataPolicyClick}>
+            data policy
           </Link>
           .
         </Body>
