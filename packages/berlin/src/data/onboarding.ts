@@ -6,7 +6,7 @@ const onboarding = {
       body: [
         {
           id: 0,
-          text: `Our mechanisms (plural voting, peer prediction) require some social information to work. Initially, this information will be stored in the community’s secure database, managed by Lexicon, and used only to calculate plurality scores and manage attendance.`,
+          text: `Our mechanisms (plural voting, peer prediction) require some social information to work. Initially, this information will be stored in the community’s secure database, managed by Lexicon (the community service provider), and used only to calculate plurality scores and manage attendance.`,
         },
         {
           id: 1,

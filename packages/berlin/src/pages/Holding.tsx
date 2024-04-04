@@ -42,13 +42,12 @@ function Holding() {
           We might not be able to accommodate everyone, given limited space. But we hope to.
         </Body>
         <Body>
-          Note: For entities operating in the MEV space (searcher, builder, relay, etc.), those
-          backed by venture capital, or those controlled by parties with a financial interest, we
-          kindly request that at least one senior researcher (holding a PhD or equivalent) or senior
-          executive (e.g., CEO) represent your organization at the event. This ensures a balance of
-          expertise and experience across participating entities, fostering an environment of
-          in-depth research collaboration and preventing knowledge imbalances that could hinder open
-          exchange.
+          Note: For MEV operators (searcher, builder, relay, etc.) backed by venture capital 
+          or controlled by parties with a financial interest, we request that at least one senior 
+          researcher (holding a PhD or equivalent) or executive (e.g., CEO) represent your organization 
+          at the event. This ensures a balance of expertise and experience across participating entities, 
+          fostering an environment of in-depth research collaboration and preventing knowledge imbalances 
+          that could hinder open exchange.
         </Body>
         <Body>
           Click on the following links to edit/review{' '}
