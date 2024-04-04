@@ -28,6 +28,10 @@ function Holding() {
     navigate(`/events/${eventId}/register`);
   };
 
+  const handleDataPolicyClick = () => {
+    navigate(`/events/${eventId}/register`);
+  };
+
   // TODO: Create functions to navigate to onboarding slides
 
   const handleOnboardingClick = () => {
@@ -51,9 +55,9 @@ function Holding() {
           exchange.
         </Body>
         <Body>
-          Click on the following links to edit/review{' '}
+          Click to{' '}
           <Link to="#" onClick={handleRegistrationClick}>
-            your submission
+            edit your submission
           </Link>{' '}
           and to revisit the{' '}
           <Link
@@ -62,8 +66,8 @@ function Holding() {
             state={{ onboardingStep: 2, previousPath: location.pathname }}
           >
             event rules
-          </Link>{' '}
-          and{' '}
+          </Link>
+          ,{' '}
           <Link
             to="#"
             onClick={handleOnboardingClick}
@@ -71,7 +75,10 @@ function Holding() {
           >
             trust assumptions
           </Link>
-          .
+          , and the community’s{' '}
+          <Link to="#" onClick={handleDataPolicyClick}>
+            data policy
+          </Link>
         </Body>
         <Body>We will notify participants on a rolling basis.</Body>
         <ImageContainer>
