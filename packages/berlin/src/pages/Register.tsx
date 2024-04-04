@@ -1,12 +1,12 @@
-// Components
+// React and third-party libraries
+import { Control, Controller, FieldErrors, UseFormRegister, useForm } from 'react-hook-form';
+import { useEffect, useMemo, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import Button from '../components/button';
+import { z } from 'zod';
+import toast from 'react-hot-toast';
 
-// Styled components
-import { FlexColumn } from '../components/containers/FlexColum.styled';
-import { Title } from '../components/typography/Title.styled';
-
-import useUser from '../hooks/useUser';
+// API
 import {
   GetUserResponse,
   fetchEvent,
@@ -15,23 +15,28 @@ import {
   fetchRegistrationFields,
   postRegistrationData,
 } from 'api';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
+// Hooks
+import useUser from '../hooks/useUser';
+
+// Types
+import { DBEvent } from '../types/DBEventType';
+import { GetRegistrationDataResponse } from '../types/RegistrationDataType';
 import { GetRegistrationFieldsResponse } from '../types/RegistrationFieldType';
 import { GetRegistrationResponseType } from '../types/RegistrationType';
-import { GetRegistrationDataResponse } from '../types/RegistrationDataType';
-import { DBEvent } from '../types/DBEventType';
-import { Control, Controller, FieldErrors, UseFormRegister, useForm } from 'react-hook-form';
-import { useEffect, useMemo, useState } from 'react';
-import toast from 'react-hot-toast';
 import { RegistrationFieldOption } from '../types/RegistrationFieldOptionType';
+
+// Components
+import { Body } from '../components/typography/Body.styled';
+import { Error } from '../components/typography/Error.styled';
+import { FlexColumn } from '../components/containers/FlexColum.styled';
+import { SafeArea } from '../layout/Layout.styled';
+import { Subtitle } from '../components/typography/Subtitle.styled';
+import Button from '../components/button';
+import CharacterCounter from '../components/typography/CharacterCount.styled';
 import Input from '../components/input';
 import Select from '../components/select';
-import { Error } from '../components/typography/Error.styled';
-import CharacterCounter from '../components/typography/CharacterCount.styled';
-import { z } from 'zod';
 import Textarea from '../components/textarea';
-import { Body } from '../components/typography/Body.styled';
-import { SafeArea } from '../layout/Layout.styled';
 
 function Register() {
   const { user, isLoading } = useUser();
@@ -164,7 +169,7 @@ function RegisterForm(props: {
   return (
     <SafeArea>
       <FlexColumn>
-        <Title>{props.event?.registrationDescription}</Title>
+        <Subtitle>{props.event?.registrationDescription}</Subtitle>
         <form style={{ width: '100%' }}>
           <FlexColumn $gap="0.75rem">
             {sortedRegistrationFields.map((regField) => (
