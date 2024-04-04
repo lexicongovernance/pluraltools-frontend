@@ -5,17 +5,14 @@ async function postComment({
   value,
 }: PostCommentRequest): Promise<PostCommentResponse | null> {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/options/${questionOptionId}/comments`,
-      {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-type': 'application/json',
-        },
-        body: JSON.stringify({ value, questionOptionId }),
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/comments`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-type': 'application/json',
       },
-    );
+      body: JSON.stringify({ value, questionOptionId }),
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);

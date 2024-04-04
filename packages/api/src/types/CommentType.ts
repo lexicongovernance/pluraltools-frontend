@@ -19,7 +19,6 @@ export type PostCommentRequest = {
 };
 
 export type DeleteCommentRequest = {
-  optionId: string;
   commentId: string;
 };
 

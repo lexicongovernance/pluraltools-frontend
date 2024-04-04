@@ -9,10 +9,9 @@ export type GetUserVotesResponse = {
 
 export type PostVotesRequest = {
   votes: { optionId: string; numOfVotes: number }[];
-  cycleId: string;
 };
 
 export type PostVotesResponse = {
   data: GetUserVotesResponse;
-  errors: { message: string }[];
+  errors?: { message: string }[];
 };

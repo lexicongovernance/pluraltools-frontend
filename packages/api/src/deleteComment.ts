@@ -1,20 +1,16 @@
 import { DeleteCommentRequest, DeleteCommentResponse } from '.';
 
 async function deleteComment({
-  optionId,
   commentId,
 }: DeleteCommentRequest): Promise<DeleteCommentResponse | null> {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/options/${optionId}/comments/${commentId}`,
-      {
-        method: 'DELETE',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/comments/${commentId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);
