@@ -79,6 +79,7 @@ function Holding() {
           <Link to="#" onClick={handleDataPolicyClick}>
             data policy
           </Link>
+          .
         </Body>
         <Body>We will notify participants on a rolling basis.</Body>
         <ImageContainer>

@@ -76,6 +76,7 @@ function Event() {
         <Link to="#" onClick={handleDataPolicyClick}>
           data policy
         </Link>
+        .
       </Body>
     </FlexColumn>
   );
