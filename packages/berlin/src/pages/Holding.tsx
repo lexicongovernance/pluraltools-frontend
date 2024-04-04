@@ -1,12 +1,12 @@
 // React and third-party libraries
 import { useParams, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
 // Components
-import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { Body } from '../components/typography/Body.styled';
-import Link from '../components/link';
-import styled from 'styled-components';
+import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { SafeArea } from '../layout/Layout.styled';
+import Link from '../components/link';
 
 const ImageContainer = styled.div`
   aspect-ratio: 1/1;
@@ -28,6 +28,10 @@ function Holding() {
     navigate(`/events/${eventId}/register`);
   };
 
+  const handleDataPolicyClick = () => {
+    navigate(`/data-policy`);
+  };
+
   // TODO: Create functions to navigate to onboarding slides
 
   const handleOnboardingClick = () => {
@@ -42,18 +46,17 @@ function Holding() {
           We might not be able to accommodate everyone, given limited space. But we hope to.
         </Body>
         <Body>
-          Note: For entities operating in the MEV space (searcher, builder, relay, etc.), those
-          backed by venture capital, or those controlled by parties with a financial interest, we
-          kindly request that at least one senior researcher (holding a PhD or equivalent) or senior
-          executive (e.g., CEO) represent your organization at the event. This ensures a balance of
-          expertise and experience across participating entities, fostering an environment of
-          in-depth research collaboration and preventing knowledge imbalances that could hinder open
-          exchange.
+          Note: For MEV operators (searcher, builder, relay, etc.) backed by venture capital 
+          or controlled by parties with a financial interest, we request that at least one senior 
+          researcher (holding a PhD or equivalent) or executive (e.g., CEO) represent your organization 
+          at the event. This ensures a balance of expertise and experience across participating entities, 
+          fostering an environment of in-depth research collaboration and preventing knowledge imbalances 
+          that could hinder open exchange.
         </Body>
         <Body>
-          Click on the following links to edit/review{' '}
+          Click to{' '}
           <Link to="#" onClick={handleRegistrationClick}>
-            your submission
+            edit your submission
           </Link>{' '}
           and to revisit the{' '}
           <Link
@@ -62,14 +65,18 @@ function Holding() {
             state={{ onboardingStep: 2, previousPath: location.pathname }}
           >
             event rules
-          </Link>{' '}
-          and{' '}
+          </Link>
+          ,{' '}
           <Link
             to="#"
             onClick={handleOnboardingClick}
             state={{ onboardingStep: 0, previousPath: location.pathname }}
           >
             trust assumptions
+          </Link>
+          , and the community’s{' '}
+          <Link to="#" onClick={handleDataPolicyClick}>
+            data policy
           </Link>
           .
         </Body>

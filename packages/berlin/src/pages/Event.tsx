@@ -7,13 +7,16 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { GetCycleResponse, fetchEvent, fetchEventCycles } from 'api';
 
 // Components
+import { Body } from '../components/typography/Body.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { Table } from '../components/table';
 import BackButton from '../components/backButton';
 import Button from '../components/button';
 import EventCard from '../components/eventCard';
+import Link from '../components/link';
 
 function Event() {
+  const navigate = useNavigate();
   const { eventId } = useParams();
   const { data: event } = useQuery({
     queryKey: ['event', eventId],
@@ -36,12 +39,45 @@ function Event() {
     [eventCycles],
   );
 
+  const handleDataPolicyClick = () => {
+    navigate(`/data-policy`);
+  };
+
+  // TODO: Create functions to navigate to onboarding slides
+
+  const handleOnboardingClick = () => {
+    navigate(`/onboarding`);
+  };
+
   return (
     <FlexColumn $gap="2rem">
       <BackButton />
       {!!openCycles?.length && <CycleTable cycles={openCycles} status="open" />}
       {!!closedCycles?.length && <CycleTable cycles={closedCycles} status="closed" />}
       {event && <EventCard event={event} $direction="row" />}
+      <Body>
+        Click to revisit the{' '}
+        <Link
+          to="#"
+          onClick={handleOnboardingClick}
+          state={{ onboardingStep: 2, previousPath: location.pathname }}
+        >
+          event rules
+        </Link>
+        ,{' '}
+        <Link
+          to="#"
+          onClick={handleOnboardingClick}
+          state={{ onboardingStep: 0, previousPath: location.pathname }}
+        >
+          trust assumptions
+        </Link>
+        , and the community’s{' '}
+        <Link to="#" onClick={handleDataPolicyClick}>
+          data policy
+        </Link>
+        .
+      </Body>
     </FlexColumn>
   );
 }
