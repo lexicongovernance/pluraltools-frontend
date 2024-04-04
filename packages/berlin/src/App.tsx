@@ -203,13 +203,13 @@ const router = (queryClient: QueryClient) =>
                       path: ':cycleId/results',
                       Component: Results,
                     },
+                    {
+                      path: ':cycleId/options/:optionId',
+                      Component: Option,
+                    },
                   ],
                 },
               ],
-            },
-            {
-              path: '/events/:eventId/cycles/:cycleId/options/:optionId',
-              Component: Option,
             },
           ],
         },
