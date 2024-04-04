@@ -11,6 +11,7 @@ import { SafeArea } from '../layout/Layout.styled';
 const ImageContainer = styled.div`
   aspect-ratio: 1/1;
   border-radius: 0.5rem;
+  margin-inline: auto;
   overflow: hidden;
   width: 100%;
 
