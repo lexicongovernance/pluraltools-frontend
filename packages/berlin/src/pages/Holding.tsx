@@ -1,12 +1,12 @@
 // React and third-party libraries
 import { useParams, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
 // Components
-import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { Body } from '../components/typography/Body.styled';
-import Link from '../components/link';
-import styled from 'styled-components';
+import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { SafeArea } from '../layout/Layout.styled';
+import Link from '../components/link';
 
 const ImageContainer = styled.div`
   aspect-ratio: 1/1;
@@ -29,7 +29,7 @@ function Holding() {
   };
 
   const handleDataPolicyClick = () => {
-    navigate(`/events/${eventId}/register`);
+    navigate(`/data-policy`);
   };
 
   // TODO: Create functions to navigate to onboarding slides
