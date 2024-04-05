@@ -3,7 +3,7 @@ import { Subtitle } from '../typography/Subtitle.styled';
 import { Body } from '../typography/Body.styled';
 import { Card, CardContent, ImageContainer } from './EventCard.styled';
 import Button from '../button';
-import { Link } from 'react-router-dom';
+import Link from '../link';
 
 type EventCardProps = {
   event: GetEventResponse;
