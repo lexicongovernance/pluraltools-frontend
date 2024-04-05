@@ -1,6 +1,6 @@
 import type { GetCycleResponse } from 'api';
 import { FlexColumn } from '../containers/FlexColum.styled';
-import CycleCard from '../cycleCard';
+import CycleCard from '../cycle-card';
 import { Title } from '../typography/Title.styled';
 
 type VotingCardsProps = {
