@@ -31,13 +31,17 @@ function Landing() {
           (“privacy”), collusion resistance, and partial common ownership.
         </Body>
         <Body>
-          This is a community event, <Bold>where researchers set the agenda.</Bold>{' '}
-          Through a series of structured interactions, the community will prioritize research and
-          allocate funds, relying on plural mechanisms — <Bold>deliberation, plural voting, peer 
-          prediction, and healthy social recombination</Bold> — to surface research in the broader public good. 
+          This is a community event, <Bold>where researchers set the agenda.</Bold> Through a series
+          of structured interactions, the community will prioritize research and allocate funds,
+          relying on plural mechanisms —{' '}
+          <Bold>
+            deliberation, plural voting, peer prediction, and healthy social recombination
+          </Bold>{' '}
+          — to surface research in the broader public good.
         </Body>
         <Body>
-          The experiment will be novel, fun, and weird — like the best of research… and Berlin. Surprise the community with your proposals!
+          The experiment will be novel, fun, and weird — like the best of research… and Berlin.
+          Surprise the community with your proposals!
         </Body>
         <Body>
           Sign up with{' '}
