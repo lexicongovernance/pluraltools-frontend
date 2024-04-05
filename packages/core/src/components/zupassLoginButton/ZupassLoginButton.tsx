@@ -42,7 +42,7 @@ function ZupassLoginButton({ children, ...props }: ZupassLoginButtonProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, __, serverPCDStr] = usePendingPCD(
     zupassPendingPCDStr,
-    import.meta.env.VITE_ZUPASS_SERVER_URL
+    import.meta.env.VITE_ZUPASS_SERVER_URL,
   );
   const pcdStr = usePCDMultiplexer(zupassPCDStr, serverPCDStr);
 

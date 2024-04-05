@@ -43,13 +43,13 @@ const useCountdown = (startAt: string | null, endAt: string | null): Countdown =
     if (days > 0) {
       return `${pluralize(days, 'day')} ${pluralize(hours, 'hour')} ${pluralize(
         minutes,
-        'minute'
+        'minute',
       )} ${pluralize(seconds, 'second')}`;
     }
 
     return `${pluralize(hours, 'hour')} ${pluralize(minutes, 'minute')} ${pluralize(
       seconds,
-      'second'
+      'second',
     )}`;
   };
 
