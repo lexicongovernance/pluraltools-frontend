@@ -17,8 +17,8 @@ import useUser from '../../hooks/useUser';
 
 // Components
 import Button from '../button';
-import NavButton from '../navButton';
-import ZupassLoginButton from '../zupassButton/ZupassLoginButton';
+import NavButton from '../nav-button';
+import ZupassLoginButton from '../zupass-button/ZupassLoginButton';
 
 // Styled components
 import {

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../../store';
-import IconButton from '../iconButton';
+import IconButton from '../icon-button';
 
 function BackButton() {
   const navigate = useNavigate();

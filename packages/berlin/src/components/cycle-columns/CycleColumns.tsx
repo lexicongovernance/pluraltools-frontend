@@ -1,4 +1,4 @@
-import IconButton from '../iconButton';
+import IconButton from '../icon-button';
 import { Body } from '../typography/Body.styled';
 import { Affiliation, Author, Card, Hearts, Plurality, Proposal } from './CycleColumns.styled';
 
