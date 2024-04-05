@@ -92,7 +92,7 @@ function RegisterForm(props: {
         acc[curr.registrationFieldId] = curr.value;
         return acc;
       },
-      {} as Record<string, string>
+      {} as Record<string, string>,
     ),
     mode: 'onBlur',
   });

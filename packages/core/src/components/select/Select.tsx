@@ -15,7 +15,7 @@ function Select({ options, placeholder, onChange, onOptionCreate, value, onBlur 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState(options.find((o) => o.name === value)?.name ?? '');
   const [selectedOption, setSelectedOption] = useState<string | undefined>(
-    options.find((o) => o.id === value)?.name
+    options.find((o) => o.id === value)?.name,
   );
   const [creatableOption, setCreatableOption] = useState<string>('');
 

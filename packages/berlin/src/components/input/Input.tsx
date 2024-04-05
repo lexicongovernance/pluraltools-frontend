@@ -26,6 +26,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         )}
       </FlexColumn>
     );
-  }
+  },
 );
 export default Input;
