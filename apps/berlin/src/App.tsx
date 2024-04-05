@@ -3,24 +3,24 @@ import { RouterProvider, createBrowserRouter, redirect } from 'react-router-dom'
 import { QueryClient } from '@tanstack/react-query';
 
 // Store
-import { useAppStore } from './store';
+import { useAppStore } from './store/index.ts';
 
 // API
 import { fetchEvents, fetchUserData, fetchCycle, fetchRegistration } from 'api';
 
 // Pages
 import { default as BerlinLayout } from './layout/index.ts';
-import Account from './pages/Account';
+import Account from './pages/Account.tsx';
 import Cycle from './pages/Cycle.tsx';
 import DataPolicy from './pages/DataPolicy.tsx';
 import Event from './pages/Event.tsx';
 import Events from './pages/Events.tsx';
-import Holding from './pages/Holding';
-import Landing from './pages/Landing';
-import Onboarding from './pages/Onboarding';
+import Holding from './pages/Holding.tsx';
+import Landing from './pages/Landing.tsx';
+import Onboarding from './pages/Onboarding.tsx';
 import Option from './pages/Option.tsx';
-import PassportPopupRedirect from './pages/Popup';
-import Register from './pages/Register';
+import PassportPopupRedirect from './pages/Popup.tsx';
+import Register from './pages/Register.tsx';
 import Results from './pages/Results.tsx';
 
 /**

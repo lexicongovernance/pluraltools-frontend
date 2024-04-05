@@ -5,7 +5,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import BerlinApp from './App.tsx';
-import ThemedApp from './global.styled';
+import ThemedApp from './global.styled.tsx';
 
 const queryClient = new QueryClient();
 
