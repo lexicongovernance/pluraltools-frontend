@@ -11,7 +11,7 @@ import useUser from '../hooks/useUser';
 // Components
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { Title } from '../components/typography/Title.styled';
-import EventCard from '../components/eventCard';
+import EventCard from '../components/event-card';
 
 function Events() {
   const navigate = useNavigate();

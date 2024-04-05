@@ -26,10 +26,10 @@ import { Bold } from '../components/typography/Bold.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
 import { Title } from '../components/typography/Title.styled';
-import BackButton from '../components/backButton';
+import BackButton from '../components/back-button';
 import Button from '../components/button';
-import CycleColumns from '../components/cycleColumns';
-import OptionCard from '../components/optionCard';
+import CycleColumns from '../components/cycle-columns';
+import OptionCard from '../components/option-card';
 
 type Order = 'asc' | 'desc';
 type LocalUserVotes = ResponseUserVotesType | { optionId: string; numOfVotes: number }[];

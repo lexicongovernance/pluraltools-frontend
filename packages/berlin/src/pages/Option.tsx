@@ -24,10 +24,10 @@ import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
 import { Form } from '../components/containers/Form.styled';
 import { Title } from '../components/typography/Title.styled';
-import BackButton from '../components/backButton';
+import BackButton from '../components/back-button';
 import Button from '../components/button';
-import CommentCard from '../components/commentCard';
-import IconButton from '../components/iconButton';
+import CommentCard from '../components/comment-card';
+import IconButton from '../components/icon-button';
 import Textarea from '../components/textarea';
 
 function Option() {

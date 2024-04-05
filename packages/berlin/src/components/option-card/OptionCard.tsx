@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Body } from '../typography/Body.styled';
 import { Affiliation, Author, Card, Hearts, Plurality, Proposal } from './OptionCard.styled';
 import { FlexColumn } from '../containers/FlexColum.styled';
-import IconButton from '../iconButton';
+import IconButton from '../icon-button';
 import { useAppStore } from '../../store';
 import { FlexRow } from '../containers/FlexRow.styled';
 import { QuestionOption } from 'api';
