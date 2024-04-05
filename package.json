@@ -10,8 +10,8 @@
     "berlin:dev": "pnpm -r --filter berlin dev",
     "berlin:build": "pnpm -r --filter berlin build",
     "berlin:preview": "pnpm -r --filter berlin preview",
-    "format": "prettier --check \"packages/**/*.{ts,md}\"",
-    "format:fix": "prettier --write \"packages/**/*.{ts,md}\"",
+    "format": "prettier --check \"apps/**/*.{ts,tsx,md}\" \"packages/**/*.{ts,tsx,md}\"",
+    "format:fix": "prettier --write \"apps/**/*.{ts,tsx,md}\" \"packages/**/*.{ts,tsx,md}\"",
     "lint": "eslint ."
   },
   "keywords": [],
