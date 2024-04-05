@@ -3,6 +3,7 @@ import { Subtitle } from '../typography/Subtitle.styled';
 import { Body } from '../typography/Body.styled';
 import { Card, CardContent, ImageContainer } from './EventCard.styled';
 import Button from '../button';
+import { Link } from 'react-router-dom';
 
 type EventCardProps = {
   event: GetEventResponse;
@@ -19,6 +20,7 @@ function EventCard({ event, $direction = 'column', onClick }: EventCardProps) {
       <CardContent $gap="1.25rem">
         <Subtitle>{event.name}</Subtitle>
         {event.description && <Body>{event.description}</Body>}
+        {event.link && <Link to={event.link}>{event.link}</Link>}
         {onClick && <Button onClick={onClick}>Go</Button>}
       </CardContent>
     </Card>
