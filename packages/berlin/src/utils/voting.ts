@@ -71,14 +71,12 @@ export const handleSaveVotes = (
         optionId: string;
         numOfVotes: number;
       }[],
-  cycleId: string | undefined,
   mutateVotes: (data: PostVotesRequest) => void,
 ) => {
   try {
     if (userVotes) {
       const serverVotesMap = new Map(userVotes.map((vote) => [vote.optionId, vote]));
       const mutateVotesReq: PostVotesRequest = {
-        cycleId: cycleId || '',
         votes: [],
       };
 

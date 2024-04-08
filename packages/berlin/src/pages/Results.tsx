@@ -2,12 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchCycle, fetchForumQuestionStatistics } from 'api';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import BackButton from '../components/backButton';
+import BackButton from '../components/back-button';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { Grid } from '../components/containers/Grid.styled';
 import { Title } from '../components/typography/Title.styled';
-import ResultCard from '../components/resultCard';
-import StatCard from '../components/statCard';
+import ResultCard from '../components/result-card';
+import StatCard from '../components/stat-card';
 
 function Results() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);

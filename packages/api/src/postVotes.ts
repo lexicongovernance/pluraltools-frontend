@@ -1,8 +1,8 @@
 import { PostVotesRequest, PostVotesResponse } from './types/UserVotesType';
 
-async function postVotes({ cycleId, votes }: PostVotesRequest): Promise<PostVotesResponse | null> {
+async function postVotes({ votes }: PostVotesRequest): Promise<PostVotesResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/cycles/${cycleId}/votes`, {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/votes`, {
       method: 'POST',
       credentials: 'include',
       headers: {

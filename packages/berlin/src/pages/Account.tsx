@@ -20,7 +20,7 @@ import { FlexRowToColumn } from '../components/containers/FlexRowToColumn.styled
 import { Title } from '../components/typography/Title.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import Button from '../components/button';
-import IconButton from '../components/iconButton';
+import IconButton from '../components/icon-button';
 import Input from '../components/input';
 import Label from '../components/typography/Label';
 import Select from '../components/select';

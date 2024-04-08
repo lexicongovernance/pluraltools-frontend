@@ -8,7 +8,7 @@ import { Bold } from '../components/typography/Bold.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
 import { SafeArea } from '../layout/Layout.styled';
-import { Title } from '../components/typography/Title.styled';
+import { Subtitle } from '../components/typography/Subtitle.styled';
 import Button from '../components/button';
 import Dots from '../components/dots';
 
@@ -54,7 +54,7 @@ function Onboarding() {
   return (
     <SafeArea>
       <FlexColumn $gap="3rem">
-        <Title>{data[step].title}</Title>
+        <Subtitle>{data[step].title}</Subtitle>
         <BodyContent content={data[step].body} />
         <Dots dots={data.length} activeDotIndex={step} setStep={setStep} />
         <FlexRow>

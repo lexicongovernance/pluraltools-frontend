@@ -10,8 +10,8 @@
     "berlin:dev": "pnpm -r --filter berlin dev",
     "berlin:build": "pnpm -r --filter berlin build",
     "berlin:preview": "pnpm -r --filter berlin preview",
-    "format": "prettier --check \"packages/**/*.{ts,md}\"",
-    "format:fix": "prettier --write \"packages/**/*.{ts,md}\"",
+    "format": "prettier --check \"packages/**/*.{ts,tsx,json,md}\"",
+    "format:fix": "prettier --write \"packages/**/*.{ts,tsx,json,md}\"",
     "lint": "eslint ."
   },
   "keywords": [],
@@ -33,6 +33,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.49.3",
     "react-hot-toast": "^2.4.1",
+    "react-markdown": "^9.0.1",
     "react-router-dom": "^6.20.1",
     "styled-components": "^6.1.1",
     "zod": "^3.22.4",

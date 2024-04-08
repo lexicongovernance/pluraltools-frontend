@@ -22,6 +22,7 @@ const BackArrow = styled.div`
 function Vote() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { cycleId, eventId } = useParams();
 
   const handleGoBack = () => {
     navigate(-1); // Navigate back one step in the history stack
@@ -30,8 +31,11 @@ function Vote() {
   const { user } = useUser();
   const [startAt, setStartAt] = useState<string | null>(null);
   const [endAt, setEndAt] = useState<string | null>(null);
-
-  const { cycleId, eventId } = useParams();
+  const initialHearts = 20;
+  const [avaliableHearts, setAvaliableHearts] = useState(initialHearts);
+  const [localUserVotes, setLocalUserVotes] = useState<
+    ResponseUserVotesType | { optionId: string; numOfVotes: number }[]
+  >([]);
 
   const { data: cycle } = useQuery({
     queryKey: ['cycles', cycleId],
@@ -51,11 +55,18 @@ function Vote() {
     retry: false,
   });
 
-  const initialHearts = 20;
-  const [avaliableHearts, setAvaliableHearts] = useState(initialHearts);
-  const [localUserVotes, setLocalUserVotes] = useState<
-    ResponseUserVotesType | { optionId: string; numOfVotes: number }[]
-  >([]);
+  const { mutate: mutateVotes } = useMutation({
+    mutationFn: postVotes,
+    onSuccess: (body) => {
+      if (body?.data) {
+        queryClient.invalidateQueries({ queryKey: ['votes', cycleId] });
+        queryClient.invalidateQueries({ queryKey: ['cycles', cycleId] });
+        toast.success('Votes saved successfully!');
+      } else {
+        toast.error('Failed to save votes, please try again');
+      }
+    },
+  });
 
   useEffect(() => {
     if (cycle && cycle.startAt && cycle.endAt) {
@@ -133,24 +144,11 @@ function Vote() {
     setAvaliableHearts((prevAvaliableHearts) => Math.min(initialHearts, prevAvaliableHearts + 1));
   };
 
-  const { mutate: mutateVotes } = useMutation({
-    mutationFn: postVotes,
-    onSuccess: (body) => {
-      if (body?.data) {
-        queryClient.invalidateQueries({ queryKey: ['user-votes'] });
-        toast.success('Votes saved successfully!');
-      } else {
-        toast.error('Failed to save votes, please try again');
-      }
-    },
-  });
-
   const handleSaveVotes = () => {
     try {
       if (userVotes) {
         const serverVotesMap = new Map(userVotes.map((vote) => [vote.optionId, vote]));
         const mutateVotesReq: PostVotesRequest = {
-          cycleId: cycleId || '',
           votes: [],
         };
 
@@ -173,7 +171,6 @@ function Vote() {
         mutateVotes(mutateVotesReq);
       }
     } catch (error) {
-      toast.error('Failed to save votes, please try again');
       console.error('Error saving votes:', error);
     }
   };

@@ -10,7 +10,7 @@ import { Bold } from '../typography/Bold.styled';
 import { FlexColumn } from '../containers/FlexColum.styled';
 import { FlexRow } from '../containers/FlexRow.styled';
 import { Subtitle } from '../typography/Subtitle.styled';
-import IconButton from '../iconButton';
+import IconButton from '../icon-button';
 
 // Styled Components
 import { Badge, Card, List, ListItem } from './ResultCard.styled';

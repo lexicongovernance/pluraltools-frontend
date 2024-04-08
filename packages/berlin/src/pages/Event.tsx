@@ -10,9 +10,9 @@ import { GetCycleResponse, fetchEvent, fetchEventCycles } from 'api';
 import { Body } from '../components/typography/Body.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { Table } from '../components/table';
-import BackButton from '../components/backButton';
+import BackButton from '../components/back-button';
 import Button from '../components/button';
-import EventCard from '../components/eventCard';
+import EventCard from '../components/event-card';
 import Link from '../components/link';
 
 function Event() {

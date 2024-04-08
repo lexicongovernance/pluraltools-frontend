@@ -17,7 +17,7 @@ import { Body } from '../typography/Body.styled';
 import { FlexRow } from '../containers/FlexRow.styled';
 import Button from '../button';
 import Dialog from '../dialog';
-import IconButton from '../iconButton';
+import IconButton from '../icon-button';
 
 // Styled Components
 import { Card, FormattedDate, Username } from './CommentCard.styled';
@@ -97,7 +97,7 @@ function CommentCard({ comment }: CommentCardProps) {
 
   const handleTrashClick = () => {
     if (optionId) {
-      deleteCommentMutation({ optionId, commentId: comment.id });
+      deleteCommentMutation({ commentId: comment.id });
     }
   };
 
