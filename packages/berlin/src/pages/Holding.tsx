@@ -78,7 +78,7 @@ function Holding() {
           <Link to="#" onClick={handleDataPolicyClick}>
             data policy
           </Link>
-          .
+          . A community governance roadmap will be shared at the event.
         </Body>
         <Body>We will notify participants on a rolling basis.</Body>
         <ImageContainer>
