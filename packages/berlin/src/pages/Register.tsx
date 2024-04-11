@@ -8,12 +8,16 @@ import toast from 'react-hot-toast';
 
 // API
 import {
+  GetRegistrationDataResponse,
   GetUserResponse,
   fetchEvent,
   fetchRegistration,
   fetchRegistrationData,
   fetchRegistrationFields,
   postRegistrationData,
+  GetRegistrationFieldsResponse,
+  GetRegistrationResponseType,
+  RegistrationFieldOption,
 } from 'api';
 
 // Hooks
@@ -21,10 +25,6 @@ import useUser from '../hooks/useUser';
 
 // Types
 import { DBEvent } from '../types/DBEventType';
-import { GetRegistrationDataResponse } from '../types/RegistrationDataType';
-import { GetRegistrationFieldsResponse } from '../types/RegistrationFieldType';
-import { GetRegistrationResponseType } from '../types/RegistrationType';
-import { RegistrationFieldOption } from '../types/RegistrationFieldOptionType';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
@@ -61,9 +61,9 @@ function Register() {
   });
 
   const { data: registrationData, isLoading: registrationDataIsLoading } = useQuery({
-    queryKey: ['event', eventId, 'registration', 'data'],
-    queryFn: () => fetchRegistrationData(eventId || ''),
-    enabled: !!eventId,
+    queryKey: ['registration', registration?.id, 'data'],
+    queryFn: () => fetchRegistrationData(registration?.id || ''),
+    enabled: !!registration?.id,
   });
 
   if (isLoading || registrationDataIsLoading) {
