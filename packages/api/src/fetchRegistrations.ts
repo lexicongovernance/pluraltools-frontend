@@ -1,6 +1,6 @@
 import { GetRegistrationResponseType } from './types/RegistrationType';
 
-async function fetchRegistration(eventId: string): Promise<GetRegistrationResponseType | null> {
+async function fetchRegistrations(eventId: string): Promise<GetRegistrationResponseType | null> {
   try {
     const response = await fetch(
       `${import.meta.env.VITE_SERVER_URL}/api/events/${eventId}/registrations`,
@@ -28,4 +28,4 @@ async function fetchRegistration(eventId: string): Promise<GetRegistrationRespon
   }
 }
 
-export default fetchRegistration;
+export default fetchRegistrations;
