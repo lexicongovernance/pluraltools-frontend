@@ -8,15 +8,16 @@ import toast from 'react-hot-toast';
 
 // API
 import {
-  GetRegistrationDataResponse,
-  GetUserResponse,
   fetchEvent,
   fetchRegistration,
   fetchRegistrationData,
   fetchRegistrationFields,
-  postRegistrationData,
+  GetRegistrationDataResponse,
   GetRegistrationFieldsResponse,
   GetRegistrationResponseType,
+  GetUserResponse,
+  postRegistration,
+  putRegistration,
   RegistrationFieldOption,
 } from 'api';
 
@@ -132,15 +133,15 @@ function RegisterForm(props: {
   }, [props.registrationFields]);
 
   const { mutate: mutateRegistrationData } = useMutation({
-    mutationFn: postRegistrationData,
+    mutationFn: postRegistration,
     onSuccess: async (body) => {
       if (body) {
         toast.success('Registration saved successfully!');
         await queryClient.invalidateQueries({
-          queryKey: ['event', props.event?.id, 'registration'],
+          queryKey: ['registration'],
         });
         await queryClient.invalidateQueries({
-          queryKey: ['event', props.event?.id, 'registration', 'data'],
+          queryKey: ['registration', 'data'],
         });
         navigate(`/events/${props.event?.id}/holding`);
       } else {
@@ -153,17 +154,52 @@ function RegisterForm(props: {
     },
   });
 
+  const { mutate: updateRegistrationData } = useMutation({
+    mutationFn: putRegistration,
+    onSuccess: async (body) => {
+      if (body) {
+        toast.success('Registration updated successfully!');
+        await queryClient.invalidateQueries({
+          queryKey: [props.registration?.id, 'registration'],
+        });
+        await queryClient.invalidateQueries({
+          queryKey: [props.registration?.id, 'registration', 'data'],
+        });
+        navigate(`/events/${props.event?.id}/holding`);
+      } else {
+        toast.error('Failed to update registration, please try again');
+      }
+    },
+    onError: (error) => {
+      console.error('Error updating registration:', error);
+      toast.error('Failed to update registration, please try again');
+    },
+  });
+
   const onSubmit = (values: Record<string, string>) => {
-    mutateRegistrationData({
-      eventId: props.event?.id || '',
-      body: {
-        status: 'DRAFT',
-        registrationData: Object.entries(values).map(([key, value]) => ({
-          registrationFieldId: key,
-          value,
-        })),
-      },
-    });
+    if (props.registration) {
+      updateRegistrationData({
+        registrationId: props.registration?.id || '',
+        body: {
+          eventId: props.event?.id || '',
+          status: 'DRAFT',
+          registrationData: Object.entries(values).map(([key, value]) => ({
+            registrationFieldId: key,
+            value,
+          })),
+        },
+      });
+    } else {
+      mutateRegistrationData({
+        body: {
+          status: 'DRAFT',
+          registrationData: Object.entries(values).map(([key, value]) => ({
+            registrationFieldId: key,
+            value,
+          })),
+        },
+      });
+    }
   };
 
   return (
