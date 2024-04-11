@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 // API
 import {
   fetchEvent,
-  fetchRegistration,
+  fetchRegistrations,
   fetchRegistrationData,
   fetchRegistrationFields,
   GetRegistrationDataResponse,
@@ -51,7 +51,7 @@ function Register() {
 
   const { data: registration } = useQuery({
     queryKey: ['event', eventId, 'registration'],
-    queryFn: () => fetchRegistration(eventId || ''),
+    queryFn: () => fetchRegistrations(eventId || ''),
     enabled: !!eventId,
   });
 

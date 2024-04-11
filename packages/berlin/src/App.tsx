@@ -6,7 +6,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { useAppStore } from './store';
 
 // API
-import { fetchEvents, fetchUserData, fetchCycle, fetchRegistration } from 'api';
+import { fetchEvents, fetchUserData, fetchCycle, fetchRegistrations } from 'api';
 
 // Pages
 import { default as BerlinLayout } from './layout/index.ts';
@@ -117,7 +117,7 @@ async function redirectToOnlyOneEventLoader(queryClient: QueryClient) {
 async function redirectToEventHoldingOrRegister(queryClient: QueryClient, eventId?: string) {
   const registration = await queryClient.fetchQuery({
     queryKey: ['event', eventId, 'registration'],
-    queryFn: () => fetchRegistration(eventId || ''),
+    queryFn: () => fetchRegistrations(eventId || ''),
   });
 
   if (!registration) {

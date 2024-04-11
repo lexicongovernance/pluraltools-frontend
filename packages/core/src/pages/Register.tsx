@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   fetchEvent,
-  fetchRegistration,
+  fetchRegistrations,
   fetchRegistrationData,
   fetchRegistrationFields,
   postRegistration,
@@ -40,7 +40,7 @@ function Register() {
 
   const { data: registration } = useQuery({
     queryKey: ['event', eventId, 'registration'],
-    queryFn: () => fetchRegistration(eventId || ''),
+    queryFn: () => fetchRegistrations(eventId || ''),
     enabled: !!eventId,
   });
 
