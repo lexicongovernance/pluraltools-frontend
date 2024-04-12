@@ -18,7 +18,7 @@ import {
   type GetGroupsResponse,
   type GetRegistrationDataResponse,
   type GetRegistrationFieldsResponse,
-  type GetRegistrationsResponseType,
+  type GetRegistrationResponseType,
   type GetUserResponse,
   type RegistrationFieldOption,
 } from 'api';
@@ -46,6 +46,7 @@ function Register() {
   const { eventId } = useParams();
   const [searchParams] = useSearchParams();
   const groupCategory = searchParams.get('groupCategory');
+  // const navigate = useNavigate();
 
   const { data: event } = useQuery({
     queryKey: ['event', eventId],
@@ -59,32 +60,44 @@ function Register() {
     enabled: !!eventId,
   });
 
-  const { data: usersGroups } = useQuery({
-    queryKey: ['user', 'groups', user?.id],
-    queryFn: () => fetchUserGroups(user?.id || ''),
-    enabled: !!user?.id && !!groupCategory,
-  });
-
   const { data: registrationFields } = useQuery({
     queryKey: ['event', eventId, 'registrations', 'fields'],
     queryFn: () => fetchRegistrationFields(eventId || ''),
     enabled: !!eventId,
   });
 
-  const registration = registrations;
+  // this query runs if there is a groupCategory query param.
+  const { data: userGroups } = useQuery({
+    queryKey: ['user', 'groups', user?.id],
+    queryFn: () => fetchUserGroups(user?.id || ''),
+    enabled: !!user?.id && !!groupCategory,
+  });
+
+  console.log('userGroups:', userGroups);
+
+  const foundUserGroup =
+    groupCategory && userGroups
+      ? userGroups.find((group) => group.groupCategory?.name === groupCategory)
+      : undefined;
+
+  let registration: GetRegistrationResponseType | undefined;
+
+  if (foundUserGroup) {
+    registration = registrations?.find(
+      (registration) => registration.groupId === foundUserGroup.id,
+    );
+  } else if (groupCategory) {
+    toast.error(`You don't belong to group ${groupCategory}`);
+    // navigate('/account');
+  } else {
+    registration = registrations?.find((registration) => registration.groupId === null);
+  }
 
   const { data: registrationData, isLoading: registrationDataIsLoading } = useQuery({
     queryKey: ['registrations', registration?.id, 'data'],
     queryFn: () => fetchRegistrationData(registration?.id || ''),
     enabled: !!registration?.id,
   });
-
-  console.log('usersGroups:', usersGroups);
-  console.log('groupCategory:', groupCategory);
-  // console.log('registration:', registration);
-
-  const foundGroup = usersGroups?.find((group) => group?.groupCategory?.name === groupCategory);
-  console.log('foundGroup:', foundGroup);
 
   if (isLoading || registrationDataIsLoading) {
     return <h1>Loading...</h1>;
@@ -97,7 +110,7 @@ function Register() {
       registration={registration}
       registrationFields={registrationFields}
       registrationData={registrationData}
-      foundGroup={foundGroup}
+      foundUserGroup={foundUserGroup}
     />
   );
 }
@@ -115,10 +128,10 @@ const getDefaultValues = (registrationData: GetRegistrationDataResponse | null |
 function RegisterForm(props: {
   user: GetUserResponse | null | undefined;
   registrationFields?: GetRegistrationFieldsResponse | null | undefined;
-  registration?: GetRegistrationsResponseType | null | undefined;
+  registration?: GetRegistrationResponseType | null | undefined;
   registrationData?: GetRegistrationDataResponse | null | undefined;
   event: DBEvent | null | undefined;
-  foundGroup: GetGroupsResponse | undefined;
+  foundUserGroup: GetGroupsResponse | undefined;
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -203,7 +216,7 @@ function RegisterForm(props: {
         registrationId: props.registration?.id || '',
         body: {
           eventId: props.event?.id || '',
-          groupId: props.foundGroup?.id || '',
+          groupId: props.foundUserGroup?.id || null,
           status: 'DRAFT',
           registrationData: Object.entries(values).map(([key, value]) => ({
             registrationFieldId: key,
@@ -215,7 +228,7 @@ function RegisterForm(props: {
       mutateRegistrationData({
         body: {
           eventId: props.event?.id || '',
-          groupId: props.foundGroup?.id || '',
+          groupId: props.foundUserGroup?.id || null,
           status: 'DRAFT',
           registrationData: Object.entries(values).map(([key, value]) => ({
             registrationFieldId: key,
