@@ -13,13 +13,13 @@ import {
   fetchRegistrationFields,
   fetchRegistrations,
   fetchUserGroups,
-  GetRegistrationDataResponse,
-  GetRegistrationFieldsResponse,
-  GetRegistrationsResponseType,
-  GetUserResponse,
   postRegistration,
   putRegistration,
-  RegistrationFieldOption,
+  type GetRegistrationDataResponse,
+  type GetRegistrationFieldsResponse,
+  type GetRegistrationsResponseType,
+  type GetUserResponse,
+  type RegistrationFieldOption,
 } from 'api';
 
 // Hooks
