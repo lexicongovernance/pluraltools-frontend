@@ -15,6 +15,7 @@ import Cycle from './pages/Cycle.tsx';
 import DataPolicy from './pages/DataPolicy.tsx';
 import Event from './pages/Event.tsx';
 import Events from './pages/Events.tsx';
+import GroupRegistration from './pages/GroupRegistration.tsx';
 import Holding from './pages/Holding';
 import Landing from './pages/Landing';
 import Onboarding from './pages/Onboarding';
@@ -166,6 +167,10 @@ const router = (queryClient: QueryClient) =>
             {
               path: '/account',
               Component: Account,
+            },
+            {
+              path: '/groups',
+              Component: GroupRegistration,
             },
             {
               loader: () => redirectToAccount(queryClient),
