@@ -114,6 +114,10 @@ function Register() {
     return <h1>Loading...</h1>;
   }
 
+  if (groupCategoryParam && !groupId) {
+    return <h1>User is not authorized to register</h1>;
+  }
+
   return (
     <RegisterForm
       event={event}
