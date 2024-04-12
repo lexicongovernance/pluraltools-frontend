@@ -2,19 +2,20 @@
 import { Control, Controller, FieldErrors, UseFormRegister, useForm } from 'react-hook-form';
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
 
 // API
 import {
   fetchEvent,
-  fetchRegistrations,
   fetchRegistrationData,
   fetchRegistrationFields,
+  fetchRegistrations,
+  fetchUserGroups,
   GetRegistrationDataResponse,
   GetRegistrationFieldsResponse,
-  GetRegistrationResponseType,
+  GetRegistrationsResponseType,
   GetUserResponse,
   postRegistration,
   putRegistration,
@@ -42,6 +43,8 @@ import Textarea from '../components/textarea';
 function Register() {
   const { user, isLoading } = useUser();
   const { eventId } = useParams();
+  const [searchParams] = useSearchParams();
+  const groupCategory = searchParams.get('groupCategory');
 
   const { data: event } = useQuery({
     queryKey: ['event', eventId],
@@ -49,23 +52,35 @@ function Register() {
     enabled: !!eventId,
   });
 
-  const { data: registration } = useQuery({
-    queryKey: ['event', eventId, 'registration'],
+  const { data: registrations } = useQuery({
+    queryKey: ['event', eventId, 'registrations'],
     queryFn: () => fetchRegistrations(eventId || ''),
     enabled: !!eventId,
   });
 
   const { data: registrationFields } = useQuery({
-    queryKey: ['event', eventId, 'registration', 'fields'],
+    queryKey: ['event', eventId, 'registrations', 'fields'],
     queryFn: () => fetchRegistrationFields(eventId || ''),
     enabled: !!eventId,
   });
 
+  const registration = registrations;
+
   const { data: registrationData, isLoading: registrationDataIsLoading } = useQuery({
-    queryKey: ['registration', registration?.id, 'data'],
+    queryKey: ['registrations', registration?.id, 'data'],
     queryFn: () => fetchRegistrationData(registration?.id || ''),
     enabled: !!registration?.id,
   });
+
+  const { data: usersGroups } = useQuery({
+    queryKey: ['user', 'groups', user?.id],
+    queryFn: () => fetchUserGroups(user?.id || ''),
+    enabled: !!user?.id && !!groupCategory,
+  });
+
+  // console.log('usersGroups:', usersGroups);
+  // console.log('groupCategory:', groupCategory);
+  // console.log('registration:', registration);
 
   if (isLoading || registrationDataIsLoading) {
     return <h1>Loading...</h1>;
@@ -95,7 +110,7 @@ const getDefaultValues = (registrationData: GetRegistrationDataResponse | null |
 function RegisterForm(props: {
   user: GetUserResponse | null | undefined;
   registrationFields?: GetRegistrationFieldsResponse | null | undefined;
-  registration?: GetRegistrationResponseType | null | undefined;
+  registration?: GetRegistrationsResponseType | null | undefined;
   registrationData?: GetRegistrationDataResponse | null | undefined;
   event: DBEvent | null | undefined;
 }) {
@@ -192,6 +207,7 @@ function RegisterForm(props: {
     } else {
       mutateRegistrationData({
         body: {
+          eventId: props.event?.id || '',
           status: 'DRAFT',
           registrationData: Object.entries(values).map(([key, value]) => ({
             registrationFieldId: key,
