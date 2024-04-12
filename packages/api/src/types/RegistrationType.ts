@@ -1,6 +1,6 @@
 export type RegistrationStatus = 'DRAFT' | 'APPROVED' | 'PUBLISHED' | null;
 
-export type GetRegistrationsResponseType = {
+export type GetRegistrationResponseType = {
   id?: string | undefined;
   status: RegistrationStatus;
   userId: string;
@@ -8,4 +8,6 @@ export type GetRegistrationsResponseType = {
   eventId?: string | undefined;
   createdAt: string;
   updatedAt: string;
-}[];
+};
+
+export type GetRegistrationsResponseType = GetRegistrationResponseType[];
