@@ -11,7 +11,7 @@ export type GetRegistrationDataResponse = {
 
 export type PostRegistrationRequest = {
   eventId: string;
-  groupId: string;
+  groupId: string | null;
   status: RegistrationStatus;
   registrationData: {
     registrationFieldId: string;
@@ -21,7 +21,7 @@ export type PostRegistrationRequest = {
 
 export type PutRegistrationRequest = {
   eventId: string;
-  groupId: string;
+  groupId: string | null;
   status: RegistrationStatus;
   registrationData: {
     registrationFieldId: string;
