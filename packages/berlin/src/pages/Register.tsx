@@ -15,6 +15,7 @@ import {
   fetchUserGroups,
   postRegistration,
   putRegistration,
+  type GetGroupsResponse,
   type GetRegistrationDataResponse,
   type GetRegistrationFieldsResponse,
   type GetRegistrationsResponseType,
@@ -58,6 +59,12 @@ function Register() {
     enabled: !!eventId,
   });
 
+  const { data: usersGroups } = useQuery({
+    queryKey: ['user', 'groups', user?.id],
+    queryFn: () => fetchUserGroups(user?.id || ''),
+    enabled: !!user?.id && !!groupCategory,
+  });
+
   const { data: registrationFields } = useQuery({
     queryKey: ['event', eventId, 'registrations', 'fields'],
     queryFn: () => fetchRegistrationFields(eventId || ''),
@@ -72,15 +79,12 @@ function Register() {
     enabled: !!registration?.id,
   });
 
-  const { data: usersGroups } = useQuery({
-    queryKey: ['user', 'groups', user?.id],
-    queryFn: () => fetchUserGroups(user?.id || ''),
-    enabled: !!user?.id && !!groupCategory,
-  });
-
-  // console.log('usersGroups:', usersGroups);
-  // console.log('groupCategory:', groupCategory);
+  console.log('usersGroups:', usersGroups);
+  console.log('groupCategory:', groupCategory);
   // console.log('registration:', registration);
+
+  const foundGroup = usersGroups?.find((group) => group?.groupCategory?.name === groupCategory);
+  console.log('foundGroup:', foundGroup);
 
   if (isLoading || registrationDataIsLoading) {
     return <h1>Loading...</h1>;
@@ -93,6 +97,7 @@ function Register() {
       registration={registration}
       registrationFields={registrationFields}
       registrationData={registrationData}
+      foundGroup={foundGroup}
     />
   );
 }
@@ -113,6 +118,7 @@ function RegisterForm(props: {
   registration?: GetRegistrationsResponseType | null | undefined;
   registrationData?: GetRegistrationDataResponse | null | undefined;
   event: DBEvent | null | undefined;
+  foundGroup: GetGroupsResponse | undefined;
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -197,6 +203,7 @@ function RegisterForm(props: {
         registrationId: props.registration?.id || '',
         body: {
           eventId: props.event?.id || '',
+          groupId: props.foundGroup?.id || '',
           status: 'DRAFT',
           registrationData: Object.entries(values).map(([key, value]) => ({
             registrationFieldId: key,
@@ -208,6 +215,7 @@ function RegisterForm(props: {
       mutateRegistrationData({
         body: {
           eventId: props.event?.id || '',
+          groupId: props.foundGroup?.id || '',
           status: 'DRAFT',
           registrationData: Object.entries(values).map(([key, value]) => ({
             registrationFieldId: key,
