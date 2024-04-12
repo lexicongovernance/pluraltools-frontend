@@ -41,12 +41,32 @@ import Input from '../components/input';
 import Select from '../components/select';
 import Textarea from '../components/textarea';
 
+function findUserRegistration(
+  registrations: GetRegistrationResponseType[] | undefined | null,
+  user: GetUserResponse | null | undefined,
+) {
+  return registrations?.find(
+    (registration) => registration.userId === user?.id && registration.groupId === null,
+  );
+}
+
+function findGroupRegistration(
+  queryParam: string,
+  userGroups: GetGroupsResponse[] | null | undefined,
+  registrations: GetRegistrationResponseType[] | null | undefined,
+  user: GetUserResponse | null | undefined,
+) {
+  const group = userGroups?.find((group) => group.groupCategory?.name === queryParam);
+  return registrations?.find(
+    (registration) => registration.groupId === group?.id && registration.userId === user?.id,
+  );
+}
+
 function Register() {
   const { user, isLoading } = useUser();
   const { eventId } = useParams();
   const [searchParams] = useSearchParams();
-  const groupCategory = searchParams.get('groupCategory');
-  // const navigate = useNavigate();
+  const groupCategoryParam = searchParams.get('groupCategory');
 
   const { data: event } = useQuery({
     queryKey: ['event', eventId],
@@ -70,28 +90,19 @@ function Register() {
   const { data: userGroups } = useQuery({
     queryKey: ['user', 'groups', user?.id],
     queryFn: () => fetchUserGroups(user?.id || ''),
-    enabled: !!user?.id && !!groupCategory,
+    enabled: !!user?.id && !!groupCategoryParam,
   });
 
-  console.log('userGroups:', userGroups);
+  const registration = useMemo(() => {
+    if (!groupCategoryParam) {
+      return findUserRegistration(registrations, user);
+    }
+    return findGroupRegistration(groupCategoryParam, userGroups, registrations, user);
+  }, [registrations, userGroups, groupCategoryParam, user]);
 
-  const foundUserGroup =
-    groupCategory && userGroups
-      ? userGroups.find((group) => group.groupCategory?.name === groupCategory)
-      : undefined;
-
-  let registration: GetRegistrationResponseType | undefined;
-
-  if (foundUserGroup) {
-    registration = registrations?.find(
-      (registration) => registration.groupId === foundUserGroup.id,
-    );
-  } else if (groupCategory) {
-    toast.error(`You don't belong to group ${groupCategory}`);
-    // navigate('/account');
-  } else {
-    registration = registrations?.find((registration) => registration.groupId === null);
-  }
+  const groupId = useMemo(() => {
+    return userGroups?.find((group) => group.groupCategory?.name === groupCategoryParam)?.id;
+  }, [groupCategoryParam, userGroups]);
 
   const { data: registrationData, isLoading: registrationDataIsLoading } = useQuery({
     queryKey: ['registrations', registration?.id, 'data'],
@@ -110,7 +121,7 @@ function Register() {
       registration={registration}
       registrationFields={registrationFields}
       registrationData={registrationData}
-      foundUserGroup={foundUserGroup}
+      groupId={groupId}
     />
   );
 }
@@ -131,7 +142,7 @@ function RegisterForm(props: {
   registration?: GetRegistrationResponseType | null | undefined;
   registrationData?: GetRegistrationDataResponse | null | undefined;
   event: DBEvent | null | undefined;
-  foundUserGroup: GetGroupsResponse | undefined;
+  groupId?: string;
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -216,7 +227,7 @@ function RegisterForm(props: {
         registrationId: props.registration?.id || '',
         body: {
           eventId: props.event?.id || '',
-          groupId: props.foundUserGroup?.id || null,
+          groupId: props.groupId || null,
           status: 'DRAFT',
           registrationData: Object.entries(values).map(([key, value]) => ({
             registrationFieldId: key,
@@ -228,7 +239,7 @@ function RegisterForm(props: {
       mutateRegistrationData({
         body: {
           eventId: props.event?.id || '',
-          groupId: props.foundUserGroup?.id || null,
+          groupId: props.groupId || null,
           status: 'DRAFT',
           registrationData: Object.entries(values).map(([key, value]) => ({
             registrationFieldId: key,
@@ -297,7 +308,7 @@ function FormField({
   register: UseFormRegister<Record<string, string>>;
   errors: FieldErrors<Record<string, string>>;
   characterLimit: number;
-  control: Control<Record<string, string>, any>;
+  control: Control<Record<string, string>>;
   value: string;
 }) {
   switch (type) {
@@ -481,7 +492,7 @@ function SelectInput(props: {
   options: RegistrationFieldOption[];
   register: UseFormRegister<Record<string, string>>;
   errors: FieldErrors<Record<string, string>>;
-  control: Control<Record<string, string>, any>;
+  control: Control<Record<string, string>>;
 }) {
   return (
     <FlexColumn $gap="0.5rem">

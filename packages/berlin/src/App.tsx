@@ -115,16 +115,16 @@ async function redirectToOnlyOneEventLoader(queryClient: QueryClient) {
  * Redirects the user to the holding page if they in DRAFT STATUS
  */
 async function redirectToEventHoldingOrRegister(queryClient: QueryClient, eventId?: string) {
-  const registration = await queryClient.fetchQuery({
-    queryKey: ['event', eventId, 'registration'],
+  const registrations = await queryClient.fetchQuery({
+    queryKey: ['event', eventId, 'registrations'],
     queryFn: () => fetchRegistrations(eventId || ''),
   });
 
-  if (!registration) {
+  if (!registrations || !registrations.length) {
     return redirect(`/events/${eventId}/register`);
   }
 
-  if (registration?.status !== 'APPROVED') {
+  if (registrations.some((registration) => registration.status === 'APPROVED')) {
     return redirect(`/events/${eventId}/holding`);
   }
 
