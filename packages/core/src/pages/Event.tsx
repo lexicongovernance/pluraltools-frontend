@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { fetchRegistration, fetchEvent, fetchEventCycles } from 'api';
+import { fetchRegistrations, fetchEvent, fetchEventCycles } from 'api';
 import Button from '../components/button';
 import Chip from '../components/chip';
 import EventCard from '../components/eventCard';
@@ -45,7 +45,7 @@ function Event() {
 
   const { data: registration } = useQuery({
     queryKey: ['events', eventId, 'registration'],
-    queryFn: () => fetchRegistration(eventId || ''),
+    queryFn: () => fetchRegistrations(eventId || ''),
     enabled: !!eventId,
   });
 
