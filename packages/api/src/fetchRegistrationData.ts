@@ -1,11 +1,9 @@
 import { GetRegistrationDataResponse } from './types/RegistrationDataType';
 
-async function fetchRegistrationData(
-  registrationId: string,
-): Promise<GetRegistrationDataResponse | null> {
+async function fetchRegistrationData(eventId: string): Promise<GetRegistrationDataResponse | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/registrations/${registrationId}/registration-data`,
+      `${import.meta.env.VITE_SERVER_URL}/api/events/${eventId}/registration-data`,
       {
         credentials: 'include',
         headers: {

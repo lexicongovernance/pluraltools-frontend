@@ -3,10 +3,10 @@ import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   fetchEvent,
-  fetchRegistrations,
+  fetchRegistration,
   fetchRegistrationData,
   fetchRegistrationFields,
-  postRegistration,
+  postRegistrationData,
 } from 'api';
 import Button from '../components/button';
 import Chip from '../components/chip';
@@ -40,7 +40,7 @@ function Register() {
 
   const { data: registration } = useQuery({
     queryKey: ['event', eventId, 'registration'],
-    queryFn: () => fetchRegistrations(eventId || ''),
+    queryFn: () => fetchRegistration(eventId || ''),
     enabled: !!eventId,
   });
 
@@ -107,7 +107,7 @@ function RegisterForm(props: {
   }, [props.registrationFields]);
 
   const { mutate: mutateRegistrationData } = useMutation({
-    mutationFn: postRegistration,
+    mutationFn: postRegistrationData,
     onSuccess: async (body) => {
       if (body) {
         toast.success('Registration saved successfully!');
@@ -128,6 +128,7 @@ function RegisterForm(props: {
 
   const onSubmit = (values: Record<string, string>) => {
     mutateRegistrationData({
+      eventId: props.event?.id || '',
       body: {
         status: 'DRAFT',
         registrationData: Object.entries(values).map(([key, value]) => ({
