@@ -21,8 +21,6 @@ async function fetchRegistrations(eventId: string): Promise<GetRegistrationsResp
       return null;
     }
 
-    console.log('registrations (api):', registrations);
-    console.log('returned registrations (api):', registrations.data);
     return registrations.data;
   } catch (error) {
     console.error('error fetching registrations', error);
