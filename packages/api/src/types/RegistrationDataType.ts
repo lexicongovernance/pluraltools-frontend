@@ -10,6 +10,7 @@ export type GetRegistrationDataResponse = {
 }[];
 
 export type PostRegistrationRequest = {
+  eventId: string;
   status: RegistrationStatus;
   registrationData: {
     registrationFieldId: string;
