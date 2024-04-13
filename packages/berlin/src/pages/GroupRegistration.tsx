@@ -1,30 +1,61 @@
+// React and third-party libraries
+import { useForm } from 'react-hook-form';
+
+// Data
+import groups from '../data/groups';
+
 // Components
 import { Body } from '../components/typography/Body.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRowToColumn } from '../components/containers/FlexRowToColumn.styled';
+import { Form } from '../components/containers/Form.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import Button from '../components/button';
 import Divider from '../components/divider';
 import Input from '../components/input';
 
 function GroupRegistration() {
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isValid },
+    getValues,
+    reset,
+  } = useForm({ defaultValues: { code: '' } });
+
+  const onSubmit = () => {
+    if (isValid) {
+      console.log('@code:', getValues('code'));
+      reset();
+    }
+  };
+
   return (
     <FlexRowToColumn $gap="2rem">
       <FlexColumn>
-        <Subtitle>Create a Research Group</Subtitle>
-        <Body>
-          If you are the Lead Researcher or a Solo Researcher, please create a research group.
-        </Body>
-        <Body>You will get a code that you can share with your collaborators.</Body>
-        <Button>Create group</Button>
+        <Subtitle>{groups.create.subtitle}</Subtitle>
+        {groups.create.body.map(({ id, text }) => (
+          <Body key={id}>{text}</Body>
+        ))}
+        <Button>{groups.create.buttonText}</Button>
       </FlexColumn>
       <Divider $height={330} />
       <FlexColumn>
-        <Subtitle>Join a Research Group</Subtitle>
-        <Body>As a collaborator, you can join a research group.</Body>
-        <Body>Please ask to your Lead Researcher for the group code.</Body>
-        <Input label="Research Group Code" placeholder="Enter the secret code here..." />
-        <Button>Join group</Button>
+        <Subtitle>{groups.join.subtitle}</Subtitle>
+        {groups.join.body.map(({ id, text }) => (
+          <Body key={id}>{text}</Body>
+        ))}
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Input
+            label={groups.join.input.label}
+            placeholder={groups.join.input.placeholder}
+            autoComplete="off"
+            {...register('code', { required: groups.join.input.requiredMessage })}
+            errors={errors?.code?.message ? [errors.code.message] : []}
+            required
+          />
+          <Button type="submit">{groups.join.buttonText}</Button>
+        </Form>
       </FlexColumn>
     </FlexRowToColumn>
   );
