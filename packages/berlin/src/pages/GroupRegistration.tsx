@@ -1,9 +1,11 @@
-import Button from '../components/button';
+// Components
+import { Body } from '../components/typography/Body.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRowToColumn } from '../components/containers/FlexRowToColumn.styled';
-import Input from '../components/input';
-import { Body } from '../components/typography/Body.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
+import Button from '../components/button';
+import Divider from '../components/divider';
+import Input from '../components/input';
 
 function GroupRegistration() {
   return (
@@ -16,7 +18,7 @@ function GroupRegistration() {
         <Body>You will get a code that you can share with your collaborators.</Body>
         <Button>Create group</Button>
       </FlexColumn>
-      <div style={{ borderLeft: '1px solid #fff', height: '330px' }} />
+      <Divider $height={330} />
       <FlexColumn>
         <Subtitle>Join a Research Group</Subtitle>
         <Body>As a collaborator, you can join a research group.</Body>
