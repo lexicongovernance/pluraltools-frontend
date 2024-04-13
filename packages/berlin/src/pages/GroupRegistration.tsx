@@ -11,15 +11,16 @@ import { FlexRowToColumn } from '../components/containers/FlexRowToColumn.styled
 import { Form } from '../components/containers/Form.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import Button from '../components/button';
+import Dialog from '../components/dialog';
 import Divider from '../components/divider';
 import Input from '../components/input';
 
 function GroupRegistration() {
   const {
-    handleSubmit,
-    register,
     formState: { errors, isValid },
     getValues,
+    handleSubmit,
+    register,
     reset,
   } = useForm({ defaultValues: { code: '' } });
 
@@ -37,7 +38,13 @@ function GroupRegistration() {
         {groups.create.body.map(({ id, text }) => (
           <Body key={id}>{text}</Body>
         ))}
-        <Button>{groups.create.buttonText}</Button>
+        <Dialog
+          trigger={<Button>{groups.create.buttonText}</Button>}
+          title={groups.create.dialog.title}
+          description={groups.create.dialog.description}
+          onActionClick={() => {}} // todo: tbd
+          actionButtonText={groups.create.dialog.actionButtonText}
+        />
       </FlexColumn>
       <Divider $height={330} />
       <FlexColumn>

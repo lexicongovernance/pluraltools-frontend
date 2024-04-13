@@ -12,6 +12,11 @@ const groups = {
       },
     ],
     buttonText: 'Create group',
+    dialog: {
+      title: 'Do you want to create a Research Group?',
+      description: 'This action will create a group...',
+      actionButtonText: 'Create group',
+    },
   },
   join: {
     subtitle: 'Join a Research Group',
