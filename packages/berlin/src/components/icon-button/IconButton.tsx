@@ -1,3 +1,4 @@
+import React from 'react';
 import Button from '../button';
 import { StyledButtonProps } from '../button/Button.types';
 import { Icon, IconContainer } from './IconButton.styled';
@@ -15,29 +16,28 @@ type IconButtonProps = {
   $width?: number;
 } & StyledButtonProps;
 
-function IconButton({
-  icon,
-  onClick,
-  disabled,
-  $padding,
-  $flipVertical,
-  $height,
-  $width,
-  ...props
-}: IconButtonProps) {
-  return (
-    <Button onClick={onClick} style={{ padding: $padding }} disabled={disabled} {...props}>
-      <IconContainer $height={$height || 24} $width={$height || 24}>
-        <Icon
-          src={icon.src}
-          alt={icon.alt}
-          height={$height || 24}
-          width={$height || 24}
-          $flipVertical={$flipVertical}
-        />
-      </IconContainer>
-    </Button>
-  );
-}
+const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
+  ({ icon, onClick, disabled, $padding, $flipVertical, $height, $width, ...props }, ref) => {
+    return (
+      <Button
+        ref={ref}
+        onClick={onClick}
+        style={{ padding: $padding }}
+        disabled={disabled}
+        {...props}
+      >
+        <IconContainer $height={$height || 24} $width={$height || 24}>
+          <Icon
+            src={icon.src}
+            alt={icon.alt}
+            height={$height || 24}
+            width={$height || 24}
+            $flipVertical={$flipVertical}
+          />
+        </IconContainer>
+      </Button>
+    );
+  },
+);
 
 export default IconButton;
