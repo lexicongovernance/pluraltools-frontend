@@ -1,0 +1,65 @@
+// React and third-party libraries
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+// Components
+import { Form } from '../containers/Form.styled';
+import Button from '../button';
+import Input from '../input';
+import { FlexRow } from '../containers/FlexRow.styled';
+
+type ResearchGroupFormProps = {
+  formData: {
+    input: {
+      label: string;
+      placeholder: string;
+      requiredMessage: string;
+    };
+    buttonText: string;
+  };
+  handleCreateGroup: (name: string) => void;
+};
+
+function ResearchGroupForm({ formData, handleCreateGroup }: ResearchGroupFormProps) {
+  const sendEmailsSchema = z.object({
+    name: z.string().min(2, { message: formData.input.requiredMessage }),
+  });
+  const {
+    formState: { errors, isValid },
+    getValues,
+    handleSubmit,
+    register,
+    reset,
+  } = useForm<z.infer<typeof sendEmailsSchema>>({
+    defaultValues: { name: '' },
+    resolver: zodResolver(sendEmailsSchema),
+  });
+
+  const onSubmit = () => {
+    if (isValid) {
+      handleCreateGroup(getValues('name'));
+      reset();
+    }
+  };
+
+  return (
+    <Form onSubmit={handleSubmit(onSubmit)}>
+      <Input
+        label={formData.input.label}
+        placeholder={formData.input.placeholder}
+        autoComplete="off"
+        {...register('name', {
+          required: formData.input.requiredMessage,
+        })}
+        errors={errors?.name?.message ? [errors.name.message] : []}
+        required
+      />
+      <FlexRow $justify="flex-end">
+        <Button type="submit">{formData.buttonText}</Button>
+      </FlexRow>
+    </Form>
+  );
+}
+
+export default ResearchGroupForm;
