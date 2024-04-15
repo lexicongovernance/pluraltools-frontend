@@ -1,6 +1,6 @@
 // React and third-party libraries
 import { useForm } from 'react-hook-form';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { z } from 'zod';
@@ -24,9 +24,13 @@ import Divider from '../components/divider';
 import Input from '../components/input';
 import Dialog from '../components/dialog';
 import ResearchGroupForm from '../components/research-group-form';
+import SecretCode from '../components/secret-code';
 
 function GroupRegistration() {
   const queryClient = useQueryClient();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [secretCode, setSecretCode] = useState<string | null>(null);
+  const [groupName, setGroupName] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
   const groupCategoryNameParam = searchParams.get('groupCategory');
 
@@ -54,10 +58,15 @@ function GroupRegistration() {
     onSuccess: (body) => {
       if (body) {
         queryClient.invalidateQueries({ queryKey: ['groups'] });
+        toast.success('Group created succesfully!');
+        toast.success('Joined group succesfully!');
+        setIsDialogOpen(false);
+        setSecretCode(body.secret);
       }
     },
     onError: () => {
-      toast.error(`There was an error creating the group`);
+      toast.error(`There was an error creating the group. Please try again.`);
+      setIsDialogOpen(false);
     },
   });
 
@@ -67,8 +76,8 @@ function GroupRegistration() {
       if (!body) {
         return;
       }
+      queryClient.invalidateQueries({ queryKey: ['user', 'groups'] });
       toast.success('Joined group succesfully!');
-      queryClient.invalidateQueries({ queryKey: ['groups'] });
     },
     onError: () => {
       toast.error('Secret is not valid');
@@ -81,7 +90,9 @@ function GroupRegistration() {
         groupCategory.name?.toLowerCase() === groupCategoryNameParam?.toLowerCase(),
     )?.id;
   }, [groupCategoryNameParam, groupCategories]);
+  console.log('groupCategories:', groupCategories);
 
+  console.log('groupCategoryId:', groupCategoryId);
   const onSubmit = () => {
     if (isValid) {
       postUserToGroupsMutation({ secret: getValues('secret') });
@@ -100,18 +111,25 @@ function GroupRegistration() {
         {groups.create.body.map(({ id, text }) => (
           <Body key={id}>{text}</Body>
         ))}
+        {groupName && secretCode && <SecretCode groupName={groupName} secretCode={secretCode} />}
         <Dialog
-          trigger={<Button>{groups.create.buttonText}</Button>}
+          open={isDialogOpen}
+          onOpenChange={setIsDialogOpen}
+          trigger={
+            <Button onClick={() => setIsDialogOpen(true)}>{groups.create.buttonText}</Button>
+          }
           title={groups.create.dialog.title}
           description={groups.create.dialog.description}
           content={
             <ResearchGroupForm
               formData={groups.create.dialog.form}
               handleCreateGroup={handleCreateGroup}
+              setGroupName={setGroupName}
             />
           }
           dialogButtons={false}
         />
+        <Dialog title="Secret code" />
       </FlexColumn>
       <Divider $height={330} />
       <FlexColumn>

@@ -11,12 +11,14 @@ import Button from '../button';
 import { DialogContent, DialogOverlay } from './Dialog.styled';
 
 type DialogProps = {
-  trigger: React.ReactNode;
+  trigger?: React.ReactNode;
   title: string;
   description?: string;
   content?: React.ReactNode;
   dialogButtons?: boolean;
   actionButtonText?: string;
+  open?: boolean;
+  onOpenChange?: React.Dispatch<React.SetStateAction<boolean>>;
   onActionClick?: () => void;
 };
 
@@ -27,9 +29,11 @@ const Dialog = ({
   content,
   dialogButtons = true,
   actionButtonText,
+  open,
+  onOpenChange,
   onActionClick,
 }: DialogProps) => (
-  <Root>
+  <Root open={open} onOpenChange={onOpenChange}>
     <Trigger asChild>{trigger}</Trigger>
     <Portal>
       <DialogOverlay />

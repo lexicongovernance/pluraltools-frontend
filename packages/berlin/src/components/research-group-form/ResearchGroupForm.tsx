@@ -19,10 +19,11 @@ type ResearchGroupFormProps = {
     buttonText: string;
   };
   handleCreateGroup: (name: string) => void;
+  setGroupName: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
-function ResearchGroupForm({ formData, handleCreateGroup }: ResearchGroupFormProps) {
-  const sendEmailsSchema = z.object({
+function ResearchGroupForm({ formData, handleCreateGroup, setGroupName }: ResearchGroupFormProps) {
+  const researchGroupSchema = z.object({
     name: z.string().min(2, { message: formData.input.requiredMessage }),
   });
   const {
@@ -31,14 +32,15 @@ function ResearchGroupForm({ formData, handleCreateGroup }: ResearchGroupFormPro
     handleSubmit,
     register,
     reset,
-  } = useForm<z.infer<typeof sendEmailsSchema>>({
+  } = useForm<z.infer<typeof researchGroupSchema>>({
     defaultValues: { name: '' },
-    resolver: zodResolver(sendEmailsSchema),
+    resolver: zodResolver(researchGroupSchema),
   });
 
   const onSubmit = () => {
     if (isValid) {
       handleCreateGroup(getValues('name'));
+      setGroupName(getValues('name'));
       reset();
     }
   };
