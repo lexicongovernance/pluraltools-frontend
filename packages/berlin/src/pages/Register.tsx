@@ -62,6 +62,13 @@ function findGroupRegistration(
   );
 }
 
+function filterRegistrationFieldsForGroup(fields: GetRegistrationFieldsResponse, groupId?: string) {
+  if (groupId) {
+    return fields.filter((field) => field.displayOnGroupRegistration);
+  }
+  return fields;
+}
+
 function Register() {
   const { user, isLoading } = useUser();
   const { eventId } = useParams();
@@ -173,13 +180,16 @@ function RegisterForm(props: {
   const values = getValues();
 
   const sortedRegistrationFields = useMemo(() => {
-    const sortedFields = [...(props.registrationFields || [])];
+    const sortedFields = filterRegistrationFieldsForGroup(
+      props.registrationFields || [],
+      props.groupId,
+    );
 
     // Sort by field_display_rank in ascending order
     sortedFields.sort((a, b) => (a.fieldDisplayRank || 0) - (b.fieldDisplayRank || 0));
 
     return sortedFields;
-  }, [props.registrationFields]);
+  }, [props.registrationFields, props.groupId]);
 
   const { mutate: mutateRegistrationData } = useMutation({
     mutationFn: postRegistration,
