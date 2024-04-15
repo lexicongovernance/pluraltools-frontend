@@ -14,11 +14,21 @@ type DialogProps = {
   trigger: React.ReactNode;
   title: string;
   description?: string;
-  actionButtonText: string;
-  onActionClick: () => void;
+  content?: React.ReactNode;
+  dialogButtons?: boolean;
+  actionButtonText?: string;
+  onActionClick?: () => void;
 };
 
-const Dialog = ({ trigger, title, description, actionButtonText, onActionClick }: DialogProps) => (
+const Dialog = ({
+  trigger,
+  title,
+  description,
+  content,
+  dialogButtons = true,
+  actionButtonText,
+  onActionClick,
+}: DialogProps) => (
   <Root>
     <Trigger asChild>{trigger}</Trigger>
     <Portal>
@@ -29,14 +39,17 @@ const Dialog = ({ trigger, title, description, actionButtonText, onActionClick }
           <Description asChild>
             <Body>{description}</Body>
           </Description>
-          <FlexRowToColumn $gap="0.5rem" $justify="flex-end">
-            <Close asChild>
-              <Button $color="secondary">Cancel</Button>
-            </Close>
-            <Close asChild>
-              <Button onClick={onActionClick}>{actionButtonText}</Button>
-            </Close>
-          </FlexRowToColumn>
+          {content}
+          {dialogButtons && (
+            <FlexRowToColumn $gap="0.5rem" $justify="flex-end">
+              <Close asChild>
+                <Button $color="secondary">Cancel</Button>
+              </Close>
+              <Close asChild>
+                <Button onClick={onActionClick}>{actionButtonText}</Button>
+              </Close>
+            </FlexRowToColumn>
+          )}
         </FlexColumn>
       </DialogContent>
     </Portal>
