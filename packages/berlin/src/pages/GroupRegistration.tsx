@@ -58,8 +58,8 @@ function GroupRegistration() {
     onSuccess: (body) => {
       if (body) {
         queryClient.invalidateQueries({ queryKey: ['groups'] });
-        toast.success('Group created succesfully!');
-        toast.success('Joined group succesfully!');
+        toast.success(`Group ${groupName} created succesfully!`);
+        toast.success(`Joined group ${groupName} succesfully!`);
         setIsDialogOpen(false);
         setSecretCode(body.secret);
       }
@@ -77,7 +77,7 @@ function GroupRegistration() {
         return;
       }
       queryClient.invalidateQueries({ queryKey: ['user', 'groups'] });
-      toast.success('Joined group succesfully!');
+      toast.success(`Joined ${groupName} group succesfully!`);
     },
     onError: () => {
       toast.error('Secret is not valid');
@@ -90,9 +90,7 @@ function GroupRegistration() {
         groupCategory.name?.toLowerCase() === groupCategoryNameParam?.toLowerCase(),
     )?.id;
   }, [groupCategoryNameParam, groupCategories]);
-  console.log('groupCategories:', groupCategories);
 
-  console.log('groupCategoryId:', groupCategoryId);
   const onSubmit = () => {
     if (isValid) {
       postUserToGroupsMutation({ secret: getValues('secret') });
@@ -129,7 +127,6 @@ function GroupRegistration() {
           }
           dialogButtons={false}
         />
-        <Dialog title="Secret code" />
       </FlexColumn>
       <Divider $height={330} />
       <FlexColumn>

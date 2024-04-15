@@ -22,7 +22,7 @@ const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
       <Button
         ref={ref}
         onClick={onClick}
-        style={{ padding: $padding }}
+        style={{ padding: `${$padding}px` }}
         disabled={disabled}
         {...props}
       >
