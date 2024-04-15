@@ -14,8 +14,17 @@ const groups = {
     buttonText: 'Create group',
     dialog: {
       title: 'Do you want to create a Research Group?',
-      description: 'This action will create a group...',
+      description: 'This action will create a Research Group and join you to it.',
       actionButtonText: 'Create group',
+      form: {
+        input: {
+          label: 'Research Group name',
+          placeholder: 'Enter your group name',
+          requiredMessage: 'Group name must be 2 characters long or more',
+        },
+        buttonText: 'Create group',
+      },
+      buttonText: 'Create group',
     },
   },
   join: {
@@ -23,7 +32,7 @@ const groups = {
     body: [
       {
         id: 0,
-        text: ' As a collaborator, you can join a research group. Please ask to your Lead Researcher for the group code.',
+        text: 'As a collaborator, you can join a research group. Please ask to your Lead Researcher for the group code.',
       },
     ],
     input: {
