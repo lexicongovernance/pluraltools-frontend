@@ -9,7 +9,9 @@ export type GetRegistrationDataResponse = {
   value: string;
 }[];
 
-export type PostRegistrationDataRequest = {
+export type PostRegistrationRequest = {
+  eventId: string;
+  groupId: string | null;
   status: RegistrationStatus;
   registrationData: {
     registrationFieldId: string;
@@ -17,7 +19,36 @@ export type PostRegistrationDataRequest = {
   }[];
 };
 
-export type PostRegistrationDataResponse = {
+export type PutRegistrationRequest = {
+  eventId: string;
+  groupId: string | null;
+  status: RegistrationStatus;
+  registrationData: {
+    registrationFieldId: string;
+    value: string;
+  }[];
+};
+
+export type PostRegistrationResponse = {
+  registrationData:
+    | {
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        registrationId: string;
+        registrationFieldId: string;
+        value: string;
+      }[]
+    | null;
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  userId: string;
+  eventId: string;
+  status: RegistrationStatus;
+};
+
+export type PutRegistrationResponse = {
   registrationData:
     | {
         id: string;

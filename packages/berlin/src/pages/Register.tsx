@@ -2,18 +2,25 @@
 import { Control, Controller, FieldErrors, UseFormRegister, useForm } from 'react-hook-form';
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
 
 // API
 import {
-  GetUserResponse,
   fetchEvent,
-  fetchRegistration,
   fetchRegistrationData,
   fetchRegistrationFields,
-  postRegistrationData,
+  fetchRegistrations,
+  fetchUserGroups,
+  postRegistration,
+  putRegistration,
+  type GetGroupsResponse,
+  type GetRegistrationDataResponse,
+  type GetRegistrationFieldsResponse,
+  type GetRegistrationResponseType,
+  type GetUserResponse,
+  type RegistrationFieldOption,
 } from 'api';
 
 // Hooks
@@ -21,10 +28,6 @@ import useUser from '../hooks/useUser';
 
 // Types
 import { DBEvent } from '../types/DBEventType';
-import { GetRegistrationDataResponse } from '../types/RegistrationDataType';
-import { GetRegistrationFieldsResponse } from '../types/RegistrationFieldType';
-import { GetRegistrationResponseType } from '../types/RegistrationType';
-import { RegistrationFieldOption } from '../types/RegistrationFieldOptionType';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
@@ -38,9 +41,32 @@ import Input from '../components/input';
 import Select from '../components/select';
 import Textarea from '../components/textarea';
 
+function findUserRegistration(
+  registrations: GetRegistrationResponseType[] | undefined | null,
+  user: GetUserResponse | null | undefined,
+) {
+  return registrations?.find(
+    (registration) => registration.userId === user?.id && registration.groupId === null,
+  );
+}
+
+function findGroupRegistration(
+  queryParam: string,
+  userGroups: GetGroupsResponse[] | null | undefined,
+  registrations: GetRegistrationResponseType[] | null | undefined,
+  user: GetUserResponse | null | undefined,
+) {
+  const group = userGroups?.find((group) => group.groupCategory?.name === queryParam);
+  return registrations?.find(
+    (registration) => registration.groupId === group?.id && registration.userId === user?.id,
+  );
+}
+
 function Register() {
   const { user, isLoading } = useUser();
   const { eventId } = useParams();
+  const [searchParams] = useSearchParams();
+  const groupCategoryParam = searchParams.get('groupCategory');
 
   const { data: event } = useQuery({
     queryKey: ['event', eventId],
@@ -48,26 +74,48 @@ function Register() {
     enabled: !!eventId,
   });
 
-  const { data: registration } = useQuery({
-    queryKey: ['event', eventId, 'registration'],
-    queryFn: () => fetchRegistration(eventId || ''),
+  const { data: registrations } = useQuery({
+    queryKey: ['event', eventId, 'registrations'],
+    queryFn: () => fetchRegistrations(eventId || ''),
     enabled: !!eventId,
   });
 
   const { data: registrationFields } = useQuery({
-    queryKey: ['event', eventId, 'registration', 'fields'],
+    queryKey: ['event', eventId, 'registrations', 'fields'],
     queryFn: () => fetchRegistrationFields(eventId || ''),
     enabled: !!eventId,
   });
 
+  // this query runs if there is a groupCategory query param.
+  const { data: userGroups } = useQuery({
+    queryKey: ['user', 'groups', user?.id],
+    queryFn: () => fetchUserGroups(user?.id || ''),
+    enabled: !!user?.id && !!groupCategoryParam,
+  });
+
+  const registration = useMemo(() => {
+    if (!groupCategoryParam) {
+      return findUserRegistration(registrations, user);
+    }
+    return findGroupRegistration(groupCategoryParam, userGroups, registrations, user);
+  }, [registrations, userGroups, groupCategoryParam, user]);
+
+  const groupId = useMemo(() => {
+    return userGroups?.find((group) => group.groupCategory?.name === groupCategoryParam)?.id;
+  }, [groupCategoryParam, userGroups]);
+
   const { data: registrationData, isLoading: registrationDataIsLoading } = useQuery({
-    queryKey: ['event', eventId, 'registration', 'data'],
-    queryFn: () => fetchRegistrationData(eventId || ''),
-    enabled: !!eventId,
+    queryKey: ['registrations', registration?.id, 'data'],
+    queryFn: () => fetchRegistrationData(registration?.id || ''),
+    enabled: !!registration?.id,
   });
 
   if (isLoading || registrationDataIsLoading) {
     return <h1>Loading...</h1>;
+  }
+
+  if (groupCategoryParam && !groupId) {
+    return <h1>User is not authorized to register</h1>;
   }
 
   return (
@@ -77,6 +125,7 @@ function Register() {
       registration={registration}
       registrationFields={registrationFields}
       registrationData={registrationData}
+      groupId={groupId}
     />
   );
 }
@@ -97,6 +146,7 @@ function RegisterForm(props: {
   registration?: GetRegistrationResponseType | null | undefined;
   registrationData?: GetRegistrationDataResponse | null | undefined;
   event: DBEvent | null | undefined;
+  groupId?: string;
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -132,15 +182,15 @@ function RegisterForm(props: {
   }, [props.registrationFields]);
 
   const { mutate: mutateRegistrationData } = useMutation({
-    mutationFn: postRegistrationData,
+    mutationFn: postRegistration,
     onSuccess: async (body) => {
       if (body) {
         toast.success('Registration saved successfully!');
         await queryClient.invalidateQueries({
-          queryKey: ['event', props.event?.id, 'registration'],
+          queryKey: ['registration'],
         });
         await queryClient.invalidateQueries({
-          queryKey: ['event', props.event?.id, 'registration', 'data'],
+          queryKey: ['registration', 'data'],
         });
         navigate(`/events/${props.event?.id}/holding`);
       } else {
@@ -153,17 +203,55 @@ function RegisterForm(props: {
     },
   });
 
+  const { mutate: updateRegistrationData } = useMutation({
+    mutationFn: putRegistration,
+    onSuccess: async (body) => {
+      if (body) {
+        toast.success('Registration updated successfully!');
+        await queryClient.invalidateQueries({
+          queryKey: [props.registration?.id, 'registration'],
+        });
+        await queryClient.invalidateQueries({
+          queryKey: [props.registration?.id, 'registration', 'data'],
+        });
+        navigate(`/events/${props.event?.id}/holding`);
+      } else {
+        toast.error('Failed to update registration, please try again');
+      }
+    },
+    onError: (error) => {
+      console.error('Error updating registration:', error);
+      toast.error('Failed to update registration, please try again');
+    },
+  });
+
   const onSubmit = (values: Record<string, string>) => {
-    mutateRegistrationData({
-      eventId: props.event?.id || '',
-      body: {
-        status: 'DRAFT',
-        registrationData: Object.entries(values).map(([key, value]) => ({
-          registrationFieldId: key,
-          value,
-        })),
-      },
-    });
+    if (props.registration) {
+      updateRegistrationData({
+        registrationId: props.registration?.id || '',
+        body: {
+          eventId: props.event?.id || '',
+          groupId: props.groupId || null,
+          status: 'DRAFT',
+          registrationData: Object.entries(values).map(([key, value]) => ({
+            registrationFieldId: key,
+            value,
+          })),
+        },
+      });
+    } else {
+      mutateRegistrationData({
+        body: {
+          eventId: props.event?.id || '',
+          groupId: props.groupId || null,
+          status: 'DRAFT',
+          registrationData: Object.entries(values).map(([key, value]) => ({
+            registrationFieldId: key,
+            value,
+          })),
+        },
+      });
+    }
   };
 
   return (
@@ -224,7 +312,7 @@ function FormField({
   register: UseFormRegister<Record<string, string>>;
   errors: FieldErrors<Record<string, string>>;
   characterLimit: number;
-  control: Control<Record<string, string>, any>;
+  control: Control<Record<string, string>>;
   value: string;
 }) {
   switch (type) {
@@ -408,7 +496,7 @@ function SelectInput(props: {
   options: RegistrationFieldOption[];
   register: UseFormRegister<Record<string, string>>;
   errors: FieldErrors<Record<string, string>>;
-  control: Control<Record<string, string>, any>;
+  control: Control<Record<string, string>>;
 }) {
   return (
     <FlexColumn $gap="0.5rem">
