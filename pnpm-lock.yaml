@@ -114,7 +114,7 @@ importers:
         specifier: workspace:*
         version: link:../api
       ui:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ui
 
   packages/core:
