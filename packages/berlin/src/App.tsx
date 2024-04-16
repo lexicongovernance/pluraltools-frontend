@@ -15,15 +15,15 @@ import Cycle from './pages/Cycle.tsx';
 import DataPolicy from './pages/DataPolicy.tsx';
 import Event from './pages/Event.tsx';
 import Events from './pages/Events.tsx';
-import GroupRegistration from './pages/GroupRegistration.tsx';
 import Holding from './pages/Holding';
 import Landing from './pages/Landing';
 import Onboarding from './pages/Onboarding';
 import Option from './pages/Option.tsx';
 import PassportPopupRedirect from './pages/Popup';
+import PublicGroupRegistration from './pages/PublicGroupRegistration.tsx';
 import Register from './pages/Register';
 import Results from './pages/Results.tsx';
-import PublicGroupRegistration from './pages/PublicGroupRegistration.tsx';
+import SecretGroupRegistration from './pages/SecretGroupRegistration.tsx';
 
 /**
  * Redirects the user to the landing page if they are not logged in
@@ -170,8 +170,8 @@ const router = (queryClient: QueryClient) =>
               Component: Account,
             },
             {
-              path: '/groups',
-              Component: GroupRegistration,
+              path: '/secret-groups',
+              Component: SecretGroupRegistration,
             },
             {
               path: '/public-groups',

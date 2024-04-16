@@ -26,7 +26,7 @@ import Input from '../components/input';
 import ResearchGroupForm from '../components/research-group-form';
 import SecretCode from '../components/secret-code';
 
-function GroupRegistration() {
+function SecretGroupRegistration() {
   const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [secretCode, setSecretCode] = useState<string | null>(null);
@@ -34,7 +34,7 @@ function GroupRegistration() {
   const [searchParams] = useSearchParams();
   const groupCategoryNameParam = searchParams.get('groupCategory');
 
-  const groupRegistrationSchema = z.object({
+  const secretGroupRegistrationSchema = z.object({
     secret: z.string().length(12, { message: 'Research Group code must be 12 characters long' }),
   });
   const {
@@ -43,9 +43,9 @@ function GroupRegistration() {
     handleSubmit,
     register,
     reset,
-  } = useForm<z.infer<typeof groupRegistrationSchema>>({
+  } = useForm<z.infer<typeof secretGroupRegistrationSchema>>({
     defaultValues: { secret: '' },
-    resolver: zodResolver(groupRegistrationSchema),
+    resolver: zodResolver(secretGroupRegistrationSchema),
   });
 
   const { data: groupCategories } = useQuery({
@@ -150,4 +150,4 @@ function GroupRegistration() {
   );
 }
 
-export default GroupRegistration;
+export default SecretGroupRegistration;
