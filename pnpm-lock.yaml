@@ -113,6 +113,9 @@ importers:
       api:
         specifier: workspace:*
         version: link:../api
+      ui:
+        specifier: workspace:^
+        version: link:../ui
 
   packages/core:
     dependencies:
