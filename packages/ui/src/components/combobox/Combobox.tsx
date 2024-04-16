@@ -1,16 +1,11 @@
-import { useState } from 'react';
+import * as React from 'react';
 import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
 
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from '@/components/ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '../../lib/utils';
+import { Button } from '../ui/button';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '../ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { CommandList } from 'cmdk';
 
 const frameworks = [
   {
@@ -36,8 +31,8 @@ const frameworks = [
 ];
 
 function Combobox() {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState('');
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState('');
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -59,24 +54,26 @@ function Combobox() {
           <CommandInput placeholder="Search framework..." className="h-9" />
           <CommandEmpty>No framework found.</CommandEmpty>
           <CommandGroup>
-            {frameworks.map((framework) => (
-              <CommandItem
-                key={framework.value}
-                value={framework.value}
-                onSelect={(currentValue) => {
-                  setValue(currentValue === value ? '' : currentValue);
-                  setOpen(false);
-                }}
-              >
-                {framework.label}
-                <CheckIcon
-                  className={cn(
-                    'ml-auto h-4 w-4',
-                    value === framework.value ? 'opacity-100' : 'opacity-0',
-                  )}
-                />
-              </CommandItem>
-            ))}
+            <CommandList>
+              {frameworks.map((framework) => (
+                <CommandItem
+                  key={framework.value}
+                  value={framework.value}
+                  onSelect={(currentValue) => {
+                    setValue(currentValue === value ? '' : currentValue);
+                    setOpen(false);
+                  }}
+                >
+                  {framework.label}
+                  <CheckIcon
+                    className={cn(
+                      'ml-auto h-4 w-4',
+                      value === framework.value ? 'opacity-100' : 'opacity-0',
+                    )}
+                  />
+                </CommandItem>
+              ))}
+            </CommandList>
           </CommandGroup>
         </Command>
       </PopoverContent>
