@@ -54,7 +54,7 @@ export const LogoTitle = styled.h1`
     line-height: 1.75rem;
   }
 
-  @media (min-width: 640px) {
+  @media (min-width: 600px) {
     max-width: none;
   }
 `;
@@ -67,7 +67,7 @@ export const LogoSubtitle = styled.h2`
   font-weight: 600;
   line-height: 0.75rem;
   max-width: 360px;
-  @media (min-width: 640px) {
+  @media (min-width: 600px) {
     font-size: 1rem;
   }
 `;

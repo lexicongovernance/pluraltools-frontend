@@ -83,9 +83,14 @@ function Header() {
                   {registrationsData?.some(
                     (registration) => registration.status === 'APPROVED',
                   ) && (
-                    <NavButton to="/events" $color="secondary">
-                      Agenda
-                    </NavButton>
+                    <>
+                      <NavButton to="/events" $color="secondary">
+                        Agenda
+                      </NavButton>
+                      <NavButton to="/groups" $color="secondary">
+                        Groups
+                      </NavButton>
+                    </>
                   )}
                   <NavButton to="/account" $color="secondary">
                     Account
@@ -114,9 +119,14 @@ function Header() {
                   {registrationsData?.some(
                     (registration) => registration.status === 'APPROVED',
                   ) && (
-                    <NavButton to="/events" $color="secondary">
-                      Agenda
-                    </NavButton>
+                    <>
+                      <NavButton to="/events" $color="secondary">
+                        Agenda
+                      </NavButton>
+                      <NavButton to="/groups" $color="secondary">
+                        Groups
+                      </NavButton>
+                    </>
                   )}
                   <NavButton to="/account" $color="secondary">
                     Account
