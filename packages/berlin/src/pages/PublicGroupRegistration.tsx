@@ -1,10 +1,14 @@
 // React and third-party libraries
 import { Controller, useForm } from 'react-hook-form';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
+// Hooks
+import useUser from '../hooks/useUser';
+
 // API
-import { postUserToGroups } from 'api';
+import { fetchGroups, postUserToGroups } from 'api';
 
 // Data
 import publicGroups from '../data/publicGroups';
@@ -17,19 +21,15 @@ import { Subtitle } from '../components/typography/Subtitle.styled';
 import Button from '../components/button';
 import Select from '../components/select';
 
-const groupsData = [
-  {
-    id: 'polis',
-    name: 'Polis',
-  },
-  {
-    id: 'test',
-    name: 'Test',
-  },
-];
-
 function PublicGroupRegistration() {
+  const { user } = useUser();
   const queryClient = useQueryClient();
+  const [searchParams] = useSearchParams();
+  const groupCategoryNameParam = searchParams.get('groupCategory');
+
+  const capitalizedParam =
+    groupCategoryNameParam &&
+    groupCategoryNameParam?.slice(0, 1).toUpperCase() + groupCategoryNameParam?.slice(1);
 
   const {
     control,
@@ -42,6 +42,14 @@ function PublicGroupRegistration() {
     defaultValues: { group: '' },
   });
 
+  const { data: groups } = useQuery({
+    queryKey: ['group-categories', groupCategoryNameParam, 'groups'],
+    queryFn: () => fetchGroups({ groupCategoryName: groupCategoryNameParam || '' }),
+    enabled: !!user?.id && !!groupCategoryNameParam,
+  });
+
+  const selectData = groups?.map((group) => ({ id: group.id, name: group.name })) ?? [];
+
   const { mutate: postUserToGroupsMutation } = useMutation({
     mutationFn: postUserToGroups,
     onSuccess: (body) => {
@@ -49,7 +57,7 @@ function PublicGroupRegistration() {
         return;
       }
       queryClient.invalidateQueries({ queryKey: ['user', 'groups'] });
-      toast.success(`Joined ${getValues('group')} group succesfully!`);
+      toast.success(`Joined ${groupCategoryNameParam} group succesfully!`);
     },
     onError: () => {
       toast.error('Something went wrong.');
@@ -58,7 +66,7 @@ function PublicGroupRegistration() {
 
   const onSubmit = () => {
     if (isValid) {
-      postUserToGroupsMutation({ groupId: 'id' });
+      postUserToGroupsMutation({ groupId: getValues('group') });
       setValue('group', '');
       reset();
     }
@@ -72,12 +80,14 @@ function PublicGroupRegistration() {
         <Controller
           name="group"
           control={control}
-          rules={{ required: 'Public group is required' }}
+          rules={{
+            required: `${capitalizedParam} group is required`,
+          }}
           render={({ field }) => (
             <Select
-              label="Public group"
-              placeholder={field.value ? field.value : 'Select a public group'}
-              options={groupsData}
+              label={`${capitalizedParam} group`}
+              placeholder={field.value ? field.value : `Select a ${groupCategoryNameParam} group`}
+              options={selectData}
               value={field.value}
               errors={[errors.group?.message ?? '']}
               onBlur={field.onBlur}
@@ -86,7 +96,7 @@ function PublicGroupRegistration() {
             />
           )}
         />
-        <Button type="submit">Join public group</Button>
+        <Button type="submit">Join {groupCategoryNameParam} group</Button>
       </Form>
     </FlexColumn>
   );
