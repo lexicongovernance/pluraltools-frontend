@@ -23,6 +23,7 @@ import Option from './pages/Option.tsx';
 import PassportPopupRedirect from './pages/Popup';
 import Register from './pages/Register';
 import Results from './pages/Results.tsx';
+import PublicGroupRegistration from './pages/PublicGroupRegistration.tsx';
 
 /**
  * Redirects the user to the landing page if they are not logged in
@@ -171,6 +172,10 @@ const router = (queryClient: QueryClient) =>
             {
               path: '/groups',
               Component: GroupRegistration,
+            },
+            {
+              path: '/public-groups',
+              Component: PublicGroupRegistration,
             },
             {
               loader: () => redirectToAccount(queryClient),
