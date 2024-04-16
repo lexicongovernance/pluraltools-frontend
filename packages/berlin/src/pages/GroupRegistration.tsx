@@ -34,7 +34,7 @@ function GroupRegistration() {
   const [searchParams] = useSearchParams();
   const groupCategoryNameParam = searchParams.get('groupCategory');
 
-  const sendEmailsSchema = z.object({
+  const groupRegistrationSchema = z.object({
     secret: z.string().length(12, { message: 'Research Group code must be 12 characters long' }),
   });
   const {
@@ -43,9 +43,9 @@ function GroupRegistration() {
     handleSubmit,
     register,
     reset,
-  } = useForm<z.infer<typeof sendEmailsSchema>>({
+  } = useForm<z.infer<typeof groupRegistrationSchema>>({
     defaultValues: { secret: '' },
-    resolver: zodResolver(sendEmailsSchema),
+    resolver: zodResolver(groupRegistrationSchema),
   });
 
   const { data: groupCategories } = useQuery({
