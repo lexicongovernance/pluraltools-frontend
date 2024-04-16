@@ -10,7 +10,7 @@ import { useAppStore } from '../../store';
 import header from '../../data/header';
 
 // API
-import { logout } from 'api';
+import { fetchAlerts, logout } from 'api';
 
 // Hooks
 import useUser from '../../hooks/useUser';
@@ -63,6 +63,12 @@ function Header() {
     enabled: !!user,
   });
 
+  const { data: alerts } = useQuery({
+    queryKey: ['alerts'],
+    queryFn: () => fetchAlerts(),
+    enabled: !!user,
+  });
+
   const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState(false);
 
   return (
@@ -84,11 +90,20 @@ function Header() {
                     (registration) => registration.status === 'APPROVED',
                   ) && (
                     <>
+                      {alerts &&
+                        alerts.length > 0 &&
+                        alerts?.map((alert) => {
+                          return (
+                            alert.link &&
+                            alert.title && (
+                              <NavButton to={alert.link} $color="secondary">
+                                {alert.title}
+                              </NavButton>
+                            )
+                          );
+                        })}
                       <NavButton to="/events" $color="secondary">
                         Agenda
-                      </NavButton>
-                      <NavButton to="/groups" $color="secondary">
-                        Groups
                       </NavButton>
                     </>
                   )}
@@ -120,11 +135,20 @@ function Header() {
                     (registration) => registration.status === 'APPROVED',
                   ) && (
                     <>
+                      {alerts &&
+                        alerts.length > 0 &&
+                        alerts?.map((alert) => {
+                          return (
+                            alert.link &&
+                            alert.title && (
+                              <NavButton to={alert.link} $color="secondary">
+                                {alert.title}
+                              </NavButton>
+                            )
+                          );
+                        })}
                       <NavButton to="/events" $color="secondary">
                         Agenda
-                      </NavButton>
-                      <NavButton to="/groups" $color="secondary">
-                        Groups
                       </NavButton>
                     </>
                   )}

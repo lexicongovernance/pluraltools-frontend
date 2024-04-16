@@ -32,7 +32,7 @@ function Vote() {
   const [startAt, setStartAt] = useState<string | null>(null);
   const [endAt, setEndAt] = useState<string | null>(null);
   const initialHearts = 20;
-  const [avaliableHearts, setAvaliableHearts] = useState(initialHearts);
+  const [availableHearts, setAvailableHearts] = useState(initialHearts);
   const [localUserVotes, setLocalUserVotes] = useState<
     ResponseUserVotesType | { optionId: string; numOfVotes: number }[]
   >([]);
@@ -82,7 +82,7 @@ function Vote() {
       .map((option) => option.numOfVotes)
       .reduce((prev, curr) => prev + curr, 0);
 
-    setAvaliableHearts(initialHearts - givenVotes);
+    setAvailableHearts(initialHearts - givenVotes);
     setLocalUserVotes(votes);
   };
 
@@ -110,7 +110,7 @@ function Vote() {
   }, [userVotes]);
 
   const handleVote = (optionId: string) => {
-    if (avaliableHearts > 0) {
+    if (availableHearts > 0) {
       setLocalUserVotes((prevLocalUserVotes) => {
         const temp = prevLocalUserVotes.find((x) => x.optionId === optionId);
         if (!temp) {
@@ -124,7 +124,7 @@ function Vote() {
         });
         return updatedLocalVotes;
       });
-      setAvaliableHearts((prevAvaliableHearts) => Math.max(0, prevAvaliableHearts - 1));
+      setAvailableHearts((prevavailableHearts) => Math.max(0, prevavailableHearts - 1));
     }
   };
 
@@ -141,7 +141,7 @@ function Vote() {
       return updatedLocalVotes;
     });
 
-    setAvaliableHearts((prevAvaliableHearts) => Math.min(initialHearts, prevAvaliableHearts + 1));
+    setAvailableHearts((prevavailableHearts) => Math.min(initialHearts, prevavailableHearts + 1));
   };
 
   const handleSaveVotes = () => {
@@ -196,10 +196,10 @@ function Vote() {
             {Array.from({ length: initialHearts }).map((_, id) => (
               <img
                 key={id}
-                src={id < avaliableHearts ? '/icons/full_heart.svg' : '/icons/empty_heart.svg'}
+                src={id < availableHearts ? '/icons/full_heart.svg' : '/icons/empty_heart.svg'}
                 height={32}
                 width={32}
-                alt={id < avaliableHearts ? 'Full Heart' : 'Empty Heart'}
+                alt={id < availableHearts ? 'Full Heart' : 'Empty Heart'}
               />
             ))}
           </FlexRow>
@@ -222,7 +222,7 @@ function Vote() {
                   key={questionOption.id}
                   title={questionOption.optionTitle}
                   body={questionOption.optionSubTitle}
-                  avaliableHearts={avaliableHearts}
+                  availableHearts={availableHearts}
                   numOfVotes={numOfVotes}
                   onVote={() => handleVote(questionOption.id)}
                   onUnvote={() => handleUnvote(questionOption.id)}

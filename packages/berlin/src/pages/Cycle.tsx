@@ -53,7 +53,7 @@ function Cycle() {
     enabled: !!user?.id && !!cycleId,
     retry: false,
   });
-  const { avaliableHearts, setAvaliableHearts } = useAppStore((state) => state);
+  const { availableHearts, setAvailableHearts } = useAppStore((state) => state);
   const [startAt, setStartAt] = useState<string | null>(null);
   const [endAt, setEndAt] = useState<string | null>(null);
   const [localUserVotes, setLocalUserVotes] = useState<LocalUserVotes>([]);
@@ -76,7 +76,7 @@ function Cycle() {
       .map((option) => option.numOfVotes)
       .reduce((prev, curr) => prev + curr, 0);
 
-    setAvaliableHearts(initialHearts - givenVotes);
+    setAvailableHearts(initialHearts - givenVotes);
     setLocalUserVotes(votes);
   };
 
@@ -118,11 +118,11 @@ function Cycle() {
   });
 
   const handleVoteWrapper = (optionId: string) => {
-    handleVote(optionId, avaliableHearts, setAvaliableHearts, setLocalUserVotes);
+    handleVote(optionId, availableHearts, setAvailableHearts, setLocalUserVotes);
   };
 
   const handleUnvoteWrapper = (optionId: string) => {
-    handleUnvote(optionId, avaliableHearts, setAvaliableHearts, setLocalUserVotes);
+    handleUnvote(optionId, availableHearts, setAvailableHearts, setLocalUserVotes);
   };
 
   const handleSaveVotesWrapper = () => {
@@ -197,16 +197,16 @@ function Cycle() {
               : `Vote closes in: ${formattedTime}`}
         </Body>
         <Body>
-          You have <Bold>{avaliableHearts}</Bold> hearts left to give away:
+          You have <Bold>{availableHearts}</Bold> hearts left to give away:
         </Body>
         <FlexRow $gap="0.25rem" $wrap>
           {Array.from({ length: initialHearts }).map((_, id) => (
             <img
               key={id}
-              src={id < avaliableHearts ? '/icons/heart-full.svg' : '/icons/heart-empty.svg'}
+              src={id < availableHearts ? '/icons/heart-full.svg' : '/icons/heart-empty.svg'}
               height={24}
               width={24}
-              alt={id < avaliableHearts ? 'Full Heart' : 'Empty Heart'}
+              alt={id < availableHearts ? 'Full Heart' : 'Empty Heart'}
             />
           ))}
         </FlexRow>
