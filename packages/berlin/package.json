@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "api": "workspace:*"
+    "api": "workspace:*",
+    "ui": "workspace:*"
   }
 }
