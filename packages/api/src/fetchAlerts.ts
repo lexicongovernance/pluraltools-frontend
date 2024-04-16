@@ -16,7 +16,7 @@ async function fetchAlerts(): Promise<GetAlertsResponse | null> {
     const alerts = (await response.json()) as { data: GetAlertsResponse };
     return alerts.data;
   } catch (error) {
-    console.error('Error fetching cycles:', error);
+    console.error('Error fetching alerts:', error);
     return null;
   }
 }
