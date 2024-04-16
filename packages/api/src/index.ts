@@ -28,4 +28,5 @@ export { default as postUserToGroups } from './postUserToGroups';
 export { default as postVotes } from './postVotes';
 export { default as putRegistration } from './putRegistration';
 export { default as updateUserData } from './updateUserData';
+export { default as fetchAlerts } from './fetchAlerts';
 export * from './types';

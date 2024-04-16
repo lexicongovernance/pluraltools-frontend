@@ -6,13 +6,13 @@ import { Body, StyledOption, Title } from './Option.styled';
 type OptionProps = {
   title: string;
   body?: string;
-  avaliableHearts: number;
+  availableHearts: number;
   numOfVotes: number;
   onVote: () => void;
   onUnvote: () => void;
 };
 
-function Option({ title, body, avaliableHearts, numOfVotes, onVote, onUnvote }: OptionProps) {
+function Option({ title, body, availableHearts, numOfVotes, onVote, onUnvote }: OptionProps) {
   const [localOptionHearts, setLocalOptionHearts] = useState(numOfVotes);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ function Option({ title, body, avaliableHearts, numOfVotes, onVote, onUnvote }: 
   }, [numOfVotes]);
 
   const handleVoteClick = () => {
-    if (avaliableHearts) {
+    if (availableHearts) {
       setLocalOptionHearts((prevLocalOptionHearts) => prevLocalOptionHearts + 1);
       onVote();
     }
@@ -56,7 +56,7 @@ function Option({ title, body, avaliableHearts, numOfVotes, onVote, onUnvote }: 
             >
               Unvote
             </Button>
-            <Button color="primary" onClick={handleVoteClick} disabled={avaliableHearts === 0}>
+            <Button color="primary" onClick={handleVoteClick} disabled={availableHearts === 0}>
               Vote
             </Button>
           </FlexRow>

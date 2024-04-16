@@ -35,7 +35,7 @@ function Option() {
   const queryClient = useQueryClient();
   const { cycleId, optionId } = useParams();
   const { user } = useUser();
-  const { avaliableHearts, setAvaliableHearts } = useAppStore((state) => state);
+  const { availableHearts, setAvailableHearts } = useAppStore((state) => state);
   const [localUserVotes, setLocalUserVotes] = useState<
     ResponseUserVotesType | { optionId: string; numOfVotes: number }[]
   >([]);
@@ -98,12 +98,12 @@ function Option() {
 
   const handleVoteWrapper = (optionId: string) => {
     setLocalOptionHearts((prevLocalOptionHearts) => prevLocalOptionHearts + 1);
-    handleVote(optionId, avaliableHearts, setAvaliableHearts, setLocalUserVotes);
+    handleVote(optionId, availableHearts, setAvailableHearts, setLocalUserVotes);
   };
 
   const handleUnvoteWrapper = (optionId: string) => {
     setLocalOptionHearts((prevLocalOptionHearts) => Math.max(0, prevLocalOptionHearts - 1));
-    handleUnvote(optionId, avaliableHearts, setAvaliableHearts, setLocalUserVotes);
+    handleUnvote(optionId, availableHearts, setAvailableHearts, setLocalUserVotes);
   };
 
   const handleSaveVotesWrapper = () => {
@@ -153,7 +153,7 @@ function Option() {
         />
         <IconButton
           onClick={() => handleVoteWrapper(option?.id ?? '')}
-          disabled={avaliableHearts === 0}
+          disabled={availableHearts === 0}
           $padding={6}
           $color="primary"
           icon={{ src: `/icons/vote-${theme}.svg`, alt: 'Vote icon' }}
