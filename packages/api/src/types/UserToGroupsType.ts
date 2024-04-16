@@ -1,5 +1,6 @@
 export type PostUserToGroupsRequest = {
-  secret: string;
+  groupId?: string;
+  secret?: string;
 };
 
 export type PostUserToGroupsResponse = {

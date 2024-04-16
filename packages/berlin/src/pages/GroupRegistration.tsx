@@ -20,9 +20,9 @@ import { FlexRowToColumn } from '../components/containers/FlexRowToColumn.styled
 import { Form } from '../components/containers/Form.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import Button from '../components/button';
+import Dialog from '../components/dialog';
 import Divider from '../components/divider';
 import Input from '../components/input';
-import Dialog from '../components/dialog';
 import ResearchGroupForm from '../components/research-group-form';
 import SecretCode from '../components/secret-code';
 

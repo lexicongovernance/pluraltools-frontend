@@ -2,6 +2,7 @@ import { PostUserToGroupsRequest, PostUserToGroupsResponse } from './types';
 
 async function postUserToGroups({
   secret,
+  groupId,
 }: PostUserToGroupsRequest): Promise<PostUserToGroupsResponse | null> {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/users-to-groups`, {
@@ -10,7 +11,7 @@ async function postUserToGroups({
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ secret }),
+      body: JSON.stringify({ secret, groupId }),
     });
 
     if (!response.ok) {
