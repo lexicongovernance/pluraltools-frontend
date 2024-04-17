@@ -51,7 +51,7 @@ function Event() {
 
   return (
     <FlexColumn $gap="2rem">
-      <BackButton />
+      {/* <BackButton /> */}
       {!!openCycles?.length && <CycleTable cycles={openCycles} status="open" />}
       {!!closedCycles?.length && <CycleTable cycles={closedCycles} status="closed" />}
       {event && <EventCard event={event} $direction="row" />}
