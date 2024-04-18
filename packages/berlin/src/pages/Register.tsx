@@ -45,7 +45,7 @@ import Label from '../components/typography/Label';
 const sortRegistrationsByCreationDate = (registrations: GetRegistrationResponseType[]) => {
   return [
     ...registrations.sort((a, b) => {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
     }),
   ];
 };
@@ -179,20 +179,7 @@ function Register() {
         user={user}
         registration={selectedRegistration}
         registrationFields={registrationFields}
-        registrationData={
-          // the reason we do this is to make sure that the user has empty fields
-          // for a registration that has not been created yet
-          registrationData
-            ? registrationData
-            : registrationFields?.map((field) => ({
-                id: '',
-                createdAt: '',
-                registrationId: '',
-                updatedAt: '',
-                registrationFieldId: field.id,
-                value: '',
-              }))
-        }
+        registrationData={registrationData}
         groupId={groupId}
       />
     </SafeArea>
@@ -238,8 +225,6 @@ function RegisterForm(props: {
   useEffect(() => {
     reset(getDefaultValues(props.registrationData));
   }, [props.registrationData, reset]);
-
-  const values = getValues();
 
   const sortedRegistrationFields = useMemo(() => {
     const sortedFields = filterRegistrationFields(
@@ -307,7 +292,7 @@ function RegisterForm(props: {
           status: 'DRAFT',
           registrationData: Object.entries(values).map(([key, value]) => ({
             registrationFieldId: key,
-            value,
+            value: value,
           })),
         },
       });
@@ -344,7 +329,7 @@ function RegisterForm(props: {
               type={regField.type}
               register={register}
               control={control}
-              value={values[regField.id] ?? ''} // Current input value
+              value={getValues()[regField.id] ?? ''} // Current input value
             />
           ))}
         </FlexColumn>
