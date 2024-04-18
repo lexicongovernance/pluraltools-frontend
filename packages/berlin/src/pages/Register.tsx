@@ -353,7 +353,7 @@ function RegisterForm(props: {
         Save
       </Button>
       <Body>
-        Need more time? Feel free to come back to these questions later. The deadline is April 15th.
+        Need more time? Feel free to come back to these questions later. The deadline is May 15th.
       </Body>
     </FlexColumn>
   );
