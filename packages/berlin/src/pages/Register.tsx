@@ -42,62 +42,6 @@ import Select from '../components/select';
 import Textarea from '../components/textarea';
 import Label from '../components/typography/Label';
 
-const sortRegistrationsByCreationDate = (registrations: GetRegistrationResponseType[]) => {
-  return [
-    ...registrations.sort((a, b) => {
-      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-    }),
-  ];
-};
-
-const createRegistrationForms = (
-  registrations: GetRegistrationResponseType[] | undefined | null,
-) => {
-  // max 5 registrations
-  // when there are no registrations, return an array of 5 empty objects with id 'empty'
-  // the name should be the index of the array + 1
-
-  const sortedByCreationDate = sortRegistrationsByCreationDate(registrations || []);
-
-  const newArray = Array.from({ length: 5 }).map((_, idx) => {
-    return {
-      id: sortedByCreationDate?.[idx]?.id || idx.toString(),
-      name: `Proposal ${idx + 1}`,
-      mode: sortedByCreationDate?.[idx]?.id ? 'edit' : 'create',
-    };
-  });
-
-  return newArray;
-};
-
-const showRegistrationsSelect = (
-  registrations: GetRegistrationsResponseType | null | undefined,
-  client: 'user' | 'group',
-): boolean => {
-  if (client == 'group') {
-    return false;
-  }
-  // only show select when user has previously registered
-  return !!registrations && registrations.length > 0;
-};
-
-const filterRegistrationFields = (
-  registrationFields: GetRegistrationFieldsResponse | null | undefined,
-  client: 'user' | 'group',
-) => {
-  return registrationFields?.filter((field) => {
-    if (field.forGroup && client == 'group') {
-      return true;
-    }
-
-    if (field.forUser && client == 'user') {
-      return true;
-    }
-
-    return false;
-  });
-};
-
 function Register() {
   const { user, isLoading } = useUser();
   const { eventId } = useParams();
@@ -143,9 +87,48 @@ function Register() {
   useEffect(() => {
     // select the first registration if it exists
     if (registrations) {
-      setSelectedRegistrationId(sortRegistrationsByCreationDate(registrations)[0]?.id);
+      setSelectedRegistrationId(sortRegistrationsByCreationDate(registrations)[0]?.id || '1');
     }
   }, [registrations]);
+
+  const sortRegistrationsByCreationDate = (registrations: GetRegistrationResponseType[]) => {
+    return [
+      ...registrations.sort((a, b) => {
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      }),
+    ];
+  };
+
+  const createRegistrationForms = (
+    registrations: GetRegistrationResponseType[] | undefined | null,
+  ) => {
+    // max 5 registrations
+    // when there are no registrations, return an array of 5 empty objects with id 'empty'
+    // the name should be the index of the array + 1
+
+    const sortedByCreationDate = sortRegistrationsByCreationDate(registrations || []);
+
+    const newArray = Array.from({ length: 5 }).map((_, idx) => {
+      return {
+        id: sortedByCreationDate?.[idx]?.id || idx.toString(),
+        name: `Proposal ${idx + 1}`,
+        mode: sortedByCreationDate?.[idx]?.id ? 'edit' : 'create',
+      };
+    });
+
+    return newArray;
+  };
+
+  const showRegistrationsSelect = (
+    registrations: GetRegistrationsResponseType | null | undefined,
+    client: 'user' | 'group',
+  ): boolean => {
+    if (client == 'group') {
+      return false;
+    }
+    // only show select when user has previously registered
+    return !!registrations && registrations.length > 0;
+  };
 
   if (isLoading || registrationDataIsLoading) {
     return <h1>Loading...</h1>;
@@ -214,6 +197,23 @@ const getDefaultValues = (registrationData: GetRegistrationDataResponse | null |
     },
     {} as Record<string, string>,
   );
+};
+
+const filterRegistrationFields = (
+  registrationFields: GetRegistrationFieldsResponse | null | undefined,
+  client: 'user' | 'group',
+) => {
+  return registrationFields?.filter((field) => {
+    if (field.forGroup && client == 'group') {
+      return true;
+    }
+
+    if (field.forUser && client == 'user') {
+      return true;
+    }
+
+    return false;
+  });
 };
 
 function RegisterForm(props: {
