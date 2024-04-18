@@ -50,7 +50,9 @@ const sortRegistrationsByCreationDate = (registrations: GetRegistrationResponseT
   ];
 };
 
-const createOptionsArray = (registrations: GetRegistrationResponseType[] | undefined | null) => {
+const createRegistrationForms = (
+  registrations: GetRegistrationResponseType[] | undefined | null,
+) => {
   // max 5 registrations
   // when there are no registrations, return an array of 5 empty objects with id 'empty'
   // the name should be the index of the array + 1
@@ -141,7 +143,7 @@ function Register() {
   useEffect(() => {
     // select the first registration if it exists
     if (registrations) {
-      setSelectedRegistrationId(sortRegistrationsByCreationDate(registrations)[0].id);
+      setSelectedRegistrationId(sortRegistrationsByCreationDate(registrations)[0]?.id);
     }
   }, [registrations]);
 
@@ -162,7 +164,7 @@ function Register() {
             <Label>Select Proposal</Label>
             <Select
               value={selectedRegistrationId ?? ''}
-              options={createOptionsArray(registrations)}
+              options={createRegistrationForms(registrations)}
               placeholder="Select a Proposal"
               onChange={(val) => {
                 setSelectedRegistrationId(
@@ -173,7 +175,7 @@ function Register() {
           </>
         )}
       </FlexColumn>
-      {createOptionsArray(registrations).map((form, idx) => {
+      {createRegistrationForms(registrations).map((form, idx) => {
         return form.mode === 'edit' ? (
           <RegisterForm
             show={selectedRegistrationId === form.id}
