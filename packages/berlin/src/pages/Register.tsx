@@ -13,6 +13,7 @@ import {
   fetchRegistrationFields,
   fetchRegistrations,
   fetchUserGroups,
+  GetRegistrationsResponseType,
   postRegistration,
   putRegistration,
   type GetRegistrationDataResponse,
@@ -41,12 +42,58 @@ import Select from '../components/select';
 import Textarea from '../components/textarea';
 import Label from '../components/typography/Label';
 
-function filterRegistrationFieldsForGroup(fields: GetRegistrationFieldsResponse, groupId?: string) {
-  if (groupId) {
-    return fields.filter((field) => field.displayOnGroupRegistration);
+const sortRegistrationsByCreationDate = (registrations: GetRegistrationResponseType[]) => {
+  return [
+    ...registrations.sort((a, b) => {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    }),
+  ];
+};
+
+const createOptionsArray = (registrations: GetRegistrationResponseType[] | undefined | null) => {
+  // max 5 registrations
+  // when there are no registrations, return an array of 5 empty objects with id 'empty'
+  // the name should be the index of the array + 1
+
+  const sortedByCreationDate = sortRegistrationsByCreationDate(registrations || []);
+
+  const newArray = Array.from({ length: 5 }).map((_, idx) => {
+    return {
+      id: sortedByCreationDate?.[idx]?.id || 'empty',
+      name: `Proposal ${idx + 1}`,
+    };
+  });
+
+  return newArray;
+};
+
+const showRegistrationsSelect = (
+  registrations: GetRegistrationsResponseType | null | undefined,
+  client: 'user' | 'group',
+): boolean => {
+  if (client == 'group') {
+    return false;
   }
-  return fields;
-}
+  // only show select when user has previously registered
+  return !!registrations && registrations.length > 0;
+};
+
+const filterRegistrationFields = (
+  registrationFields: GetRegistrationFieldsResponse | null | undefined,
+  client: 'user' | 'group',
+) => {
+  return registrationFields?.filter((field) => {
+    if (field.forGroup && client == 'group') {
+      return true;
+    }
+
+    if (field.forUser && client == 'user') {
+      return true;
+    }
+
+    return false;
+  });
+};
 
 function Register() {
   const { user, isLoading } = useUser();
@@ -107,36 +154,11 @@ function Register() {
     return <h1>User is not authorized to register</h1>;
   }
 
-  const sortRegistrationsByCreationDate = (registrations: GetRegistrationResponseType[]) => {
-    return [
-      ...registrations.sort((a, b) => {
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      }),
-    ];
-  };
-
-  const createOptionsArray = (registrations: GetRegistrationResponseType[] | undefined | null) => {
-    // max 5 registrations
-    // when there are no registrations, return an array of 5 empty objects with id 'empty'
-    // the name should be the index of the array + 1
-
-    const sortedByCreationDate = sortRegistrationsByCreationDate(registrations || []);
-
-    const newArray = Array.from({ length: 5 }).map((_, idx) => {
-      return {
-        id: sortedByCreationDate?.[idx]?.id || 'empty',
-        name: `Proposal ${idx + 1}`,
-      };
-    });
-
-    return newArray;
-  };
-
   return (
     <SafeArea>
       <FlexColumn $gap="0.5rem">
         {/* only show select when user has previously registered */}
-        {registrations && registrations.length > 0 && (
+        {showRegistrationsSelect(registrations, groupId ? 'group' : 'user') && (
           <>
             <Label>Select Proposal</Label>
             <Select
@@ -220,13 +242,13 @@ function RegisterForm(props: {
   const values = getValues();
 
   const sortedRegistrationFields = useMemo(() => {
-    const sortedFields = filterRegistrationFieldsForGroup(
+    const sortedFields = filterRegistrationFields(
       props.registrationFields || [],
-      props.groupId,
+      props.groupId ? 'group' : 'user',
     );
 
     // Sort by field_display_rank in ascending order
-    sortedFields.sort((a, b) => (a.fieldDisplayRank || 0) - (b.fieldDisplayRank || 0));
+    sortedFields?.sort((a, b) => (a.fieldDisplayRank || 0) - (b.fieldDisplayRank || 0));
 
     return sortedFields;
   }, [props.registrationFields, props.groupId]);
@@ -309,7 +331,7 @@ function RegisterForm(props: {
       <Subtitle>{props.event?.registrationDescription}</Subtitle>
       <form style={{ width: '100%' }}>
         <FlexColumn $gap="0.75rem">
-          {sortedRegistrationFields.map((regField) => (
+          {sortedRegistrationFields?.map((regField) => (
             <FormField
               key={regField.id}
               disabled={props.registration?.status === 'PUBLISHED'}

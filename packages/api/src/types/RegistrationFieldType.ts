@@ -10,7 +10,8 @@ export type GetRegistrationFieldsResponse = {
   type: 'SELECT' | 'TEXT' | 'NUMBER' | 'DATE' | 'BOOLEAN';
   required: boolean | null;
   fieldDisplayRank: number | null;
-  displayOnGroupRegistration: boolean | null;
   characterLimit: number;
+  forGroup: boolean | null;
+  forUser: boolean | null;
   registrationFieldOptions: RegistrationFieldOption[];
 }[];
