@@ -59,8 +59,9 @@ const createOptionsArray = (registrations: GetRegistrationResponseType[] | undef
 
   const newArray = Array.from({ length: 5 }).map((_, idx) => {
     return {
-      id: sortedByCreationDate?.[idx]?.id || 'empty',
+      id: sortedByCreationDate?.[idx]?.id || idx.toString(),
       name: `Proposal ${idx + 1}`,
+      mode: sortedByCreationDate?.[idx]?.id ? 'edit' : 'create',
     };
   });
 
@@ -100,9 +101,7 @@ function Register() {
   const { eventId } = useParams();
   const [searchParams] = useSearchParams();
   const groupCategoryParam = searchParams.get('groupCategory');
-  const [selectedRegistration, setSelectedRegistration] = useState<
-    GetRegistrationResponseType | null | undefined
-  >();
+  const [selectedRegistrationId, setSelectedRegistrationId] = useState<string | null | undefined>();
 
   const { data: event } = useQuery({
     queryKey: ['event', eventId],
@@ -134,15 +133,15 @@ function Register() {
   }, [groupCategoryParam, userGroups]);
 
   const { data: registrationData, isLoading: registrationDataIsLoading } = useQuery({
-    queryKey: ['registrations', selectedRegistration?.id, 'data'],
-    queryFn: () => fetchRegistrationData(selectedRegistration?.id || ''),
-    enabled: !!selectedRegistration?.id,
+    queryKey: ['registrations', selectedRegistrationId, 'data'],
+    queryFn: () => fetchRegistrationData(selectedRegistrationId || ''),
+    enabled: !!selectedRegistrationId,
   });
 
   useEffect(() => {
     // select the first registration if it exists
     if (registrations) {
-      setSelectedRegistration(sortRegistrationsByCreationDate(registrations)[0]);
+      setSelectedRegistrationId(sortRegistrationsByCreationDate(registrations)[0].id);
     }
   }, [registrations]);
 
@@ -162,26 +161,45 @@ function Register() {
           <>
             <Label>Select Proposal</Label>
             <Select
-              value={selectedRegistration?.id}
+              value={selectedRegistrationId ?? ''}
               options={createOptionsArray(registrations)}
               placeholder="Select a Proposal"
               onChange={(val) => {
-                setSelectedRegistration(
-                  registrations?.find((registration) => registration.id === val),
+                setSelectedRegistrationId(
+                  registrations?.find((registration) => registration.id === val)?.id || val,
                 );
               }}
             />
           </>
         )}
       </FlexColumn>
-      <RegisterForm
-        event={event}
-        user={user}
-        registration={selectedRegistration}
-        registrationFields={registrationFields}
-        registrationData={registrationData}
-        groupId={groupId}
-      />
+      {createOptionsArray(registrations).map((form, idx) => {
+        return form.mode === 'edit' ? (
+          <RegisterForm
+            show={selectedRegistrationId === form.id}
+            key={idx}
+            user={user}
+            registrationFields={registrationFields}
+            registrationId={selectedRegistrationId}
+            mode="edit"
+            registrationData={registrationData}
+            event={event}
+            groupId={groupId}
+          />
+        ) : (
+          <RegisterForm
+            show={selectedRegistrationId === idx.toString()}
+            key={idx}
+            user={user}
+            registrationFields={registrationFields}
+            registrationId={idx.toString()}
+            mode="create"
+            registrationData={undefined}
+            event={event}
+            groupId={groupId}
+          />
+        );
+      })}
     </SafeArea>
   );
 }
@@ -199,10 +217,12 @@ const getDefaultValues = (registrationData: GetRegistrationDataResponse | null |
 function RegisterForm(props: {
   user: GetUserResponse | null | undefined;
   registrationFields?: GetRegistrationFieldsResponse | null | undefined;
-  registration?: GetRegistrationResponseType | null | undefined;
+  registrationId?: string | null | undefined;
   registrationData?: GetRegistrationDataResponse | null | undefined;
   event: DBEvent | null | undefined;
   groupId?: string;
+  show: boolean;
+  mode: 'edit' | 'create';
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -266,10 +286,10 @@ function RegisterForm(props: {
       if (body) {
         toast.success('Registration updated successfully!');
         await queryClient.invalidateQueries({
-          queryKey: [props.registration?.id, 'registration'],
+          queryKey: [props.registrationId, 'registration'],
         });
         await queryClient.invalidateQueries({
-          queryKey: [props.registration?.id, 'registration', 'data'],
+          queryKey: [props.registrationId, 'registration', 'data'],
         });
         navigate(`/events/${props.event?.id}/holding`);
       } else {
@@ -283,9 +303,9 @@ function RegisterForm(props: {
   });
 
   const onSubmit = (values: Record<string, string>) => {
-    if (props.registration) {
+    if (props.mode === 'edit') {
       updateRegistrationData({
-        registrationId: props.registration?.id || '',
+        registrationId: props.registrationId || '',
         body: {
           eventId: props.event?.id || '',
           groupId: props.groupId || null,
@@ -311,7 +331,7 @@ function RegisterForm(props: {
     }
   };
 
-  return (
+  return props.show ? (
     <FlexColumn>
       <Subtitle>{props.event?.registrationDescription}</Subtitle>
       <form style={{ width: '100%' }}>
@@ -319,7 +339,7 @@ function RegisterForm(props: {
           {sortedRegistrationFields?.map((regField) => (
             <FormField
               key={regField.id}
-              disabled={props.registration?.status === 'PUBLISHED'}
+              disabled={false}
               errors={errors}
               required={regField.required}
               id={regField.id}
@@ -341,6 +361,8 @@ function RegisterForm(props: {
         Need more time? Feel free to come back to these questions later. The deadline is May 15th.
       </Body>
     </FlexColumn>
+  ) : (
+    <></>
   );
 }
 
