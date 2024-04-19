@@ -10,7 +10,7 @@ import { GetCycleResponse, fetchEvent, fetchEventCycles } from 'api';
 import { Body } from '../components/typography/Body.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { Table } from '../components/table';
-import BackButton from '../components/back-button';
+// import BackButton from '../components/back-button';
 import Button from '../components/button';
 import EventCard from '../components/event-card';
 import Link from '../components/link';
@@ -51,7 +51,7 @@ function Event() {
 
   return (
     <FlexColumn $gap="2rem">
-      <BackButton />
+      {/* <BackButton /> */}
       {!!openCycles?.length && <CycleTable cycles={openCycles} status="open" />}
       {!!closedCycles?.length && <CycleTable cycles={closedCycles} status="closed" />}
       {event && <EventCard event={event} $direction="row" />}
