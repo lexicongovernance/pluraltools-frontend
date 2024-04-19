@@ -38,9 +38,9 @@ import { Subtitle } from '../components/typography/Subtitle.styled';
 import Button from '../components/button';
 import CharacterCounter from '../components/typography/CharacterCount.styled';
 import Input from '../components/input';
+import Label from '../components/typography/Label';
 import Select from '../components/select';
 import Textarea from '../components/textarea';
-import Label from '../components/typography/Label';
 
 function Register() {
   const { user, isLoading } = useUser();
@@ -94,7 +94,7 @@ function Register() {
   };
 
   const createRegistrationForms = (
-    registrations: GetRegistrationResponseType[] | undefined | null,
+    registrations: GetRegistrationsResponseType | undefined | null,
   ) => {
     // max 5 registrations
     // when there are no registrations, return an array of 5 empty objects with id 'empty'
@@ -117,7 +117,7 @@ function Register() {
     registrations: GetRegistrationsResponseType | null | undefined,
     client: 'user' | 'group',
   ): boolean => {
-    if (client == 'group') {
+    if (client === 'group') {
       return false;
     }
     // only show select when user has previously registered
@@ -125,34 +125,36 @@ function Register() {
   };
 
   if (isLoading) {
-    return <h1>Loading...</h1>;
+    return <Subtitle>Loading...</Subtitle>;
   }
 
   if (groupCategoryParam && !groupId) {
-    return <h1>User is not authorized to register</h1>;
+    return (
+      <Subtitle>
+        User must be part of <i>{groupCategoryParam}</i> in order to register.
+      </Subtitle>
+    );
   }
 
   return (
     <SafeArea>
-      <FlexColumn $gap="2rem">
-        <FlexColumn $gap="0.5rem">
-          {/* only show select when user has previously registered */}
-          {showRegistrationsSelect(registrations, groupId ? 'group' : 'user') && (
-            <>
-              <Label>Select Proposal</Label>
-              <Select
-                value={selectedRegistrationId ?? ''}
-                options={createRegistrationForms(registrations)}
-                placeholder="Select a Proposal"
-                onChange={(val) => {
-                  setSelectedRegistrationId(
-                    registrations?.find((registration) => registration.id === val)?.id || val,
-                  );
-                }}
-              />
-            </>
-          )}
-        </FlexColumn>
+      <FlexColumn $gap="1.75rem">
+        {/* only show select when user has previously registered */}
+        {showRegistrationsSelect(registrations, groupId ? 'group' : 'user') && (
+          <FlexColumn $gap="0.5rem">
+            <Label>Select Proposal</Label>
+            <Select
+              value={selectedRegistrationId ?? ''}
+              options={createRegistrationForms(registrations)}
+              placeholder="Select a Proposal"
+              onChange={(val) => {
+                setSelectedRegistrationId(
+                  registrations?.find((registration) => registration.id === val)?.id || val,
+                );
+              }}
+            />
+          </FlexColumn>
+        )}
         {createRegistrationForms(registrations).map((form, idx) => {
           return form.mode === 'edit' ? (
             <RegisterForm
