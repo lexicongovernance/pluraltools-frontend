@@ -33,6 +33,7 @@ import { DBEvent } from '../types/DBEventType';
 import { Body } from '../components/typography/Body.styled';
 import { Error } from '../components/typography/Error.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
+import { Form } from '../components/containers/Form.styled';
 import { SafeArea } from '../layout/Layout.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import Button from '../components/button';
@@ -334,27 +335,25 @@ function RegisterForm(props: {
   return props.show ? (
     <FlexColumn>
       <Subtitle>{props.event?.registrationDescription}</Subtitle>
-      <form style={{ width: '100%' }}>
-        <FlexColumn $gap="0.75rem">
-          {sortedRegistrationFields?.map((regField) => (
-            <FormField
-              key={`${props.registrationId}-${regField.id}`}
-              disabled={false}
-              errors={errors}
-              required={regField.required}
-              id={regField.id}
-              name={regField.name}
-              characterLimit={regField.characterLimit}
-              options={regField.registrationFieldOptions}
-              type={regField.type}
-              register={register}
-              control={control}
-              value={getValues()[regField.id] ?? ''} // Current input value
-            />
-          ))}
-        </FlexColumn>
-      </form>
-      <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        {sortedRegistrationFields?.map((regField) => (
+          <FormField
+            key={`${props.registrationId}-${regField.id}`}
+            disabled={false}
+            errors={errors}
+            required={regField.required}
+            id={regField.id}
+            name={regField.name}
+            characterLimit={regField.characterLimit}
+            options={regField.registrationFieldOptions}
+            type={regField.type}
+            register={register}
+            control={control}
+            value={getValues()[regField.id] ?? ''} // Current input value
+          />
+        ))}
+      </Form>
+      <Button type="submit" disabled={isSubmitting}>
         Save
       </Button>
       <Body>
