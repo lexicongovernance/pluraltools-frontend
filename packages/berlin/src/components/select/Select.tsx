@@ -48,11 +48,6 @@ function Select({
     if (value) {
       setSelectedOption(options.find((o) => o.id === value)?.name);
     }
-
-    return () => {
-      setSelectedOption('');
-      setSearchTerm('');
-    };
   }, [value, options]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {

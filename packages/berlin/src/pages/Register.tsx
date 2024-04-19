@@ -78,12 +78,6 @@ function Register() {
     return userGroups?.find((group) => group.groupCategory?.name === groupCategoryParam)?.id;
   }, [groupCategoryParam, userGroups]);
 
-  const { data: registrationData, isLoading: registrationDataIsLoading } = useQuery({
-    queryKey: ['registrations', selectedRegistrationId, 'data'],
-    queryFn: () => fetchRegistrationData(selectedRegistrationId || ''),
-    enabled: !!selectedRegistrationId,
-  });
-
   useEffect(() => {
     // select the first registration if it exists
     if (registrations) {
@@ -130,7 +124,7 @@ function Register() {
     return !!registrations && registrations.length > 0;
   };
 
-  if (isLoading || registrationDataIsLoading) {
+  if (isLoading) {
     return <h1>Loading...</h1>;
   }
 
@@ -165,9 +159,8 @@ function Register() {
             key={idx}
             user={user}
             registrationFields={registrationFields}
-            registrationId={selectedRegistrationId}
+            registrationId={form.id}
             mode="edit"
-            registrationData={registrationData}
             event={event}
             groupId={groupId}
           />
@@ -179,7 +172,6 @@ function Register() {
             registrationFields={registrationFields}
             registrationId={idx.toString()}
             mode="create"
-            registrationData={undefined}
             event={event}
             groupId={groupId}
           />
@@ -220,7 +212,6 @@ function RegisterForm(props: {
   user: GetUserResponse | null | undefined;
   registrationFields?: GetRegistrationFieldsResponse | null | undefined;
   registrationId?: string | null | undefined;
-  registrationData?: GetRegistrationDataResponse | null | undefined;
   event: DBEvent | null | undefined;
   groupId?: string;
   show: boolean;
@@ -228,6 +219,12 @@ function RegisterForm(props: {
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  const { data: registrationData } = useQuery({
+    queryKey: ['registrations', props.registrationId, 'data'],
+    queryFn: () => fetchRegistrationData(props.registrationId || ''),
+    enabled: !!props.registrationId,
+  });
 
   const {
     register,
@@ -237,16 +234,13 @@ function RegisterForm(props: {
     getValues,
     reset,
   } = useForm({
-    defaultValues: useMemo(
-      () => getDefaultValues(props.registrationData),
-      [props.registrationData],
-    ),
+    defaultValues: useMemo(() => getDefaultValues(registrationData), [registrationData]),
     mode: 'all',
   });
 
   useEffect(() => {
-    reset(getDefaultValues(props.registrationData));
-  }, [props.registrationData, reset]);
+    reset(getDefaultValues(registrationData));
+  }, [registrationData, reset]);
 
   const sortedRegistrationFields = useMemo(() => {
     const sortedFields = filterRegistrationFields(
