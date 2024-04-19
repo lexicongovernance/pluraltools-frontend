@@ -177,7 +177,7 @@ function Register() {
 
   return (
     <SafeArea>
-      <FlexColumn $gap="2rem">
+      <FlexColumn $gap="1.5rem">
         {/* only show select when user has previously registered */}
         {showRegistrationsSelect(registrations, groupId ? 'group' : 'user') && (
           <FlexColumn $gap="0.5rem">
@@ -365,18 +365,37 @@ function RegisterForm(props: {
 
   if (isLoading) {
     return (
-      <ContentLoader
-        speed={1.75}
-        width={'100%'}
-        height={80}
-        viewBox="0 0 100% 80"
-        backgroundColor="var(--color-gray)"
-        foregroundColor="var(--color-darkgray)"
-        {...props}
-      >
-        <rect x="0" y="0" rx="0" ry="0" width="100" height="22" />
-        <rect x="0" y="30" rx="4" ry="4" width="100%" height="50" />
-      </ContentLoader>
+      props.show && (
+        <>
+          {sortedRegistrationFields?.map((_, idx) => (
+            <ContentLoader
+              key={idx}
+              speed={1.75}
+              width={'100%'}
+              height={80}
+              viewBox="0 0 100% 80"
+              backgroundColor="var(--color-gray)"
+              foregroundColor="var(--color-darkgray)"
+              {...props}
+            >
+              <rect x="0" y="0" rx="0" ry="0" width="100" height="22" />
+              <rect x="0" y="30" rx="4" ry="4" width="100%" height="50" />
+            </ContentLoader>
+          ))}
+          <ContentLoader
+            speed={1.75}
+            width={'100%'}
+            height={80}
+            viewBox="0 0 100% 80"
+            backgroundColor="var(--color-gray)"
+            foregroundColor="var(--color-darkgray)"
+            {...props}
+          >
+            <rect x="0" y="0" rx="8" ry="8" width="72" height="36" />
+            <rect x="0" y="52" rx="0" ry="0" width="100%" height="28" />
+          </ContentLoader>
+        </>
+      )
     );
   }
 
