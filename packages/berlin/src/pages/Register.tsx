@@ -232,7 +232,7 @@ function RegisterForm(props: {
 
   const {
     register,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     control,
     handleSubmit,
     getValues,
@@ -354,7 +354,9 @@ function RegisterForm(props: {
           ))}
         </FlexColumn>
       </form>
-      <Button onClick={handleSubmit(onSubmit)}>Save</Button>
+      <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>
+        Save
+      </Button>
       <Body>
         Need more time? Feel free to come back to these questions later. The deadline is May 15th.
       </Body>
