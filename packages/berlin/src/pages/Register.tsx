@@ -47,7 +47,9 @@ function Register() {
   const { eventId } = useParams();
   const [searchParams] = useSearchParams();
   const groupCategoryParam = searchParams.get('groupCategory');
-  const [selectedRegistrationId, setSelectedRegistrationId] = useState<string | null | undefined>();
+  const [selectedRegistrationFormKey, setSelectedRegistrationFormKey] = useState<
+    string | undefined
+  >();
 
   const { data: event } = useQuery({
     queryKey: ['event', eventId],
@@ -80,8 +82,12 @@ function Register() {
 
   useEffect(() => {
     // select the first registration if it exists
-    if (registrations) {
-      setSelectedRegistrationId(sortRegistrationsByCreationDate(registrations)[0]?.id || '1');
+    if (registrations && registrations.length && registrations[0].id) {
+      const firstRegistrationId = sortRegistrationsByCreationDate(registrations)[0].id;
+
+      if (firstRegistrationId) {
+        setSelectedRegistrationFormKey(firstRegistrationId);
+      }
     }
   }, [registrations]);
 
@@ -100,17 +106,33 @@ function Register() {
     // when there are no registrations, return an array of 5 empty objects with id 'empty'
     // the name should be the index of the array + 1
 
-    const sortedByCreationDate = sortRegistrationsByCreationDate(registrations || []);
+    const sortedRegistrationsByCreationDate = sortRegistrationsByCreationDate(registrations || []);
 
-    const newArray = Array.from({ length: 5 }).map((_, idx) => {
+    const registrationForms: {
+      key: string | 'create';
+      registrationId?: string;
+      name: string;
+      mode: 'edit' | 'create';
+    }[] = sortedRegistrationsByCreationDate.map((reg, idx) => {
       return {
-        id: sortedByCreationDate?.[idx]?.id || idx.toString(),
+        key: reg.id || '',
+        registrationId: reg.id,
         name: `Proposal ${idx + 1}`,
-        mode: sortedByCreationDate?.[idx]?.id ? 'edit' : 'create',
+        mode: 'edit',
       };
     });
 
-    return newArray;
+    if (registrationForms.length >= 5) {
+      return registrationForms;
+    }
+
+    registrationForms.push({
+      key: 'create',
+      name: 'Create a new Proposal',
+      mode: 'create',
+    });
+
+    return registrationForms;
   };
 
   const showRegistrationsSelect = (
@@ -122,6 +144,21 @@ function Register() {
     }
     // only show select when user has previously registered
     return !!registrations && registrations.length > 0;
+  };
+
+  const showRegistrationForm = ({
+    registrationId,
+    selectedRegistrationFormKey,
+  }: {
+    registrationId?: string;
+    selectedRegistrationFormKey?: string;
+  }) => {
+    if (selectedRegistrationFormKey === 'create' && !registrationId) {
+      // show create registration form
+      return true;
+    }
+
+    return registrationId === selectedRegistrationFormKey;
   };
 
   if (isLoading) {
@@ -141,38 +178,31 @@ function Register() {
             <>
               <Label>Select Proposal</Label>
               <Select
-                value={selectedRegistrationId ?? ''}
-                options={createRegistrationForms(registrations)}
+                value={selectedRegistrationFormKey ?? ''}
+                options={createRegistrationForms(registrations).map((form) => ({
+                  id: form.key,
+                  name: form.name,
+                }))}
                 placeholder="Select a Proposal"
                 onChange={(val) => {
-                  setSelectedRegistrationId(
-                    registrations?.find((registration) => registration.id === val)?.id || val,
-                  );
+                  setSelectedRegistrationFormKey(val);
                 }}
               />
             </>
           )}
         </FlexColumn>
         {createRegistrationForms(registrations).map((form, idx) => {
-          return form.mode === 'edit' ? (
+          return (
             <RegisterForm
-              show={selectedRegistrationId === form.id}
+              show={showRegistrationForm({
+                selectedRegistrationFormKey,
+                registrationId: form.registrationId,
+              })}
               key={idx}
               user={user}
               registrationFields={registrationFields}
-              registrationId={form.id}
-              mode="edit"
-              event={event}
-              groupId={groupId}
-            />
-          ) : (
-            <RegisterForm
-              show={selectedRegistrationId === idx.toString()}
-              key={idx}
-              user={user}
-              registrationFields={registrationFields}
-              registrationId={idx.toString()}
-              mode="create"
+              registrationId={form.registrationId}
+              mode={form.mode}
               event={event}
               groupId={groupId}
             />
