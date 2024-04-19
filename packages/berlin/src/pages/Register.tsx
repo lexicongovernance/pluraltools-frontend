@@ -231,7 +231,7 @@ function RegisterForm(props: {
 
   const {
     register,
-    formState: { errors, isValid },
+    formState: { errors },
     control,
     handleSubmit,
     getValues,
@@ -356,9 +356,7 @@ function RegisterForm(props: {
           ))}
         </FlexColumn>
       </form>
-      <Button disabled={!isValid} onClick={handleSubmit(onSubmit)}>
-        Save
-      </Button>
+      <Button onClick={handleSubmit(onSubmit)}>Save</Button>
       <Body>
         Need more time? Feel free to come back to these questions later. The deadline is May 15th.
       </Body>
@@ -581,6 +579,7 @@ function SelectInput(props: {
       <Controller
         name={props.id}
         control={props.control}
+        rules={{ required: props.required ? 'Value is required' : false }}
         render={({ field }) => (
           <Select
             label={props.name}
@@ -588,11 +587,11 @@ function SelectInput(props: {
             required={!!props.required}
             options={props.options.map((option) => ({ id: option.id, name: option.value }))}
             disabled={props.disabled}
+            errors={props.errors[props.id] ? [props.errors[props.id]?.message ?? ''] : []}
             {...field}
           />
         )}
       />
-      {props.errors?.[props.id] && <Error>{props.errors?.[props.id]?.message}</Error>}
     </FlexColumn>
   );
 }
