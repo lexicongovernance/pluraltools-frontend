@@ -134,49 +134,51 @@ function Register() {
 
   return (
     <SafeArea>
-      <FlexColumn $gap="0.5rem">
-        {/* only show select when user has previously registered */}
-        {showRegistrationsSelect(registrations, groupId ? 'group' : 'user') && (
-          <>
-            <Label>Select Proposal</Label>
-            <Select
-              value={selectedRegistrationId ?? ''}
-              options={createRegistrationForms(registrations)}
-              placeholder="Select a Proposal"
-              onChange={(val) => {
-                setSelectedRegistrationId(
-                  registrations?.find((registration) => registration.id === val)?.id || val,
-                );
-              }}
+      <FlexColumn $gap="2rem">
+        <FlexColumn $gap="0.5rem">
+          {/* only show select when user has previously registered */}
+          {showRegistrationsSelect(registrations, groupId ? 'group' : 'user') && (
+            <>
+              <Label>Select Proposal</Label>
+              <Select
+                value={selectedRegistrationId ?? ''}
+                options={createRegistrationForms(registrations)}
+                placeholder="Select a Proposal"
+                onChange={(val) => {
+                  setSelectedRegistrationId(
+                    registrations?.find((registration) => registration.id === val)?.id || val,
+                  );
+                }}
+              />
+            </>
+          )}
+        </FlexColumn>
+        {createRegistrationForms(registrations).map((form, idx) => {
+          return form.mode === 'edit' ? (
+            <RegisterForm
+              show={selectedRegistrationId === form.id}
+              key={idx}
+              user={user}
+              registrationFields={registrationFields}
+              registrationId={form.id}
+              mode="edit"
+              event={event}
+              groupId={groupId}
             />
-          </>
-        )}
+          ) : (
+            <RegisterForm
+              show={selectedRegistrationId === idx.toString()}
+              key={idx}
+              user={user}
+              registrationFields={registrationFields}
+              registrationId={idx.toString()}
+              mode="create"
+              event={event}
+              groupId={groupId}
+            />
+          );
+        })}
       </FlexColumn>
-      {createRegistrationForms(registrations).map((form, idx) => {
-        return form.mode === 'edit' ? (
-          <RegisterForm
-            show={selectedRegistrationId === form.id}
-            key={idx}
-            user={user}
-            registrationFields={registrationFields}
-            registrationId={form.id}
-            mode="edit"
-            event={event}
-            groupId={groupId}
-          />
-        ) : (
-          <RegisterForm
-            show={selectedRegistrationId === idx.toString()}
-            key={idx}
-            user={user}
-            registrationFields={registrationFields}
-            registrationId={idx.toString()}
-            mode="create"
-            event={event}
-            groupId={groupId}
-          />
-        );
-      })}
     </SafeArea>
   );
 }
