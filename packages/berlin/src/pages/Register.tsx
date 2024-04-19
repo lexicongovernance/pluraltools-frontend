@@ -241,7 +241,7 @@ function RegisterForm(props: {
       () => getDefaultValues(props.registrationData),
       [props.registrationData],
     ),
-    mode: 'onBlur',
+    mode: 'all',
   });
 
   useEffect(() => {
