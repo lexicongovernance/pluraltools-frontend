@@ -178,25 +178,23 @@ function Register() {
   return (
     <SafeArea>
       <FlexColumn $gap="2rem">
-        <FlexColumn $gap="0.5rem">
-          {/* only show select when user has previously registered */}
-          {showRegistrationsSelect(registrations, groupId ? 'group' : 'user') && (
-            <>
-              <Label>Select Proposal</Label>
-              <Select
-                value={selectedRegistrationFormKey ?? ''}
-                options={createRegistrationForms(registrations).map((form) => ({
-                  id: form.key,
-                  name: form.name,
-                }))}
-                placeholder="Select a Proposal"
-                onChange={(val) => {
-                  setSelectedRegistrationFormKey(val);
-                }}
-              />
-            </>
-          )}
-        </FlexColumn>
+        {/* only show select when user has previously registered */}
+        {showRegistrationsSelect(registrations, groupId ? 'group' : 'user') && (
+          <FlexColumn $gap="0.5rem">
+            <Label>Select Proposal</Label>
+            <Select
+              value={selectedRegistrationFormKey ?? ''}
+              options={createRegistrationForms(registrations).map((form) => ({
+                id: form.key,
+                name: form.name,
+              }))}
+              placeholder="Select a Proposal"
+              onChange={(val) => {
+                setSelectedRegistrationFormKey(val);
+              }}
+            />
+          </FlexColumn>
+        )}
         {createRegistrationForms(registrations).map((form, idx) => {
           return (
             <RegisterForm
