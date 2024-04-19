@@ -11,5 +11,7 @@ export type GetRegistrationFieldsResponse = {
   required: boolean | null;
   fieldDisplayRank: number | null;
   characterLimit: number;
+  forGroup: boolean | null;
+  forUser: boolean | null;
   registrationFieldOptions: RegistrationFieldOption[];
 }[];

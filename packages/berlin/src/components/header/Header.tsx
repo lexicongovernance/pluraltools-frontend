@@ -10,7 +10,7 @@ import { useAppStore } from '../../store';
 import header from '../../data/header';
 
 // API
-import { logout } from 'api';
+import { fetchAlerts, logout } from 'api';
 
 // Hooks
 import useUser from '../../hooks/useUser';
@@ -63,6 +63,12 @@ function Header() {
     enabled: !!user,
   });
 
+  const { data: alerts } = useQuery({
+    queryKey: ['alerts'],
+    queryFn: () => fetchAlerts(),
+    enabled: !!user,
+  });
+
   const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState(false);
 
   return (
@@ -83,9 +89,23 @@ function Header() {
                   {registrationsData?.some(
                     (registration) => registration.status === 'APPROVED',
                   ) && (
-                    <NavButton to="/events" $color="secondary">
-                      Agenda
-                    </NavButton>
+                    <>
+                      {alerts &&
+                        alerts.length > 0 &&
+                        alerts?.map((alert) => {
+                          return (
+                            alert.link &&
+                            alert.title && (
+                              <NavButton to={alert.link} $color="secondary">
+                                {alert.title}
+                              </NavButton>
+                            )
+                          );
+                        })}
+                      <NavButton to="/events" $color="secondary">
+                        Agenda
+                      </NavButton>
+                    </>
                   )}
                   <NavButton to="/account" $color="secondary">
                     Account
@@ -114,9 +134,23 @@ function Header() {
                   {registrationsData?.some(
                     (registration) => registration.status === 'APPROVED',
                   ) && (
-                    <NavButton to="/events" $color="secondary">
-                      Agenda
-                    </NavButton>
+                    <>
+                      {alerts &&
+                        alerts.length > 0 &&
+                        alerts?.map((alert) => {
+                          return (
+                            alert.link &&
+                            alert.title && (
+                              <NavButton to={alert.link} $color="secondary">
+                                {alert.title}
+                              </NavButton>
+                            )
+                          );
+                        })}
+                      <NavButton to="/events" $color="secondary">
+                        Agenda
+                      </NavButton>
+                    </>
                   )}
                   <NavButton to="/account" $color="secondary">
                     Account

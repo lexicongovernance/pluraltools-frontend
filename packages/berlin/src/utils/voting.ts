@@ -4,8 +4,8 @@ import toast from 'react-hot-toast';
 
 export const handleVote = (
   optionId: string,
-  avaliableHearts: number,
-  setAvaliableHearts: (hearts: number) => void,
+  availableHearts: number,
+  setAvailableHearts: (hearts: number) => void,
   setLocalUserVotes: React.Dispatch<
     React.SetStateAction<
       | ResponseUserVotesType
@@ -16,7 +16,7 @@ export const handleVote = (
     >
   >,
 ) => {
-  if (avaliableHearts > 0) {
+  if (availableHearts > 0) {
     setLocalUserVotes((prevLocalUserVotes) => {
       const temp = prevLocalUserVotes.find((x) => x.optionId === optionId);
       if (!temp) {
@@ -30,14 +30,14 @@ export const handleVote = (
       });
       return updatedLocalVotes;
     });
-    setAvaliableHearts(Math.max(0, avaliableHearts - 1));
+    setAvailableHearts(Math.max(0, availableHearts - 1));
   }
 };
 
 export const handleUnvote = (
   optionId: string,
-  avaliableHearts: number,
-  setAvaliableHearts: (hearts: number) => void,
+  availableHearts: number,
+  setAvailableHearts: (hearts: number) => void,
   setLocalUserVotes: React.Dispatch<
     React.SetStateAction<
       | ResponseUserVotesType
@@ -60,7 +60,7 @@ export const handleUnvote = (
     return updatedLocalVotes;
   });
 
-  setAvaliableHearts(Math.min(20, avaliableHearts + 1));
+  setAvailableHearts(Math.min(20, availableHearts + 1));
 };
 
 export const handleSaveVotes = (

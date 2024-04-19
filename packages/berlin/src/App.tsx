@@ -6,7 +6,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { useAppStore } from './store';
 
 // API
-import { fetchEvents, fetchUserData, fetchCycle, fetchRegistration } from 'api';
+import { fetchEvents, fetchUserData, fetchCycle, fetchRegistrations } from 'api';
 
 // Pages
 import { default as BerlinLayout } from './layout/index.ts';
@@ -20,8 +20,10 @@ import Landing from './pages/Landing';
 import Onboarding from './pages/Onboarding';
 import Option from './pages/Option.tsx';
 import PassportPopupRedirect from './pages/Popup';
+import PublicGroupRegistration from './pages/PublicGroupRegistration.tsx';
 import Register from './pages/Register';
 import Results from './pages/Results.tsx';
+import SecretGroupRegistration from './pages/SecretGroupRegistration.tsx';
 
 /**
  * Redirects the user to the landing page if they are not logged in
@@ -112,19 +114,19 @@ async function redirectToOnlyOneEventLoader(queryClient: QueryClient) {
 
 /**
  * Redirects the user to the register page if they are not registered
- * Redirects the user to the holding page if they in DRAFT STATUS
+ * Redirects the user to the holding page if they don't have any approved registrations
  */
 async function redirectToEventHoldingOrRegister(queryClient: QueryClient, eventId?: string) {
-  const registration = await queryClient.fetchQuery({
-    queryKey: ['event', eventId, 'registration'],
-    queryFn: () => fetchRegistration(eventId || ''),
+  const registrations = await queryClient.fetchQuery({
+    queryKey: ['event', eventId, 'registrations'],
+    queryFn: () => fetchRegistrations(eventId || ''),
   });
 
-  if (!registration) {
+  if (!registrations || !registrations.length) {
     return redirect(`/events/${eventId}/register`);
   }
 
-  if (registration?.status !== 'APPROVED') {
+  if (!registrations.some((registration) => registration.status === 'APPROVED')) {
     return redirect(`/events/${eventId}/holding`);
   }
 
@@ -166,6 +168,14 @@ const router = (queryClient: QueryClient) =>
             {
               path: '/account',
               Component: Account,
+            },
+            {
+              path: '/secret-groups',
+              Component: SecretGroupRegistration,
+            },
+            {
+              path: '/public-groups',
+              Component: PublicGroupRegistration,
             },
             {
               loader: () => redirectToAccount(queryClient),

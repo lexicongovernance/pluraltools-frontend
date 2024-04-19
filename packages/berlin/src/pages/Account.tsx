@@ -68,8 +68,8 @@ function Account() {
   const { user, isLoading: userIsLoading } = useUser();
 
   const { data: groups } = useQuery({
-    queryKey: ['groups'],
-    queryFn: fetchGroups,
+    queryKey: ['group-categories', 'affiliation', 'groups'],
+    queryFn: () => fetchGroups({ groupCategoryName: 'affiliation' }),
     enabled: !!user?.id,
   });
 
