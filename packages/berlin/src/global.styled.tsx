@@ -14,6 +14,7 @@ export const GlobalStyle = createGlobalStyle`
   --color-white: ${(props) => props.theme.backgroundColor};
   --color-black: ${(props) => props.theme.textColor};
   --color-gray:  ${(props) => props.theme.gray};
+  --color-darkgray:  ${(props) => props.theme.darkGray};
   --color-error: #DB4545;
   --font-family-title: 'EB Garamond', serif;
   --font-family-body: 'EB Garamond', serif;
@@ -69,11 +70,13 @@ const ThemedApp = ({ children }: ThemedAppProps) => {
       backgroundColor: '#ffffff',
       textColor: '#222222',
       gray: '#bbbbbb',
+      darkGray: '#cccccc',
     },
     dark: {
       backgroundColor: '#222222',
       textColor: '#ffffff',
       gray: '#777777',
+      darkGray: '#888888',
     },
   };
 
