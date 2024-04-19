@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { z } from 'zod';
+import ContentLoader from 'react-content-loader';
 import toast from 'react-hot-toast';
 
 // API
@@ -225,7 +226,7 @@ function RegisterForm(props: {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { data: registrationData } = useQuery({
+  const { data: registrationData, isLoading } = useQuery({
     queryKey: ['registrations', props.registrationId, 'data'],
     queryFn: () => fetchRegistrationData(props.registrationId || ''),
     enabled: !!props.registrationId,
@@ -332,10 +333,27 @@ function RegisterForm(props: {
     }
   };
 
+  if (isLoading) {
+    return (
+      <ContentLoader
+        speed={1.75}
+        width={'100%'}
+        height={80}
+        viewBox="0 0 100% 80"
+        backgroundColor="var(--color-gray)"
+        foregroundColor="var(--color-darkgray)"
+        {...props}
+      >
+        <rect x="0" y="0" rx="0" ry="0" width="100" height="22" />
+        <rect x="0" y="30" rx="4" ry="4" width="100%" height="50" />
+      </ContentLoader>
+    );
+  }
+
   return props.show ? (
     <FlexColumn>
       <Subtitle>{props.event?.registrationDescription}</Subtitle>
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      <Form>
         {sortedRegistrationFields?.map((regField) => (
           <FormField
             key={`${props.registrationId}-${regField.id}`}
@@ -353,7 +371,7 @@ function RegisterForm(props: {
           />
         ))}
       </Form>
-      <Button type="submit" disabled={isSubmitting}>
+      <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>
         Save
       </Button>
       <Body>
