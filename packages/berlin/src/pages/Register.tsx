@@ -314,7 +314,7 @@ function RegisterForm(props: {
           status: 'DRAFT',
           registrationData: Object.entries(values).map(([key, value]) => ({
             registrationFieldId: key,
-            value: value,
+            value: value || '',
           })),
         },
       });
@@ -326,7 +326,7 @@ function RegisterForm(props: {
           status: 'DRAFT',
           registrationData: Object.entries(values).map(([key, value]) => ({
             registrationFieldId: key,
-            value,
+            value: value || '',
           })),
         },
       });
@@ -340,7 +340,7 @@ function RegisterForm(props: {
         <FlexColumn $gap="0.75rem">
           {sortedRegistrationFields?.map((regField) => (
             <FormField
-              key={regField.id}
+              key={`${props.registrationId}-${regField.id}`}
               disabled={false}
               errors={errors}
               required={regField.required}
@@ -410,7 +410,6 @@ function FormField({
         <SelectInput
           id={id}
           name={name}
-          register={register}
           options={options}
           required={required}
           disabled={disabled}
@@ -570,7 +569,6 @@ function SelectInput(props: {
   required: boolean | null;
   disabled: boolean;
   options: RegistrationFieldOption[];
-  register: UseFormRegister<Record<string, string>>;
   errors: FieldErrors<Record<string, string>>;
   control: Control<Record<string, string>>;
 }) {
@@ -586,9 +584,10 @@ function SelectInput(props: {
             placeholder="Choose a value"
             required={!!props.required}
             options={props.options.map((option) => ({ id: option.id, name: option.value }))}
-            disabled={props.disabled}
             errors={props.errors[props.id] ? [props.errors[props.id]?.message ?? ''] : []}
-            {...field}
+            onBlur={field.onBlur}
+            onChange={(val) => field.onChange(val)}
+            value={field.value}
           />
         )}
       />
