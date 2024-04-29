@@ -57,6 +57,7 @@ function Option() {
     queryKey: ['comments', optionId],
     queryFn: () => fetchComments({ optionId: optionId || '' }),
     enabled: !!optionId,
+    refetchInterval: 5000, // Poll every 5 seconds
   });
 
   const sortedComments = comments?.sort((a, b) => {
