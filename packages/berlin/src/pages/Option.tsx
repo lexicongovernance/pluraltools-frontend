@@ -41,6 +41,7 @@ function Option() {
   >([]);
   const [localOptionHearts, setLocalOptionHearts] = useState(0);
   const [comment, setComment] = useState('');
+  const [sortOrder, setSortOrder] = useState('desc'); // 'asc' for ascending, 'desc' for descending
 
   const { data: option, isLoading } = useQuery({
     queryKey: ['option', optionId],
@@ -59,11 +60,15 @@ function Option() {
     enabled: !!optionId,
   });
 
-  const sortedComments = comments?.sort((a, b) => {
-    const dateA = new Date(a.createdAt).getTime();
-    const dateB = new Date(b.createdAt).getTime();
-    return dateB - dateA; // Sort by newest first
-  });
+  const sortedComments = useMemo(() => {
+    if (!comments) return [];
+
+    return comments.sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+    });
+  }, [comments, sortOrder]);
 
   useEffect(() => {
     if (optionId) {
@@ -172,7 +177,20 @@ function Option() {
       </Form>
       {sortedComments && (
         <>
-          <Title>Total comments ({sortedComments.length})</Title>
+          <FlexRow $justify="space-between">
+            <Title>Total comments ({sortedComments.length})</Title>
+            <IconButton
+              onClick={() => setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'))}
+              icon={{
+                src: `/icons/filter-${theme}.svg`,
+                alt: 'Filter icon',
+              }}
+              $padding={4}
+              $color="secondary"
+              $height={28}
+              $width={28}
+            />
+          </FlexRow>
           {sortedComments.map((comment) => (
             <CommentCard key={comment.id} comment={comment} />
           ))}
