@@ -190,7 +190,7 @@ function AccountForm({
   const {
     control,
     register,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting },
     handleSubmit,
     setValue,
     reset,
@@ -474,7 +474,9 @@ function AccountForm({
               icon={{ src: `/icons/add-${theme}.svg`, alt: 'Add icon' }}
             />
           </FlexColumn>
-          <Button type="submit">Submit</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            Submit
+          </Button>
         </FlexColumn>
       </form>
     </FlexColumn>

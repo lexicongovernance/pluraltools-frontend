@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { z } from 'zod';
+import ContentLoader from 'react-content-loader';
 import toast from 'react-hot-toast';
 
 // API
@@ -33,14 +34,15 @@ import { DBEvent } from '../types/DBEventType';
 import { Body } from '../components/typography/Body.styled';
 import { Error } from '../components/typography/Error.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
+import { Form } from '../components/containers/Form.styled';
 import { SafeArea } from '../layout/Layout.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import Button from '../components/button';
 import CharacterCounter from '../components/typography/CharacterCount.styled';
 import Input from '../components/input';
+import Label from '../components/typography/Label';
 import Select from '../components/select';
 import Textarea from '../components/textarea';
-import Label from '../components/typography/Label';
 
 function Register() {
   const { user, isLoading } = useUser();
@@ -100,7 +102,7 @@ function Register() {
   };
 
   const createRegistrationForms = (
-    registrations: GetRegistrationResponseType[] | undefined | null,
+    registrations: GetRegistrationsResponseType | undefined | null,
   ) => {
     // max 5 registrations
     // when there are no registrations, return an array of 5 empty objects with id 'empty'
@@ -139,7 +141,7 @@ function Register() {
     registrations: GetRegistrationsResponseType | null | undefined,
     client: 'user' | 'group',
   ): boolean => {
-    if (client == 'group') {
+    if (client === 'group') {
       return false;
     }
     // only show select when user has previously registered
@@ -162,35 +164,37 @@ function Register() {
   };
 
   if (isLoading) {
-    return <h1>Loading...</h1>;
+    return <Subtitle>Loading...</Subtitle>;
   }
 
   if (groupCategoryParam && !groupId) {
-    return <h1>User is not authorized to register</h1>;
+    return (
+      <Subtitle>
+        User must be part of <i>{groupCategoryParam}</i> in order to register.
+      </Subtitle>
+    );
   }
 
   return (
     <SafeArea>
-      <FlexColumn $gap="2rem">
-        <FlexColumn $gap="0.5rem">
-          {/* only show select when user has previously registered */}
-          {showRegistrationsSelect(registrations, groupId ? 'group' : 'user') && (
-            <>
-              <Label>Select Proposal</Label>
-              <Select
-                value={selectedRegistrationFormKey ?? ''}
-                options={createRegistrationForms(registrations).map((form) => ({
-                  id: form.key,
-                  name: form.name,
-                }))}
-                placeholder="Select a Proposal"
-                onChange={(val) => {
-                  setSelectedRegistrationFormKey(val);
-                }}
-              />
-            </>
-          )}
-        </FlexColumn>
+      <FlexColumn $gap="1.5rem">
+        {/* only show select when user has previously registered */}
+        {showRegistrationsSelect(registrations, groupId ? 'group' : 'user') && (
+          <FlexColumn $gap="0.5rem">
+            <Label>Select Proposal</Label>
+            <Select
+              value={selectedRegistrationFormKey ?? ''}
+              options={createRegistrationForms(registrations).map((form) => ({
+                id: form.key,
+                name: form.name,
+              }))}
+              placeholder="Select a Proposal"
+              onChange={(val) => {
+                setSelectedRegistrationFormKey(val);
+              }}
+            />
+          </FlexColumn>
+        )}
         {createRegistrationForms(registrations).map((form, idx) => {
           return (
             <RegisterForm
@@ -252,7 +256,7 @@ function RegisterForm(props: {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { data: registrationData } = useQuery({
+  const { data: registrationData, isLoading } = useQuery({
     queryKey: ['registrations', props.registrationId, 'data'],
     queryFn: () => fetchRegistrationData(props.registrationId || ''),
     enabled: !!props.registrationId,
@@ -260,7 +264,7 @@ function RegisterForm(props: {
 
   const {
     register,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     control,
     handleSubmit,
     getValues,
@@ -359,30 +363,66 @@ function RegisterForm(props: {
     }
   };
 
+  if (isLoading) {
+    return (
+      props.show && (
+        <>
+          {sortedRegistrationFields?.map((_, idx) => (
+            <ContentLoader
+              key={idx}
+              speed={1.75}
+              width={'100%'}
+              height={80}
+              viewBox="0 0 100% 80"
+              backgroundColor="var(--color-gray)"
+              foregroundColor="var(--color-darkgray)"
+              {...props}
+            >
+              <rect x="0" y="0" rx="0" ry="0" width="100" height="22" />
+              <rect x="0" y="30" rx="4" ry="4" width="100%" height="50" />
+            </ContentLoader>
+          ))}
+          <ContentLoader
+            speed={1.75}
+            width={'100%'}
+            height={80}
+            viewBox="0 0 100% 80"
+            backgroundColor="var(--color-gray)"
+            foregroundColor="var(--color-darkgray)"
+            {...props}
+          >
+            <rect x="0" y="0" rx="8" ry="8" width="72" height="36" />
+            <rect x="0" y="52" rx="0" ry="0" width="100%" height="28" />
+          </ContentLoader>
+        </>
+      )
+    );
+  }
+
   return props.show ? (
     <FlexColumn>
       <Subtitle>{props.event?.registrationDescription}</Subtitle>
-      <form style={{ width: '100%' }}>
-        <FlexColumn $gap="0.75rem">
-          {sortedRegistrationFields?.map((regField) => (
-            <FormField
-              key={`${props.registrationId}-${regField.id}`}
-              disabled={false}
-              errors={errors}
-              required={regField.required}
-              id={regField.id}
-              name={regField.name}
-              characterLimit={regField.characterLimit}
-              options={regField.registrationFieldOptions}
-              type={regField.type}
-              register={register}
-              control={control}
-              value={getValues()[regField.id] ?? ''} // Current input value
-            />
-          ))}
-        </FlexColumn>
-      </form>
-      <Button onClick={handleSubmit(onSubmit)}>Save</Button>
+      <Form>
+        {sortedRegistrationFields?.map((regField) => (
+          <FormField
+            key={`${props.registrationId}-${regField.id}`}
+            disabled={false}
+            errors={errors}
+            required={regField.required}
+            id={regField.id}
+            name={regField.name}
+            characterLimit={regField.characterLimit}
+            options={regField.registrationFieldOptions}
+            type={regField.type}
+            register={register}
+            control={control}
+            value={getValues()[regField.id] ?? ''} // Current input value
+          />
+        ))}
+      </Form>
+      <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>
+        Save
+      </Button>
       <Body>
         Need more time? Feel free to come back to these questions later. The deadline is May 15th.
       </Body>

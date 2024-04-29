@@ -12,6 +12,14 @@ export const StyledButton = styled.button<StyledButtonProps>`
   padding-inline: 1rem;
   text-transform: uppercase;
 
+  &:disabled {
+    background-color: var(--color-gray);
+    cursor: not-allowed;
+    &:hover {
+      opacity: 1;
+    }
+  }
+
   ${(props) =>
     props.$color === 'primary' &&
     css`
