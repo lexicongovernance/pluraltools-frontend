@@ -34,6 +34,14 @@ export const StyledButton = styled.button<StyledButtonProps>`
       color: var(--color-black);
     `}
 
+  ${(props) =>
+    props.$variant === 'outlined' &&
+    css`
+      background-color: var(--color-white);
+      border: 1px solid var(--color-black);
+      color: var(--color-black);
+    `}
+
     ${(props) =>
     props.$variant === 'link' &&
     css`
