@@ -10,7 +10,7 @@ import { useAppStore } from '../../store';
 import header from '../../data/header';
 
 // API
-import { fetchAlerts, logout } from 'api';
+import { fetchAlerts, fetchEvents, fetchUserRegistrations, logout } from 'api';
 
 // Hooks
 import useUser from '../../hooks/useUser';
@@ -38,7 +38,6 @@ import {
   LogoTextContainer,
   ThemeButton,
 } from './Header.styled';
-import fetchUserRegistrations from 'api/src/fetchUserRegistrations';
 
 function Header() {
   const queryClient = useQueryClient();
@@ -69,6 +68,12 @@ function Header() {
     enabled: !!user,
   });
 
+  const { data: events } = useQuery({
+    queryKey: ['events'],
+    queryFn: () => fetchEvents(),
+    enabled: !!user,
+  });
+
   const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState(false);
 
   return (
@@ -96,13 +101,18 @@ function Header() {
                           return (
                             alert.link &&
                             alert.title && (
-                              <NavButton to={alert.link} $color="secondary">
+                              <NavButton
+                                key={alert.title + 1}
+                                to={alert.link}
+                                $color="secondary"
+                                end
+                              >
                                 {alert.title}
                               </NavButton>
                             )
                           );
                         })}
-                      <NavButton to="/events" $color="secondary">
+                      <NavButton to={`/events/${events?.[0].id}/cycles`} $color="secondary">
                         Agenda
                       </NavButton>
                     </>
@@ -141,13 +151,13 @@ function Header() {
                           return (
                             alert.link &&
                             alert.title && (
-                              <NavButton to={alert.link} $color="secondary">
+                              <NavButton key={alert.title + 1} to={alert.link} $color="secondary">
                                 {alert.title}
                               </NavButton>
                             )
                           );
                         })}
-                      <NavButton to="/events" $color="secondary">
+                      <NavButton to={`/events/${events?.[0].id}/cycles`} $color="secondary">
                         Agenda
                       </NavButton>
                     </>
