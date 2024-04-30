@@ -29,6 +29,7 @@ import Button from '../components/button';
 import CommentCard from '../components/comment-card';
 import IconButton from '../components/icon-button';
 import Textarea from '../components/textarea';
+import { Bold } from '../components/typography/Bold.styled';
 
 function Option() {
   const theme = useAppStore((state) => state.theme);
@@ -175,21 +176,24 @@ function Option() {
         />
         <Button onClick={handlePostComment}>Comment</Button>
       </Form>
-      {sortedComments && (
+      {sortedComments.length > 0 && (
         <>
           <FlexRow $justify="space-between">
             <Title>Total comments ({sortedComments.length})</Title>
-            <IconButton
-              onClick={() => setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'))}
-              icon={{
-                src: `/icons/filter-${theme}.svg`,
-                alt: 'Filter icon',
-              }}
-              $padding={4}
-              $color="secondary"
-              $height={28}
-              $width={28}
-            />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <Bold>Sort</Bold>
+              <IconButton
+                onClick={() => setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'))}
+                icon={{
+                  src: `/icons/sort-${theme}.svg`,
+                  alt: 'Sort icon',
+                }}
+                $padding={4}
+                $color="secondary"
+                $height={24}
+                $width={24}
+              />
+            </div>
           </FlexRow>
           {sortedComments.map((comment) => (
             <CommentCard key={comment.id} comment={comment} />
