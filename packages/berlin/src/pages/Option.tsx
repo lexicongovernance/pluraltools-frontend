@@ -29,6 +29,7 @@ import Button from '../components/button';
 import CommentCard from '../components/comment-card';
 import IconButton from '../components/icon-button';
 import Textarea from '../components/textarea';
+import { Bold } from '../components/typography/Bold.styled';
 
 function Option() {
   const theme = useAppStore((state) => state.theme);
@@ -41,6 +42,7 @@ function Option() {
   >([]);
   const [localOptionHearts, setLocalOptionHearts] = useState(0);
   const [comment, setComment] = useState('');
+  const [sortOrder, setSortOrder] = useState('desc'); // 'asc' for ascending, 'desc' for descending
 
   const { data: option, isLoading } = useQuery({
     queryKey: ['option', optionId],
@@ -60,11 +62,15 @@ function Option() {
     refetchInterval: 5000, // Poll every 5 seconds
   });
 
-  const sortedComments = comments?.sort((a, b) => {
-    const dateA = new Date(a.createdAt).getTime();
-    const dateB = new Date(b.createdAt).getTime();
-    return dateB - dateA; // Sort by newest first
-  });
+  const sortedComments = useMemo(() => {
+    if (!comments) return [];
+
+    return comments.sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+    });
+  }, [comments, sortOrder]);
 
   useEffect(() => {
     if (optionId) {
@@ -171,9 +177,25 @@ function Option() {
         />
         <Button onClick={handlePostComment}>Comment</Button>
       </Form>
-      {sortedComments && (
+      {sortedComments.length > 0 && (
         <>
-          <Title>Total comments ({sortedComments.length})</Title>
+          <FlexRow $justify="space-between">
+            <Title>Total comments ({sortedComments.length})</Title>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <Bold>Sort</Bold>
+              <IconButton
+                onClick={() => setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'))}
+                icon={{
+                  src: `/icons/sort-${theme}.svg`,
+                  alt: 'Sort icon',
+                }}
+                $padding={4}
+                $color="secondary"
+                $height={24}
+                $width={24}
+              />
+            </div>
+          </FlexRow>
           {sortedComments.map((comment) => (
             <CommentCard key={comment.id} comment={comment} />
           ))}
