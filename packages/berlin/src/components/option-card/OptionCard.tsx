@@ -70,6 +70,7 @@ function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
                 onClick={onUnvote}
                 $width={16}
                 $height={16}
+                disabled={numOfVotes === 0}
               />
             </FlexColumn>
             <Body>{numOfVotes}</Body>
