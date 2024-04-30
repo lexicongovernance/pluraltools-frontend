@@ -50,12 +50,21 @@ export const StyledButton = styled.button<StyledButtonProps>`
     ${(props) =>
     props.$variant === 'text' &&
     css`
-      background-color: none;
+      background-color: transparent;
       color: var(--color-black);
       font-family: inherit;
       font-size: inherit;
       font-weight: inherit;
       text-transform: inherit;
       padding: 0;
+
+      &:disabled {
+        background-color: transparent;
+        user-select: none;
+        cursor: pointer;
+        &:hover {
+          opacity: 1;
+        }
+      }
     `}
 `;
