@@ -18,7 +18,7 @@ import Events from './pages/Events.tsx';
 import Holding from './pages/Holding';
 import Landing from './pages/Landing';
 import Onboarding from './pages/Onboarding';
-import Option from './pages/Option.tsx';
+import Comments from './pages/Comments.tsx';
 import PassportPopupRedirect from './pages/Popup';
 import PublicGroupRegistration from './pages/PublicGroupRegistration.tsx';
 import Register from './pages/Register';
@@ -215,7 +215,7 @@ const router = (queryClient: QueryClient) =>
                     },
                     {
                       path: ':cycleId/options/:optionId',
-                      Component: Option,
+                      Component: Comments,
                     },
                   ],
                 },

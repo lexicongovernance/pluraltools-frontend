@@ -31,7 +31,7 @@ import IconButton from '../components/icon-button';
 import Textarea from '../components/textarea';
 import { Bold } from '../components/typography/Bold.styled';
 
-function Option() {
+function Comments() {
   const theme = useAppStore((state) => state.theme);
   const queryClient = useQueryClient();
   const { cycleId, optionId } = useParams();
@@ -205,4 +205,4 @@ function Option() {
   );
 }
 
-export default Option;
+export default Comments;
