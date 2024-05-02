@@ -42,7 +42,7 @@ function Cycle() {
   const { user } = useUser();
   const { eventId, cycleId } = useParams();
   const { data: cycle } = useQuery({
-    queryKey: ['cycle', cycleId],
+    queryKey: ['cycles', cycleId],
     queryFn: () => fetchCycle(cycleId || ''),
     enabled: !!cycleId,
   });
@@ -111,7 +111,7 @@ function Cycle() {
       } else if (body?.data.length) {
         queryClient.invalidateQueries({ queryKey: ['votes', cycleId] });
         // this is to update the plural scores in each option
-        queryClient.invalidateQueries({ queryKey: ['cycle', cycleId] });
+        queryClient.invalidateQueries({ queryKey: ['cycles', cycleId] });
         toast.success('Votes saved successfully!');
       }
     },
