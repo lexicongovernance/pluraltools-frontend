@@ -42,7 +42,7 @@ function Cycle() {
   const { user } = useUser();
   const { eventId, cycleId } = useParams();
   const { data: cycle } = useQuery({
-    queryKey: ['cycles', cycleId],
+    queryKey: ['cycle', cycleId],
     queryFn: () => fetchCycle(cycleId || ''),
     enabled: !!cycleId,
   });
@@ -111,7 +111,7 @@ function Cycle() {
       } else if (body?.data.length) {
         queryClient.invalidateQueries({ queryKey: ['votes', cycleId] });
         // this is to update the plural scores in each option
-        queryClient.invalidateQueries({ queryKey: ['cycles', cycleId] });
+        queryClient.invalidateQueries({ queryKey: ['cycle', cycleId] });
         toast.success('Votes saved successfully!');
       }
     },
@@ -126,7 +126,11 @@ function Cycle() {
   };
 
   const handleSaveVotesWrapper = () => {
-    handleSaveVotes(userVotes, localUserVotes, mutateVotes);
+    if (cycle?.status === 'OPEN') {
+      handleSaveVotes(userVotes, localUserVotes, mutateVotes);
+    } else {
+      toast.error('Cycle is not open');
+    }
   };
 
   const currentCycle = cycle?.forumQuestions[0];
