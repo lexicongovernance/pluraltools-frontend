@@ -13,10 +13,10 @@ export const StyledButton = styled.button<StyledButtonProps>`
   text-transform: uppercase;
 
   &:disabled {
-    background-color: var(--color-gray);
+    opacity: 0.5;
     cursor: not-allowed;
     &:hover {
-      opacity: 1;
+      opacity: 0.5;
     }
   }
 
@@ -69,9 +69,10 @@ export const StyledButton = styled.button<StyledButtonProps>`
       &:disabled {
         background-color: transparent;
         user-select: none;
-        cursor: pointer;
+        opacity: 0.5;
+        cursor: default;
         &:hover {
-          opacity: 1;
+          opacity: 0.5;
         }
       }
     `}

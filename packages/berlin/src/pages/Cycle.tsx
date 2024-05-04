@@ -126,7 +126,11 @@ function Cycle() {
   };
 
   const handleSaveVotesWrapper = () => {
-    handleSaveVotes(userVotes, localUserVotes, mutateVotes);
+    if (cycle?.status === 'OPEN') {
+      handleSaveVotes(userVotes, localUserVotes, mutateVotes);
+    } else {
+      toast.error('Cycle is not open');
+    }
   };
 
   const currentCycle = cycle?.forumQuestions[0];
