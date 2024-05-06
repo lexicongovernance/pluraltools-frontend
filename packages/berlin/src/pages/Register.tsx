@@ -649,7 +649,7 @@ function SelectInput(props: {
             label={props.name}
             placeholder="Choose a value"
             required={!!props.required}
-            options={props.options.map((option) => ({ id: option.id, name: option.value }))}
+            options={props.options.map((option) => ({ id: option.value, name: option.value }))}
             errors={props.errors[props.id] ? [props.errors[props.id]?.message ?? ''] : []}
             onBlur={field.onBlur}
             onChange={(val) => field.onChange(val)}
