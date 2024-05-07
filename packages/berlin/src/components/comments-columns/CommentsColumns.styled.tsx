@@ -1,53 +1,30 @@
 import styled from 'styled-components';
-import { FlexRow } from '../containers/FlexRow.styled';
+import { Grid } from '../containers/Grid.styled';
+import { Body } from '../typography/Body.styled';
 
-export const Card = styled(FlexRow)`
+export const Card = styled(Grid)`
   border-bottom: 2px solid var(--color-black);
-  gap: 0;
-  width: 100%;
+  padding: 1.5rem;
+  grid-template-columns: minmax(200px, 600px) minmax(100px, 150px) 56px;
+
+  @media (min-width: 600px) {
+    grid-template-columns: minmax(200px, 600px) minmax(100px, 150px) minmax(100px, 150px) 56px;
+  }
 `;
 
-export const Comment = styled(FlexRow)`
-  flex: 1;
+export const Comment = styled(Body)`
   font-weight: bold;
-  min-width: 11rem;
-  padding: 1.5rem;
-  p {
-    cursor: pointer;
-  }
 `;
 
-export const Author = styled(FlexRow)`
+export const Author = styled(Body)`
+  font-weight: bold;
+`;
+export const Date = styled(Body)`
+  font-weight: bold;
   display: none;
   @media (min-width: 600px) {
     display: flex;
-    font-weight: bold;
-    max-width: 10rem;
-    min-width: 8rem;
-    padding: 1.5rem;
-
-    p {
-      cursor: pointer;
-    }
-  }
-`;
-export const Date = styled(FlexRow)`
-  display: none;
-  @media (min-width: 600px) {
-    display: flex;
-    font-weight: bold;
-    max-width: 10rem;
-    min-width: 8rem;
-    padding: 1.5rem;
-
-    p {
-      cursor: pointer;
-    }
   }
 `;
 
-export const Likes = styled(FlexRow)`
-  gap: 0.5rem;
-  max-width: 5rem;
-  padding: 1.5rem;
-`;
+export const Likes = styled(Body)``;

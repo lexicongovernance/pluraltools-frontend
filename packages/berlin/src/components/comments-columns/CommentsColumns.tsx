@@ -1,30 +1,12 @@
-import IconButton from '../icon-button';
-import { Body } from '../typography/Body.styled';
 import { Author, Card, Comment, Date, Likes } from './CommentsColumns.styled';
 
-type CycleColumnsProps = {
-  onColumnClick: (column: string) => void;
-};
-
-function CycleColumns({ onColumnClick }: CycleColumnsProps) {
+function CycleColumns() {
   return (
-    <Card>
-      <Comment>
-        <Body>Comment</Body>
-      </Comment>
-      <Author onClick={() => onColumnClick('author')}>
-        <Body>Author</Body>
-      </Author>
-      <Date>
-        <Body>Date</Body>
-      </Date>
-      <Likes onClick={() => onColumnClick('likes')}>
-        <IconButton
-          $padding={0}
-          $color="secondary"
-          icon={{ src: `/icons/thumb-up-active.svg`, alt: 'Thumbs up icon' }}
-        />
-      </Likes>
+    <Card $columns={4}>
+      <Comment>Comment</Comment>
+      <Author>Author</Author>
+      <Date>Date</Date>
+      <Likes>Likes</Likes>
     </Card>
   );
 }
