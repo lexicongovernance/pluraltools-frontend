@@ -25,7 +25,6 @@ import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
 import { Form } from '../components/containers/Form.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
-import { Title } from '../components/typography/Title.styled';
 import BackButton from '../components/back-button';
 import Button from '../components/button';
 import CommentCard from '../components/comment-card';
@@ -183,7 +182,7 @@ function Comments() {
       {sortedComments.length > 0 && (
         <>
           <FlexRow $justify="space-between">
-            <Title>Total comments ({sortedComments.length})</Title>
+            <Subtitle>Total comments ({sortedComments.length})</Subtitle>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
               <Bold>Sort</Bold>
               <IconButton
