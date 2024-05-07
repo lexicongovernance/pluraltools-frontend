@@ -13,14 +13,13 @@ import useUser from '../../hooks/useUser';
 import { useAppStore } from '../../store';
 
 // Components
-import { Body } from '../typography/Body.styled';
 import { FlexRow } from '../containers/FlexRow.styled';
 import Button from '../button';
 import Dialog from '../dialog';
 import IconButton from '../icon-button';
 
 // Styled Components
-import { Card, FormattedDate, Username } from './CommentCard.styled';
+import { Author, Card, Comment, FormattedDate } from './CommentCard.styled';
 
 type CommentCardProps = {
   comment: GetCommentsResponse[number];
@@ -102,9 +101,34 @@ function CommentCard({ comment }: CommentCardProps) {
   };
 
   return (
-    <Card key={comment.id}>
-      <FlexRow $justify="space-between">
-        <Username>{comment.user?.username}</Username>
+    <Card $columns={4}>
+      <FlexRow>
+        <Comment>{comment.value}</Comment>
+      </FlexRow>
+      <Author>@{comment.user?.username}</Author>
+      <FormattedDate>{formattedDate}</FormattedDate>
+      <FlexRow
+        $gap="0.5rem"
+        $align="center"
+        $justify="flex-end"
+        onClick={handleLikeClick}
+        style={{ userSelect: 'none' }}
+      >
+        <IconButton
+          icon={{
+            src: isCommentLiked ? `/icons/thumb-up-active.svg` : `/icons/thumb-up-${theme}.svg`,
+            alt: 'Thumb up icon',
+          }}
+          $padding={4}
+          $color="secondary"
+          $height={20}
+          $width={20}
+        />
+        <Button $variant="text" $color="secondary">
+          ({commentLikes?.length})
+        </Button>
+      </FlexRow>
+      {comment.user?.username === user?.username && (
         <Dialog
           trigger={
             <IconButton
@@ -120,25 +144,7 @@ function CommentCard({ comment }: CommentCardProps) {
           onActionClick={handleTrashClick}
           actionButtonText="Delete comment"
         />
-      </FlexRow>
-      <FormattedDate>{formattedDate}</FormattedDate>
-      <Body>{comment.value}</Body>
-      <FlexRow $gap="0.5rem" $align="center" $justify="flex-end">
-        <IconButton
-          onClick={handleLikeClick}
-          icon={{
-            src: isCommentLiked ? `/icons/thumb-up-active.svg` : `/icons/thumb-up-${theme}.svg`,
-            alt: 'Thumb up icon',
-          }}
-          $padding={4}
-          $color="secondary"
-          $height={20}
-          $width={20}
-        />
-        <Button $variant="text" $color="secondary" disabled>
-          ({commentLikes?.length})
-        </Button>
-      </FlexRow>
+      )}
     </Card>
   );
 }

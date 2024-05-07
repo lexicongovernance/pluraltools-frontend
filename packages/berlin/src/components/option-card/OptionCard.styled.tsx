@@ -39,7 +39,7 @@ export const Affiliation = styled(FlexRow)`
   }
 `;
 
-export const Hearts = styled(FlexRow)`
+export const Votes = styled(FlexRow)`
   gap: 0.5rem;
   max-width: 5rem;
   padding: 1.5rem;

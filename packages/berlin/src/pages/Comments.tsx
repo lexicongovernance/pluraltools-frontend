@@ -20,18 +20,19 @@ import { ResponseUserVotesType } from '../types/CycleType';
 import { useAppStore } from '../store';
 
 // Components
+import { Bold } from '../components/typography/Bold.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
 import { Form } from '../components/containers/Form.styled';
-import { Title } from '../components/typography/Title.styled';
+import { Subtitle } from '../components/typography/Subtitle.styled';
 import BackButton from '../components/back-button';
 import Button from '../components/button';
 import CommentCard from '../components/comment-card';
+import CommentsColumns from '../components/comments-columns';
 import IconButton from '../components/icon-button';
 import Textarea from '../components/textarea';
-import { Bold } from '../components/typography/Bold.styled';
 
-function Option() {
+function Comments() {
   const theme = useAppStore((state) => state.theme);
   const queryClient = useQueryClient();
   const { cycleId, optionId } = useParams();
@@ -140,32 +141,33 @@ function Option() {
   return (
     <FlexColumn $gap="2rem">
       <BackButton />
-      <Title>{option?.optionTitle}</Title>
-      <FlexRow $gap="0.25rem" $wrap>
-        {localOptionHearts > 0 ? (
-          Array.from({ length: localOptionHearts }).map((_, id) => (
-            <img key={id} src="/icons/heart-full.svg" height={24} width={24} alt="Full Heart" />
-          ))
-        ) : (
-          <img src="/icons/heart-empty.svg" height={24} width={24} alt="Empty Heart" />
-        )}
+      <FlexRow $align="center">
+        <FlexRow style={{ maxWidth: '4rem' }}>
+          <FlexColumn $gap="-4px" style={{ maxWidth: '1rem' }}>
+            <IconButton
+              $padding={0}
+              $color="secondary"
+              icon={{ src: `/icons/upvote-${theme}.svg`, alt: 'Upvote arrow' }}
+              onClick={() => handleVoteWrapper(option?.id ?? '')}
+              $width={16}
+              $height={16}
+              disabled={availableHearts === 0}
+            />
+            <IconButton
+              $padding={0}
+              $color="secondary"
+              icon={{ src: `/icons/downvote-${theme}.svg`, alt: 'Downvote arrow' }}
+              onClick={() => handleUnvoteWrapper(option?.id ?? '')}
+              $width={16}
+              $height={16}
+              disabled={localOptionHearts === 0}
+            />
+          </FlexColumn>
+          <Subtitle>{localOptionHearts}</Subtitle>
+        </FlexRow>
+        <Subtitle>{option?.optionTitle}</Subtitle>
       </FlexRow>
-      <FlexRow>
-        <IconButton
-          onClick={() => handleUnvoteWrapper(option?.id ?? '')}
-          disabled={localOptionHearts === 0}
-          $padding={6}
-          $color="secondary"
-          icon={{ src: `/icons/unvote-${theme}.svg`, alt: 'Unvote icon' }}
-        />
-        <IconButton
-          onClick={() => handleVoteWrapper(option?.id ?? '')}
-          disabled={availableHearts === 0}
-          $padding={6}
-          $color="primary"
-          icon={{ src: `/icons/vote-${theme}.svg`, alt: 'Vote icon' }}
-        />
-      </FlexRow>
+
       <Button onClick={handleSaveVotesWrapper} disabled={!votesAreDifferent}>
         Save votes
       </Button>
@@ -180,7 +182,7 @@ function Option() {
       {sortedComments.length > 0 && (
         <>
           <FlexRow $justify="space-between">
-            <Title>Total comments ({sortedComments.length})</Title>
+            <Subtitle>Total comments ({sortedComments.length})</Subtitle>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
               <Bold>Sort</Bold>
               <IconButton
@@ -196,13 +198,16 @@ function Option() {
               />
             </div>
           </FlexRow>
-          {sortedComments.map((comment) => (
-            <CommentCard key={comment.id} comment={comment} />
-          ))}
+          <FlexColumn>
+            <CommentsColumns />
+            {sortedComments.map((comment) => (
+              <CommentCard key={comment.id} comment={comment} />
+            ))}
+          </FlexColumn>
         </>
       )}
     </FlexColumn>
   );
 }
 
-export default Option;
+export default Comments;

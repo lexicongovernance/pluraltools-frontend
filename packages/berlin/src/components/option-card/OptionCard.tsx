@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Body } from '../typography/Body.styled';
-import { Affiliation, Author, Card, Hearts, Plurality, Proposal } from './OptionCard.styled';
+import { Affiliation, Author, Card, Votes, Plurality, Proposal } from './OptionCard.styled';
 import { FlexColumn } from '../containers/FlexColum.styled';
 import IconButton from '../icon-button';
 import { useAppStore } from '../../store';
@@ -53,7 +53,7 @@ function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
           <Affiliation>
             <Body>{option.user?.group?.name}</Body>
           </Affiliation>
-          <Hearts>
+          <Votes>
             <FlexColumn $gap="-4px">
               <IconButton
                 $padding={0}
@@ -74,7 +74,7 @@ function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
               />
             </FlexColumn>
             <Body>{numOfVotes}</Body>
-          </Hearts>
+          </Votes>
           <Plurality>
             <Body>{formattedPluralityScore}</Body>
           </Plurality>

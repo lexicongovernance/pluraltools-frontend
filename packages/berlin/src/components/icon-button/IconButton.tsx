@@ -26,7 +26,7 @@ const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
         disabled={disabled}
         {...props}
       >
-        <IconContainer $height={$height || 24} $width={$height || 24}>
+        <IconContainer $height={$height || 24} $width={$height || 24} $disabled={!!disabled}>
           <Icon
             src={icon.src}
             alt={icon.alt}

@@ -1,13 +1,10 @@
 import styled from 'styled-components';
-import { Body } from '../typography/Body.styled';
 import { Grid } from '../containers/Grid.styled';
+import { Body } from '../typography/Body.styled';
 
 export const Card = styled(Grid)`
-  align-items: flex-start;
-  border-bottom: 1px solid var(--color-black);
-  overflow: hidden;
+  border-bottom: 2px solid var(--color-black);
   padding: 1.5rem;
-  width: 100%;
   grid-template-columns: minmax(200px, 600px) minmax(100px, 150px) 56px;
 
   @media (min-width: 600px) {
@@ -15,17 +12,19 @@ export const Card = styled(Grid)`
   }
 `;
 
-export const Comment = styled(Body)``;
-
-export const Author = styled(Body)`
-  font-weight: 600;
+export const Comment = styled(Body)`
+  font-weight: bold;
 `;
 
-export const FormattedDate = styled(Body)`
-  color: #878787;
+export const Author = styled(Body)`
+  font-weight: bold;
+`;
+export const Date = styled(Body)`
+  font-weight: bold;
   display: none;
-  font-size: 14px;
   @media (min-width: 600px) {
     display: flex;
   }
 `;
+
+export const Likes = styled(Body)``;
