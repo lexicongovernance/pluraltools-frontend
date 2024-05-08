@@ -209,6 +209,7 @@ function Register() {
               mode={form.mode}
               event={event}
               groupId={groupId}
+              groupCategoryParam={groupCategoryParam}
             />
           );
         })}
@@ -252,6 +253,7 @@ function RegisterForm(props: {
   groupId?: string;
   show: boolean;
   mode: 'edit' | 'create';
+  groupCategoryParam: string | null;
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -301,7 +303,11 @@ function RegisterForm(props: {
         await queryClient.invalidateQueries({
           queryKey: ['registration', 'data'],
         });
-        navigate(`/events/${props.event?.id}/holding`);
+        if (props.groupCategoryParam) {
+          return;
+        } else {
+          navigate(`/events/${props.event?.id}/holding`);
+        }
       } else {
         toast.error('Failed to save registration, please try again');
       }
@@ -323,7 +329,11 @@ function RegisterForm(props: {
         await queryClient.invalidateQueries({
           queryKey: [props.registrationId, 'registration', 'data'],
         });
-        navigate(`/events/${props.event?.id}/holding`);
+        if (props.groupCategoryParam) {
+          return;
+        } else {
+          navigate(`/events/${props.event?.id}/holding`);
+        }
       } else {
         toast.error('Failed to update registration, please try again');
       }
