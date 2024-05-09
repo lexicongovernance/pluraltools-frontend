@@ -5,14 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 
 // API
-import {
-  fetchOption,
-  postVotes,
-  fetchUserVotes,
-  fetchComments,
-  postComment,
-  fetchUserData,
-} from 'api';
+import { fetchOption, postVotes, fetchUserVotes, fetchComments, postComment } from 'api';
 
 // Hooks
 import useUser from '../hooks/useUser';
@@ -180,7 +173,7 @@ function Comments() {
           <Bold>Lead author:</Bold> [// TODO]
         </Body>
         <Body>
-          <Bold>Co-uthors:</Bold> [// TODO]
+          <Bold>Co-authors:</Bold> [// TODO]
         </Body>
       </FlexColumn>
 
