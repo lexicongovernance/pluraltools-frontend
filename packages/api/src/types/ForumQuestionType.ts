@@ -13,6 +13,7 @@ export type GetForumQuestionStatisticsResponse = {
       optionSubTitle: string;
       distinctGroups: number;
       listOfGroupNames: string[];
+      quadraticScore: string;
     }
   >;
 };

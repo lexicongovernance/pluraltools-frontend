@@ -5,7 +5,14 @@ import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 
 // API
-import { fetchOption, postVotes, fetchUserVotes, fetchComments, postComment } from 'api';
+import {
+  fetchOption,
+  postVotes,
+  fetchUserVotes,
+  fetchComments,
+  postComment,
+  fetchUserData,
+} from 'api';
 
 // Hooks
 import useUser from '../hooks/useUser';
@@ -20,6 +27,7 @@ import { ResponseUserVotesType } from '../types/CycleType';
 import { useAppStore } from '../store';
 
 // Components
+import { Body } from '../components/typography/Body.styled';
 import { Bold } from '../components/typography/Bold.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
@@ -50,6 +58,7 @@ function Comments() {
     queryFn: () => fetchOption(optionId || ''),
     enabled: !!optionId,
   });
+
   const { data: userVotes } = useQuery({
     queryKey: ['votes', cycleId],
     queryFn: () => fetchUserVotes(cycleId || ''),
@@ -141,7 +150,7 @@ function Comments() {
   return (
     <FlexColumn $gap="2rem">
       <BackButton />
-      <FlexRow $align="center">
+      <FlexColumn>
         <FlexRow style={{ maxWidth: '4rem' }}>
           <FlexColumn $gap="-4px" style={{ maxWidth: '1rem' }}>
             <IconButton
@@ -166,7 +175,14 @@ function Comments() {
           <Subtitle>{localOptionHearts}</Subtitle>
         </FlexRow>
         <Subtitle>{option?.optionTitle}</Subtitle>
-      </FlexRow>
+        <Body>{option?.optionSubTitle}</Body>
+        <Body>
+          <Bold>Lead author:</Bold> [// TODO]
+        </Body>
+        <Body>
+          <Bold>Co-uthors:</Bold> [// TODO]
+        </Body>
+      </FlexColumn>
 
       <Button onClick={handleSaveVotesWrapper} disabled={!votesAreDifferent}>
         Save votes
