@@ -54,9 +54,9 @@ function ResultCard({ $expanded, option, onClick }: ResultCardProps) {
         />
         <Body>{option.optionTitle}</Body>
       </FlexRow>
-      <Body>{formattedQuadraticScore}</Body>
       <Body>{option.allocatedHearts}</Body>
       <Body>{formattedPluralityScore}</Body>
+      <Body>{formattedQuadraticScore}</Body>
       <Body>$ 10.000</Body>
       <FlexColumn className="description">
         <Body>{option.optionSubTitle}</Body>
