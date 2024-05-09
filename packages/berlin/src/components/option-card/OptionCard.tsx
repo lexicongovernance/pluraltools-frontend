@@ -1,12 +1,12 @@
-import { useMemo, useState } from 'react';
-import { Body } from '../typography/Body.styled';
-import { Affiliation, Author, Card, Votes, Plurality, Proposal } from './OptionCard.styled';
-import { FlexColumn } from '../containers/FlexColum.styled';
-import IconButton from '../icon-button';
-import { useAppStore } from '../../store';
-import { FlexRow } from '../containers/FlexRow.styled';
 import { QuestionOption } from 'api';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useAppStore } from '../../store';
+import { FlexColumn } from '../containers/FlexColum.styled';
+import { FlexRow } from '../containers/FlexRow.styled';
+import IconButton from '../icon-button';
+import { Body } from '../typography/Body.styled';
+import { Affiliation, Author, Card, Proposal, Votes } from './OptionCard.styled';
 
 type OptionCardProps = {
   option: QuestionOption;
@@ -18,10 +18,10 @@ function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
   const { eventId, cycleId } = useParams();
   const theme = useAppStore((state) => state.theme);
   const navigate = useNavigate();
-  const formattedPluralityScore = useMemo(() => {
-    const score = parseFloat(String(option.voteScore));
-    return score % 1 === 0 ? score.toFixed(0) : score.toFixed(1);
-  }, [option.voteScore]);
+  // const formattedPluralityScore = useMemo(() => {
+  //   const score = parseFloat(String(option.voteScore));
+  //   return score % 1 === 0 ? score.toFixed(0) : score.toFixed(1);
+  // }, [option.voteScore]);
 
   const [expanded, setExpanded] = useState(false);
 
@@ -75,9 +75,9 @@ function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
             </FlexColumn>
             <Body>{numOfVotes}</Body>
           </Votes>
-          <Plurality>
+          {/* <Plurality>
             <Body>{formattedPluralityScore}</Body>
-          </Plurality>
+          </Plurality> */}
         </FlexRow>
         <FlexColumn className="description" $gap="1.5rem">
           {option.optionSubTitle && <Body>{option.optionSubTitle}</Body>}
