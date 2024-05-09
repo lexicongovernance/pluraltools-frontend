@@ -8,6 +8,7 @@ import { Grid } from '../components/containers/Grid.styled';
 import { Title } from '../components/typography/Title.styled';
 import ResultCard from '../components/result-card';
 import StatCard from '../components/stat-card';
+import ResultsColumns from '../components/results-columns';
 
 function Results() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -61,6 +62,7 @@ function Results() {
   return (
     <FlexColumn $gap="2rem">
       <BackButton />
+      <ResultsColumns />
       <Title>Results for: {cycle?.forumQuestions?.[0].questionTitle}</Title>
       <FlexColumn>
         {optionStatsArray.map((option, index) => (
