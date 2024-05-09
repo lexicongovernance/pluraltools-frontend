@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import BackButton from '../components/back-button';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
-import { Grid } from '../components/containers/Grid.styled';
 import ResultCard from '../components/result-card';
 import StatsCard from '../components/stats-card';
 import ResultsColumns from '../components/results-columns';
@@ -24,7 +23,7 @@ function Results() {
   });
 
   const { data: statistics } = useQuery({
-    queryKey: ['cycles', cycleId, 'forumQuestions', 0, 'statistics'],
+    queryKey: ['cycles', cycleId, 'forumQuestions', 0, 'statistics', cycle?.forumQuestions[0].id],
     queryFn: () => fetchForumQuestionStatistics(cycle?.forumQuestions[0].id || ''),
     enabled: !!cycle?.id,
     retry: false,
