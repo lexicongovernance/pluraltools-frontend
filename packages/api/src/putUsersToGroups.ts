@@ -1,18 +1,21 @@
-import { PostUsersToGroupsRequest, PostUsersToGroupsResponse } from './types';
+import { PostUsersToGroupsResponse, PutUsersToGroupsRequest } from './types';
 
 async function postUserToGroups({
-  secret,
   groupId,
-}: PostUsersToGroupsRequest): Promise<PostUsersToGroupsResponse | null> {
+  userToGroupId,
+}: PutUsersToGroupsRequest): Promise<PostUsersToGroupsResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/users-to-groups`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `${import.meta.env.VITE_SERVER_URL}/api/users-to-groups/${userToGroupId}`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ groupId }),
       },
-      body: JSON.stringify({ secret, groupId }),
-    });
+    );
 
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);

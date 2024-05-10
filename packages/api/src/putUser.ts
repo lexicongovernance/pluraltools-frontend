@@ -3,7 +3,6 @@ import { PutUserRequest, GetUserResponse } from './types/UserType';
 async function updateUserData({
   email,
   firstName,
-  groupIds,
   lastName,
   telegram,
   userAttributes,
@@ -20,7 +19,6 @@ async function updateUserData({
       body: JSON.stringify({
         email,
         firstName,
-        groupIds,
         lastName,
         telegram,
         userAttributes,
