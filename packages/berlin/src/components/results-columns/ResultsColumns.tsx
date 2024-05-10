@@ -16,17 +16,17 @@ function ResultsColumns() {
       <IconButton
         $padding={0}
         $color="secondary"
-        icon={{ src: `/icons/plurality-score.svg`, alt: 'Plurality score' }}
-      />
-      <IconButton
-        $padding={0}
-        $color="secondary"
         icon={{ src: `/icons/sqrt-${theme}.svg`, alt: 'Quadratic score' }}
       />
       <IconButton
         $padding={0}
         $color="secondary"
-        icon={{ src: `/icons/money-${theme}.svg`, alt: 'Money' }}
+        icon={{ src: `/icons/plurality-score.svg`, alt: 'Plurality score' }}
+      />
+      <IconButton
+        $padding={0}
+        $color="secondary"
+        icon={{ src: `/logos/arbitrum-${theme}.svg`, alt: 'Arbitrum' }}
       />
     </Card>
   );
