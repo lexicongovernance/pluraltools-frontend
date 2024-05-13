@@ -3,14 +3,14 @@ import Button from '../../button';
 import { FlexColumn } from '../../containers/FlexColum.styled';
 import { Body } from '../../typography/Body.styled';
 import { Subtitle } from '../../typography/Subtitle.styled';
-import { Card } from './CycleCard.styled';
+import { Card } from './CycleTable.styled';
 import { useNavigate, useParams } from 'react-router-dom';
 
-type CycleCardProps = {
+type CycleTableProps = {
   cycle: GetCycleResponse;
 };
 
-function CycleCard({ cycle }: CycleCardProps) {
+function CycleTable({ cycle }: CycleTableProps) {
   const { eventId } = useParams();
   const navigate = useNavigate();
 
@@ -44,4 +44,4 @@ function CycleCard({ cycle }: CycleCardProps) {
   );
 }
 
-export default CycleCard;
+export default CycleTable;
