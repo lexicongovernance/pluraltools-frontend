@@ -4,10 +4,11 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import BackButton from '../components/back-button';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
-import { Grid } from '../components/containers/Grid.styled';
-import { Title } from '../components/typography/Title.styled';
 import ResultCard from '../components/result-card';
-import StatCard from '../components/stat-card';
+import StatsCard from '../components/stats-card';
+import ResultsColumns from '../components/results-columns';
+import { Subtitle } from '../components/typography/Subtitle.styled';
+import StatsColumns from '../components/stats-columns';
 
 function Results() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -22,7 +23,7 @@ function Results() {
   });
 
   const { data: statistics } = useQuery({
-    queryKey: ['cycles', cycleId, 'forumQuestions', 0, 'statistics'],
+    queryKey: ['cycles', cycleId, 'forumQuestions', 0, 'statistics', cycle?.forumQuestions[0].id],
     queryFn: () => fetchForumQuestionStatistics(cycle?.forumQuestions[0].id || ''),
     enabled: !!cycle?.id,
     retry: false,
@@ -61,24 +62,25 @@ function Results() {
   return (
     <FlexColumn $gap="2rem">
       <BackButton />
-      <Title>Results for: {cycle?.forumQuestions?.[0].questionTitle}</Title>
-      <FlexColumn>
+      <Subtitle>Results for: {cycle?.forumQuestions?.[0].questionTitle}</Subtitle>
+      <FlexColumn $gap="0">
+        <ResultsColumns />
         {optionStatsArray.map((option, index) => (
           <ResultCard
             key={option.id}
-            index={index}
             $expanded={expandedIndex === index}
             option={option}
             onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
           />
         ))}
       </FlexColumn>
-      <Title>Overall Statistics</Title>
-      <Grid $columns={4}>
+      <Subtitle>Overall Statistics</Subtitle>
+      <FlexColumn $gap="0">
+        <StatsColumns />
         {overallStatistics.map((stat) => (
-          <StatCard key={stat.id} title={stat.title} number={stat.data} />
+          <StatsCard key={stat.id} title={stat.title} number={stat.data} />
         ))}
-      </Grid>
+      </FlexColumn>
     </FlexColumn>
   );
 }

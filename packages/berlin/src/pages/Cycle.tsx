@@ -1,7 +1,7 @@
 // React and third-party libraries
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 // API
@@ -37,10 +37,9 @@ type LocalUserVotes = ResponseUserVotesType | { optionId: string; numOfVotes: nu
 const initialHearts = 20;
 
 function Cycle() {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useUser();
-  const { eventId, cycleId } = useParams();
+  const { cycleId } = useParams();
   const { data: cycle } = useQuery({
     queryKey: ['cycles', cycleId],
     queryFn: () => fetchCycle(cycleId || ''),
@@ -239,14 +238,6 @@ function Cycle() {
         <Body>
           <i>No options to show...</i>
         </Body>
-      )}
-      {cycle?.status === 'CLOSED' && currentCycle?.questionOptions.length && (
-        <Button
-          onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/results`)}
-          $color="secondary"
-        >
-          See results
-        </Button>
       )}
     </FlexColumn>
   );
