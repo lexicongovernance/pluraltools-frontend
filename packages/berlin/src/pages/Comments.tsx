@@ -28,7 +28,7 @@ import { Form } from '../components/containers/Form.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import BackButton from '../components/back-button';
 import Button from '../components/button';
-import CommentCard from '../components/tables/comment-card';
+import CommentsTable from '../components/tables/comment-table';
 import CommentsColumns from '../components/columns/comments-columns';
 import IconButton from '../components/icon-button';
 import Textarea from '../components/textarea';
@@ -210,7 +210,7 @@ function Comments() {
           <FlexColumn>
             <CommentsColumns />
             {sortedComments.map((comment) => (
-              <CommentCard key={comment.id} comment={comment} />
+              <CommentsTable key={comment.id} comment={comment} />
             ))}
           </FlexColumn>
         </>
