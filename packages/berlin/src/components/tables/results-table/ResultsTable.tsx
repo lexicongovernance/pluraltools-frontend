@@ -12,9 +12,9 @@ import { FlexRow } from '../../containers/FlexRow.styled';
 import IconButton from '../../icon-button';
 
 // Styled Components
-import { Card } from './ResultCard.styled';
+import { Card } from './ResultsTable.styled';
 
-type ResultCardProps = {
+type ResultsTableProps = {
   $expanded: boolean;
   option: {
     optionTitle: string;
@@ -30,7 +30,7 @@ type ResultCardProps = {
   onClick: () => void;
 };
 
-function ResultCard({ $expanded, option, onClick }: ResultCardProps) {
+function ResultsTable({ $expanded, option, onClick }: ResultsTableProps) {
   const theme = useAppStore((state) => state.theme);
 
   const formattedQuadraticScore = useMemo(() => {
@@ -74,4 +74,4 @@ function ResultCard({ $expanded, option, onClick }: ResultCardProps) {
   );
 }
 
-export default ResultCard;
+export default ResultsTable;

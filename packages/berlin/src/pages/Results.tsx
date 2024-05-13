@@ -1,13 +1,13 @@
-import { useQuery } from '@tanstack/react-query';
 import { fetchCycle, fetchForumQuestionStatistics } from 'api';
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import BackButton from '../components/back-button';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
-import ResultCard from '../components/tables/result-card';
-import StatsCard from '../components/tables/stats-card';
-import ResultsColumns from '../components/columns/results-columns';
 import { Subtitle } from '../components/typography/Subtitle.styled';
+import { useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import BackButton from '../components/back-button';
+import ResultsColumns from '../components/columns/results-columns';
+import ResultsTable from '../components/tables/results-table';
+import StatsCard from '../components/tables/stats-card';
 import StatsColumns from '../components/columns/stats-columns';
 
 function Results() {
@@ -66,7 +66,7 @@ function Results() {
       <FlexColumn $gap="0">
         <ResultsColumns />
         {optionStatsArray.map((option, index) => (
-          <ResultCard
+          <ResultsTable
             key={option.id}
             $expanded={expandedIndex === index}
             option={option}
