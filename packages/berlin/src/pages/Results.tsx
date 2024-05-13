@@ -7,7 +7,7 @@ import { useState } from 'react';
 import BackButton from '../components/back-button';
 import ResultsColumns from '../components/columns/results-columns';
 import ResultsTable from '../components/tables/results-table';
-import StatsCard from '../components/tables/stats-card';
+import StatsTable from '../components/tables/stats-table';
 import StatsColumns from '../components/columns/stats-columns';
 
 function Results() {
@@ -78,7 +78,7 @@ function Results() {
       <FlexColumn $gap="0">
         <StatsColumns />
         {overallStatistics.map((stat) => (
-          <StatsCard key={stat.id} title={stat.title} number={stat.data} />
+          <StatsTable key={stat.id} title={stat.title} number={stat.data} />
         ))}
       </FlexColumn>
     </FlexColumn>

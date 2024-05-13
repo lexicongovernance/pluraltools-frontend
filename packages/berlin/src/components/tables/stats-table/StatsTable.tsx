@@ -1,12 +1,12 @@
 import { Body } from '../../typography/Body.styled';
-import { Card } from './StatsCard.styled';
+import { Card } from './StatsTable.styled';
 
-type StatsCardProps = {
+type StatsTableProps = {
   title: string;
   number?: number;
 };
 
-function StatsCard({ title, number }: StatsCardProps) {
+function StatsTable({ title, number }: StatsTableProps) {
   return (
     <Card>
       <Body>{title}</Body>
@@ -15,4 +15,4 @@ function StatsCard({ title, number }: StatsCardProps) {
   );
 }
 
-export default StatsCard;
+export default StatsTable;
