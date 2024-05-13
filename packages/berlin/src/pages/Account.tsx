@@ -6,12 +6,14 @@ import toast from 'react-hot-toast';
 
 // API Calls
 import {
-  GetUserResponse,
+  type GetUserResponse,
   fetchEvents,
   fetchGroups,
   fetchUserAttributes,
-  fetchUserGroups,
-  updateUserData,
+  fetchUsersToGroups,
+  putUser,
+  putUsersToGroups,
+  postUsersToGroups,
 } from 'api';
 
 // Components
@@ -59,7 +61,8 @@ type InitialUser = {
   firstName: string;
   lastName: string;
   email: string;
-  group: string;
+  userToGroupId?: string;
+  groupId: string;
   telegram: string | null;
   userAttributes: UserAttributes | undefined;
 };
@@ -73,9 +76,9 @@ function Account() {
     enabled: !!user?.id,
   });
 
-  const { data: userGroups, isLoading: userGroupsIsLoading } = useQuery({
+  const { data: usersToGroups, isLoading: userGroupsIsLoading } = useQuery({
     queryKey: ['user', user?.id, 'groups'],
-    queryFn: () => fetchUserGroups(user?.id || ''),
+    queryFn: () => fetchUsersToGroups(user?.id || ''),
     enabled: !!user?.id,
   });
 
@@ -98,7 +101,9 @@ function Account() {
       lastName: user?.lastName || '',
       email: user?.email || '',
       telegram: user?.telegram || null,
-      group: (userGroups && userGroups[0]?.id) || '',
+      userToGroupId: usersToGroups?.find((g) => g.group.groupCategory?.name === 'affiliation')?.id,
+      groupId:
+        usersToGroups?.find((g) => g.group.groupCategory?.name === 'affiliation')?.group.id || '',
       userAttributes: userAttributes?.reduce(
         (acc, curr) => {
           if (curr.attributeKey === 'credentialsGroup') {
@@ -136,7 +141,7 @@ function Account() {
         } as UserAttributes,
       ),
     };
-  }, [user, userGroups, userAttributes]);
+  }, [user, usersToGroups, userAttributes]);
 
   if (userIsLoading || userGroupsIsLoading || userAttributesIsLoading) {
     return <Title>Loading...</Title>;
@@ -161,7 +166,7 @@ function AccountForm({
   const queryClient = useQueryClient();
 
   const { mutate: mutateUserData } = useMutation({
-    mutationFn: updateUserData,
+    mutationFn: putUser,
     onSuccess: async (body) => {
       console.log({ body });
       if (!body) {
@@ -231,22 +236,21 @@ function AccountForm({
     control,
   });
 
-  const watchedGroupInputId = useWatch({ control, name: 'group' });
+  const watchedGroupInputId = useWatch({ control, name: 'groupId' });
   const customGroupName = 'Custom Affiliation';
   const customGroup = groups?.find(
     (group) => group.name.toLocaleLowerCase() === customGroupName.toLocaleLowerCase(),
   );
 
-  const onSubmit = (value: typeof initialUser) => {
+  const onSubmit = async (value: typeof initialUser) => {
     if (isValid && user && user.id) {
-      mutateUserData({
+      await mutateUserData({
         userId: user.id,
         username: value.username,
         email: value.email,
         firstName: value.firstName,
         lastName: value.lastName,
         telegram: value.telegram?.trim() !== '' ? value.telegram?.trim() : null,
-        groupIds: [value.group],
         userAttributes: {
           ...value.userAttributes,
           credentialsGroup: JSON.stringify(value.userAttributes?.credentialsGroup),
@@ -254,6 +258,18 @@ function AccountForm({
           contributions: JSON.stringify(value.userAttributes?.contributions),
         },
       });
+
+      // Create user to group if it doesn't exist
+      if (!value.userToGroupId) {
+        await postUsersToGroups({
+          groupId: value.groupId,
+        });
+      } else {
+        await putUsersToGroups({
+          groupId: value.groupId,
+          userToGroupId: value.userToGroupId,
+        });
+      }
     }
   };
 
@@ -278,8 +294,8 @@ function AccountForm({
 
     if (customGroup) {
       // set group to custom group id
-      setValue('group', customGroup?.id);
-      trigger('group');
+      setValue('groupId', customGroup?.id);
+      trigger('groupId');
     }
     // set otherGroupName to value
     setValue('userAttributes.customGroupName', value);
@@ -323,7 +339,7 @@ function AccountForm({
             {...register('telegram')}
           />
           <Controller
-            name="group"
+            name="groupId"
             control={control}
             rules={{ required: 'Affiliation is required' }}
             render={({ field }) => (
@@ -340,7 +356,7 @@ function AccountForm({
                   onBlur={field.onBlur}
                   onOptionCreate={(value) => groupOnCreate(groups, customGroupName, value)}
                   value={field.value}
-                  errors={[errors.group?.message ?? '']}
+                  errors={[errors.groupId?.message ?? '']}
                 />
                 {watchedGroupInputId === customGroup?.id &&
                   initialUser.userAttributes?.customGroupName && (

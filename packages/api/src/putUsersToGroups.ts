@@ -1,6 +1,6 @@
 import { PostUsersToGroupsResponse, PutUsersToGroupsRequest } from './types';
 
-async function postUserToGroups({
+async function postUsersToGroups({
   groupId,
   userToGroupId,
 }: PutUsersToGroupsRequest): Promise<PostUsersToGroupsResponse | null> {
@@ -8,7 +8,7 @@ async function postUserToGroups({
     const response = await fetch(
       `${import.meta.env.VITE_SERVER_URL}/api/users-to-groups/${userToGroupId}`,
       {
-        method: 'POST',
+        method: 'PUT',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
@@ -32,4 +32,4 @@ async function postUserToGroups({
   }
 }
 
-export default postUserToGroups;
+export default postUsersToGroups;

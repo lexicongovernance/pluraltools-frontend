@@ -11,6 +11,6 @@ export * from './RegistrationFieldOptionType';
 export * from './RegistrationFieldType';
 export * from './RegistrationType';
 export * from './UserAttributesType';
-export * from './UserToGroupsType';
+export * from './UsersToGroupsType';
 export * from './UserType';
 export * from './UserVotesType';

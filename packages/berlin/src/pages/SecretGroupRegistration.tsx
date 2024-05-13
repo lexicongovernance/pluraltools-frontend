@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
 
 // API
-import { postUserToGroups, fetchGroupCategories, postGroup } from 'api';
+import { postUsersToGroups, fetchGroupCategories, postGroup } from 'api';
 
 // Data
 import groups from '../data/groups';
@@ -70,8 +70,8 @@ function SecretGroupRegistration() {
     },
   });
 
-  const { mutate: postUserToGroupsMutation } = useMutation({
-    mutationFn: postUserToGroups,
+  const { mutate: postUsersToGroupsMutation } = useMutation({
+    mutationFn: postUsersToGroups,
     onSuccess: (body) => {
       if (!body) {
         return;
@@ -93,7 +93,7 @@ function SecretGroupRegistration() {
 
   const onSubmit = () => {
     if (isValid) {
-      postUserToGroupsMutation({ secret: getValues('secret') });
+      postUsersToGroupsMutation({ secret: getValues('secret') });
       reset();
     }
   };

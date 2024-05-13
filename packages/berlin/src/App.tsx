@@ -6,7 +6,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { useAppStore } from './store';
 
 // API
-import { fetchEvents, fetchUserData, fetchCycle, fetchRegistrations } from 'api';
+import { fetchEvents, fetchUser, fetchCycle, fetchRegistrations } from 'api';
 
 // Pages
 import { default as BerlinLayout } from './layout/index.ts';
@@ -31,7 +31,7 @@ import SecretGroupRegistration from './pages/SecretGroupRegistration.tsx';
 async function redirectToLandingLoader(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
     queryKey: ['user'],
-    queryFn: fetchUserData,
+    queryFn: fetchUser,
     staleTime: 10000,
   });
 
@@ -47,7 +47,7 @@ async function redirectToLandingLoader(queryClient: QueryClient) {
 async function redirectToAccount(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
     queryKey: ['user'],
-    queryFn: fetchUserData,
+    queryFn: fetchUser,
   });
 
   if (user?.username) {
@@ -65,7 +65,7 @@ async function redirectToAccount(queryClient: QueryClient) {
 async function redirectOnLandingLoader(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
     queryKey: ['user'],
-    queryFn: fetchUserData,
+    queryFn: fetchUser,
   });
 
   if (!user) {

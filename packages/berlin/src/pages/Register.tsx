@@ -13,7 +13,7 @@ import {
   fetchRegistrationData,
   fetchRegistrationFields,
   fetchRegistrations,
-  fetchUserGroups,
+  fetchUsersToGroups,
   GetRegistrationsResponseType,
   postRegistration,
   putRegistration,
@@ -72,15 +72,16 @@ function Register() {
   });
 
   // this query runs if there is a groupCategory query param.
-  const { data: userGroups } = useQuery({
+  const { data: usersToGroups } = useQuery({
     queryKey: ['user', 'groups', user?.id],
-    queryFn: () => fetchUserGroups(user?.id || ''),
+    queryFn: () => fetchUsersToGroups(user?.id || ''),
     enabled: !!user?.id && !!groupCategoryParam,
   });
 
   const groupId = useMemo(() => {
-    return userGroups?.find((group) => group.groupCategory?.name === groupCategoryParam)?.id;
-  }, [groupCategoryParam, userGroups]);
+    return usersToGroups?.find((group) => group.group.groupCategory?.name === groupCategoryParam)
+      ?.id;
+  }, [groupCategoryParam, usersToGroups]);
 
   useEffect(() => {
     // select the first registration if it exists

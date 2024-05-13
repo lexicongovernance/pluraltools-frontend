@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import useUser from '../hooks/useUser';
 
 // API
-import { fetchGroups, postUserToGroups } from 'api';
+import { fetchGroups, postUsersToGroups } from 'api';
 
 // Data
 import publicGroups from '../data/publicGroups';
@@ -50,8 +50,8 @@ function PublicGroupRegistration() {
 
   const selectData = groups?.map((group) => ({ id: group.id, name: group.name })) ?? [];
 
-  const { mutate: postUserToGroupsMutation } = useMutation({
-    mutationFn: postUserToGroups,
+  const { mutate: postUsersToGroupsMutation } = useMutation({
+    mutationFn: postUsersToGroups,
     onSuccess: (body) => {
       if (!body) {
         return;
@@ -66,7 +66,7 @@ function PublicGroupRegistration() {
 
   const onSubmit = () => {
     if (isValid) {
-      postUserToGroupsMutation({ groupId: getValues('group') });
+      postUsersToGroupsMutation({ groupId: getValues('group') });
       setValue('group', '');
       reset();
     }
