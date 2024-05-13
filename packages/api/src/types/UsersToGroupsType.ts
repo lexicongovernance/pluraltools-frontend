@@ -25,6 +25,8 @@ export type GetUsersToGroupsResponse = {
     groupCategory?: {
       createdAt: string;
       eventId: string;
+      userCanCreate: boolean;
+      userCanView: boolean;
       id: string;
       name: string;
       updatedAt: string;
