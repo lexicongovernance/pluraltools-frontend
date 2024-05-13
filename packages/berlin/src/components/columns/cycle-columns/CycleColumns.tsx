@@ -1,5 +1,5 @@
-import IconButton from '../icon-button';
-import { Body } from '../typography/Body.styled';
+import IconButton from '../../icon-button';
+import { Body } from '../../typography/Body.styled';
 import { Affiliation, Author, Card, Hearts, Proposal } from './CycleColumns.styled';
 
 type CycleColumnsProps = {

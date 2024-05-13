@@ -2,14 +2,14 @@
 import { useMemo } from 'react';
 
 // Store
-import { useAppStore } from '../../store';
+import { useAppStore } from '../../../store';
 
 // Components
-import { Body } from '../typography/Body.styled';
-import { Bold } from '../typography/Bold.styled';
-import { FlexColumn } from '../containers/FlexColum.styled';
-import { FlexRow } from '../containers/FlexRow.styled';
-import IconButton from '../icon-button';
+import { Body } from '../../typography/Body.styled';
+import { Bold } from '../../typography/Bold.styled';
+import { FlexColumn } from '../../containers/FlexColum.styled';
+import { FlexRow } from '../../containers/FlexRow.styled';
+import IconButton from '../../icon-button';
 
 // Styled Components
 import { Card } from './ResultCard.styled';

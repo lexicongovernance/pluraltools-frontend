@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { Body } from '../typography/Body.styled';
-import { Grid } from '../containers/Grid.styled';
+import { Body } from '../../typography/Body.styled';
+import { Grid } from '../../containers/Grid.styled';
 
 export const Card = styled(Grid)`
   align-items: flex-start;

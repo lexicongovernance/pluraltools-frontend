@@ -1,8 +1,8 @@
 import { GetCycleResponse } from 'api';
-import Button from '../button';
-import { FlexColumn } from '../containers/FlexColum.styled';
-import { Body } from '../typography/Body.styled';
-import { Subtitle } from '../typography/Subtitle.styled';
+import Button from '../../button';
+import { FlexColumn } from '../../containers/FlexColum.styled';
+import { Body } from '../../typography/Body.styled';
+import { Subtitle } from '../../typography/Subtitle.styled';
 import { Card } from './CycleCard.styled';
 import { useNavigate, useParams } from 'react-router-dom';
 

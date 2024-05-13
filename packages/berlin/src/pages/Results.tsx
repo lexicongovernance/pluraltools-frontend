@@ -4,11 +4,11 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import BackButton from '../components/back-button';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
-import ResultCard from '../components/result-card';
-import StatsCard from '../components/stats-card';
-import ResultsColumns from '../components/results-columns';
+import ResultCard from '../components/tables/result-card';
+import StatsCard from '../components/tables/stats-card';
+import ResultsColumns from '../components/columns/results-columns';
 import { Subtitle } from '../components/typography/Subtitle.styled';
-import StatsColumns from '../components/stats-columns';
+import StatsColumns from '../components/columns/stats-columns';
 
 function Results() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);

@@ -1,4 +1,4 @@
-import { Bold } from '../typography/Bold.styled';
+import { Bold } from '../../typography/Bold.styled';
 import { Card } from './StatsColumns.styled';
 
 function StatsColumns() {

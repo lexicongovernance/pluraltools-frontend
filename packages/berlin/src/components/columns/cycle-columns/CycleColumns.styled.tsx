@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { FlexRow } from '../containers/FlexRow.styled';
+import { FlexRow } from '../../containers/FlexRow.styled';
 
 export const Card = styled(FlexRow)`
   border-bottom: 2px solid var(--color-black);

@@ -1,6 +1,6 @@
-import { useAppStore } from '../../store';
-import IconButton from '../icon-button';
-import { Bold } from '../typography/Bold.styled';
+import { useAppStore } from '../../../store';
+import IconButton from '../../icon-button';
+import { Bold } from '../../typography/Bold.styled';
 import { Card } from './ResultsColumns.styled';
 
 function ResultsColumns() {

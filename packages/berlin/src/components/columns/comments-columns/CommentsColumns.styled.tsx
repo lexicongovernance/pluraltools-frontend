@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { Grid } from '../containers/Grid.styled';
-import { Body } from '../typography/Body.styled';
+import { Grid } from '../../containers/Grid.styled';
+import { Body } from '../../typography/Body.styled';
 
 export const Card = styled(Grid)`
   border-bottom: 2px solid var(--color-black);

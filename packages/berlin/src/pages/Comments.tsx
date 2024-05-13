@@ -28,8 +28,8 @@ import { Form } from '../components/containers/Form.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import BackButton from '../components/back-button';
 import Button from '../components/button';
-import CommentCard from '../components/comment-card';
-import CommentsColumns from '../components/comments-columns';
+import CommentCard from '../components/tables/comment-card';
+import CommentsColumns from '../components/columns/comments-columns';
 import IconButton from '../components/icon-button';
 import Textarea from '../components/textarea';
 

@@ -1,4 +1,4 @@
-import { Body } from '../typography/Body.styled';
+import { Body } from '../../typography/Body.styled';
 import { Card } from './StatsCard.styled';
 
 type StatsCardProps = {

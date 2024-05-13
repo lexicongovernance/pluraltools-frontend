@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Grid } from '../containers/Grid.styled';
+import { Grid } from '../../containers/Grid.styled';
 
 export const Card = styled(Grid)<{ $expanded: boolean }>`
   cursor: pointer;
