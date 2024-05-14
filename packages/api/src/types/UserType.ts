@@ -15,7 +15,6 @@ export type PutUserRequest = {
   firstName: string;
   lastName: string;
   email?: string;
-  groupIds: string[];
   telegram?: string | null;
   userAttributes: Record<string, string>;
 };

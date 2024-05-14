@@ -28,7 +28,7 @@ import { FlexRow } from '../components/containers/FlexRow.styled';
 import { Title } from '../components/typography/Title.styled';
 import BackButton from '../components/back-button';
 import Button from '../components/button';
-import CycleColumns from '../components/cycle-columns';
+import CycleColumns from '../components/columns/cycle-columns';
 import OptionCard from '../components/option-card';
 
 type Order = 'asc' | 'desc';

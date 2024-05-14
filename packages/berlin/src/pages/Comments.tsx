@@ -5,7 +5,14 @@ import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 
 // API
-import { fetchOption, postVotes, fetchUserVotes, fetchComments, postComment } from 'api';
+import {
+  fetchOption,
+  postVotes,
+  fetchUserVotes,
+  fetchComments,
+  postComment,
+  // fetchOptionUsers,
+} from 'api';
 
 // Hooks
 import useUser from '../hooks/useUser';
@@ -28,8 +35,8 @@ import { Form } from '../components/containers/Form.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import BackButton from '../components/back-button';
 import Button from '../components/button';
-import CommentCard from '../components/comment-card';
-import CommentsColumns from '../components/comments-columns';
+import CommentsTable from '../components/tables/comment-table';
+import CommentsColumns from '../components/columns/comments-columns';
 import IconButton from '../components/icon-button';
 import Textarea from '../components/textarea';
 
@@ -58,6 +65,13 @@ function Comments() {
     enabled: !!user?.id && !!cycleId,
     retry: false,
   });
+
+  // const { data: optionUsers } = useQuery({
+  //   queryKey: ['optionUsers', optionId],
+  //   queryFn: () => fetchOptionUsers(optionId || ''),
+  //   enabled: !!optionId,
+  // });
+
   const { data: comments } = useQuery({
     queryKey: ['comments', optionId],
     queryFn: () => fetchComments({ optionId: optionId || '' }),
@@ -169,12 +183,12 @@ function Comments() {
         </FlexRow>
         <Subtitle>{option?.optionTitle}</Subtitle>
         <Body>{option?.optionSubTitle}</Body>
-        <Body>
-          <Bold>Lead author:</Bold> [// TODO]
+        {/* <Body>
+          <Bold>Lead author: {option?.user}</Bold> [// TODO]
         </Body>
         <Body>
           <Bold>Co-authors:</Bold> [// TODO]
-        </Body>
+        </Body> */}
       </FlexColumn>
 
       <Button onClick={handleSaveVotesWrapper} disabled={!votesAreDifferent}>
@@ -210,7 +224,7 @@ function Comments() {
           <FlexColumn>
             <CommentsColumns />
             {sortedComments.map((comment) => (
-              <CommentCard key={comment.id} comment={comment} />
+              <CommentsTable key={comment.id} comment={comment} />
             ))}
           </FlexColumn>
         </>

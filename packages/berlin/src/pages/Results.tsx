@@ -1,14 +1,14 @@
-import { useQuery } from '@tanstack/react-query';
 import { fetchCycle, fetchForumQuestionStatistics } from 'api';
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import BackButton from '../components/back-button';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
-import ResultCard from '../components/result-card';
-import StatsCard from '../components/stats-card';
-import ResultsColumns from '../components/results-columns';
 import { Subtitle } from '../components/typography/Subtitle.styled';
-import StatsColumns from '../components/stats-columns';
+import { useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import BackButton from '../components/back-button';
+import ResultsColumns from '../components/columns/results-columns';
+import ResultsTable from '../components/tables/results-table';
+import StatsTable from '../components/tables/stats-table';
+import StatsColumns from '../components/columns/stats-columns';
 
 function Results() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -66,7 +66,7 @@ function Results() {
       <FlexColumn $gap="0">
         <ResultsColumns />
         {optionStatsArray.map((option, index) => (
-          <ResultCard
+          <ResultsTable
             key={option.id}
             $expanded={expandedIndex === index}
             option={option}
@@ -78,7 +78,7 @@ function Results() {
       <FlexColumn $gap="0">
         <StatsColumns />
         {overallStatistics.map((stat) => (
-          <StatsCard key={stat.id} title={stat.title} number={stat.data} />
+          <StatsTable key={stat.id} title={stat.title} number={stat.data} />
         ))}
       </FlexColumn>
     </FlexColumn>

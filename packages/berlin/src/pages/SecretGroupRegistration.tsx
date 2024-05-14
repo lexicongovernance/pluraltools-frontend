@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
 
 // API
-import { postUserToGroups, fetchGroupCategories, postGroup } from 'api';
+import { postUsersToGroups, fetchGroupCategories, postGroup } from 'api';
 
 // Data
 import groups from '../data/groups';
@@ -25,9 +25,13 @@ import Divider from '../components/divider';
 import Input from '../components/input';
 import ResearchGroupForm from '../components/research-group-form';
 import SecretCode from '../components/secret-code';
+import GroupsColumns from '../components/columns/groups-columns';
+import GroupsTable from '../components/tables/groups-table';
+import useUser from '../hooks/useUser';
 
 function SecretGroupRegistration() {
   const queryClient = useQueryClient();
+  const { user } = useUser();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [secretCode, setSecretCode] = useState<string | null>(null);
   const [groupName, setGroupName] = useState<string | null>(null);
@@ -57,7 +61,7 @@ function SecretGroupRegistration() {
     mutationFn: postGroup,
     onSuccess: (body) => {
       if (body) {
-        queryClient.invalidateQueries({ queryKey: ['groups'] });
+        queryClient.invalidateQueries({ queryKey: ['users-to-groups', user?.id] });
         toast.success(`Group ${groupName} created succesfully!`);
         toast.success(`Joined group ${groupName} succesfully!`);
         setIsDialogOpen(false);
@@ -70,8 +74,8 @@ function SecretGroupRegistration() {
     },
   });
 
-  const { mutate: postUserToGroupsMutation } = useMutation({
-    mutationFn: postUserToGroups,
+  const { mutate: postUsersToGroupsMutation } = useMutation({
+    mutationFn: postUsersToGroups,
     onSuccess: (body) => {
       if (!body) {
         return;
@@ -93,7 +97,7 @@ function SecretGroupRegistration() {
 
   const onSubmit = () => {
     if (isValid) {
-      postUserToGroupsMutation({ secret: getValues('secret') });
+      postUsersToGroupsMutation({ secret: getValues('secret') });
       reset();
     }
   };
@@ -103,50 +107,55 @@ function SecretGroupRegistration() {
   };
 
   return (
-    <FlexRowToColumn $gap="2rem">
-      <FlexColumn>
-        <Subtitle>{groups.create.subtitle}</Subtitle>
-        {groups.create.body.map(({ id, text }) => (
-          <Body key={id}>{text}</Body>
-        ))}
-        {groupName && secretCode && <SecretCode groupName={groupName} secretCode={secretCode} />}
-        <Dialog
-          open={isDialogOpen}
-          onOpenChange={setIsDialogOpen}
-          trigger={
-            <Button onClick={() => setIsDialogOpen(true)}>{groups.create.buttonText}</Button>
-          }
-          title={groups.create.dialog.title}
-          description={groups.create.dialog.description}
-          content={
-            <ResearchGroupForm
-              formData={groups.create.dialog.form}
-              handleCreateGroup={handleCreateGroup}
-              setGroupName={setGroupName}
-            />
-          }
-          dialogButtons={false}
-        />
-      </FlexColumn>
-      <Divider $height={330} />
-      <FlexColumn>
-        <Subtitle>{groups.join.subtitle}</Subtitle>
-        {groups.join.body.map(({ id, text }) => (
-          <Body key={id}>{text}</Body>
-        ))}
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <Input
-            label={groups.join.input.label}
-            placeholder={groups.join.input.placeholder}
-            autoComplete="off"
-            {...register('secret', { required: groups.join.input.requiredMessage })}
-            errors={errors?.secret?.message ? [errors.secret.message] : []}
-            required
+    <FlexColumn>
+      <FlexRowToColumn $gap="2rem">
+        <FlexColumn>
+          <Subtitle>{groups.create.subtitle}</Subtitle>
+          {groups.create.body.map(({ id, text }) => (
+            <Body key={id}>{text}</Body>
+          ))}
+          {groupName && secretCode && <SecretCode groupName={groupName} secretCode={secretCode} />}
+          <Dialog
+            open={isDialogOpen}
+            onOpenChange={setIsDialogOpen}
+            trigger={
+              <Button onClick={() => setIsDialogOpen(true)}>{groups.create.buttonText}</Button>
+            }
+            title={groups.create.dialog.title}
+            description={groups.create.dialog.description}
+            content={
+              <ResearchGroupForm
+                formData={groups.create.dialog.form}
+                handleCreateGroup={handleCreateGroup}
+                setGroupName={setGroupName}
+              />
+            }
+            dialogButtons={false}
           />
-          <Button type="submit">{groups.join.buttonText}</Button>
-        </Form>
-      </FlexColumn>
-    </FlexRowToColumn>
+        </FlexColumn>
+        <Divider $height={330} />
+        <FlexColumn>
+          <Subtitle>{groups.join.subtitle}</Subtitle>
+          {groups.join.body.map(({ id, text }) => (
+            <Body key={id}>{text}</Body>
+          ))}
+          <Form onSubmit={handleSubmit(onSubmit)}>
+            <Input
+              label={groups.join.input.label}
+              placeholder={groups.join.input.placeholder}
+              autoComplete="off"
+              {...register('secret', { required: groups.join.input.requiredMessage })}
+              errors={errors?.secret?.message ? [errors.secret.message] : []}
+              required
+            />
+            <Button type="submit">{groups.join.buttonText}</Button>
+          </Form>
+        </FlexColumn>
+      </FlexRowToColumn>
+      <Subtitle>Your groups</Subtitle>
+      <GroupsColumns />
+      <GroupsTable groupCategoryName={groupCategoryNameParam} />
+    </FlexColumn>
   );
 }
 
