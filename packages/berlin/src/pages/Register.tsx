@@ -231,9 +231,7 @@ function RegisterForm(props: {
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [selectedGroupId, setSelectedGroupId] = useState<string | null | undefined>(
-    props.groupId ?? 'none',
-  );
+  const [selectedGroupId, setSelectedGroupId] = useState<string>(props.groupId ?? 'none');
 
   const { data: registrationData, isLoading } = useQuery({
     queryKey: ['registrations', props.registrationId, 'data'],
@@ -327,7 +325,7 @@ function RegisterForm(props: {
         registrationId: props.registrationId || '',
         body: {
           eventId: props.event?.id || '',
-          groupId: selectedGroupId || null,
+          groupId: selectedGroupId === 'none' ? null : selectedGroupId,
           status: 'DRAFT',
           registrationData: Object.entries(values).map(([key, value]) => ({
             registrationFieldId: key,
@@ -339,7 +337,7 @@ function RegisterForm(props: {
       mutateRegistrationData({
         body: {
           eventId: props.event?.id || '',
-          groupId: selectedGroupId || null,
+          groupId: selectedGroupId === 'none' ? null : selectedGroupId,
           status: 'DRAFT',
           registrationData: Object.entries(values).map(([key, value]) => ({
             registrationFieldId: key,
@@ -431,7 +429,7 @@ function RegisterGroupSelect({
 }: {
   usersToGroups: GetUsersToGroupsResponse | null | undefined;
   selectedGroupId: string | null | undefined;
-  onChange: (groupId: string | undefined) => void;
+  onChange: (groupId: string) => void;
 }) {
   const createOptions = (usersToGroups: GetUsersToGroupsResponse | null | undefined) => {
     const userGroups = usersToGroups
@@ -450,7 +448,7 @@ function RegisterGroupSelect({
 
   return (
     <>
-      <Label $required>Select related group</Label>
+      <Label $required>Select group</Label>
       <Select
         required
         value={selectedGroupId ?? undefined}
