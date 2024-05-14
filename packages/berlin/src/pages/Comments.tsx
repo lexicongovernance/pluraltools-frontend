@@ -11,7 +11,7 @@ import {
   fetchUserVotes,
   fetchComments,
   postComment,
-  fetchOptionUsers,
+  // fetchOptionUsers,
 } from 'api';
 
 // Hooks
@@ -66,13 +66,11 @@ function Comments() {
     retry: false,
   });
 
-  const { data: optionUsers } = useQuery({
-    queryKey: ['optionUsers', optionId],
-    queryFn: () => fetchOptionUsers(optionId || ''),
-    enabled: !!optionId,
-  });
-
-  console.log('optionUsers:', optionUsers);
+  // const { data: optionUsers } = useQuery({
+  //   queryKey: ['optionUsers', optionId],
+  //   queryFn: () => fetchOptionUsers(optionId || ''),
+  //   enabled: !!optionId,
+  // });
 
   const { data: comments } = useQuery({
     queryKey: ['comments', optionId],
@@ -185,12 +183,12 @@ function Comments() {
         </FlexRow>
         <Subtitle>{option?.optionTitle}</Subtitle>
         <Body>{option?.optionSubTitle}</Body>
-        <Body>
-          <Bold>Lead author:</Bold> [// TODO]
+        {/* <Body>
+          <Bold>Lead author: {option?.user}</Bold> [// TODO]
         </Body>
         <Body>
           <Bold>Co-authors:</Bold> [// TODO]
-        </Body>
+        </Body> */}
       </FlexColumn>
 
       <Button onClick={handleSaveVotesWrapper} disabled={!votesAreDifferent}>
