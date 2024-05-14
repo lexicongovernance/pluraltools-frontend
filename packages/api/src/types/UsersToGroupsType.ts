@@ -42,5 +42,10 @@ export type PutUsersToGroupsRequest = {
   groupId: string;
 };
 
+export type DeleteUsersToGroupsRequest = {
+  userToGroupId: string;
+};
+
 export type PostUsersToGroupsResponse = UsersToGroups;
 export type PutUsersToGroupsResponse = UsersToGroups;
+export type DeleteUsersToGroupsResponse = UsersToGroups;

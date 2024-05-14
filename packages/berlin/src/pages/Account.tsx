@@ -14,6 +14,7 @@ import {
   putUser,
   putUsersToGroups,
   postUsersToGroups,
+  GetGroupsResponse,
 } from 'api';
 
 // Components
@@ -30,15 +31,13 @@ import Select from '../components/select';
 // Hooks
 import useUser from '../hooks/useUser';
 
-// Types
-import { DBEvent } from '../types/DBEventType';
-import { GetGroupsResponse } from '../types/GroupType';
 import { formatGroups } from '../utils/formatGroups';
 
 // Store
 import { useAppStore } from '../store';
 import { Body } from '../components/typography/Body.styled';
 import { useEffect, useMemo } from 'react';
+import { DBEvent } from '../types/DBEventType';
 
 const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None'];
 

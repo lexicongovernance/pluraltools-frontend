@@ -27,9 +27,11 @@ import ResearchGroupForm from '../components/research-group-form';
 import SecretCode from '../components/secret-code';
 import GroupsColumns from '../components/columns/groups-columns';
 import GroupsTable from '../components/tables/groups-table';
+import useUser from '../hooks/useUser';
 
 function SecretGroupRegistration() {
   const queryClient = useQueryClient();
+  const { user } = useUser();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [secretCode, setSecretCode] = useState<string | null>(null);
   const [groupName, setGroupName] = useState<string | null>(null);
@@ -60,6 +62,7 @@ function SecretGroupRegistration() {
     onSuccess: (body) => {
       if (body) {
         queryClient.invalidateQueries({ queryKey: ['groups'] });
+        queryClient.invalidateQueries({ queryKey: ['users-to-groups', user?.id] });
         toast.success(`Group ${groupName} created succesfully!`);
         toast.success(`Joined group ${groupName} succesfully!`);
         setIsDialogOpen(false);
@@ -152,7 +155,7 @@ function SecretGroupRegistration() {
       </FlexRowToColumn>
       <Subtitle>Your groups</Subtitle>
       <GroupsColumns />
-      <GroupsTable />
+      <GroupsTable groupCategoryName={groupCategoryNameParam} />
     </FlexColumn>
   );
 }

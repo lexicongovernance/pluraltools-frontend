@@ -1,19 +1,17 @@
-import { PostUsersToGroupsResponse, PutUsersToGroupsRequest } from './types';
+import { DeleteUsersToGroupsRequest, DeleteUsersToGroupsResponse } from './types';
 
-async function postUsersToGroups({
-  groupId,
+async function deleteUsersToGroups({
   userToGroupId,
-}: PutUsersToGroupsRequest): Promise<PostUsersToGroupsResponse | null> {
+}: DeleteUsersToGroupsRequest): Promise<DeleteUsersToGroupsResponse | null> {
   try {
     const response = await fetch(
       `${import.meta.env.VITE_SERVER_URL}/api/users-to-groups/${userToGroupId}`,
       {
-        method: 'PUT',
+        method: 'DELETE',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ groupId }),
       },
     );
 
@@ -21,10 +19,10 @@ async function postUsersToGroups({
       throw new Error(`HTTP Error! Status: ${response.status}`);
     }
 
-    const group = (await response.json()) as { data: PostUsersToGroupsResponse };
+    const group = (await response.json()) as { data: DeleteUsersToGroupsResponse };
     return group.data;
   } catch (error) {
-    console.error('Error during PUT user to groups request:', error);
+    console.error('Error during DELETE user to groups request:', error);
     if (error instanceof Error) {
       throw new Error(error.message);
     }
@@ -32,4 +30,4 @@ async function postUsersToGroups({
   }
 }
 
-export default postUsersToGroups;
+export default deleteUsersToGroups;

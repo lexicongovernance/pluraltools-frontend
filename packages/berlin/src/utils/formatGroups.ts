@@ -1,4 +1,4 @@
-import { GetGroupsResponse } from '../types/GroupType';
+import { GetGroupsResponse } from 'api';
 
 /**
  * Formats an array of group objects by sorting alphabetically and placing "Other" and "None" at the beginning.

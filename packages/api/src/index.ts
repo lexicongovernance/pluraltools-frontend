@@ -1,5 +1,6 @@
 export { default as deleteComment } from './deleteComment';
 export { default as deleteLike } from './deleteLike';
+export { default as deleteUsersToGroups } from './deleteUsersToGroups';
 export { default as fetchAlerts } from './fetchAlerts';
 export { default as fetchCommentLikes } from './fetchCommentLikes';
 export { default as fetchComments } from './fetchComments';
