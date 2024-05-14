@@ -7,25 +7,25 @@ import { useParams } from 'react-router-dom';
 import { GetCommentsResponse, deleteComment, deleteLike, fetchCommentLikes, postLike } from 'api';
 
 // Hooks
-import useUser from '../../hooks/useUser';
+import useUser from '../../../hooks/useUser';
 
 // Store
-import { useAppStore } from '../../store';
+import { useAppStore } from '../../../store';
 
 // Components
-import { FlexRow } from '../containers/FlexRow.styled';
-import Button from '../button';
-import Dialog from '../dialog';
-import IconButton from '../icon-button';
+import { FlexRow } from '../../containers/FlexRow.styled';
+import Button from '../../button';
+import Dialog from '../../dialog';
+import IconButton from '../../icon-button';
 
 // Styled Components
-import { Author, Card, Comment, FormattedDate } from './CommentCard.styled';
+import { Author, Card, Comment, FormattedDate } from './CommentsTable.styled';
 
-type CommentCardProps = {
+type CommentsTableProps = {
   comment: GetCommentsResponse[number];
 };
 
-function CommentCard({ comment }: CommentCardProps) {
+function CommentsTable({ comment }: CommentsTableProps) {
   const { optionId } = useParams();
   const theme = useAppStore((state) => state.theme);
   const queryClient = useQueryClient();
@@ -149,4 +149,4 @@ function CommentCard({ comment }: CommentCardProps) {
   );
 }
 
-export default CommentCard;
+export default CommentsTable;

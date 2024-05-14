@@ -1,15 +1,18 @@
 export type GetGroupsResponse = {
   id: string;
   name: string;
-  description: string;
+  description: string | null;
+  secret: string | null;
   createdAt: string;
   updatedAt: string;
   groupCategoryId?: string;
   groupCategory?: {
-    createdAt: string;
-    eventId: string;
     id: string;
     name: string;
+    eventId: string;
+    userCanCreate: boolean;
+    userCanView: boolean;
+    createdAt: string;
     updatedAt: string;
   };
 };

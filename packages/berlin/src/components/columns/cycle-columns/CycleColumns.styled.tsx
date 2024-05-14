@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { FlexRow } from '../containers/FlexRow.styled';
+import { FlexRow } from '../../containers/FlexRow.styled';
 
 export const Card = styled(FlexRow)`
   border-bottom: 2px solid var(--color-black);
@@ -53,7 +53,7 @@ export const Hearts = styled(FlexRow)`
   padding: 1.5rem;
 `;
 
-export const Plurality = styled(FlexRow)`
-  max-width: 5.5rem;
-  padding: 1.5rem;
-`;
+// export const Plurality = styled(FlexRow)`
+//   max-width: 5.5rem;
+//   padding: 1.5rem;
+// `;
