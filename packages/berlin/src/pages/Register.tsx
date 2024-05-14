@@ -2,7 +2,7 @@
 import { Control, Controller, FieldErrors, UseFormRegister, useForm } from 'react-hook-form';
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
 import ContentLoader from 'react-content-loader';
 import toast from 'react-hot-toast';
@@ -47,11 +47,10 @@ import Textarea from '../components/textarea';
 function Register() {
   const { user, isLoading } = useUser();
   const { eventId } = useParams();
-  const [searchParams] = useSearchParams();
-  const groupCategoryParam = searchParams.get('groupCategory');
   const [selectedRegistrationFormKey, setSelectedRegistrationFormKey] = useState<
     string | undefined
   >();
+  const [selectedGroupId, setSelectedGroupId] = useState<string | undefined>();
 
   const { data: event } = useQuery({
     queryKey: ['event', eventId],
@@ -71,17 +70,11 @@ function Register() {
     enabled: !!eventId,
   });
 
-  // this query runs if there is a groupCategory query param.
   const { data: usersToGroups } = useQuery({
     queryKey: ['user', 'groups', user?.id],
     queryFn: () => fetchUsersToGroups(user?.id || ''),
-    enabled: !!user?.id && !!groupCategoryParam,
+    enabled: !!user?.id,
   });
-
-  const groupId = useMemo(() => {
-    return usersToGroups?.find((group) => group.group.groupCategory?.name === groupCategoryParam)
-      ?.id;
-  }, [groupCategoryParam, usersToGroups]);
 
   useEffect(() => {
     // select the first registration if it exists
@@ -140,11 +133,7 @@ function Register() {
 
   const showRegistrationsSelect = (
     registrations: GetRegistrationsResponseType | null | undefined,
-    client: 'user' | 'group',
   ): boolean => {
-    if (client === 'group') {
-      return false;
-    }
     // only show select when user has previously registered
     return !!registrations && registrations.length > 0;
   };
@@ -168,19 +157,11 @@ function Register() {
     return <Subtitle>Loading...</Subtitle>;
   }
 
-  if (groupCategoryParam && !groupId) {
-    return (
-      <Subtitle>
-        User must be part of <i>{groupCategoryParam}</i> in order to register.
-      </Subtitle>
-    );
-  }
-
   return (
     <SafeArea>
       <FlexColumn $gap="1.5rem">
         {/* only show select when user has previously registered */}
-        {showRegistrationsSelect(registrations, groupId ? 'group' : 'user') && (
+        {showRegistrationsSelect(registrations) && (
           <FlexColumn $gap="0.5rem">
             <Label>Select Proposal</Label>
             <Select
@@ -190,12 +171,27 @@ function Register() {
                 name: form.name,
               }))}
               placeholder="Select a Proposal"
-              onChange={(val) => {
-                setSelectedRegistrationFormKey(val);
-              }}
+              onChange={setSelectedRegistrationFormKey}
             />
           </FlexColumn>
         )}
+        <FlexColumn $gap="0.5rem">
+          <Label>Select related group</Label>
+          <Select
+            value={selectedGroupId}
+            options={
+              usersToGroups
+                // secret groups are not allowed to view
+                ?.filter((userToGroup) => !userToGroup.group.groupCategory?.userCanView)
+                ?.map((userToGroup) => ({
+                  id: userToGroup.group.id,
+                  name: userToGroup.group.name,
+                })) ?? []
+            }
+            placeholder="Select a Group"
+            onChange={setSelectedGroupId}
+          />
+        </FlexColumn>
         {createRegistrationForms(registrations).map((form, idx) => {
           return (
             <RegisterForm
@@ -209,8 +205,7 @@ function Register() {
               registrationId={form.registrationId}
               mode={form.mode}
               event={event}
-              groupId={groupId}
-              groupCategoryParam={groupCategoryParam}
+              groupId={selectedGroupId}
             />
           );
         })}
@@ -254,7 +249,6 @@ function RegisterForm(props: {
   groupId?: string;
   show: boolean;
   mode: 'edit' | 'create';
-  groupCategoryParam: string | null;
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -304,7 +298,7 @@ function RegisterForm(props: {
         await queryClient.invalidateQueries({
           queryKey: ['registration', 'data'],
         });
-        if (props.groupCategoryParam) {
+        if (props.groupId) {
           return;
         } else {
           navigate(`/events/${props.event?.id}/holding`);
@@ -330,7 +324,7 @@ function RegisterForm(props: {
         await queryClient.invalidateQueries({
           queryKey: [props.registrationId, 'registration', 'data'],
         });
-        if (props.groupCategoryParam) {
+        if (props.groupId) {
           return;
         } else {
           navigate(`/events/${props.event?.id}/holding`);
