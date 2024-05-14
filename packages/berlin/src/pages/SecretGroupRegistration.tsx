@@ -61,7 +61,6 @@ function SecretGroupRegistration() {
     mutationFn: postGroup,
     onSuccess: (body) => {
       if (body) {
-        queryClient.invalidateQueries({ queryKey: ['groups'] });
         queryClient.invalidateQueries({ queryKey: ['users-to-groups', user?.id] });
         toast.success(`Group ${groupName} created succesfully!`);
         toast.success(`Joined group ${groupName} succesfully!`);

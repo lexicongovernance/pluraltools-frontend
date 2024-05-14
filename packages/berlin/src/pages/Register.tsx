@@ -15,6 +15,7 @@ import {
   fetchRegistrations,
   fetchUsersToGroups,
   GetRegistrationsResponseType,
+  GetUsersToGroupsResponse,
   postRegistration,
   putRegistration,
   type GetRegistrationDataResponse,
@@ -50,7 +51,6 @@ function Register() {
   const [selectedRegistrationFormKey, setSelectedRegistrationFormKey] = useState<
     string | undefined
   >();
-  const [selectedGroupId, setSelectedGroupId] = useState<string | undefined>();
 
   const { data: event } = useQuery({
     queryKey: ['event', eventId],
@@ -98,29 +98,23 @@ function Register() {
   const createRegistrationForms = (
     registrations: GetRegistrationsResponseType | undefined | null,
   ) => {
-    // max 5 registrations
-    // when there are no registrations, return an array of 5 empty objects with id 'empty'
-    // the name should be the index of the array + 1
-
     const sortedRegistrationsByCreationDate = sortRegistrationsByCreationDate(registrations || []);
 
     const registrationForms: {
       key: string | 'create';
       registrationId?: string;
+      groupId?: string;
       name: string;
       mode: 'edit' | 'create';
     }[] = sortedRegistrationsByCreationDate.map((reg, idx) => {
       return {
         key: reg.id || '',
         registrationId: reg.id,
+        groupId: reg.groupId ?? undefined,
         name: `Proposal ${idx + 1}`,
         mode: 'edit',
       };
     });
-
-    if (registrationForms.length >= 5) {
-      return registrationForms;
-    }
 
     registrationForms.push({
       key: 'create',
@@ -175,23 +169,6 @@ function Register() {
             />
           </FlexColumn>
         )}
-        <FlexColumn $gap="0.5rem">
-          <Label>Select related group</Label>
-          <Select
-            value={selectedGroupId}
-            options={
-              usersToGroups
-                // secret groups are not allowed to view
-                ?.filter((userToGroup) => !userToGroup.group.groupCategory?.userCanView)
-                ?.map((userToGroup) => ({
-                  id: userToGroup.group.id,
-                  name: userToGroup.group.name,
-                })) ?? []
-            }
-            placeholder="Select a Group"
-            onChange={setSelectedGroupId}
-          />
-        </FlexColumn>
         {createRegistrationForms(registrations).map((form, idx) => {
           return (
             <RegisterForm
@@ -199,13 +176,14 @@ function Register() {
                 selectedRegistrationFormKey,
                 registrationId: form.registrationId,
               })}
+              usersToGroups={usersToGroups}
               key={idx}
               user={user}
+              groupId={form.groupId}
               registrationFields={registrationFields}
               registrationId={form.registrationId}
               mode={form.mode}
               event={event}
-              groupId={selectedGroupId}
             />
           );
         })}
@@ -243,15 +221,19 @@ const filterRegistrationFields = (
 
 function RegisterForm(props: {
   user: GetUserResponse | null | undefined;
-  registrationFields?: GetRegistrationFieldsResponse | null | undefined;
-  registrationId?: string | null | undefined;
+  usersToGroups: GetUsersToGroupsResponse | null | undefined;
+  registrationFields: GetRegistrationFieldsResponse | null | undefined;
+  registrationId: string | null | undefined;
+  groupId: string | null | undefined;
   event: DBEvent | null | undefined;
-  groupId?: string;
   show: boolean;
   mode: 'edit' | 'create';
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null | undefined>(
+    props.groupId ?? 'none',
+  );
 
   const { data: registrationData, isLoading } = useQuery({
     queryKey: ['registrations', props.registrationId, 'data'],
@@ -278,14 +260,14 @@ function RegisterForm(props: {
   const sortedRegistrationFields = useMemo(() => {
     const sortedFields = filterRegistrationFields(
       props.registrationFields || [],
-      props.groupId ? 'group' : 'user',
+      selectedGroupId === 'none' ? 'user' : 'group',
     );
 
     // Sort by field_display_rank in ascending order
     sortedFields?.sort((a, b) => (a.fieldDisplayRank || 0) - (b.fieldDisplayRank || 0));
 
     return sortedFields;
-  }, [props.registrationFields, props.groupId]);
+  }, [props.registrationFields, selectedGroupId]);
 
   const { mutate: mutateRegistrationData } = useMutation({
     mutationFn: postRegistration,
@@ -298,7 +280,7 @@ function RegisterForm(props: {
         await queryClient.invalidateQueries({
           queryKey: ['registration', 'data'],
         });
-        if (props.groupId) {
+        if (selectedGroupId) {
           return;
         } else {
           navigate(`/events/${props.event?.id}/holding`);
@@ -324,7 +306,7 @@ function RegisterForm(props: {
         await queryClient.invalidateQueries({
           queryKey: [props.registrationId, 'registration', 'data'],
         });
-        if (props.groupId) {
+        if (selectedGroupId) {
           return;
         } else {
           navigate(`/events/${props.event?.id}/holding`);
@@ -345,7 +327,7 @@ function RegisterForm(props: {
         registrationId: props.registrationId || '',
         body: {
           eventId: props.event?.id || '',
-          groupId: props.groupId || null,
+          groupId: selectedGroupId || null,
           status: 'DRAFT',
           registrationData: Object.entries(values).map(([key, value]) => ({
             registrationFieldId: key,
@@ -357,7 +339,7 @@ function RegisterForm(props: {
       mutateRegistrationData({
         body: {
           eventId: props.event?.id || '',
-          groupId: props.groupId || null,
+          groupId: selectedGroupId || null,
           status: 'DRAFT',
           registrationData: Object.entries(values).map(([key, value]) => ({
             registrationFieldId: key,
@@ -406,6 +388,11 @@ function RegisterForm(props: {
 
   return props.show ? (
     <FlexColumn>
+      <RegisterGroupSelect
+        usersToGroups={props.usersToGroups}
+        selectedGroupId={selectedGroupId}
+        onChange={setSelectedGroupId}
+      />
       <Subtitle>{props.event?.registrationDescription}</Subtitle>
       <Form>
         {sortedRegistrationFields?.map((regField) => (
@@ -434,6 +421,44 @@ function RegisterForm(props: {
     </FlexColumn>
   ) : (
     <></>
+  );
+}
+
+function RegisterGroupSelect({
+  usersToGroups,
+  selectedGroupId,
+  onChange,
+}: {
+  usersToGroups: GetUsersToGroupsResponse | null | undefined;
+  selectedGroupId: string | null | undefined;
+  onChange: (groupId: string | undefined) => void;
+}) {
+  const createOptions = (usersToGroups: GetUsersToGroupsResponse | null | undefined) => {
+    const userGroups = usersToGroups
+      // filter out groups that the user cannot view because they would be secret
+      ?.filter((userToGroup) => !userToGroup.group.groupCategory?.userCanView)
+      ?.map((userToGroup) => ({
+        id: userToGroup.group.id,
+        name: userToGroup.group.name,
+      }));
+
+    // add an option for the user to select themselves
+    userGroups?.unshift({ id: 'none', name: 'None' });
+
+    return userGroups;
+  };
+
+  return (
+    <>
+      <Label $required>Select related group</Label>
+      <Select
+        required
+        value={selectedGroupId ?? undefined}
+        options={createOptions(usersToGroups) || []}
+        placeholder="Select a Group"
+        onChange={onChange}
+      />
+    </>
   );
 }
 
