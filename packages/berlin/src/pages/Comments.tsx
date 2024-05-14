@@ -5,7 +5,14 @@ import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 
 // API
-import { fetchOption, postVotes, fetchUserVotes, fetchComments, postComment } from 'api';
+import {
+  fetchOption,
+  postVotes,
+  fetchUserVotes,
+  fetchComments,
+  postComment,
+  fetchOptionUsers,
+} from 'api';
 
 // Hooks
 import useUser from '../hooks/useUser';
@@ -58,6 +65,15 @@ function Comments() {
     enabled: !!user?.id && !!cycleId,
     retry: false,
   });
+
+  const { data: optionUsers } = useQuery({
+    queryKey: ['optionUsers', optionId],
+    queryFn: () => fetchOptionUsers(optionId || ''),
+    enabled: !!optionId,
+  });
+
+  console.log('optionUsers:', optionUsers);
+
   const { data: comments } = useQuery({
     queryKey: ['comments', optionId],
     queryFn: () => fetchComments({ optionId: optionId || '' }),
