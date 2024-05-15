@@ -188,6 +188,11 @@ function Register() {
                 registrationId: form.registrationId,
               })}
               usersToGroups={usersToGroups}
+              userIsApproved={
+                registrations?.some((registration) => registration.status === 'APPROVED')
+                  ? true
+                  : false
+              }
               key={idx}
               user={user}
               groupId={form.groupId}
@@ -233,6 +238,7 @@ const filterRegistrationFields = (
 
 function RegisterForm(props: {
   user: GetUserResponse | null | undefined;
+  userIsApproved: boolean;
   usersToGroups: GetUsersToGroupsResponse | null | undefined;
   registrationFields: GetRegistrationFieldsResponse | null | undefined;
   registrationId: string | null | undefined;
@@ -280,6 +286,12 @@ function RegisterForm(props: {
     return sortedFields;
   }, [props.registrationFields, selectedGroupId]);
 
+  const redirectToHoldingPage = (isApproved: boolean) => {
+    if (!isApproved) {
+      navigate(`/events/${props.event?.id}/holding`);
+    }
+  };
+
   const { mutate: mutateRegistrationData, isPending } = useMutation({
     mutationFn: postRegistration,
     onSuccess: async (body) => {
@@ -294,11 +306,7 @@ function RegisterForm(props: {
 
         props.onRegistrationFormCreate?.(body.id);
 
-        if (selectedGroupId) {
-          return;
-        } else {
-          navigate(`/events/${props.event?.id}/holding`);
-        }
+        redirectToHoldingPage(props.userIsApproved);
       } else {
         toast.error('Failed to save registration, please try again');
       }
@@ -314,17 +322,15 @@ function RegisterForm(props: {
     onSuccess: async (body) => {
       if (body) {
         toast.success('Registration updated successfully!');
+
         await queryClient.invalidateQueries({
           queryKey: [props.registrationId, 'registration'],
         });
         await queryClient.invalidateQueries({
           queryKey: [props.registrationId, 'registration', 'data'],
         });
-        if (selectedGroupId) {
-          return;
-        } else {
-          navigate(`/events/${props.event?.id}/holding`);
-        }
+
+        redirectToHoldingPage(props.userIsApproved);
       } else {
         toast.error('Failed to update registration, please try again');
       }
