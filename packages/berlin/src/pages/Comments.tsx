@@ -12,6 +12,7 @@ import {
   fetchComments,
   postComment,
   fetchOptionUsers,
+  fetchCycle,
 } from 'api';
 
 // Hooks
@@ -40,15 +41,15 @@ import CommentsColumns from '../components/columns/comments-columns';
 import IconButton from '../components/icon-button';
 import Textarea from '../components/textarea';
 
+type LocalUserVotes = ResponseUserVotesType | { optionId: string; numOfVotes: number }[];
+
 function Comments() {
   const theme = useAppStore((state) => state.theme);
   const queryClient = useQueryClient();
   const { cycleId, optionId } = useParams();
   const { user } = useUser();
   const { availableHearts, setAvailableHearts } = useAppStore((state) => state);
-  const [localUserVotes, setLocalUserVotes] = useState<
-    ResponseUserVotesType | { optionId: string; numOfVotes: number }[]
-  >([]);
+  const [localUserVotes, setLocalUserVotes] = useState<LocalUserVotes>([]);
   const [localOptionHearts, setLocalOptionHearts] = useState(0);
   const [comment, setComment] = useState('');
   const [sortOrder, setSortOrder] = useState('desc'); // 'asc' for ascending, 'desc' for descending
@@ -76,7 +77,7 @@ function Comments() {
     queryKey: ['comments', optionId],
     queryFn: () => fetchComments({ optionId: optionId || '' }),
     enabled: !!optionId,
-    refetchInterval: 5000, // Poll every 5 seconds
+    // refetchInterval: 5000, // Poll every 5 seconds
   });
 
   const sortedComments = useMemo(() => {
@@ -97,20 +98,6 @@ function Comments() {
     }
   }, [optionId, userVotes]);
 
-  const { mutate: mutateVotes } = useMutation({
-    mutationFn: postVotes,
-    onSuccess: (body) => {
-      if (body?.errors?.length) {
-        toast.error(`Failed to save votes, ${body?.errors[0].message}`);
-      } else if (body?.data.length) {
-        queryClient.invalidateQueries({ queryKey: ['votes', cycleId] });
-        // this is to update the plural scores in each option
-        queryClient.invalidateQueries({ queryKey: ['cycles', cycleId] });
-        toast.success('Votes saved successfully!');
-      }
-    },
-  });
-
   const { mutate: mutateComments } = useMutation({
     mutationFn: postComment,
     onSuccess: (body) => {
@@ -130,18 +117,23 @@ function Comments() {
     handleUnvote(optionId, availableHearts, setAvailableHearts, setLocalUserVotes);
   };
 
-  const handleSaveVotesWrapper = () => {
+  const { mutate: mutateVotes } = useMutation({
+    mutationFn: postVotes,
+    onSuccess: (body) => {
+      if (body?.errors?.length) {
+        toast.error(`Failed to save votes, ${body?.errors[0].message}`);
+      } else if (body?.data.length) {
+        queryClient.invalidateQueries({ queryKey: ['votes', cycleId] });
+        // this is to update the plural scores in each option
+        queryClient.invalidateQueries({ queryKey: ['cycles', cycleId] });
+        toast.success('Votes saved successfully!');
+      }
+    },
+  });
+
+  const handleSaveVoteWrapper = () => {
     handleSaveVotes(userVotes, localUserVotes, mutateVotes);
   };
-
-  const votesAreDifferent = useMemo(() => {
-    if (localUserVotes && userVotes) {
-      return (
-        localUserVotes[0]?.numOfVotes !==
-        userVotes?.find((vote) => vote.optionId === optionId)?.numOfVotes
-      );
-    }
-  }, [localUserVotes, optionId, userVotes]);
 
   const handlePostComment = () => {
     if (optionId && comment) {
@@ -194,9 +186,7 @@ function Comments() {
         )}
       </FlexColumn>
 
-      <Button onClick={handleSaveVotesWrapper} disabled={!votesAreDifferent}>
-        Save votes
-      </Button>
+      <Button onClick={handleSaveVoteWrapper}>Save votes</Button>
       <Form>
         <Textarea
           label="Leave a comment:"
