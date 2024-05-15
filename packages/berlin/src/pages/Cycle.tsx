@@ -35,6 +35,7 @@ type Order = 'asc' | 'desc';
 type LocalUserVotes = ResponseUserVotesType | { optionId: string; numOfVotes: number }[];
 
 const initialHearts = 20;
+const fiveMinutesInSeconds = 300;
 
 function Cycle() {
   const queryClient = useQueryClient();
@@ -186,28 +187,23 @@ function Cycle() {
       order: prevSorting.column === column && prevSorting.order === 'asc' ? 'desc' : 'asc',
     }));
   };
-
-  let voteInfo = '';
-
-  switch (cycleState) {
-    case 'closed':
-      voteInfo = 'Vote has ended.';
-      break;
-    case 'upcoming':
-      voteInfo = `Vote opens in: ${formattedTime}`;
-      break;
-    case 'open':
-      if (time && time < 301) {
-        voteInfo = `Vote closes in: ${formattedTime}`;
-      } else if (time === 0) {
-        voteInfo = 'Vote has ended.';
-      }
-      break;
-    default:
-      voteInfo = '';
-  }
-
-  <Body>{voteInfo}</Body>;
+  const voteInfo = useMemo(() => {
+    switch (cycleState) {
+      case 'closed':
+        return 'Vote has ended.';
+      case 'upcoming':
+        return `Vote opens in: ${formattedTime}`;
+      case 'open':
+        if (time && time <= fiveMinutesInSeconds) {
+          return `Vote closes in: ${formattedTime}`;
+        } else if (time === 0) {
+          return 'Vote has ended.';
+        }
+        return `Vote closes in: ${formattedTime}`;
+      default:
+        return '';
+    }
+  }, [cycleState, time, formattedTime]);
 
   return (
     <FlexColumn $gap="2rem">
