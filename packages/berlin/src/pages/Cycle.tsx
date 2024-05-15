@@ -35,6 +35,7 @@ type Order = 'asc' | 'desc';
 type LocalUserVotes = ResponseUserVotesType | { optionId: string; numOfVotes: number }[];
 
 const initialHearts = 20;
+const fiveMinutesInSeconds = 300;
 
 function Cycle() {
   const queryClient = useQueryClient();
@@ -68,7 +69,25 @@ function Cycle() {
     }
   }, [cycle]);
 
-  const { formattedTime, cycleState } = useCountdown(startAt, endAt);
+  const { formattedTime, cycleState, time } = useCountdown(startAt, endAt);
+
+  const voteInfo = useMemo(() => {
+    switch (cycleState) {
+      case 'closed':
+        return 'Vote has ended.';
+      case 'upcoming':
+        return `Vote opens in: ${formattedTime}`;
+      case 'open':
+        if (time && time <= fiveMinutesInSeconds) {
+          return `Vote closes in: ${formattedTime}`;
+        } else if (time === 0) {
+          return 'Vote has ended.';
+        }
+        return '';
+      default:
+        return '';
+    }
+  }, [cycleState, time, formattedTime]);
 
   const updateVotesAndHearts = (votes: ResponseUserVotesType) => {
     const givenVotes = votes
@@ -100,6 +119,7 @@ function Cycle() {
     if (userVotes?.length) {
       updateVotesAndHearts(userVotes);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userVotes]);
 
   const { mutate: mutateVotes } = useMutation({
@@ -192,13 +212,7 @@ function Cycle() {
       <FlexColumn>
         <BackButton />
         <Title>{currentCycle?.questionTitle}</Title>
-        <Body>
-          {cycleState === 'closed'
-            ? 'Vote has ended.'
-            : cycleState === 'upcoming'
-              ? `Vote opens in: ${formattedTime}`
-              : `Vote closes in: ${formattedTime}`}
-        </Body>
+        <Body>{voteInfo}</Body>
         <Body>
           You have <Bold>{availableHearts}</Bold> hearts left to give away:
         </Body>

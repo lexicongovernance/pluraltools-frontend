@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 interface Countdown {
   formattedTime: string;
   cycleState: string;
+  time: number | null;
 }
 
 const useCountdown = (startAt: string | null, endAt: string | null): Countdown => {
@@ -11,8 +12,8 @@ const useCountdown = (startAt: string | null, endAt: string | null): Countdown =
 
   useEffect(() => {
     if (startAt && endAt) {
-      const startTimestamp = new Date(startAt).getTime() / 1000;
-      const endTimestamp = new Date(endAt).getTime() / 1000;
+      const startTimestamp = Math.floor(new Date(startAt).getTime() / 1000);
+      const endTimestamp = Math.floor(new Date(endAt).getTime() / 1000);
       const now = Math.floor(Date.now() / 1000);
 
       if (now < startTimestamp) {
@@ -64,7 +65,7 @@ const useCountdown = (startAt: string | null, endAt: string | null): Countdown =
     )}`;
   };
 
-  return { formattedTime: calculateTime(), cycleState };
+  return { formattedTime: calculateTime(), cycleState, time };
 };
 
 export default useCountdown;
