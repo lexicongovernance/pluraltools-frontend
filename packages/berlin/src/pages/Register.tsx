@@ -78,14 +78,20 @@ function Register() {
 
   useEffect(() => {
     // select the first registration if it exists
-    if (registrations && registrations.length && registrations[0].id) {
+    // and no registration form is selected
+    if (
+      registrations &&
+      registrations.length &&
+      registrations[0].id &&
+      !selectedRegistrationFormKey
+    ) {
       const firstRegistrationId = sortRegistrationsByCreationDate(registrations)[0].id;
 
       if (firstRegistrationId) {
         setSelectedRegistrationFormKey(firstRegistrationId);
       }
     }
-  }, [registrations]);
+  }, [registrations, selectedRegistrationFormKey]);
 
   const sortRegistrationsByCreationDate = (registrations: GetRegistrationResponseType[]) => {
     return [
@@ -147,6 +153,11 @@ function Register() {
     return registrationId === selectedRegistrationFormKey;
   };
 
+  const onRegistrationFormCreate = (newRegistrationId: string) => {
+    // select the newly created registration form
+    setSelectedRegistrationFormKey(newRegistrationId);
+  };
+
   if (isLoading) {
     return <Subtitle>Loading...</Subtitle>;
   }
@@ -184,6 +195,7 @@ function Register() {
               registrationId={form.registrationId}
               mode={form.mode}
               event={event}
+              onRegistrationFormCreate={onRegistrationFormCreate}
             />
           );
         })}
@@ -228,13 +240,14 @@ function RegisterForm(props: {
   event: DBEvent | null | undefined;
   show: boolean;
   mode: 'edit' | 'create';
+  onRegistrationFormCreate?: (newRegistrationId: string) => void;
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [selectedGroupId, setSelectedGroupId] = useState<string>(props.groupId ?? 'none');
 
   const { data: registrationData, isLoading } = useQuery({
-    queryKey: ['registrations', props.registrationId, 'data'],
+    queryKey: ['registrations', props.registrationId, 'registration-data'],
     queryFn: () => fetchRegistrationData(props.registrationId || ''),
     enabled: !!props.registrationId,
   });
@@ -267,17 +280,20 @@ function RegisterForm(props: {
     return sortedFields;
   }, [props.registrationFields, selectedGroupId]);
 
-  const { mutate: mutateRegistrationData } = useMutation({
+  const { mutate: mutateRegistrationData, isPending } = useMutation({
     mutationFn: postRegistration,
     onSuccess: async (body) => {
       if (body) {
         toast.success('Registration saved successfully!');
         await queryClient.invalidateQueries({
-          queryKey: ['registration'],
+          queryKey: ['event', body.eventId, 'registrations'],
         });
         await queryClient.invalidateQueries({
-          queryKey: ['registration', 'data'],
+          queryKey: ['registrations', body.id, 'registration-data'],
         });
+
+        props.onRegistrationFormCreate?.(body.id);
+
         if (selectedGroupId) {
           return;
         } else {
@@ -410,7 +426,7 @@ function RegisterForm(props: {
           />
         ))}
       </Form>
-      <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>
+      <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting || isPending}>
         Save
       </Button>
       <Body>
