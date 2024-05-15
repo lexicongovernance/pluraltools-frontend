@@ -71,6 +71,24 @@ function Cycle() {
 
   const { formattedTime, cycleState, time } = useCountdown(startAt, endAt);
 
+  const voteInfo = useMemo(() => {
+    switch (cycleState) {
+      case 'closed':
+        return 'Vote has ended.';
+      case 'upcoming':
+        return `Vote opens in: ${formattedTime}`;
+      case 'open':
+        if (time && time <= fiveMinutesInSeconds) {
+          return `Vote closes in: ${formattedTime}`;
+        } else if (time === 0) {
+          return 'Vote has ended.';
+        }
+        return '';
+      default:
+        return '';
+    }
+  }, [cycleState, time, formattedTime]);
+
   const updateVotesAndHearts = (votes: ResponseUserVotesType) => {
     const givenVotes = votes
       .map((option) => option.numOfVotes)
@@ -101,6 +119,7 @@ function Cycle() {
     if (userVotes?.length) {
       updateVotesAndHearts(userVotes);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userVotes]);
 
   const { mutate: mutateVotes } = useMutation({
@@ -187,23 +206,6 @@ function Cycle() {
       order: prevSorting.column === column && prevSorting.order === 'asc' ? 'desc' : 'asc',
     }));
   };
-  const voteInfo = useMemo(() => {
-    switch (cycleState) {
-      case 'closed':
-        return 'Vote has ended.';
-      case 'upcoming':
-        return `Vote opens in: ${formattedTime}`;
-      case 'open':
-        if (time && time <= fiveMinutesInSeconds) {
-          return `Vote closes in: ${formattedTime}`;
-        } else if (time === 0) {
-          return 'Vote has ended.';
-        }
-        return `Vote closes in: ${formattedTime}`;
-      default:
-        return '';
-    }
-  }, [cycleState, time, formattedTime]);
 
   return (
     <FlexColumn $gap="2rem">
