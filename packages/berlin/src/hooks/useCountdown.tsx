@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 interface Countdown {
   formattedTime: string;
   cycleState: string;
+  time: number | null;
 }
 
 const useCountdown = (startAt: string | null, endAt: string | null): Countdown => {
@@ -64,7 +65,7 @@ const useCountdown = (startAt: string | null, endAt: string | null): Countdown =
     )}`;
   };
 
-  return { formattedTime: calculateTime(), cycleState };
+  return { formattedTime: calculateTime(), cycleState, time };
 };
 
 export default useCountdown;
