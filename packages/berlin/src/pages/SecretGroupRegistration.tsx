@@ -39,7 +39,10 @@ function SecretGroupRegistration() {
   const groupCategoryNameParam = searchParams.get('groupCategory');
 
   const secretGroupRegistrationSchema = z.object({
-    secret: z.string().length(12, { message: 'Research Group code must be 12 characters long' }),
+    secret: z.string().refine((val) => /^(\w{3,})-(\w{3,})-(\w{3,})$/.test(val), {
+      message:
+        'Secret must be in the format word-word-word, with each word having at least 3 characters',
+    }),
   });
   const {
     formState: { errors, isValid },
