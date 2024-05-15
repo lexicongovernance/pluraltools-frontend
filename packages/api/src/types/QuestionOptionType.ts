@@ -6,16 +6,6 @@ export type QuestionOption = {
   optionTitle: string;
   optionSubTitle?: string;
   accepted: boolean;
-  voteScore: number;
-  user: {
-    group: {
-      id: string;
-      name: string;
-    };
-    username: string;
-    firstName?: string;
-    lastName?: string;
-  };
 };
 
 export type GetQuestionOptionRequest = {
