@@ -431,7 +431,7 @@ function RegisterGroupSelect({
   selectedGroupId: string | null | undefined;
   onChange: (groupId: string) => void;
 }) {
-  const createOptions = (usersToGroups: GetUsersToGroupsResponse | null | undefined) => {
+  const userGroups = useMemo(() => {
     const userGroups = usersToGroups
       // filter out groups that the user cannot view because they would be secret
       ?.filter((userToGroup) => !userToGroup.group.groupCategory?.userCanView)
@@ -444,19 +444,23 @@ function RegisterGroupSelect({
     userGroups?.unshift({ id: 'none', name: 'None' });
 
     return userGroups;
-  };
+  }, [usersToGroups]);
 
+  // n > 1 because the user is always in the 'none' group
   return (
-    <>
-      <Label $required>Select group</Label>
-      <Select
-        required
-        value={selectedGroupId ?? undefined}
-        options={createOptions(usersToGroups) || []}
-        placeholder="Select a Group"
-        onChange={onChange}
-      />
-    </>
+    userGroups &&
+    userGroups.length > 1 && (
+      <>
+        <Label $required>Select group</Label>
+        <Select
+          required
+          value={selectedGroupId ?? undefined}
+          options={userGroups || []}
+          placeholder="Select a Group"
+          onChange={onChange}
+        />
+      </>
+    )
   );
 }
 
