@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import useUser from '../hooks/useUser';
 
 // API
-import { fetchGroups, postUsersToGroups } from 'api';
+import { fetchGroups, postUsersToGroups, fetchUsersToGroups, putUsersToGroups } from 'api';
 
 // Data
 import publicGroups from '../data/publicGroups';
@@ -48,6 +48,12 @@ function PublicGroupRegistration() {
     enabled: !!user?.id && !!groupCategoryNameParam,
   });
 
+  const { data: usersToGroups } = useQuery({
+    queryKey: ['user', user?.id, 'groups'],
+    queryFn: () => fetchUsersToGroups(user?.id || ''),
+    enabled: !!user?.id,
+  });
+
   const selectData = groups?.map((group) => ({ id: group.id, name: group.name })) ?? [];
 
   const { mutate: postUsersToGroupsMutation } = useMutation({
@@ -56,8 +62,22 @@ function PublicGroupRegistration() {
       if (!body) {
         return;
       }
-      queryClient.invalidateQueries({ queryKey: ['user', 'groups'] });
-      toast.success(`Joined ${groupCategoryNameParam} group succesfully!`);
+      queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'groups'] });
+      toast.success(`Joined ${groupCategoryNameParam} group successfully!`);
+    },
+    onError: () => {
+      toast.error('Something went wrong.');
+    },
+  });
+
+  const { mutate: putUsersToGroupsMutation } = useMutation({
+    mutationFn: putUsersToGroups,
+    onSuccess: (body) => {
+      if (!body) {
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'groups'] });
+      toast.success(`Updated ${groupCategoryNameParam} group successfully!`);
     },
     onError: () => {
       toast.error('Something went wrong.');
@@ -66,6 +86,22 @@ function PublicGroupRegistration() {
 
   const onSubmit = () => {
     if (isValid) {
+      // If the user is already in the category group, update the userToGroup
+      const userToGroup = usersToGroups?.find(
+        (userToGroup) => userToGroup.group.groupCategory?.name === groupCategoryNameParam,
+      );
+
+      if (userToGroup) {
+        putUsersToGroupsMutation({
+          userToGroupId: userToGroup.id,
+          groupId: getValues('group'),
+        });
+        setValue('group', '');
+        reset();
+        return;
+      }
+
+      // If the user is not in the category group, create a new userToGroup
       postUsersToGroupsMutation({ groupId: getValues('group') });
       setValue('group', '');
       reset();

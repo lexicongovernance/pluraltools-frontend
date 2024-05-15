@@ -93,8 +93,8 @@ function GroupsTable({ groupCategoryName }: { groupCategoryName?: string | null 
   const theme = useAppStore((state) => state.theme);
 
   const { data: usersToGroups } = useQuery({
+    queryKey: ['user', user?.id, 'groups'],
     queryFn: () => fetchUsersToGroups(user?.id || ''),
-    queryKey: ['users-to-groups', user?.id],
     enabled: !!user?.id,
   });
 
