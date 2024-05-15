@@ -68,7 +68,7 @@ function Cycle() {
     }
   }, [cycle]);
 
-  const { formattedTime, cycleState } = useCountdown(startAt, endAt);
+  const { formattedTime, cycleState, time } = useCountdown(startAt, endAt);
 
   const updateVotesAndHearts = (votes: ResponseUserVotesType) => {
     const givenVotes = votes
@@ -187,18 +187,34 @@ function Cycle() {
     }));
   };
 
+  let voteInfo = '';
+
+  switch (cycleState) {
+    case 'closed':
+      voteInfo = 'Vote has ended.';
+      break;
+    case 'upcoming':
+      voteInfo = `Vote opens in: ${formattedTime}`;
+      break;
+    case 'open':
+      if (time && time < 301) {
+        voteInfo = `Vote closes in: ${formattedTime}`;
+      } else if (time === 0) {
+        voteInfo = 'Vote has ended.';
+      }
+      break;
+    default:
+      voteInfo = '';
+  }
+
+  <Body>{voteInfo}</Body>;
+
   return (
     <FlexColumn $gap="2rem">
       <FlexColumn>
         <BackButton />
         <Title>{currentCycle?.questionTitle}</Title>
-        <Body>
-          {cycleState === 'closed'
-            ? 'Vote has ended.'
-            : cycleState === 'upcoming'
-              ? `Vote opens in: ${formattedTime}`
-              : `Vote closes in: ${formattedTime}`}
-        </Body>
+        <Body>{voteInfo}</Body>
         <Body>
           You have <Bold>{availableHearts}</Bold> hearts left to give away:
         </Body>
