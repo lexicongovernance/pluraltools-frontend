@@ -55,7 +55,19 @@ function PublicGroupRegistration() {
     enabled: !!user?.id,
   });
 
-  const selectData = groups?.map((group) => ({ id: group.id, name: group.name })) ?? [];
+  const selectData = [
+    ...(groups
+      ?.map((group) => ({ id: group.id, name: group.name }))
+      // sort name
+      .sort((a, b) => {
+        // check if name is number
+        if (!isNaN(a.name as unknown as number) && !isNaN(b.name as unknown as number)) {
+          return (a.name as unknown as number) - (b.name as unknown as number);
+        }
+        // compare alphabetically
+        return (a.name as string).localeCompare(b.name as string);
+      }) ?? []),
+  ];
 
   const prevUserToGroup = useMemo(
     () =>
