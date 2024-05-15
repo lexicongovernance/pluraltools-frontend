@@ -20,6 +20,7 @@ import { Form } from '../components/containers/Form.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import Button from '../components/button';
 import Select from '../components/select';
+import { useMemo } from 'react';
 
 function PublicGroupRegistration() {
   const { user } = useUser();
@@ -56,6 +57,14 @@ function PublicGroupRegistration() {
 
   const selectData = groups?.map((group) => ({ id: group.id, name: group.name })) ?? [];
 
+  const prevUserToGroup = useMemo(
+    () =>
+      usersToGroups?.find(
+        (userToGroup) => userToGroup.group.groupCategory?.name === groupCategoryNameParam,
+      ),
+    [usersToGroups, groupCategoryNameParam],
+  );
+
   const { mutate: postUsersToGroupsMutation } = useMutation({
     mutationFn: postUsersToGroups,
     onSuccess: (body) => {
@@ -87,13 +96,9 @@ function PublicGroupRegistration() {
   const onSubmit = () => {
     if (isValid) {
       // If the user is already in the category group, update the userToGroup
-      const userToGroup = usersToGroups?.find(
-        (userToGroup) => userToGroup.group.groupCategory?.name === groupCategoryNameParam,
-      );
-
-      if (userToGroup) {
+      if (prevUserToGroup) {
         putUsersToGroupsMutation({
-          userToGroupId: userToGroup.id,
+          userToGroupId: prevUserToGroup.id,
           groupId: getValues('group'),
         });
         setValue('group', '');
@@ -122,7 +127,11 @@ function PublicGroupRegistration() {
           render={({ field }) => (
             <Select
               label={`${capitalizedParam} group`}
-              placeholder={field.value ? field.value : `Select a ${groupCategoryNameParam} group`}
+              placeholder={
+                prevUserToGroup
+                  ? prevUserToGroup.group.name
+                  : `Select a ${groupCategoryNameParam} group`
+              }
               options={selectData}
               value={field.value}
               errors={[errors.group?.message ?? '']}
