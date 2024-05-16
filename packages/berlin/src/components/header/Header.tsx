@@ -38,6 +38,7 @@ import {
   LogoTextContainer,
   ThemeButton,
 } from './Header.styled';
+import IconButton from '../icon-button';
 
 function Header() {
   const queryClient = useQueryClient();
@@ -117,10 +118,15 @@ function Header() {
                       </NavButton>
                     </>
                   )}
-                  <NavButton to="/account" $color="secondary">
-                    Account
+                  <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
+                    My proposals
                   </NavButton>
                   <Button onClick={() => mutateLogout()}>Log out</Button>
+                  <IconButton
+                    onClick={() => navigate('/account')}
+                    icon={{ src: `/icons/user-${theme}.svg`, alt: 'User' }}
+                    $color="primary"
+                  />
                 </>
               ) : (
                 <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
@@ -162,6 +168,9 @@ function Header() {
                       </NavButton>
                     </>
                   )}
+                  <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
+                    My proposals
+                  </NavButton>
                   <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>
