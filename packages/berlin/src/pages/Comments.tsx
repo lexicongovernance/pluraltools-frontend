@@ -11,14 +11,19 @@ import {
   fetchUserVotes,
   fetchComments,
   postComment,
-  // fetchOptionUsers,
+  fetchOptionUsers,
 } from 'api';
 
 // Hooks
 import useUser from '../hooks/useUser';
 
 // Utils
-import { handleSaveVotes, handleUnvote, handleVote } from '../utils/voting';
+import {
+  handleSaveVotes,
+  handleAvailableHearts,
+  handleLocalUnVote,
+  handleLocalVote,
+} from '../utils/voting';
 
 // Types
 import { ResponseUserVotesType } from '../types/CycleType';
@@ -40,15 +45,16 @@ import CommentsColumns from '../components/columns/comments-columns';
 import IconButton from '../components/icon-button';
 import Textarea from '../components/textarea';
 
+type LocalUserVotes = ResponseUserVotesType | { optionId: string; numOfVotes: number }[];
+
 function Comments() {
   const theme = useAppStore((state) => state.theme);
   const queryClient = useQueryClient();
   const { cycleId, optionId } = useParams();
   const { user } = useUser();
-  const { availableHearts, setAvailableHearts } = useAppStore((state) => state);
-  const [localUserVotes, setLocalUserVotes] = useState<
-    ResponseUserVotesType | { optionId: string; numOfVotes: number }[]
-  >([]);
+  const availableHearts = useAppStore((state) => state.availableHearts);
+  const setAvailableHearts = useAppStore((state) => state.setAvailableHearts);
+  const [localUserVotes, setLocalUserVotes] = useState<LocalUserVotes>([]);
   const [localOptionHearts, setLocalOptionHearts] = useState(0);
   const [comment, setComment] = useState('');
   const [sortOrder, setSortOrder] = useState('desc'); // 'asc' for ascending, 'desc' for descending
@@ -66,17 +72,17 @@ function Comments() {
     retry: false,
   });
 
-  // const { data: optionUsers } = useQuery({
-  //   queryKey: ['optionUsers', optionId],
-  //   queryFn: () => fetchOptionUsers(optionId || ''),
-  //   enabled: !!optionId,
-  // });
+  const { data: optionUsers } = useQuery({
+    queryKey: ['option', optionId, 'users'],
+    queryFn: () => fetchOptionUsers(optionId || ''),
+    enabled: !!optionId,
+  });
 
   const { data: comments } = useQuery({
-    queryKey: ['comments', optionId],
+    queryKey: ['option', optionId, 'comments'],
     queryFn: () => fetchComments({ optionId: optionId || '' }),
     enabled: !!optionId,
-    refetchInterval: 5000, // Poll every 5 seconds
+    // refetchInterval: 5000, // Poll every 5 seconds
   });
 
   const sortedComments = useMemo(() => {
@@ -97,6 +103,27 @@ function Comments() {
     }
   }, [optionId, userVotes]);
 
+  const { mutate: mutateComments } = useMutation({
+    mutationFn: postComment,
+    onSuccess: (body) => {
+      if (body?.value) {
+        queryClient.invalidateQueries({ queryKey: ['option', optionId, 'comments'] });
+      }
+    },
+  });
+
+  const handleVoteWrapper = (optionId: string) => {
+    setLocalOptionHearts((prevLocalOptionHearts) => prevLocalOptionHearts + 1);
+    setLocalUserVotes((prevLocalUserVotes) => handleLocalVote(optionId, prevLocalUserVotes));
+    setAvailableHearts(handleAvailableHearts(availableHearts, 'vote'));
+  };
+
+  const handleUnVoteWrapper = (optionId: string) => {
+    setLocalOptionHearts((prevLocalOptionHearts) => Math.max(0, prevLocalOptionHearts - 1));
+    setLocalUserVotes((prevLocalUserVotes) => handleLocalUnVote(optionId, prevLocalUserVotes));
+    setAvailableHearts(handleAvailableHearts(availableHearts, 'unVote'));
+  };
+
   const { mutate: mutateVotes } = useMutation({
     mutationFn: postVotes,
     onSuccess: (body) => {
@@ -111,37 +138,9 @@ function Comments() {
     },
   });
 
-  const { mutate: mutateComments } = useMutation({
-    mutationFn: postComment,
-    onSuccess: (body) => {
-      if (body?.value) {
-        queryClient.invalidateQueries({ queryKey: ['comments', optionId] });
-      }
-    },
-  });
-
-  const handleVoteWrapper = (optionId: string) => {
-    setLocalOptionHearts((prevLocalOptionHearts) => prevLocalOptionHearts + 1);
-    handleVote(optionId, availableHearts, setAvailableHearts, setLocalUserVotes);
-  };
-
-  const handleUnvoteWrapper = (optionId: string) => {
-    setLocalOptionHearts((prevLocalOptionHearts) => Math.max(0, prevLocalOptionHearts - 1));
-    handleUnvote(optionId, availableHearts, setAvailableHearts, setLocalUserVotes);
-  };
-
-  const handleSaveVotesWrapper = () => {
+  const handleSaveVoteWrapper = () => {
     handleSaveVotes(userVotes, localUserVotes, mutateVotes);
   };
-
-  const votesAreDifferent = useMemo(() => {
-    if (localUserVotes && userVotes) {
-      return (
-        localUserVotes[0]?.numOfVotes !==
-        userVotes?.find((vote) => vote.optionId === optionId)?.numOfVotes
-      );
-    }
-  }, [localUserVotes, optionId, userVotes]);
 
   const handlePostComment = () => {
     if (optionId && comment) {
@@ -173,7 +172,7 @@ function Comments() {
               $padding={0}
               $color="secondary"
               icon={{ src: `/icons/downvote-${theme}.svg`, alt: 'Downvote arrow' }}
-              onClick={() => handleUnvoteWrapper(option?.id ?? '')}
+              onClick={() => handleUnVoteWrapper(option?.id ?? '')}
               $width={16}
               $height={16}
               disabled={localOptionHearts === 0}
@@ -183,17 +182,18 @@ function Comments() {
         </FlexRow>
         <Subtitle>{option?.optionTitle}</Subtitle>
         <Body>{option?.optionSubTitle}</Body>
-        {/* <Body>
-          <Bold>Lead author: {option?.user}</Bold> [// TODO]
-        </Body>
         <Body>
-          <Bold>Co-authors:</Bold> [// TODO]
-        </Body> */}
+          <Bold>Lead author:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
+        </Body>
+        {optionUsers?.group?.users && (
+          <Body>
+            <Bold>Co-authors:</Bold>{' '}
+            {optionUsers.group.users.map((user) => `${(user.firstName, user.lastName)}`)}
+          </Body>
+        )}
       </FlexColumn>
 
-      <Button onClick={handleSaveVotesWrapper} disabled={!votesAreDifferent}>
-        Save votes
-      </Button>
+      <Button onClick={handleSaveVoteWrapper}>Save votes</Button>
       <Form>
         <Textarea
           label="Leave a comment:"
