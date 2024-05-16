@@ -102,6 +102,11 @@ function GroupsTable({ groupCategoryName }: { groupCategoryName?: string | null 
     mutationFn: deleteUsersToGroups,
     onSuccess: (body) => {
       if (body) {
+        if ('errors' in body) {
+          toast.error(body.errors[0]);
+          return;
+        }
+
         queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
       }
     },

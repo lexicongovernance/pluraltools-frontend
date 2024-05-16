@@ -97,6 +97,12 @@ function PublicGroupRegistration() {
       if (!body) {
         return;
       }
+
+      if ('errors' in body) {
+        toast.error(body.errors.join(', '));
+        return;
+      }
+
       queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'groups'] });
       toast.success(`Updated ${groupCategoryNameParam} group successfully!`);
     },

@@ -83,6 +83,12 @@ function SecretGroupRegistration() {
       if (!body) {
         return;
       }
+
+      if ('errors' in body) {
+        toast.error(body.errors[0]);
+        return;
+      }
+
       queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
       toast.success(`Joined ${groupName} group succesfully!`);
     },
