@@ -58,7 +58,7 @@ function Cycle() {
   const [endAt, setEndAt] = useState<string | null>(null);
   const [localUserVotes, setLocalUserVotes] = useState<LocalUserVotes>([]);
   const [sorting, setSorting] = useState<{ column: string; order: Order }>({
-    column: 'pluralityScore',
+    column: 'numOfVotes',
     order: 'desc',
   });
 
