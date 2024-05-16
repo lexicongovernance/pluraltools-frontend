@@ -1,5 +1,5 @@
 // React and third-party libraries
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -61,6 +61,14 @@ function Cycle() {
     column: 'numOfVotes',
     order: 'desc',
   });
+
+  const initialLoad = useRef(true);
+
+  useEffect(() => {
+    if (localUserVotes.length > 0) {
+      initialLoad.current = false;
+    }
+  }, [localUserVotes]);
 
   useEffect(() => {
     if (cycle && cycle.startAt && cycle.endAt) {
@@ -174,10 +182,6 @@ function Cycle() {
     return order === 'desc' ? votesB - votesA : votesA - votesB;
   };
 
-  const sortByVoteScore = (a: QuestionOption, b: QuestionOption, order: Order) => {
-    return order === 'desc' ? b.voteScore - a.voteScore : a.voteScore - b.voteScore;
-  };
-
   const sortedOptions = useMemo(() => {
     const { column, order } = sorting;
     const sorted = [...(currentCycle?.questionOptions ?? [])].sort((a, b) => {
@@ -186,14 +190,14 @@ function Cycle() {
           return sortByAuthor(a, b, order);
         case 'affiliation':
           return sortByAffiliation(a, b, order);
-        case 'numOfVotes':
-          return sortByNumOfVotes(a, b, order, localUserVotes);
         default:
-          return sortByVoteScore(a, b, order);
+          return sortByNumOfVotes(a, b, order, localUserVotes);
       }
     });
     return sorted;
-  }, [currentCycle?.questionOptions, localUserVotes, sorting]);
+    // ? localUserVotes removed from deps array so it does not triggers a sorting on each vote.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentCycle?.questionOptions, sorting]);
 
   const handleColumnClick = (column: string) => {
     setSorting((prevSorting) => ({
