@@ -72,21 +72,16 @@ function Cycle() {
   const { formattedTime, cycleState, time } = useCountdown(startAt, endAt);
 
   const voteInfo = useMemo(() => {
-    switch (cycleState) {
-      case 'closed':
-        return 'Vote has ended.';
-      case 'upcoming':
-        return `Vote opens in: ${formattedTime}`;
-      case 'open':
-        if (time && time <= fiveMinutesInSeconds) {
-          return `Vote closes in: ${formattedTime}`;
-        } else if (time === 0) {
-          return 'Vote has ended.';
-        }
-        return '';
-      default:
-        return '';
+    if (cycleState === 'closed' || time === 0) {
+      return 'Vote has ended.';
     }
+    if (cycleState === 'upcoming') {
+      return `Vote opens in: ${formattedTime}`;
+    }
+    if (cycleState === 'open') {
+      return time && time <= fiveMinutesInSeconds ? `Vote closes in: ${formattedTime}` : '';
+    }
+    return '';
   }, [cycleState, time, formattedTime]);
 
   const updateVotesAndHearts = (votes: ResponseUserVotesType) => {
