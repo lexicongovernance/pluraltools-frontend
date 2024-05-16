@@ -64,7 +64,7 @@ function SecretGroupRegistration() {
     mutationFn: postGroup,
     onSuccess: (body) => {
       if (body) {
-        queryClient.invalidateQueries({ queryKey: ['users-to-groups', user?.id] });
+        queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
         toast.success(`Group ${groupName} created succesfully!`);
         toast.success(`Joined group ${groupName} succesfully!`);
         setIsDialogOpen(false);
@@ -83,12 +83,13 @@ function SecretGroupRegistration() {
       if (!body) {
         return;
       }
+
       if ('errors' in body) {
         toast.error(body.errors[0]);
         return;
       }
 
-      queryClient.invalidateQueries({ queryKey: ['user', 'groups'] });
+      queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
       toast.success(`Joined ${groupName} group succesfully!`);
     },
     onError: () => {

@@ -50,7 +50,7 @@ function PublicGroupRegistration() {
   });
 
   const { data: usersToGroups } = useQuery({
-    queryKey: ['user', user?.id, 'groups'],
+    queryKey: ['user', user?.id, 'users-to-groups'],
     queryFn: () => fetchUsersToGroups(user?.id || ''),
     enabled: !!user?.id,
   });
