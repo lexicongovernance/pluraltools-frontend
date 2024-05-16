@@ -35,8 +35,8 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
   const [expanded, setExpanded] = useState(false);
 
   const { data: groupMembers } = useQuery({
-    queryKey: ['group-members', userToGroup.group.id],
-    queryFn: () => fetchGroupMembers('eaee6e5e-42e8-4cfd-a5e7-4d31bd812908'),
+    queryKey: ['group', userToGroup.group.id, 'users-to-groups'],
+    queryFn: () => fetchGroupMembers(userToGroup.group.id),
     enabled: !!userToGroup.group.id,
   });
 
