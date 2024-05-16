@@ -167,7 +167,6 @@ function AccountForm({
   const { mutate: mutateUserData } = useMutation({
     mutationFn: putUser,
     onSuccess: async (body) => {
-      console.log({ body });
       if (!body) {
         return;
       }
@@ -188,6 +187,38 @@ function AccountForm({
     },
     onError: () => {
       toast.error('There was an error, please try again.');
+    },
+  });
+
+  const { mutate: mutatePostUsersToGroups } = useMutation({
+    mutationFn: postUsersToGroups,
+    onSuccess: async (body) => {
+      if (!body) {
+        return;
+      }
+
+      if ('errors' in body) {
+        toast.error(`There was an error: ${body.errors.join(', ')}`);
+        return;
+      }
+
+      await queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
+    },
+  });
+
+  const { mutate: mutatePutUsersToGroups } = useMutation({
+    mutationFn: putUsersToGroups,
+    onSuccess: async (body) => {
+      if (!body) {
+        return;
+      }
+
+      if ('errors' in body) {
+        toast.error(`There was an error: ${body.errors.join(', ')}`);
+        return;
+      }
+
+      await queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
     },
   });
 
@@ -260,11 +291,11 @@ function AccountForm({
 
       // Create user to group if it doesn't exist
       if (!value.userToGroupId) {
-        await postUsersToGroups({
+        await mutatePostUsersToGroups({
           groupId: value.groupId,
         });
       } else {
-        await putUsersToGroups({
+        await mutatePutUsersToGroups({
           groupId: value.groupId,
           userToGroupId: value.userToGroupId,
         });
