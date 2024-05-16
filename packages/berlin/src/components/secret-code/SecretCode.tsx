@@ -8,10 +8,11 @@ import { Subtitle } from '../typography/Subtitle.styled';
 import IconButton from '../icon-button';
 
 type SecretCodeProps = {
+  groupName: string;
   secretCode: string;
 };
 
-function SecretCode({ secretCode }: SecretCodeProps) {
+function SecretCode({ groupName, secretCode }: SecretCodeProps) {
   const theme = useAppStore((state) => state.theme);
 
   const handleCopyButtonClick = () => {
@@ -20,7 +21,7 @@ function SecretCode({ secretCode }: SecretCodeProps) {
   };
   return (
     <SecretCodeContainer>
-      <Body>Share this code with your collaborators:</Body>
+      <Body>Access code for {groupName} research group</Body>
       <FlexRow $align="center" $justify="space-between">
         <Subtitle>{secretCode}</Subtitle>
         <IconButton

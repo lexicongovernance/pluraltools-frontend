@@ -117,7 +117,7 @@ function SecretGroupRegistration() {
           {groups.create.body.map(({ id, text }) => (
             <Body key={id}>{text}</Body>
           ))}
-          {groupName && secretCode && <SecretCode secretCode={secretCode} />}
+          {groupName && secretCode && <SecretCode groupName={groupName} secretCode={secretCode} />}
           <Dialog
             open={isDialogOpen}
             onOpenChange={setIsDialogOpen}

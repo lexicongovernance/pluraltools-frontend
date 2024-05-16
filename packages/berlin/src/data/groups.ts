@@ -4,7 +4,7 @@ const groups = {
     body: [
       {
         id: 0,
-        text: '(For Lead & Solo Researchers)',
+        text: 'Create a research group and share the access code with your collaborators. Assign proposals to groups from My Proposals.',
       },
     ],
     buttonText: 'Create group',
@@ -22,16 +22,11 @@ const groups = {
   },
   join: {
     subtitle: 'Join a Research Group',
-    body: [
-      {
-        id: 0,
-        text: '(For Collaborators)',
-      },
-    ],
+    body: [],
     input: {
-      label: 'Ask your Lead Researchers for a Code',
-      placeholder: 'Enter the secret code here...',
-      requiredMessage: 'Code is required',
+      label: 'Ask the group creator for the access code',
+      placeholder: 'Enter access code',
+      requiredMessage: 'Access code is required',
     },
     buttonText: 'Join group',
   },
