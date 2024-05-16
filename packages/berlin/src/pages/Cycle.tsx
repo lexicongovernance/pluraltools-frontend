@@ -12,7 +12,12 @@ import useCountdown from '../hooks/useCountdown';
 import useUser from '../hooks/useUser';
 
 // Utils
-import { handleSaveVotes, handleUnvote, handleVote } from '../utils/voting';
+import {
+  handleSaveVotes,
+  handleAvailableHearts,
+  handleLocalUnVote,
+  handleLocalVote,
+} from '../utils/voting';
 
 // Types
 import { ResponseUserVotesType } from '../types/CycleType';
@@ -137,11 +142,13 @@ function Cycle() {
   });
 
   const handleVoteWrapper = (optionId: string) => {
-    handleVote(optionId, availableHearts, setAvailableHearts, setLocalUserVotes);
+    setLocalUserVotes((prevLocalUserVotes) => handleLocalVote(optionId, prevLocalUserVotes));
+    setAvailableHearts(handleAvailableHearts(availableHearts, 'vote'));
   };
 
-  const handleUnvoteWrapper = (optionId: string) => {
-    handleUnvote(optionId, availableHearts, setAvailableHearts, setLocalUserVotes);
+  const handleUnVoteWrapper = (optionId: string) => {
+    setLocalUserVotes((prevLocalUserVotes) => handleLocalUnVote(optionId, prevLocalUserVotes));
+    setAvailableHearts(handleAvailableHearts(availableHearts, 'unVote'));
   };
 
   const handleSaveVotesWrapper = () => {
@@ -243,7 +250,7 @@ function Cycle() {
                 option={option}
                 numOfVotes={numOfVotes}
                 onVote={() => handleVoteWrapper(option.id)}
-                onUnvote={() => handleUnvoteWrapper(option.id)}
+                onUnVote={() => handleUnVoteWrapper(option.id)}
               />
             );
           })}

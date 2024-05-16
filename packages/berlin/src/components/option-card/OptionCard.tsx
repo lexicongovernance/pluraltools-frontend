@@ -12,9 +12,9 @@ type OptionCardProps = {
   option: QuestionOption;
   numOfVotes: number;
   onVote: () => void;
-  onUnvote: () => void;
+  onUnVote: () => void;
 };
-function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
+function OptionCard({ option, numOfVotes, onVote, onUnVote }: OptionCardProps) {
   const { eventId, cycleId } = useParams();
   const theme = useAppStore((state) => state.theme);
   const navigate = useNavigate();
@@ -67,7 +67,7 @@ function OptionCard({ option, numOfVotes, onVote, onUnvote }: OptionCardProps) {
                 $padding={0}
                 $color="secondary"
                 icon={{ src: `/icons/downvote-${theme}.svg`, alt: 'Downvote arrow' }}
-                onClick={onUnvote}
+                onClick={onUnVote}
                 $width={16}
                 $height={16}
                 disabled={numOfVotes === 0}

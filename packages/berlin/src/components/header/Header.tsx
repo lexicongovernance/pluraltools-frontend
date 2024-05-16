@@ -113,14 +113,14 @@ function Header() {
                             )
                           );
                         })}
+                      <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
+                        My proposals
+                      </NavButton>
                       <NavButton to={`/events/${events?.[0].id}/cycles`} $color="secondary">
                         Agenda
                       </NavButton>
                     </>
                   )}
-                  <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
-                    My proposals
-                  </NavButton>
                   <Button onClick={() => mutateLogout()}>Log out</Button>
                   <IconButton
                     onClick={() => navigate('/account')}

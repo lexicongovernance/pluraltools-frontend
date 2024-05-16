@@ -12,14 +12,18 @@ import {
   fetchComments,
   postComment,
   fetchOptionUsers,
-  fetchCycle,
 } from 'api';
 
 // Hooks
 import useUser from '../hooks/useUser';
 
 // Utils
-import { handleSaveVotes, handleUnvote, handleVote } from '../utils/voting';
+import {
+  handleSaveVotes,
+  handleAvailableHearts,
+  handleLocalUnVote,
+  handleLocalVote,
+} from '../utils/voting';
 
 // Types
 import { ResponseUserVotesType } from '../types/CycleType';
@@ -48,7 +52,8 @@ function Comments() {
   const queryClient = useQueryClient();
   const { cycleId, optionId } = useParams();
   const { user } = useUser();
-  const { availableHearts, setAvailableHearts } = useAppStore((state) => state);
+  const availableHearts = useAppStore((state) => state.availableHearts);
+  const setAvailableHearts = useAppStore((state) => state.setAvailableHearts);
   const [localUserVotes, setLocalUserVotes] = useState<LocalUserVotes>([]);
   const [localOptionHearts, setLocalOptionHearts] = useState(0);
   const [comment, setComment] = useState('');
@@ -68,13 +73,13 @@ function Comments() {
   });
 
   const { data: optionUsers } = useQuery({
-    queryKey: ['optionUsers', optionId],
+    queryKey: ['option', optionId, 'users'],
     queryFn: () => fetchOptionUsers(optionId || ''),
     enabled: !!optionId,
   });
 
   const { data: comments } = useQuery({
-    queryKey: ['comments', optionId],
+    queryKey: ['option', optionId, 'comments'],
     queryFn: () => fetchComments({ optionId: optionId || '' }),
     enabled: !!optionId,
     // refetchInterval: 5000, // Poll every 5 seconds
@@ -102,19 +107,21 @@ function Comments() {
     mutationFn: postComment,
     onSuccess: (body) => {
       if (body?.value) {
-        queryClient.invalidateQueries({ queryKey: ['comments', optionId] });
+        queryClient.invalidateQueries({ queryKey: ['option', optionId, 'comments'] });
       }
     },
   });
 
   const handleVoteWrapper = (optionId: string) => {
     setLocalOptionHearts((prevLocalOptionHearts) => prevLocalOptionHearts + 1);
-    handleVote(optionId, availableHearts, setAvailableHearts, setLocalUserVotes);
+    setLocalUserVotes((prevLocalUserVotes) => handleLocalVote(optionId, prevLocalUserVotes));
+    setAvailableHearts(handleAvailableHearts(availableHearts, 'vote'));
   };
 
-  const handleUnvoteWrapper = (optionId: string) => {
+  const handleUnVoteWrapper = (optionId: string) => {
     setLocalOptionHearts((prevLocalOptionHearts) => Math.max(0, prevLocalOptionHearts - 1));
-    handleUnvote(optionId, availableHearts, setAvailableHearts, setLocalUserVotes);
+    setLocalUserVotes((prevLocalUserVotes) => handleLocalUnVote(optionId, prevLocalUserVotes));
+    setAvailableHearts(handleAvailableHearts(availableHearts, 'unVote'));
   };
 
   const { mutate: mutateVotes } = useMutation({
@@ -165,7 +172,7 @@ function Comments() {
               $padding={0}
               $color="secondary"
               icon={{ src: `/icons/downvote-${theme}.svg`, alt: 'Downvote arrow' }}
-              onClick={() => handleUnvoteWrapper(option?.id ?? '')}
+              onClick={() => handleUnVoteWrapper(option?.id ?? '')}
               $width={16}
               $height={16}
               disabled={localOptionHearts === 0}
