@@ -99,13 +99,14 @@ function Comments() {
 
   useEffect(() => {
     if (optionId) {
+      const sumOfAllVotes = userVotes?.reduce((acc, option) => acc + option.numOfVotes, 0) || 0;
       const hearts = userVotes?.find((option) => optionId === option.optionId)?.numOfVotes || 0;
       setLocalOptionHearts(hearts);
       setLocalUserVotes([{ optionId: optionId, numOfVotes: hearts }]);
       // update the available hearts
       setAvailableHearts({
         questionId: option?.questionId ?? '',
-        hearts: INITIAL_HEARTS - hearts,
+        hearts: INITIAL_HEARTS - sumOfAllVotes,
       });
     }
   }, [optionId, userVotes, setAvailableHearts, option?.questionId]);
