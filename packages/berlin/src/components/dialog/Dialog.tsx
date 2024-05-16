@@ -12,7 +12,7 @@ import { DialogContent, DialogOverlay } from './Dialog.styled';
 
 type DialogProps = {
   trigger?: React.ReactNode;
-  title: string;
+  title?: string;
   description?: string;
   content?: React.ReactNode;
   dialogButtons?: boolean;

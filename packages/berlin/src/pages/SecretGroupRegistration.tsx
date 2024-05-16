@@ -117,15 +117,13 @@ function SecretGroupRegistration() {
           {groups.create.body.map(({ id, text }) => (
             <Body key={id}>{text}</Body>
           ))}
-          {groupName && secretCode && <SecretCode groupName={groupName} secretCode={secretCode} />}
+          {groupName && secretCode && <SecretCode secretCode={secretCode} />}
           <Dialog
             open={isDialogOpen}
             onOpenChange={setIsDialogOpen}
             trigger={
               <Button onClick={() => setIsDialogOpen(true)}>{groups.create.buttonText}</Button>
             }
-            title={groups.create.dialog.title}
-            description={groups.create.dialog.description}
             content={
               <ResearchGroupForm
                 formData={groups.create.dialog.form}
