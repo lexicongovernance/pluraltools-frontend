@@ -106,7 +106,7 @@ function Comments() {
       // update the available hearts
       setAvailableHearts({
         questionId: option?.questionId ?? '',
-        hearts: INITIAL_HEARTS - sumOfAllVotes,
+        hearts: Math.max(0, INITIAL_HEARTS - sumOfAllVotes),
       });
     }
   }, [optionId, userVotes, setAvailableHearts, option?.questionId]);

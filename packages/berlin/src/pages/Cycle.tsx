@@ -102,7 +102,7 @@ function Cycle() {
 
     setAvailableHearts({
       questionId: cycle?.forumQuestions[0].id || '',
-      hearts: INITIAL_HEARTS - givenVotes,
+      hearts: Math.max(0, INITIAL_HEARTS - givenVotes),
     });
 
     setLocalUserVotes(votes);
