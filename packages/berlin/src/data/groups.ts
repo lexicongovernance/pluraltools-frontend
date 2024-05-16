@@ -4,7 +4,7 @@ const groups = {
     body: [
       {
         id: 0,
-        text: 'Create a research group and share the access code with your collaborators. Assign proposals to groups from My Proposals.',
+        text: 'Share the access code with your collaborators',
       },
     ],
     buttonText: 'Create group',
