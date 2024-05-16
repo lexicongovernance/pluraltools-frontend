@@ -93,7 +93,7 @@ function GroupsTable({ groupCategoryName }: { groupCategoryName?: string | null 
   const theme = useAppStore((state) => state.theme);
 
   const { data: usersToGroups } = useQuery({
-    queryKey: ['user', user?.id, 'groups'],
+    queryKey: ['user', user?.id, 'users-to-groups'],
     queryFn: () => fetchUsersToGroups(user?.id || ''),
     enabled: !!user?.id,
   });
@@ -102,7 +102,7 @@ function GroupsTable({ groupCategoryName }: { groupCategoryName?: string | null 
     mutationFn: deleteUsersToGroups,
     onSuccess: (body) => {
       if (body) {
-        queryClient.invalidateQueries({ queryKey: ['users-to-groups', user?.id] });
+        queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
       }
     },
   });
