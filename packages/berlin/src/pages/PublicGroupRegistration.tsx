@@ -10,14 +10,9 @@ import useUser from '../hooks/useUser';
 // API
 import { fetchGroups, postUsersToGroups, fetchUsersToGroups, putUsersToGroups } from 'api';
 
-// Data
-import publicGroups from '../data/publicGroups';
-
 // Components
-import { Body } from '../components/typography/Body.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { Form } from '../components/containers/Form.styled';
-import { Subtitle } from '../components/typography/Subtitle.styled';
 import Button from '../components/button';
 import Select from '../components/select';
 import { useMemo } from 'react';
@@ -133,8 +128,6 @@ function PublicGroupRegistration() {
 
   return (
     <FlexColumn $gap="1.5rem">
-      <Subtitle>{publicGroups.copy.subtitle}</Subtitle>
-      <Body>{publicGroups.copy.body}</Body>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Controller
           name="group"
@@ -144,11 +137,10 @@ function PublicGroupRegistration() {
           }}
           render={({ field }) => (
             <Select
-              label={`${capitalizedParam} group`}
               placeholder={
                 prevUserToGroup
                   ? prevUserToGroup.group.name
-                  : `Select a ${groupCategoryNameParam} group`
+                  : `Select your ${groupCategoryNameParam} group`
               }
               options={selectData}
               value={field.value}

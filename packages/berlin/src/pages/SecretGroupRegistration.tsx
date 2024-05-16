@@ -130,8 +130,6 @@ function SecretGroupRegistration() {
             trigger={
               <Button onClick={() => setIsDialogOpen(true)}>{groups.create.buttonText}</Button>
             }
-            title={groups.create.dialog.title}
-            description={groups.create.dialog.description}
             content={
               <ResearchGroupForm
                 formData={groups.create.dialog.form}
