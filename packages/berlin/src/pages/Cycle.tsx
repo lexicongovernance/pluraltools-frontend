@@ -19,9 +19,6 @@ import {
   handleLocalVote,
 } from '../utils/voting';
 
-// Types
-import { ResponseUserVotesType } from '../types/CycleType';
-
 // Store
 import { useAppStore } from '../store';
 
@@ -38,7 +35,7 @@ import OptionCard from '../components/option-card';
 import { FIVE_MINUTES_IN_SECONDS, INITIAL_HEARTS } from '../utils/constants';
 
 type Order = 'asc' | 'desc';
-type LocalUserVotes = ResponseUserVotesType | { optionId: string; numOfVotes: number }[];
+type LocalUserVotes = { optionId: string; numOfVotes: number }[];
 
 function Cycle() {
   const queryClient = useQueryClient();
@@ -116,7 +113,7 @@ function Cycle() {
     }
   }, [cycleState, time, formattedTime]);
 
-  const updateInitialVotesAndHearts = (votes: ResponseUserVotesType) => {
+  const updateInitialVotesAndHearts = (votes: GetUserVotesResponse) => {
     const givenVotes = votes
       .map((option) => option.numOfVotes)
       .reduce((prev, curr) => prev + curr, 0);
