@@ -46,7 +46,6 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
     queryFn: () => fetchGroupRegistrations(userToGroup.group.id || ''),
     enabled: !!userToGroup.group.id,
   });
-  console.log('groupRegistrations:', groupRegistrations);
 
   const handleCopyButtonClick = (secretCode: string) => {
     navigator.clipboard.writeText(secretCode);
