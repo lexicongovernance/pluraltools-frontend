@@ -208,6 +208,12 @@ function Comments() {
         <Body>{option?.optionSubTitle}</Body>
         <Body>
           <Bold>Lead author:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
+          {optionUsers?.group?.users && (
+            <Body>
+              <Bold>Co-authors:</Bold>{' '}
+              {optionUsers.group.users.map((user) => `${(user.firstName, user.lastName)}`)}
+            </Body>
+          )}
         </Body>
       </FlexColumn>
       <Button onClick={handleSaveVoteWrapper}>Save votes</Button>
