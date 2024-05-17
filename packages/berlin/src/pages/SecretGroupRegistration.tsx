@@ -90,7 +90,7 @@ function SecretGroupRegistration() {
       }
 
       queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
-      toast.success(`Joined ${groupName} group successfully!`);
+      toast.success(`Group joined successfully!`);
     },
     onError: () => {
       toast.error('Secret is not valid');
