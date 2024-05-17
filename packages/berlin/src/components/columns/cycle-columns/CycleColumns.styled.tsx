@@ -17,7 +17,7 @@ export const Proposal = styled(FlexRow)`
   }
 `;
 
-export const Author = styled(FlexRow)`
+export const Lead = styled(FlexRow)`
   display: none;
   @media (min-width: 600px) {
     display: flex;
