@@ -1,5 +1,5 @@
 // React and third-party libraries
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -66,6 +66,7 @@ function Cycle() {
     column: 'numOfVotes',
     order: 'desc',
   });
+  const [sortedOptions, setSortedOptions] = useState<QuestionOption[]>([]);
 
   useEffect(() => {
     if (cycle && cycle.startAt && cycle.endAt) {
@@ -73,6 +74,14 @@ function Cycle() {
       setEndAt(cycle.endAt);
     }
   }, [cycle]);
+
+  useEffect(() => {
+    // Sort options when cycle or sorting changes
+    if (cycle?.forumQuestions[0].questionOptions.length) {
+      setSortedOptions(sortOptions(cycle.forumQuestions[0].questionOptions, sorting));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cycle, sorting]);
 
   const { formattedTime, cycleState, time } = useCountdown(startAt, endAt);
 
@@ -206,22 +215,19 @@ function Cycle() {
     return order === 'desc' ? votesB - votesA : votesA - votesB;
   };
 
-  const sortedOptions = useMemo(() => {
-    const { column, order } = sorting;
-    const sorted = [...(currentCycle?.questionOptions ?? [])].sort((a, b) => {
-      switch (column) {
+  const sortOptions = (options: QuestionOption[], sorting: { column: string; order: Order }) => {
+    const sorted = [...options].sort((a, b) => {
+      switch (sorting.column) {
         case 'lead':
-          return sortByLead(a, b, order);
+          return sortByLead(a, b, sorting.order);
         case 'affiliation':
-          return sortByAffiliation(a, b, order);
+          return sortByAffiliation(a, b, sorting.order);
         default:
-          return sortByNumOfVotes(a, b, order, localUserVotes);
+          return sortByNumOfVotes(a, b, sorting.order, localUserVotes);
       }
     });
     return sorted;
-    // ? localUserVotes removed from deps array so it does not triggers a sorting on each vote.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentCycle?.questionOptions, sorting]);
+  };
 
   const handleColumnClick = (column: string) => {
     setSorting((prevSorting) => ({
