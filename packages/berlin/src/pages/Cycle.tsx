@@ -253,7 +253,14 @@ function Cycle() {
     setSortedOptions(
       (prev) =>
         ({
-          options: sortOptions({ options: prev.options, sorting: prev, votes: localUserVotes }),
+          options: sortOptions({
+            options: prev.options,
+            sorting: {
+              column: column as 'lead' | 'affiliation' | 'numOfVotes',
+              order: prev.column === column && prev.order === 'asc' ? 'desc' : 'asc',
+            },
+            votes: localUserVotes,
+          }),
           column,
           order: prev.column === column && prev.order === 'asc' ? 'desc' : 'asc',
         }) as typeof sortedOptions,
