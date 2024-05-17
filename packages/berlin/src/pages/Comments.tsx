@@ -25,9 +25,6 @@ import {
   handleLocalVote,
 } from '../utils/voting';
 
-// Types
-import { ResponseUserVotesType } from '../types/CycleType';
-
 // Store
 import { useAppStore } from '../store';
 
@@ -46,7 +43,7 @@ import IconButton from '../components/icon-button';
 import Textarea from '../components/textarea';
 import { INITIAL_HEARTS } from '../utils/constants';
 
-type LocalUserVotes = ResponseUserVotesType | { optionId: string; numOfVotes: number }[];
+type LocalUserVotes = { optionId: string; numOfVotes: number }[];
 
 function Comments() {
   const theme = useAppStore((state) => state.theme);
