@@ -49,7 +49,6 @@ function Cycle() {
     queryFn: () => fetchCycle(cycleId || ''),
     enabled: !!cycleId,
   });
-
   const { data: userVotes } = useQuery({
     queryKey: ['votes', cycleId],
     queryFn: () => fetchUserVotes(cycleId || ''),
@@ -67,14 +66,6 @@ function Cycle() {
     column: 'numOfVotes',
     order: 'desc',
   });
-
-  const initialLoad = useRef(true);
-
-  useEffect(() => {
-    if (localUserVotes.length > 0) {
-      initialLoad.current = false;
-    }
-  }, [localUserVotes]);
 
   useEffect(() => {
     if (cycle && cycle.startAt && cycle.endAt) {
