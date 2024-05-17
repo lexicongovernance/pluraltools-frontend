@@ -67,7 +67,7 @@ function Header() {
     queryKey: ['alerts'],
     queryFn: () => fetchAlerts(),
     enabled: !!user,
-    refetchInterval: 10000, // Poll every 10 seconds
+    refetchInterval: 2000, // Poll every 2 seconds
   });
 
   const { data: events } = useQuery({
