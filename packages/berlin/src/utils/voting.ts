@@ -1,6 +1,7 @@
 import { GetUserVotesResponse, PostVotesRequest } from 'api';
 import { ResponseUserVotesType } from '../types/CycleType';
 import toast from 'react-hot-toast';
+import { INITIAL_HEARTS } from './constants';
 
 export const handleLocalVote = (
   optionId: string,
@@ -46,7 +47,7 @@ export const handleAvailableHearts = (availableHearts: number, type: 'vote' | 'u
     return Math.max(0, availableHearts - 1);
   }
 
-  return Math.min(20, availableHearts + 1);
+  return Math.min(INITIAL_HEARTS, availableHearts + 1);
 };
 
 export const handleSaveVotes = (
