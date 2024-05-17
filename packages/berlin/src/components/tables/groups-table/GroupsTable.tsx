@@ -9,6 +9,7 @@ import {
   fetchUsersToGroups,
   fetchGroupMembers,
   GetUsersToGroupsResponse,
+  fetchGroupRegistrations,
 } from 'api';
 
 // Hooks
@@ -16,7 +17,7 @@ import { useAppStore } from '../../../store';
 import useUser from '../../../hooks/useUser';
 
 // Components
-import { Card, Group, Secret } from './GroupsTable.styled';
+import { Card, Group, GroupProposalDescription, Secret } from './GroupsTable.styled';
 import Button from '../../button';
 import Dialog from '../../dialog';
 import IconButton from '../../icon-button';
@@ -39,6 +40,13 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
     queryFn: () => fetchGroupMembers(userToGroup.group.id),
     enabled: !!userToGroup.group.id,
   });
+
+  const { data: groupRegistrations } = useQuery({
+    queryKey: ['group', userToGroup.group.id, 'group-registrations'],
+    queryFn: () => fetchGroupRegistrations(userToGroup.group.id || ''),
+    enabled: !!userToGroup.group.id,
+  });
+  console.log('groupRegistrations:', groupRegistrations);
 
   const handleCopyButtonClick = (secretCode: string) => {
     navigator.clipboard.writeText(secretCode);
@@ -79,9 +87,39 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
       />
       <FlexColumn className="description" $gap="1.5rem">
         <Body>
-          <Bold>Group members:</Bold> {groupMembers?.map((member) => member.username)}
+          <Bold>Group members:</Bold> {groupMembers?.map((member) => member.username).join(', ')}
         </Body>
-        <Body>More details here...</Body>
+        {groupRegistrations &&
+          groupRegistrations.flatMap((groupRegistration) =>
+            groupRegistration.registrations.flatMap((registration) =>
+              registration.registrationData
+                .filter(
+                  ({ registrationField }) =>
+                    registrationField.fieldDisplayRank === 0 ||
+                    registrationField.fieldDisplayRank === 1,
+                )
+                .map(({ id, value, registrationField }) => {
+                  if (registrationField.fieldDisplayRank === 0) {
+                    return (
+                      <div key={id}>
+                        <Body>
+                          <Bold>Title:</Bold> {value}
+                        </Body>
+                      </div>
+                    );
+                  } else if (registrationField.fieldDisplayRank === 1) {
+                    return (
+                      <div key={id}>
+                        <GroupProposalDescription>
+                          <Bold>Description:</Bold> {value}
+                        </GroupProposalDescription>
+                      </div>
+                    );
+                  }
+                  return null;
+                }),
+            ),
+          )}
       </FlexColumn>
     </Card>
   );
