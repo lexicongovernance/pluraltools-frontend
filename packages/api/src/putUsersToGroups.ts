@@ -3,7 +3,7 @@ import { PostUsersToGroupsResponse, PutUsersToGroupsRequest } from './types';
 async function postUsersToGroups({
   groupId,
   userToGroupId,
-}: PutUsersToGroupsRequest): Promise<PostUsersToGroupsResponse | null> {
+}: PutUsersToGroupsRequest): Promise<PostUsersToGroupsResponse | { errors: string[] } | null> {
   try {
     const response = await fetch(
       `${import.meta.env.VITE_SERVER_URL}/api/users-to-groups/${userToGroupId}`,
@@ -18,7 +18,11 @@ async function postUsersToGroups({
     );
 
     if (!response.ok) {
-      throw new Error(`HTTP Error! Status: ${response.status}`);
+      if (response.status < 500) {
+        const errors = (await response.json()) as { errors: string[] };
+        return errors;
+      }
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
     const group = (await response.json()) as { data: PostUsersToGroupsResponse };

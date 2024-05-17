@@ -64,9 +64,9 @@ function SecretGroupRegistration() {
     mutationFn: postGroup,
     onSuccess: (body) => {
       if (body) {
-        queryClient.invalidateQueries({ queryKey: ['users-to-groups', user?.id] });
-        toast.success(`Group ${groupName} created succesfully!`);
-        toast.success(`Joined group ${groupName} succesfully!`);
+        queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
+        toast.success(`Group ${groupName} created successfully!`);
+        toast.success(`Joined group ${groupName} successfully!`);
         setIsDialogOpen(false);
         setSecretCode(body.secret);
       }
@@ -83,8 +83,14 @@ function SecretGroupRegistration() {
       if (!body) {
         return;
       }
-      queryClient.invalidateQueries({ queryKey: ['user', 'groups'] });
-      toast.success(`Joined ${groupName} group succesfully!`);
+
+      if ('errors' in body) {
+        toast.error(body.errors[0]);
+        return;
+      }
+
+      queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
+      toast.success(`Joined ${groupName} group successfully!`);
     },
     onError: () => {
       toast.error('Secret is not valid');
@@ -124,8 +130,6 @@ function SecretGroupRegistration() {
             trigger={
               <Button onClick={() => setIsDialogOpen(true)}>{groups.create.buttonText}</Button>
             }
-            title={groups.create.dialog.title}
-            description={groups.create.dialog.description}
             content={
               <ResearchGroupForm
                 formData={groups.create.dialog.form}

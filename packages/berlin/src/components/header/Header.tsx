@@ -28,16 +28,14 @@ import {
   HeaderContainer,
   LogoContainer,
   LogoImage,
-  LogoSubtitle,
-  LogoTitle,
   MenuButton,
   MobileButtons,
   NavButtons,
   NavContainer,
   SyledHeader,
-  LogoTextContainer,
   ThemeButton,
 } from './Header.styled';
+import IconButton from '../icon-button';
 
 function Header() {
   const queryClient = useQueryClient();
@@ -81,10 +79,6 @@ function Header() {
       <HeaderContainer>
         <LogoContainer onClick={() => navigate('/')}>
           <LogoImage src={header.logo.src} alt={header.logo.alt} height={96} width={96} />
-          <LogoTextContainer>
-            <LogoTitle>{header.title}</LogoTitle>
-            <LogoSubtitle>{header.subtitle}</LogoSubtitle>
-          </LogoTextContainer>
         </LogoContainer>
         <NavContainer>
           <NavButtons>
@@ -112,15 +106,20 @@ function Header() {
                             )
                           );
                         })}
+                      <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
+                        My proposals
+                      </NavButton>
                       <NavButton to={`/events/${events?.[0].id}/cycles`} $color="secondary">
                         Agenda
                       </NavButton>
                     </>
                   )}
-                  <NavButton to="/account" $color="secondary">
-                    Account
-                  </NavButton>
                   <Button onClick={() => mutateLogout()}>Log out</Button>
+                  <IconButton
+                    onClick={() => navigate('/account')}
+                    icon={{ src: `/icons/user-${theme}.svg`, alt: 'User' }}
+                    $color="primary"
+                  />
                 </>
               ) : (
                 <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
@@ -162,6 +161,9 @@ function Header() {
                       </NavButton>
                     </>
                   )}
+                  <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
+                    My proposals
+                  </NavButton>
                   <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>

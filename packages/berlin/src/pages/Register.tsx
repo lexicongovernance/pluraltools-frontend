@@ -124,7 +124,7 @@ function Register() {
 
     registrationForms.push({
       key: 'create',
-      name: 'Create a new Proposal',
+      name: 'Create a new proposal',
       mode: 'create',
     });
 

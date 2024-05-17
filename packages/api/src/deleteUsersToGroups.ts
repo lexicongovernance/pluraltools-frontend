@@ -2,7 +2,7 @@ import { DeleteUsersToGroupsRequest, DeleteUsersToGroupsResponse } from './types
 
 async function deleteUsersToGroups({
   userToGroupId,
-}: DeleteUsersToGroupsRequest): Promise<DeleteUsersToGroupsResponse | null> {
+}: DeleteUsersToGroupsRequest): Promise<DeleteUsersToGroupsResponse | { errors: string[] } | null> {
   try {
     const response = await fetch(
       `${import.meta.env.VITE_SERVER_URL}/api/users-to-groups/${userToGroupId}`,
@@ -16,7 +16,11 @@ async function deleteUsersToGroups({
     );
 
     if (!response.ok) {
-      throw new Error(`HTTP Error! Status: ${response.status}`);
+      if (response.status < 500) {
+        const errors = (await response.json()) as { errors: string[] };
+        return errors;
+      }
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
     const group = (await response.json()) as { data: DeleteUsersToGroupsResponse };

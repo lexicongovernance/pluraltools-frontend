@@ -35,8 +35,8 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
   const [expanded, setExpanded] = useState(false);
 
   const { data: groupMembers } = useQuery({
-    queryKey: ['group-members', userToGroup.group.id],
-    queryFn: () => fetchGroupMembers('eaee6e5e-42e8-4cfd-a5e7-4d31bd812908'),
+    queryKey: ['group', userToGroup.group.id, 'users-to-groups'],
+    queryFn: () => fetchGroupMembers(userToGroup.group.id),
     enabled: !!userToGroup.group.id,
   });
 
@@ -93,7 +93,7 @@ function GroupsTable({ groupCategoryName }: { groupCategoryName?: string | null 
   const theme = useAppStore((state) => state.theme);
 
   const { data: usersToGroups } = useQuery({
-    queryKey: ['user', user?.id, 'groups'],
+    queryKey: ['user', user?.id, 'users-to-groups'],
     queryFn: () => fetchUsersToGroups(user?.id || ''),
     enabled: !!user?.id,
   });
@@ -102,7 +102,12 @@ function GroupsTable({ groupCategoryName }: { groupCategoryName?: string | null 
     mutationFn: deleteUsersToGroups,
     onSuccess: (body) => {
       if (body) {
-        queryClient.invalidateQueries({ queryKey: ['users-to-groups', user?.id] });
+        if ('errors' in body) {
+          toast.error(body.errors[0]);
+          return;
+        }
+
+        queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
       }
     },
   });
