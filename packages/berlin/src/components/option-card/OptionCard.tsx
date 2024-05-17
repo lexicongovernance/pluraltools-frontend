@@ -17,13 +17,13 @@ type OptionCardProps = {
   onUnVote: () => void;
 };
 function OptionCard({ option, numOfVotes, onVote, onUnVote }: OptionCardProps) {
-  const { eventId, cycleId, optionId } = useParams();
+  const { eventId, cycleId } = useParams();
   const theme = useAppStore((state) => state.theme);
   const navigate = useNavigate();
   const { data: optionUsers } = useQuery({
-    queryKey: ['option', optionId, 'users'],
-    queryFn: () => fetchOptionUsers(optionId || ''),
-    enabled: !!optionId,
+    queryKey: ['option', option.id, 'users'],
+    queryFn: () => fetchOptionUsers(option.id || ''),
+    enabled: !!option.id,
   });
   // const formattedPluralityScore = useMemo(() => {
   //   const score = parseFloat(String(option.voteScore));
