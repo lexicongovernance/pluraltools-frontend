@@ -182,10 +182,10 @@ function Cycle() {
 
   const currentCycle = cycle?.forumQuestions[0];
 
-  const sortByAuthor = (a: QuestionOption, b: QuestionOption, order: Order) => {
-    const authorA = (a.user.lastName || a.user.username).toUpperCase();
-    const authorB = (b.user.lastName || b.user.username).toUpperCase();
-    return order === 'desc' ? authorB.localeCompare(authorA) : authorA.localeCompare(authorB);
+  const sortByLead = (a: QuestionOption, b: QuestionOption, order: Order) => {
+    const leadA = (a.user.lastName || a.user.username).toUpperCase();
+    const leadB = (b.user.lastName || b.user.username).toUpperCase();
+    return order === 'desc' ? leadB.localeCompare(leadA) : leadA.localeCompare(leadB);
   };
 
   const sortByAffiliation = (a: QuestionOption, b: QuestionOption, order: Order) => {
@@ -215,8 +215,8 @@ function Cycle() {
     const { column, order } = sorting;
     const sorted = [...(currentCycle?.questionOptions ?? [])].sort((a, b) => {
       switch (column) {
-        case 'author':
-          return sortByAuthor(a, b, order);
+        case 'lead':
+          return sortByLead(a, b, order);
         case 'affiliation':
           return sortByAffiliation(a, b, order);
         case 'numOfVotes':

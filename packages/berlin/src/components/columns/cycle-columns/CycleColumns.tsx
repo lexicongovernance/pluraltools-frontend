@@ -1,6 +1,6 @@
 import IconButton from '../../icon-button';
 import { Body } from '../../typography/Body.styled';
-import { Affiliation, Author, Card, Hearts, Proposal } from './CycleColumns.styled';
+import { Affiliation, Lead, Card, Hearts, Proposal } from './CycleColumns.styled';
 
 type CycleColumnsProps = {
   onColumnClick: (column: string) => void;
@@ -12,9 +12,9 @@ function CycleColumns({ onColumnClick }: CycleColumnsProps) {
       <Proposal>
         <Body>Proposal</Body>
       </Proposal>
-      <Author onClick={() => onColumnClick('author')}>
-        <Body>Author</Body>
-      </Author>
+      <Lead onClick={() => onColumnClick('lead')}>
+        <Body>Lead</Body>
+      </Lead>
       <Affiliation onClick={() => onColumnClick('affiliation')}>
         <Body>Affiliation</Body>
       </Affiliation>
