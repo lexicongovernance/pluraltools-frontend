@@ -28,6 +28,7 @@ function Event() {
     queryKey: ['events', eventId, 'cycles'],
     queryFn: () => fetchEventCycles(eventId || ''),
     enabled: !!eventId,
+    refetchInterval: 5000, // Poll every 5 seconds
   });
 
   const openCycles = useMemo(
