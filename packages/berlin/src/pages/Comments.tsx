@@ -44,6 +44,7 @@ import CommentsTable from '../components/tables/comment-table';
 import CommentsColumns from '../components/columns/comments-columns';
 import IconButton from '../components/icon-button';
 import Textarea from '../components/textarea';
+import { INITIAL_HEARTS } from '../utils/constants';
 
 type LocalUserVotes = ResponseUserVotesType | { optionId: string; numOfVotes: number }[];
 
@@ -52,8 +53,6 @@ function Comments() {
   const queryClient = useQueryClient();
   const { cycleId, optionId } = useParams();
   const { user } = useUser();
-  const availableHearts = useAppStore((state) => state.availableHearts);
-  const setAvailableHearts = useAppStore((state) => state.setAvailableHearts);
   const [localUserVotes, setLocalUserVotes] = useState<LocalUserVotes>([]);
   const [localOptionHearts, setLocalOptionHearts] = useState(0);
   const [comment, setComment] = useState('');
@@ -64,6 +63,10 @@ function Comments() {
     queryFn: () => fetchOption(optionId || ''),
     enabled: !!optionId,
   });
+
+  const availableHearts =
+    useAppStore((state) => state.availableHearts[option?.questionId || '']) ?? INITIAL_HEARTS;
+  const setAvailableHearts = useAppStore((state) => state.setAvailableHearts);
 
   const { data: userVotes } = useQuery({
     queryKey: ['votes', cycleId],
@@ -82,7 +85,6 @@ function Comments() {
     queryKey: ['option', optionId, 'comments'],
     queryFn: () => fetchComments({ optionId: optionId || '' }),
     enabled: !!optionId,
-    // refetchInterval: 5000, // Poll every 5 seconds
   });
 
   const sortedComments = useMemo(() => {
@@ -97,11 +99,17 @@ function Comments() {
 
   useEffect(() => {
     if (optionId) {
+      const sumOfAllVotes = userVotes?.reduce((acc, option) => acc + option.numOfVotes, 0) || 0;
       const hearts = userVotes?.find((option) => optionId === option.optionId)?.numOfVotes || 0;
       setLocalOptionHearts(hearts);
       setLocalUserVotes([{ optionId: optionId, numOfVotes: hearts }]);
+      // update the available hearts
+      setAvailableHearts({
+        questionId: option?.questionId ?? '',
+        hearts: Math.max(0, INITIAL_HEARTS - sumOfAllVotes),
+      });
     }
-  }, [optionId, userVotes]);
+  }, [optionId, userVotes, setAvailableHearts, option?.questionId]);
 
   const { mutate: mutateComments } = useMutation({
     mutationFn: postComment,
@@ -113,15 +121,31 @@ function Comments() {
   });
 
   const handleVoteWrapper = (optionId: string) => {
+    if (availableHearts === 0) {
+      toast.error('No hearts left to give');
+      return;
+    }
+
     setLocalOptionHearts((prevLocalOptionHearts) => prevLocalOptionHearts + 1);
     setLocalUserVotes((prevLocalUserVotes) => handleLocalVote(optionId, prevLocalUserVotes));
-    setAvailableHearts(handleAvailableHearts(availableHearts, 'vote'));
+    setAvailableHearts({
+      questionId: option?.questionId ?? '',
+      hearts: handleAvailableHearts(availableHearts, 'vote'),
+    });
   };
 
   const handleUnVoteWrapper = (optionId: string) => {
+    if (availableHearts === INITIAL_HEARTS) {
+      toast.error('No votes to left to remove');
+      return;
+    }
+
     setLocalOptionHearts((prevLocalOptionHearts) => Math.max(0, prevLocalOptionHearts - 1));
     setLocalUserVotes((prevLocalUserVotes) => handleLocalUnVote(optionId, prevLocalUserVotes));
-    setAvailableHearts(handleAvailableHearts(availableHearts, 'unVote'));
+    setAvailableHearts({
+      questionId: option?.questionId ?? '',
+      hearts: handleAvailableHearts(availableHearts, 'unVote'),
+    });
   };
 
   const { mutate: mutateVotes } = useMutation({

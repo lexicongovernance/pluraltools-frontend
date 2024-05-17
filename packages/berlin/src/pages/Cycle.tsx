@@ -35,12 +35,10 @@ import BackButton from '../components/back-button';
 import Button from '../components/button';
 import CycleColumns from '../components/columns/cycle-columns';
 import OptionCard from '../components/option-card';
+import { FIVE_MINUTES_IN_SECONDS, INITIAL_HEARTS } from '../utils/constants';
 
 type Order = 'asc' | 'desc';
 type LocalUserVotes = ResponseUserVotesType | { optionId: string; numOfVotes: number }[];
-
-const initialHearts = 20;
-const fiveMinutesInSeconds = 300;
 
 function Cycle() {
   const queryClient = useQueryClient();
@@ -59,8 +57,10 @@ function Cycle() {
     enabled: !!user?.id && !!cycleId,
     retry: false,
   });
-
-  const { availableHearts, setAvailableHearts } = useAppStore((state) => state);
+  const availableHearts =
+    useAppStore((state) => state.availableHearts[cycle?.forumQuestions[0].id || '']) ??
+    INITIAL_HEARTS;
+  const setAvailableHearts = useAppStore((state) => state.setAvailableHearts);
   const [startAt, setStartAt] = useState<string | null>(null);
   const [endAt, setEndAt] = useState<string | null>(null);
   const [localUserVotes, setLocalUserVotes] = useState<LocalUserVotes>([]);
@@ -85,7 +85,7 @@ function Cycle() {
       case 'upcoming':
         return `Vote opens in: ${formattedTime}`;
       case 'open':
-        if (time && time <= fiveMinutesInSeconds) {
+        if (time && time <= FIVE_MINUTES_IN_SECONDS) {
           return `Vote closes in: ${formattedTime}`;
         } else if (time === 0) {
           return 'Vote has ended.';
@@ -96,12 +96,16 @@ function Cycle() {
     }
   }, [cycleState, time, formattedTime]);
 
-  const updateVotesAndHearts = (votes: ResponseUserVotesType) => {
+  const updateInitialVotesAndHearts = (votes: ResponseUserVotesType) => {
     const givenVotes = votes
       .map((option) => option.numOfVotes)
       .reduce((prev, curr) => prev + curr, 0);
 
-    setAvailableHearts(initialHearts - givenVotes);
+    setAvailableHearts({
+      questionId: cycle?.forumQuestions[0].id || '',
+      hearts: Math.max(0, INITIAL_HEARTS - givenVotes),
+    });
+
     setLocalUserVotes(votes);
   };
 
@@ -124,7 +128,7 @@ function Cycle() {
 
   useEffect(() => {
     if (userVotes?.length) {
-      updateVotesAndHearts(userVotes);
+      updateInitialVotesAndHearts(userVotes);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userVotes]);
@@ -144,13 +148,29 @@ function Cycle() {
   });
 
   const handleVoteWrapper = (optionId: string) => {
+    if (availableHearts === 0) {
+      toast.error('No hearts left to give');
+      return;
+    }
+
     setLocalUserVotes((prevLocalUserVotes) => handleLocalVote(optionId, prevLocalUserVotes));
-    setAvailableHearts(handleAvailableHearts(availableHearts, 'vote'));
+    setAvailableHearts({
+      questionId: cycle?.forumQuestions[0].id ?? '',
+      hearts: handleAvailableHearts(availableHearts, 'vote'),
+    });
   };
 
   const handleUnVoteWrapper = (optionId: string) => {
+    if (availableHearts === INITIAL_HEARTS) {
+      toast.error('No votes to left to remove');
+      return;
+    }
+
     setLocalUserVotes((prevLocalUserVotes) => handleLocalUnVote(optionId, prevLocalUserVotes));
-    setAvailableHearts(handleAvailableHearts(availableHearts, 'unVote'));
+    setAvailableHearts({
+      questionId: cycle?.forumQuestions[0].id ?? '',
+      hearts: handleAvailableHearts(availableHearts, 'unVote'),
+    });
   };
 
   const handleSaveVotesWrapper = () => {
@@ -163,10 +183,10 @@ function Cycle() {
 
   const currentCycle = cycle?.forumQuestions[0];
 
-  const sortByAuthor = (a: QuestionOption, b: QuestionOption, order: Order) => {
-    const authorA = (a.user.lastName || a.user.username).toUpperCase();
-    const authorB = (b.user.lastName || b.user.username).toUpperCase();
-    return order === 'desc' ? authorB.localeCompare(authorA) : authorA.localeCompare(authorB);
+  const sortByLead = (a: QuestionOption, b: QuestionOption, order: Order) => {
+    const leadA = (a.user.lastName || a.user.username).toUpperCase();
+    const leadB = (b.user.lastName || b.user.username).toUpperCase();
+    return order === 'desc' ? leadB.localeCompare(leadA) : leadA.localeCompare(leadB);
   };
 
   const sortByAffiliation = (a: QuestionOption, b: QuestionOption, order: Order) => {
@@ -196,8 +216,8 @@ function Cycle() {
     const { column, order } = sorting;
     const sorted = [...(currentCycle?.questionOptions ?? [])].sort((a, b) => {
       switch (column) {
-        case 'author':
-          return sortByAuthor(a, b, order);
+        case 'lead':
+          return sortByLead(a, b, order);
         case 'affiliation':
           return sortByAffiliation(a, b, order);
         case 'numOfVotes':
@@ -226,7 +246,7 @@ function Cycle() {
           You have <Bold>{availableHearts}</Bold> hearts left to give away:
         </Body>
         <FlexRow $gap="0.25rem" $wrap>
-          {Array.from({ length: initialHearts }).map((_, id) => (
+          {Array.from({ length: INITIAL_HEARTS }).map((_, id) => (
             <img
               key={id}
               src={id < availableHearts ? '/icons/heart-full.svg' : '/icons/heart-empty.svg'}
