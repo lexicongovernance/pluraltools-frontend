@@ -28,14 +28,11 @@ import {
   HeaderContainer,
   LogoContainer,
   LogoImage,
-  LogoSubtitle,
-  LogoTitle,
   MenuButton,
   MobileButtons,
   NavButtons,
   NavContainer,
   SyledHeader,
-  LogoTextContainer,
   ThemeButton,
 } from './Header.styled';
 import IconButton from '../icon-button';
@@ -82,10 +79,6 @@ function Header() {
       <HeaderContainer>
         <LogoContainer onClick={() => navigate('/')}>
           <LogoImage src={header.logo.src} alt={header.logo.alt} height={96} width={96} />
-          <LogoTextContainer>
-            <LogoTitle>{header.title}</LogoTitle>
-            <LogoSubtitle>{header.subtitle}</LogoSubtitle>
-          </LogoTextContainer>
         </LogoContainer>
         <NavContainer>
           <NavButtons>
