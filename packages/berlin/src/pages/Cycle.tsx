@@ -42,6 +42,7 @@ type LocalUserVotes = ResponseUserVotesType | { optionId: string; numOfVotes: nu
 
 function Cycle() {
   const queryClient = useQueryClient();
+
   const { user } = useUser();
   const { cycleId } = useParams();
   const { data: cycle } = useQuery({
