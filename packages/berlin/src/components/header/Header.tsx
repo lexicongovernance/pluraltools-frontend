@@ -64,7 +64,7 @@ function Header() {
     queryKey: ['alerts'],
     queryFn: () => fetchAlerts(),
     enabled: !!user,
-    refetchInterval: 2000, // Poll every 2 seconds
+    refetchInterval: 10000, // Poll every 10 seconds
   });
 
   const { data: events } = useQuery({
@@ -92,21 +92,27 @@ function Header() {
                     <>
                       {alerts &&
                         alerts.length > 0 &&
-                        alerts?.map((alert) => {
-                          return (
-                            alert.link &&
-                            alert.title && (
-                              <NavButton
-                                key={alert.title + 1}
-                                to={alert.link}
-                                $color="secondary"
-                                end
-                              >
-                                {alert.title}
-                              </NavButton>
-                            )
-                          );
-                        })}
+                        alerts
+                          // newest alerts first
+                          .sort(
+                            (a, b) =>
+                              new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+                          )
+                          ?.map((alert) => {
+                            return (
+                              alert.link &&
+                              alert.title && (
+                                <NavButton
+                                  key={alert.title + 1}
+                                  to={alert.link}
+                                  $color="secondary"
+                                  end
+                                >
+                                  {alert.title}
+                                </NavButton>
+                              )
+                            );
+                          })}
                       <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
                         My proposals
                       </NavButton>
