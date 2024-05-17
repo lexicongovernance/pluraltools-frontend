@@ -3,6 +3,7 @@ export * from './CycleType';
 export * from './EventType';
 export * from './ForumQuestionType';
 export * from './GroupCategoryType';
+export * from './GroupRegistrationsType';
 export * from './GroupType';
 export * from './LikeType';
 export * from './QuestionOptionType';

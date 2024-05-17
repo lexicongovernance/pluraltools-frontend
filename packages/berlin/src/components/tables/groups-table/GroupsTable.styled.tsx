@@ -19,3 +19,8 @@ export const Card = styled(Grid)<{ $expanded: boolean }>`
 export const Group = styled(Body)``;
 
 export const Secret = styled(Body)``;
+
+export const GroupProposalDescription = styled(Body)`
+  border-bottom: 1px solid var(--color-gray);
+  padding-bottom: 1.5rem;
+`;

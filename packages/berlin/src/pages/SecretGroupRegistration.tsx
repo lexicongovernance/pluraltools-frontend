@@ -118,17 +118,19 @@ function SecretGroupRegistration() {
   return (
     <FlexColumn>
       <FlexRowToColumn $gap="2rem">
-        <FlexColumn>
+        {/* // TODO: avoid inline styles */}
+        <FlexColumn style={{ minHeight: 180 }}>
           <Subtitle>{groups.create.subtitle}</Subtitle>
           {groups.create.body.map(({ id, text }) => (
             <Body key={id}>{text}</Body>
           ))}
-          {groupName && secretCode && <SecretCode groupName={groupName} secretCode={secretCode} />}
           <Dialog
             open={isDialogOpen}
             onOpenChange={setIsDialogOpen}
             trigger={
-              <Button onClick={() => setIsDialogOpen(true)}>{groups.create.buttonText}</Button>
+              <Button style={{ marginTop: 'auto' }} onClick={() => setIsDialogOpen(true)}>
+                {groups.create.buttonText}
+              </Button>
             }
             content={
               <ResearchGroupForm
@@ -139,9 +141,10 @@ function SecretGroupRegistration() {
             }
             dialogButtons={false}
           />
+          {groupName && secretCode && <SecretCode groupName={groupName} secretCode={secretCode} />}
         </FlexColumn>
         <Divider $height={330} />
-        <FlexColumn>
+        <FlexColumn style={{ minHeight: 180 }}>
           <Subtitle>{groups.join.subtitle}</Subtitle>
           {groups.join.body.map(({ id, text }) => (
             <Body key={id}>{text}</Body>
