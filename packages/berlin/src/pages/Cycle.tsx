@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 // API
-import { QuestionOption, fetchCycle, fetchUserVotes, postVotes } from 'api';
+import { GetUserVotesResponse, QuestionOption, fetchCycle, fetchUserVotes, postVotes } from 'api';
 
 // Hooks
 import useCountdown from '../hooks/useCountdown';
@@ -50,7 +50,6 @@ function Cycle() {
     queryFn: () => fetchCycle(cycleId || ''),
     enabled: !!cycleId,
   });
-
   const { data: userVotes } = useQuery({
     queryKey: ['votes', cycleId],
     queryFn: () => fetchUserVotes(cycleId || ''),
@@ -64,8 +63,13 @@ function Cycle() {
   const [startAt, setStartAt] = useState<string | null>(null);
   const [endAt, setEndAt] = useState<string | null>(null);
   const [localUserVotes, setLocalUserVotes] = useState<LocalUserVotes>([]);
-  const [sorting, setSorting] = useState<{ column: string; order: Order }>({
-    column: 'pluralityScore',
+  const [sortedOptions, setSortedOptions] = useState<{
+    options: QuestionOption[];
+    column: 'lead' | 'affiliation' | 'numOfVotes';
+    order: 'desc' | 'asc';
+  }>({
+    options: [],
+    column: 'numOfVotes',
     order: 'desc',
   });
 
@@ -75,6 +79,22 @@ function Cycle() {
       setEndAt(cycle.endAt);
     }
   }, [cycle]);
+
+  useEffect(() => {
+    // Initial sorting
+    if (cycle?.forumQuestions[0].questionOptions.length) {
+      setSortedOptions((prev) => ({
+        ...prev,
+        options: sortOptions({
+          options: cycle.forumQuestions[0].questionOptions,
+          sorting: prev,
+          votes: userVotes,
+        }),
+      }));
+    }
+    // no need to add sortOptions to the dependencies array
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cycle, userVotes]);
 
   const { formattedTime, cycleState, time } = useCountdown(startAt, endAt);
 
@@ -190,8 +210,8 @@ function Cycle() {
   };
 
   const sortByAffiliation = (a: QuestionOption, b: QuestionOption, order: Order) => {
-    const affiliationA = a.user.group.name.toUpperCase();
-    const affiliationB = b.user.group.name.toUpperCase();
+    const affiliationA = a.user.group?.name.toUpperCase();
+    const affiliationB = b.user.group?.name.toUpperCase() ?? '';
     return order === 'desc'
       ? affiliationB.localeCompare(affiliationA)
       : affiliationA.localeCompare(affiliationB);
@@ -201,39 +221,51 @@ function Cycle() {
     a: QuestionOption,
     b: QuestionOption,
     order: Order,
-    localUserVotes: LocalUserVotes,
+    localUserVotes: LocalUserVotes | GetUserVotesResponse | null | undefined,
   ) => {
-    const votesA = localUserVotes.find((vote) => vote.optionId === a.id)?.numOfVotes || 0;
-    const votesB = localUserVotes.find((vote) => vote.optionId === b.id)?.numOfVotes || 0;
+    const votesA = localUserVotes?.find((vote) => vote.optionId === a.id)?.numOfVotes || 0;
+    const votesB = localUserVotes?.find((vote) => vote.optionId === b.id)?.numOfVotes || 0;
     return order === 'desc' ? votesB - votesA : votesA - votesB;
   };
 
-  const sortByVoteScore = (a: QuestionOption, b: QuestionOption, order: Order) => {
-    return order === 'desc' ? b.voteScore - a.voteScore : a.voteScore - b.voteScore;
-  };
-
-  const sortedOptions = useMemo(() => {
-    const { column, order } = sorting;
-    const sorted = [...(currentCycle?.questionOptions ?? [])].sort((a, b) => {
-      switch (column) {
+  const sortOptions = ({
+    options,
+    sorting,
+    votes,
+  }: {
+    options: QuestionOption[];
+    sorting: { column: string; order: Order };
+    votes: LocalUserVotes | GetUserVotesResponse | null | undefined;
+  }) => {
+    const sorted = [...options].sort((a, b) => {
+      switch (sorting.column) {
         case 'lead':
-          return sortByLead(a, b, order);
+          return sortByLead(a, b, sorting.order);
         case 'affiliation':
-          return sortByAffiliation(a, b, order);
-        case 'numOfVotes':
-          return sortByNumOfVotes(a, b, order, localUserVotes);
+          return sortByAffiliation(a, b, sorting.order);
         default:
-          return sortByVoteScore(a, b, order);
+          return sortByNumOfVotes(a, b, sorting.order, votes);
       }
     });
     return sorted;
-  }, [currentCycle?.questionOptions, localUserVotes, sorting]);
+  };
 
   const handleColumnClick = (column: string) => {
-    setSorting((prevSorting) => ({
-      column,
-      order: prevSorting.column === column && prevSorting.order === 'asc' ? 'desc' : 'asc',
-    }));
+    setSortedOptions(
+      (prev) =>
+        ({
+          options: sortOptions({
+            options: prev.options,
+            sorting: {
+              column: column as 'lead' | 'affiliation' | 'numOfVotes',
+              order: prev.column === column && prev.order === 'asc' ? 'desc' : 'asc',
+            },
+            votes: localUserVotes,
+          }),
+          column,
+          order: prev.column === column && prev.order === 'asc' ? 'desc' : 'asc',
+        }) as typeof sortedOptions,
+    );
   };
 
   return (
@@ -263,7 +295,7 @@ function Cycle() {
       {currentCycle?.questionOptions.length ? (
         <FlexColumn $gap="0">
           <CycleColumns onColumnClick={handleColumnClick} />
-          {sortedOptions.map((option) => {
+          {sortedOptions.options.map((option) => {
             const userVote = localUserVotes.find((vote) => vote.optionId === option.id);
             const numOfVotes = userVote ? userVote.numOfVotes : 0;
             return (
