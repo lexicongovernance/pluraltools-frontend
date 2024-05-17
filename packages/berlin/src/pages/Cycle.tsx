@@ -80,7 +80,7 @@ function Cycle() {
   }, [cycle]);
 
   useEffect(() => {
-    // Initial formatting
+    // Initial sorting
     if (cycle?.forumQuestions[0].questionOptions.length) {
       setSortedOptions((prev) => ({
         ...prev,
@@ -91,6 +91,7 @@ function Cycle() {
         }),
       }));
     }
+    // no need to add sortOptions to the dependencies array
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cycle, userVotes]);
 
