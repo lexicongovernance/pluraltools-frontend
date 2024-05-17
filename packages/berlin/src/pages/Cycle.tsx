@@ -44,6 +44,7 @@ const fiveMinutesInSeconds = 300;
 
 function Cycle() {
   const queryClient = useQueryClient();
+
   const { user } = useUser();
   const { cycleId } = useParams();
   const { data: cycle } = useQuery({
@@ -58,6 +59,7 @@ function Cycle() {
     enabled: !!user?.id && !!cycleId,
     retry: false,
   });
+
   const { availableHearts, setAvailableHearts } = useAppStore((state) => state);
   const [startAt, setStartAt] = useState<string | null>(null);
   const [endAt, setEndAt] = useState<string | null>(null);
