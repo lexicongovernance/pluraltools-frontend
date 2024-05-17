@@ -119,11 +119,7 @@ function SecretGroupRegistration() {
     <FlexColumn>
       <FlexRowToColumn $gap="2rem">
         <FlexColumn>
-          <Subtitle>{groups.create.subtitle}</Subtitle>
-          {groups.create.body.map(({ id, text }) => (
-            <Body key={id}>{text}</Body>
-          ))}
-          {groupName && secretCode && <SecretCode groupName={groupName} secretCode={secretCode} />}
+          {/* <Subtitle>{groups.create.subtitle}</Subtitle> */}
           <Dialog
             open={isDialogOpen}
             onOpenChange={setIsDialogOpen}
@@ -139,14 +135,19 @@ function SecretGroupRegistration() {
             }
             dialogButtons={false}
           />
+          {groups.create.body.map(({ id, text }) => (
+            <Body key={id}>{text}</Body>
+          ))}
+          {groupName && secretCode && <SecretCode groupName={groupName} secretCode={secretCode} />}
         </FlexColumn>
         <Divider $height={330} />
         <FlexColumn>
-          <Subtitle>{groups.join.subtitle}</Subtitle>
-          {groups.join.body.map(({ id, text }) => (
-            <Body key={id}>{text}</Body>
-          ))}
           <Form onSubmit={handleSubmit(onSubmit)}>
+            {/* <Subtitle>{groups.join.subtitle}</Subtitle> */}
+            <Button type="submit">{groups.join.buttonText}</Button>
+            {groups.join.body.map(({ id, text }) => (
+              <Body key={id}>{text}</Body>
+            ))}
             <Input
               label={groups.join.input.label}
               placeholder={groups.join.input.placeholder}
@@ -155,7 +156,6 @@ function SecretGroupRegistration() {
               errors={errors?.secret?.message ? [errors.secret.message] : []}
               required
             />
-            <Button type="submit">{groups.join.buttonText}</Button>
           </Form>
         </FlexColumn>
       </FlexRowToColumn>
