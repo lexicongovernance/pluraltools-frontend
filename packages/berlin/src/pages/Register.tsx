@@ -32,7 +32,6 @@ import useUser from '../hooks/useUser';
 import { DBEvent } from '../types/DBEventType';
 
 // Components
-import { Body } from '../components/typography/Body.styled';
 import { Error } from '../components/typography/Error.styled';
 import { FlexColumn } from '../components/containers/FlexColum.styled';
 import { Form } from '../components/containers/Form.styled';
@@ -435,9 +434,6 @@ function RegisterForm(props: {
       <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting || isPending}>
         Save
       </Button>
-      <Body>
-        Need more time? Feel free to come back to these questions later. The deadline is May 15th.
-      </Body>
     </FlexColumn>
   ) : (
     <></>
