@@ -41,7 +41,7 @@ function Cycle() {
   const queryClient = useQueryClient();
 
   const { user } = useUser();
-  const { cycleId } = useParams();
+  const { eventId, cycleId } = useParams();
   const { data: cycle } = useQuery({
     queryKey: ['cycles', cycleId],
     queryFn: () => fetchCycle(cycleId || ''),
@@ -268,7 +268,7 @@ function Cycle() {
   return (
     <FlexColumn $gap="2rem">
       <FlexColumn>
-        <BackButton />
+        <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
         <Title>{currentCycle?.questionTitle}</Title>
         <Body>{voteInfo}</Body>
         <Body>
