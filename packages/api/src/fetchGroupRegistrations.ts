@@ -1,4 +1,4 @@
-import { GetGroupRegistration } from './types/GroupRegistrationsType';
+import { GetGroupRegistration } from './types';
 
 async function fetchGroupRegistrations(groupId: string): Promise<GetGroupRegistration | null> {
   try {

@@ -1,5 +1,3 @@
-// This can be optimized
-
 type RegistrationField = {
   id: string;
   eventId: string;
