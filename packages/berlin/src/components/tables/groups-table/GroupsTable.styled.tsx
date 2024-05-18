@@ -20,7 +20,8 @@ export const Group = styled(Body)``;
 
 export const Secret = styled(Body)``;
 
-export const GroupProposalDescription = styled(Body)`
+export const GroupProposal = styled.div`
   border-bottom: 1px solid var(--color-gray);
   padding-bottom: 1.5rem;
+  width: 100%;
 `;
