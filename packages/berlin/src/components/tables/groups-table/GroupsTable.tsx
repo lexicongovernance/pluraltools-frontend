@@ -23,7 +23,7 @@ import Dialog from '../../dialog';
 import IconButton from '../../icon-button';
 import { Body } from '../../typography/Body.styled';
 import { FlexRow } from '../../containers/FlexRow.styled';
-import { FlexColumn } from '../../containers/FlexColum.styled';
+import { FlexColumn } from '../../containers/FlexColumn.styled';
 import { Bold } from '../../typography/Bold.styled';
 
 interface GroupCardProps {

@@ -1,5 +1,5 @@
 import { fetchCycle, fetchForumQuestionStatistics } from 'api';
-import { FlexColumn } from '../components/containers/FlexColum.styled';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';

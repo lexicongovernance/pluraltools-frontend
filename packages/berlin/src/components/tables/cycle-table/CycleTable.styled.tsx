@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { FlexColumn } from '../../containers/FlexColum.styled';
+import { FlexColumn } from '../../containers/FlexColumn.styled';
 
 export const Card = styled(FlexColumn)`
   border-radius: 1rem;

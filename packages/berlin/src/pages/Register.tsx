@@ -31,7 +31,7 @@ import useUser from '../hooks/useUser';
 
 // Components
 import { Error } from '../components/typography/Error.styled';
-import { FlexColumn } from '../components/containers/FlexColum.styled';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { Form } from '../components/containers/Form.styled';
 import { SafeArea } from '../layout/Layout.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';

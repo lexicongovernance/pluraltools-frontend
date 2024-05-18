@@ -19,7 +19,7 @@ import {
 } from 'api';
 
 // Components
-import { FlexColumn } from '../components/containers/FlexColum.styled';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { FlexRowToColumn } from '../components/containers/FlexRowToColumn.styled';
 import { Title } from '../components/typography/Title.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';

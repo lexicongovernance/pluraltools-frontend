@@ -3,7 +3,7 @@ import { Close, Description, Portal, Root, Title, Trigger } from '@radix-ui/reac
 
 // Components
 import { Body } from '../typography/Body.styled';
-import { FlexColumn } from '../containers/FlexColum.styled';
+import { FlexColumn } from '../containers/FlexColumn.styled';
 import { FlexRowToColumn } from '../containers/FlexRowToColumn.styled';
 import Button from '../button';
 
