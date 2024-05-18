@@ -1,6 +1,6 @@
-import { GetGroupRegistration } from './types';
+import { GetGroupRegistrations } from './types';
 
-async function fetchGroupRegistrations(groupId: string): Promise<GetGroupRegistration | null> {
+async function fetchGroupRegistrations(groupId: string): Promise<GetGroupRegistrations | null> {
   try {
     const response = await fetch(
       `${import.meta.env.VITE_SERVER_URL}/api/groups/${groupId}/registrations`,
@@ -16,7 +16,7 @@ async function fetchGroupRegistrations(groupId: string): Promise<GetGroupRegistr
       throw new Error(`HTTP Error! Status: ${response.status}`);
     }
 
-    const groups = (await response.json()) as { data: GetGroupRegistration };
+    const groups = (await response.json()) as { data: GetGroupRegistrations };
     return groups.data;
   } catch (error) {
     console.error('Error fetching group registrations:', error);

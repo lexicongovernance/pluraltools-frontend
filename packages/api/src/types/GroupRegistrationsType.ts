@@ -34,7 +34,7 @@ type Registration = {
   registrationData: RegistrationData[];
 };
 
-export type GetGroupRegistration = {
+export type GetGroupRegistrations = {
   id: string;
   name: string;
   description: string | null;
