@@ -332,7 +332,7 @@ const SelectRegistrationDropdown = ({
               registrationFields,
               mode: form.mode,
               index: idx + 1,
-              groupName: form.group?.name || 'None',
+              groupName: form.group?.name || 'Solo',
             }),
           }))}
           placeholder="Select a Proposal"
@@ -386,7 +386,8 @@ function RegisterForm(props: {
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [selectedGroupId, setSelectedGroupId] = useState<string>(props.groupId ?? 'none');
+  const [selectedGroupId, setSelectedGroupId] = useState<string>('');
+  const prevSelectGroupId = props.groupId ?? 'none';
 
   const {
     register,
@@ -543,7 +544,7 @@ function RegisterForm(props: {
     <FlexColumn>
       <RegisterGroupSelect
         usersToGroups={props.usersToGroups}
-        selectedGroupId={selectedGroupId}
+        selectedGroupId={selectedGroupId || prevSelectGroupId}
         onChange={setSelectedGroupId}
       />
       <Subtitle>{props.event?.registrationDescription}</Subtitle>
