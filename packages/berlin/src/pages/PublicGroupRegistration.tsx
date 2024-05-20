@@ -11,7 +11,7 @@ import useUser from '../hooks/useUser';
 import { fetchGroups, postUsersToGroups, fetchUsersToGroups, putUsersToGroups } from 'api';
 
 // Components
-import { FlexColumn } from '../components/containers/FlexColum.styled';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { Form } from '../components/containers/Form.styled';
 import Button from '../components/button';
 import Select from '../components/select';

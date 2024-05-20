@@ -10,24 +10,26 @@ import toast from 'react-hot-toast';
 // API
 import { postUsersToGroups, fetchGroupCategories, postGroup } from 'api';
 
+// Hooks
+import useUser from '../hooks/useUser';
+
 // Data
 import groups from '../data/groups';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
-import { FlexColumn } from '../components/containers/FlexColum.styled';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { FlexRowToColumn } from '../components/containers/FlexRowToColumn.styled';
 import { Form } from '../components/containers/Form.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import Button from '../components/button';
 import Dialog from '../components/dialog';
 import Divider from '../components/divider';
+import GroupsColumns from '../components/columns/groups-columns';
+import GroupsTable from '../components/tables/groups-table';
 import Input from '../components/input';
 import ResearchGroupForm from '../components/research-group-form';
 import SecretCode from '../components/secret-code';
-import GroupsColumns from '../components/columns/groups-columns';
-import GroupsTable from '../components/tables/groups-table';
-import useUser from '../hooks/useUser';
 
 function SecretGroupRegistration() {
   const queryClient = useQueryClient();
@@ -90,7 +92,7 @@ function SecretGroupRegistration() {
       }
 
       queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
-      toast.success(`Joined ${groupName} group successfully!`);
+      toast.success(`Group joined successfully!`);
     },
     onError: () => {
       toast.error('Secret is not valid');
@@ -118,8 +120,7 @@ function SecretGroupRegistration() {
   return (
     <FlexColumn>
       <FlexRowToColumn $gap="2rem">
-        {/* // TODO: avoid inline styles */}
-        <FlexColumn style={{ minHeight: 180 }}>
+        <FlexColumn $minHeight="180px">
           <Subtitle>{groups.create.subtitle}</Subtitle>
           {groups.create.body.map(({ id, text }) => (
             <Body key={id}>{text}</Body>
@@ -144,7 +145,7 @@ function SecretGroupRegistration() {
           {groupName && secretCode && <SecretCode groupName={groupName} secretCode={secretCode} />}
         </FlexColumn>
         <Divider $height={330} />
-        <FlexColumn style={{ minHeight: 180 }}>
+        <FlexColumn $minHeight="180px">
           <Subtitle>{groups.join.subtitle}</Subtitle>
           {groups.join.body.map(({ id, text }) => (
             <Body key={id}>{text}</Body>

@@ -1,7 +1,7 @@
 import { Affiliation, Author, Card, Proposal, Votes } from './OptionCard.styled';
 import { Body } from '../typography/Body.styled';
 import { Bold } from '../typography/Bold.styled';
-import { FlexColumn } from '../containers/FlexColum.styled';
+import { FlexColumn } from '../containers/FlexColumn.styled';
 import { FlexRow } from '../containers/FlexRow.styled';
 import { QuestionOption, fetchOptionUsers } from 'api';
 import { useAppStore } from '../../store';

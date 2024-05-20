@@ -1,7 +1,7 @@
 // Styled components
 import { Body } from '../components/typography/Body.styled';
 import { Bold } from '../components/typography/Bold.styled';
-import { FlexColumn } from '../components/containers/FlexColum.styled';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { SafeArea } from '../layout/Layout.styled';
 import ZupassButton from '../components/zupass-button';
 

@@ -14,6 +14,7 @@ import {
   fetchRegistrationFields,
   fetchRegistrations,
   fetchUsersToGroups,
+  GetEventResponse,
   GetRegistrationsResponseType,
   GetUsersToGroupsResponse,
   postRegistration,
@@ -28,12 +29,9 @@ import {
 // Hooks
 import useUser from '../hooks/useUser';
 
-// Types
-import { DBEvent } from '../types/DBEventType';
-
 // Components
 import { Error } from '../components/typography/Error.styled';
-import { FlexColumn } from '../components/containers/FlexColum.styled';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { Form } from '../components/containers/Form.styled';
 import { SafeArea } from '../layout/Layout.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
@@ -242,7 +240,7 @@ function RegisterForm(props: {
   registrationFields: GetRegistrationFieldsResponse | null | undefined;
   registrationId: string | null | undefined;
   groupId: string | null | undefined;
-  event: DBEvent | null | undefined;
+  event: GetEventResponse | null | undefined;
   show: boolean;
   mode: 'edit' | 'create';
   onRegistrationFormCreate?: (newRegistrationId: string) => void;

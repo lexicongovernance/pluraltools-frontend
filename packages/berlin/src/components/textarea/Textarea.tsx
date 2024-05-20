@@ -1,6 +1,6 @@
 // Components
 import React from 'react';
-import { FlexColumn } from '../containers/FlexColum.styled';
+import { FlexColumn } from '../containers/FlexColumn.styled';
 import Label from '../typography/Label';
 
 // Styled Components

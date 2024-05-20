@@ -15,10 +15,11 @@ import {
   putUsersToGroups,
   postUsersToGroups,
   GetGroupsResponse,
+  GetEventsResponse,
 } from 'api';
 
 // Components
-import { FlexColumn } from '../components/containers/FlexColum.styled';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { FlexRowToColumn } from '../components/containers/FlexRowToColumn.styled';
 import { Title } from '../components/typography/Title.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
@@ -37,7 +38,6 @@ import { formatGroups } from '../utils/formatGroups';
 import { useAppStore } from '../store';
 import { Body } from '../components/typography/Body.styled';
 import { useEffect, useMemo } from 'react';
-import { DBEvent } from '../types/DBEventType';
 
 const ACADEMIC_CREDENTIALS = ['Bachelors', 'Masters', 'PhD', 'JD', 'None'];
 
@@ -158,7 +158,7 @@ function AccountForm({
   initialUser: InitialUser;
   user: GetUserResponse | null | undefined;
   groups: GetGroupsResponse[] | null | undefined;
-  events: DBEvent[] | null | undefined;
+  events: GetEventsResponse | null | undefined;
 }) {
   const navigate = useNavigate();
   const theme = useAppStore((state) => state.theme);

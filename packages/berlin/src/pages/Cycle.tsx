@@ -19,16 +19,13 @@ import {
   handleLocalVote,
 } from '../utils/voting';
 
-// Types
-import { ResponseUserVotesType } from '../types/CycleType';
-
 // Store
 import { useAppStore } from '../store';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
 import { Bold } from '../components/typography/Bold.styled';
-import { FlexColumn } from '../components/containers/FlexColum.styled';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
 import { Title } from '../components/typography/Title.styled';
 import BackButton from '../components/back-button';
@@ -38,13 +35,13 @@ import OptionCard from '../components/option-card';
 import { FIVE_MINUTES_IN_SECONDS, INITIAL_HEARTS } from '../utils/constants';
 
 type Order = 'asc' | 'desc';
-type LocalUserVotes = ResponseUserVotesType | { optionId: string; numOfVotes: number }[];
+type LocalUserVotes = { optionId: string; numOfVotes: number }[];
 
 function Cycle() {
   const queryClient = useQueryClient();
 
   const { user } = useUser();
-  const { cycleId } = useParams();
+  const { eventId, cycleId } = useParams();
   const { data: cycle } = useQuery({
     queryKey: ['cycles', cycleId],
     queryFn: () => fetchCycle(cycleId || ''),
@@ -116,7 +113,7 @@ function Cycle() {
     }
   }, [cycleState, time, formattedTime]);
 
-  const updateInitialVotesAndHearts = (votes: ResponseUserVotesType) => {
+  const updateInitialVotesAndHearts = (votes: GetUserVotesResponse) => {
     const givenVotes = votes
       .map((option) => option.numOfVotes)
       .reduce((prev, curr) => prev + curr, 0);
@@ -271,7 +268,7 @@ function Cycle() {
   return (
     <FlexColumn $gap="2rem">
       <FlexColumn>
-        <BackButton />
+        <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
         <Title>{currentCycle?.questionTitle}</Title>
         <Body>{voteInfo}</Body>
         <Body>

@@ -153,6 +153,22 @@ async function redirectToCycleResultsLoader(
   return null;
 }
 
+/**
+ * Redirects the user to the cycle page if the cycle is open
+ */
+async function redirectToCycleIfOpen(queryClient: QueryClient, eventId?: string, cycleId?: string) {
+  const cycle = await queryClient.fetchQuery({
+    queryKey: ['cycles', cycleId],
+    queryFn: () => fetchCycle(cycleId || ''),
+  });
+
+  if (cycle?.status === 'OPEN') {
+    return redirect(`/events/${eventId}/cycles/${cycleId}`);
+  }
+
+  return null;
+}
+
 const router = (queryClient: QueryClient) =>
   createBrowserRouter([
     { path: '/popup', element: <PassportPopupRedirect /> },
@@ -211,6 +227,8 @@ const router = (queryClient: QueryClient) =>
                     },
                     {
                       path: ':cycleId/results',
+                      loader: ({ params }) =>
+                        redirectToCycleIfOpen(queryClient, params.eventId, params.cycleId),
                       Component: Results,
                     },
                     {
