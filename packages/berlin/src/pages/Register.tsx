@@ -308,7 +308,7 @@ const SelectRegistrationDropdown = ({
     groupName: string;
   }) => {
     if (mode === 'create') {
-      return 'Create New Proposal';
+      return 'Create a new proposal';
     }
 
     return `${index}. [${groupName}]: ${getRegistrationTitle({
