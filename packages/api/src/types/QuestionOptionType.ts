@@ -6,7 +6,6 @@ export type QuestionOption = {
   optionTitle: string;
   optionSubTitle?: string;
   accepted: boolean;
-  voteScore: number;
   user: {
     group: {
       id: string;
