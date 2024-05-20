@@ -1,4 +1,4 @@
-import { GetRegistrationFieldsResponse } from './types/RegistrationFieldType';
+import { GetRegistrationFieldsResponse } from './types';
 
 async function fetchRegistrationFields(
   eventId: string,

@@ -1,4 +1,4 @@
-import { GetUserAttributesResponse } from './types/UserAttributesType';
+import { GetUserAttributesResponse } from './types';
 
 async function fetchUserAttributes(userId: string): Promise<GetUserAttributesResponse | null> {
   try {

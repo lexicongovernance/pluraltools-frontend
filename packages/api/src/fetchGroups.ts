@@ -1,4 +1,4 @@
-import { GetGroupsResponse } from './types/GroupType';
+import { GetGroupsResponse } from './types';
 
 async function fetchGroups({
   groupCategoryName,
