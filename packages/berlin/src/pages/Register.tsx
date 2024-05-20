@@ -120,7 +120,7 @@ function Register() {
         enabled: !!registration.id,
       })) ?? [],
     combine: (results) => {
-      // return a map of registration id to { data, pending }
+      // return a map of registration id to { data, loading }
       return results.reduce(
         (acc, result, idx) => {
           if (registrations && registrations[idx] && result.data) {
@@ -194,6 +194,7 @@ function Register() {
               registrationFields={registrationFields}
               registrationId={form.registration?.id}
               mode={form.mode}
+              isLoading={multipleRegistrationData[form.registration?.id || '']?.loading}
               event={event}
               onRegistrationFormCreate={onRegistrationFormCreate}
             />
@@ -379,7 +380,7 @@ function RegisterForm(props: {
   event: GetEventResponse | null | undefined;
   show: boolean;
   mode: 'edit' | 'create';
-  isLoading?: boolean;
+  isLoading: boolean;
   onRegistrationFormCreate?: (newRegistrationId: string) => void;
   registrationData: GetRegistrationDataResponse | null | undefined;
 }) {
