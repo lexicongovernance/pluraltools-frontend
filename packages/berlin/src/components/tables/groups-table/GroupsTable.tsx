@@ -17,13 +17,13 @@ import { useAppStore } from '../../../store';
 import useUser from '../../../hooks/useUser';
 
 // Components
-import { Card, Group, GroupProposalDescription, Secret } from './GroupsTable.styled';
+import { Card, Group, GroupProposal, Secret } from './GroupsTable.styled';
 import Button from '../../button';
 import Dialog from '../../dialog';
 import IconButton from '../../icon-button';
 import { Body } from '../../typography/Body.styled';
 import { FlexRow } from '../../containers/FlexRow.styled';
-import { FlexColumn } from '../../containers/FlexColum.styled';
+import { FlexColumn } from '../../containers/FlexColumn.styled';
 import { Bold } from '../../typography/Bold.styled';
 
 interface GroupCardProps {
@@ -51,6 +51,22 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
     navigator.clipboard.writeText(secretCode);
     toast.success(`Secret code ${secretCode} copied to clipboard`);
   };
+
+  const flattenedRegistrations = groupRegistrations?.flatMap(
+    (groupRegistration) => groupRegistration.registrations,
+  );
+
+  const proposals = flattenedRegistrations?.map((registration) => {
+    const title = registration.registrationData.find(
+      (item) => item.registrationField.fieldDisplayRank === 0,
+    )?.value;
+
+    const description = registration.registrationData.find(
+      (item) => item.registrationField.fieldDisplayRank === 1,
+    )?.value;
+
+    return { id: registration.id, title, description };
+  });
 
   return (
     <Card key={userToGroup.id} $expanded={expanded}>
@@ -88,37 +104,17 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
         <Body>
           <Bold>Group members:</Bold> {groupMembers?.map((member) => member.username).join(', ')}
         </Body>
-        {groupRegistrations &&
-          groupRegistrations.flatMap((groupRegistration) =>
-            groupRegistration.registrations.flatMap((registration) =>
-              registration.registrationData
-                .filter(
-                  ({ registrationField }) =>
-                    registrationField.fieldDisplayRank === 0 ||
-                    registrationField.fieldDisplayRank === 1,
-                )
-                .map(({ id, value, registrationField }) => {
-                  if (registrationField.fieldDisplayRank === 0) {
-                    return (
-                      <div key={id}>
-                        <Body>
-                          <Bold>Title:</Bold> {value}
-                        </Body>
-                      </div>
-                    );
-                  } else if (registrationField.fieldDisplayRank === 1) {
-                    return (
-                      <div key={id}>
-                        <GroupProposalDescription>
-                          <Bold>Description:</Bold> {value}
-                        </GroupProposalDescription>
-                      </div>
-                    );
-                  }
-                  return null;
-                }),
-            ),
-          )}
+        {proposals &&
+          proposals.map(({ id, title, description }) => (
+            <GroupProposal key={id}>
+              <Body>
+                <Bold>Title:</Bold> {title}
+              </Body>
+              <Body>
+                <Bold>Description:</Bold> {description}
+              </Body>
+            </GroupProposal>
+          ))}
       </FlexColumn>
     </Card>
   );

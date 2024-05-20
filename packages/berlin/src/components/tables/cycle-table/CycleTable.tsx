@@ -1,6 +1,6 @@
 import { GetCycleResponse } from 'api';
 import Button from '../../button';
-import { FlexColumn } from '../../containers/FlexColum.styled';
+import { FlexColumn } from '../../containers/FlexColumn.styled';
 import { Body } from '../../typography/Body.styled';
 import { Subtitle } from '../../typography/Subtitle.styled';
 import { Card } from './CycleTable.styled';

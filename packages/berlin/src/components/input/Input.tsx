@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlexColumn } from '../containers/FlexColum.styled';
+import { FlexColumn } from '../containers/FlexColumn.styled';
 import { Error } from '../typography/Error.styled';
 import Label from '../typography/Label';
 import { StyledInput } from './Input.styled';

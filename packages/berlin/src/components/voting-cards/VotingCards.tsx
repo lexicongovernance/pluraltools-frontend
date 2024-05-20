@@ -1,4 +1,4 @@
-import { FlexColumn } from '../containers/FlexColum.styled';
+import { FlexColumn } from '../containers/FlexColumn.styled';
 import { Title } from '../typography/Title.styled';
 import CycleTable from '../tables/cycle-table';
 import type { GetCycleResponse } from 'api';
