@@ -1,4 +1,4 @@
-import { GetGroupMembers } from './types/GroupMembersType';
+import { GetGroupMembers } from './types';
 
 async function fetchGroupMembers(groupId: string): Promise<GetGroupMembers | null> {
   try {

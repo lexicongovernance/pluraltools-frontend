@@ -1,4 +1,4 @@
-import { GetUserResponse } from './types/UserType';
+import { GetUserResponse } from './types';
 
 async function postVerify(body: {
   pcdStr: string;

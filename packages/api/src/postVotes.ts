@@ -1,4 +1,4 @@
-import { PostVotesRequest, PostVotesResponse } from './types/UserVotesType';
+import { PostVotesRequest, PostVotesResponse } from './types';
 
 async function postVotes({ votes }: PostVotesRequest): Promise<PostVotesResponse | null> {
   try {

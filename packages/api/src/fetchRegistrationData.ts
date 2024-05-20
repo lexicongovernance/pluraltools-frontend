@@ -1,4 +1,4 @@
-import { GetRegistrationDataResponse } from './types/RegistrationDataType';
+import { GetRegistrationDataResponse } from './types';
 
 async function fetchRegistrationData(
   registrationId: string,

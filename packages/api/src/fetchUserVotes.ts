@@ -1,4 +1,4 @@
-import { GetUserVotesResponse } from './types/UserVotesType';
+import { GetUserVotesResponse } from './types';
 
 async function fetchUserVotes(cycleId: string): Promise<GetUserVotesResponse | null> {
   try {
