@@ -456,10 +456,10 @@ function RegisterForm(props: {
         toast.success('Registration updated successfully!');
 
         await queryClient.invalidateQueries({
-          queryKey: [props.registrationId, 'registration'],
+          queryKey: ['event', props.event?.id, 'registrations'],
         });
         await queryClient.invalidateQueries({
-          queryKey: [props.registrationId, 'registration', 'data'],
+          queryKey: ['registrations', props.registrationId, 'registration-data'],
         });
 
         redirectToHoldingPage(props.userIsApproved);
