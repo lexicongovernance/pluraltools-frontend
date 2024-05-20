@@ -65,7 +65,7 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
       (item) => item.registrationField.fieldDisplayRank === 1,
     )?.value;
 
-    return { id: registration.id, title, description };
+    return { id: registration.id, userId: registration.userId, title, description };
   });
 
   return (
@@ -105,8 +105,12 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
           <Bold>Group members:</Bold> {groupMembers?.map((member) => member.username).join(', ')}
         </Body>
         {proposals &&
-          proposals.map(({ id, title, description }) => (
+          proposals.map(({ id, title, description, userId }) => (
             <GroupProposal key={id}>
+              <Body>
+                <Bold>Lead Author:</Bold>{' '}
+                {groupMembers?.find((member) => member.id === userId)?.username || 'Anonymous'}
+              </Body>
               <Body>
                 <Bold>Title:</Bold> {title}
               </Body>
