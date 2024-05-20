@@ -108,6 +108,10 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
           proposals.map(({ id, title, description }) => (
             <GroupProposal key={id}>
               <Body>
+                <Bold>Lead Author:</Bold>{' '}
+                {groupMembers?.find((member) => member.id === id)?.username || 'Anonymous'}
+              </Body>
+              <Body>
                 <Bold>Title:</Bold> {title}
               </Body>
               <Body>
