@@ -67,6 +67,10 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
     return { id: registration.id, userId: registration.userId, title, description };
   });
 
+  const getLeadAuthor = (userId: string) => {
+    return groupMembers?.find((member) => member.id === userId);
+  };
+
   return (
     <Card key={userToGroup.id} $expanded={expanded}>
       <FlexRow>
@@ -80,7 +84,9 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
         <Group>{userToGroup.group.name}</Group>
       </FlexRow>
       <FlexRow>
-        <Body>{groupMembers?.map((member) => member.username).join(', ')}</Body>
+        <Body>
+          {groupMembers?.map((member) => `${member.firstName} ${member.lastName}`).join(', ')}
+        </Body>
       </FlexRow>
       {userToGroup.group.secret ? (
         <FlexRow>
@@ -108,7 +114,9 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
             <GroupProposal key={id}>
               <Body>
                 <Bold>Lead Author:</Bold>{' '}
-                {groupMembers?.find((member) => member.id === userId)?.username || 'Anonymous'}
+                {getLeadAuthor(userId)
+                  ? `${getLeadAuthor(userId)?.firstName} ${getLeadAuthor(userId)?.lastName}`
+                  : 'Anonymous'}
               </Body>
               <Body>
                 <Bold>Title:</Bold> {title}
