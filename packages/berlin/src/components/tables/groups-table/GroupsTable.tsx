@@ -80,6 +80,9 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
         />
         <Group>{userToGroup.group.name}</Group>
       </FlexRow>
+      <FlexRow>
+        <Body>{groupMembers?.map((member) => member.username).join(', ')}</Body>
+      </FlexRow>
       {userToGroup.group.secret ? (
         <FlexRow>
           <Secret>{userToGroup.group.secret}</Secret>
@@ -101,9 +104,6 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
         actionButtonText="Leave group"
       />
       <FlexColumn className="description" $gap="1.5rem">
-        <Body>
-          <Bold>Group members:</Bold> {groupMembers?.map((member) => member.username).join(', ')}
-        </Body>
         {proposals &&
           proposals.map(({ id, title, description, userId }) => (
             <GroupProposal key={id}>
