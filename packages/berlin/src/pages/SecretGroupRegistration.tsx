@@ -134,7 +134,7 @@ function SecretGroupRegistration() {
   return (
     <FlexColumn>
       <FlexRowToColumn $gap="2rem">
-        <FlexColumn $minHeight="180px">
+        <FlexColumn $minHeight="200px">
           <Subtitle>{groups.create.subtitle}</Subtitle>
           {groups.create.body.map(({ id, text }) => (
             <Body key={id}>{text}</Body>
@@ -159,12 +159,12 @@ function SecretGroupRegistration() {
           {groupName && secretCode && <SecretCode groupName={groupName} secretCode={secretCode} />}
         </FlexColumn>
         <Divider $height={330} />
-        <FlexColumn $minHeight="180px">
+        <FlexColumn $minHeight="200px">
           <Subtitle>{groups.join.subtitle}</Subtitle>
           {groups.join.body.map(({ id, text }) => (
             <Body key={id}>{text}</Body>
           ))}
-          <Form onSubmit={handleSubmit(onSubmit)}>
+          <Form onSubmit={handleSubmit(onSubmit)} style={{ marginTop: 'auto' }}>
             <Input
               label={groups.join.input.label}
               placeholder={groups.join.input.placeholder}
