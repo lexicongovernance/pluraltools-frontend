@@ -4,10 +4,9 @@ import { Grid } from '../../containers/Grid.styled';
 
 export const Card = styled(Grid)`
   border-bottom: 2px solid var(--color-black);
-  gap: 0;
   grid-template-columns: repeat(3, 1fr) 82px;
-  width: 100%;
   padding: 1.5rem;
+  width: 100%;
 `;
 
 export const Group = styled(Body)`
