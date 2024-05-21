@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
 
 // API
-import { postUsersToGroups, fetchGroupCategories, postGroup } from 'api';
+import { postUsersToGroups, fetchGroupCategories, postGroup, fetchUsersToGroups } from 'api';
 
 // Hooks
 import useUser from '../hooks/useUser';
@@ -56,6 +56,20 @@ function SecretGroupRegistration() {
     defaultValues: { secret: '' },
     resolver: zodResolver(secretGroupRegistrationSchema),
   });
+
+  const { data: usersToGroups } = useQuery({
+    queryKey: ['user', user?.id, 'users-to-groups'],
+    queryFn: () => fetchUsersToGroups(user?.id || ''),
+    enabled: !!user?.id,
+  });
+
+  const groupsInCategory = useMemo(
+    () =>
+      usersToGroups?.filter(
+        (userToGroup) => userToGroup.group.groupCategory?.name === groupCategoryNameParam,
+      ),
+    [usersToGroups, groupCategoryNameParam],
+  );
 
   const { data: groupCategories } = useQuery({
     queryKey: ['group-categories'],
@@ -163,9 +177,13 @@ function SecretGroupRegistration() {
           </Form>
         </FlexColumn>
       </FlexRowToColumn>
-      <Subtitle>Your groups</Subtitle>
-      <GroupsColumns />
-      <GroupsTable groupCategoryName={groupCategoryNameParam} />
+      {groupsInCategory && groupsInCategory.length > 0 && (
+        <>
+          <Subtitle>Your groups</Subtitle>
+          <GroupsColumns />
+          <GroupsTable groupsInCategory={groupsInCategory} />
+        </>
+      )}
     </FlexColumn>
   );
 }

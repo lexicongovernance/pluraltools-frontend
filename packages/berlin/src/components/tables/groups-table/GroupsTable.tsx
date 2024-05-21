@@ -1,12 +1,11 @@
 // React and third-party libraries
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 
 // API
 import {
   deleteUsersToGroups,
-  fetchUsersToGroups,
   fetchGroupMembers,
   GetUsersToGroupsResponse,
   fetchGroupRegistrations,
@@ -124,16 +123,10 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
   );
 }
 
-function GroupsTable({ groupCategoryName }: { groupCategoryName?: string | null }) {
+function GroupsTable({ groupsInCategory }: { groupsInCategory?: GetUsersToGroupsResponse }) {
   const { user } = useUser();
   const queryClient = useQueryClient();
   const theme = useAppStore((state) => state.theme);
-
-  const { data: usersToGroups } = useQuery({
-    queryKey: ['user', user?.id, 'users-to-groups'],
-    queryFn: () => fetchUsersToGroups(user?.id || ''),
-    enabled: !!user?.id,
-  });
 
   const { mutate } = useMutation({
     mutationFn: deleteUsersToGroups,
@@ -148,14 +141,6 @@ function GroupsTable({ groupCategoryName }: { groupCategoryName?: string | null 
       }
     },
   });
-
-  const groupsInCategory = useMemo(
-    () =>
-      usersToGroups?.filter(
-        (userToGroup) => userToGroup.group.groupCategory?.name === groupCategoryName,
-      ),
-    [usersToGroups, groupCategoryName],
-  );
 
   return groupsInCategory?.map((userToGroup) => (
     <GroupCard
