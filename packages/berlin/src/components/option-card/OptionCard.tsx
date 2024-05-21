@@ -7,7 +7,7 @@ import { QuestionOption, fetchOptionUsers } from 'api';
 import { useAppStore } from '../../store';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import IconButton from '../icon-button';
 
 type OptionCardProps = {
@@ -25,6 +25,7 @@ function OptionCard({ option, numOfVotes, onVote, onUnVote }: OptionCardProps) {
     queryFn: () => fetchOptionUsers(option.id || ''),
     enabled: !!option.id,
   });
+
   // const formattedPluralityScore = useMemo(() => {
   //   const score = parseFloat(String(option.voteScore));
   //   return score % 1 === 0 ? score.toFixed(0) : score.toFixed(1);
@@ -37,6 +38,12 @@ function OptionCard({ option, numOfVotes, onVote, onUnVote }: OptionCardProps) {
   const handleCommentsClick = () => {
     navigate(`/events/${eventId}/cycles/${cycleId}/options/${option.id}`);
   };
+
+  const coauthors = useMemo(() => {
+    return optionUsers?.group?.users?.filter(
+      (optionUser) => optionUser.username !== option.user.username,
+    );
+  }, [optionUsers, option.user.username]);
 
   return (
     <Card $expanded={expanded}>
@@ -85,10 +92,10 @@ function OptionCard({ option, numOfVotes, onVote, onUnVote }: OptionCardProps) {
           </Plurality> */}
         </FlexRow>
         <FlexColumn className="description" $gap="1.5rem">
-          {optionUsers?.group?.users && (
+          {coauthors && coauthors.length > 0 && (
             <Body>
               <Bold>Co-authors:</Bold>{' '}
-              {optionUsers.group.users.map((user) => `${(user.firstName, user.lastName)}`)}
+              {coauthors.map((coauthor) => `${coauthor.firstName} ${coauthor.lastName}`).join(', ')}
             </Body>
           )}
           {option.optionSubTitle && <Body>{option.optionSubTitle}</Body>}

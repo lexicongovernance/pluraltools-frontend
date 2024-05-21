@@ -78,6 +78,12 @@ function Comments() {
     enabled: !!optionId,
   });
 
+  const coauthors = useMemo(() => {
+    return optionUsers?.group?.users?.filter(
+      (optionUser) => optionUser.username !== option?.user.username,
+    );
+  }, [optionUsers, option?.user.username]);
+
   const { data: comments } = useQuery({
     queryKey: ['option', optionId, 'comments'],
     queryFn: () => fetchComments({ optionId: optionId || '' }),
@@ -206,10 +212,10 @@ function Comments() {
         <Body>{option?.optionSubTitle}</Body>
         <Body>
           <Bold>Lead author:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
-          {optionUsers?.group?.users && (
+          {coauthors && coauthors.length > 0 && (
             <Body>
               <Bold>Co-authors:</Bold>{' '}
-              {optionUsers.group.users.map((user) => `${(user.firstName, user.lastName)}`)}
+              {coauthors.map((coauthor) => `${coauthor.firstName} ${coauthor.lastName}`).join(', ')}
             </Body>
           )}
         </Body>
