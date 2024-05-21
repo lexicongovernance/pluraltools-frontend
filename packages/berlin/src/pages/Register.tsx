@@ -855,7 +855,11 @@ function NumberInput(props: {
               return true;
             }
 
-            const v = z.coerce.number().min(0, 'Value is required').safeParse(value);
+            const v = z.coerce
+              .number()
+              .int('Value has to be integer')
+              .min(0, 'Value is required')
+              .safeParse(value);
 
             if (v.success) {
               return true;
