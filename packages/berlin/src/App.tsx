@@ -90,6 +90,15 @@ async function redirectOnLandingLoader(queryClient: QueryClient) {
   }
 
   if (events?.length === 1) {
+    const registrations = await queryClient.fetchQuery({
+      queryKey: ['event', events?.[0].id, 'registrations'],
+      queryFn: () => fetchRegistrations(events?.[0].id || ''),
+    });
+
+    if (registrations && registrations.some((registration) => registration.status === 'APPROVED')) {
+      return redirect(`/events/${events?.[0].id}/register`);
+    }
+
     return redirect(`/events/${events?.[0].id}/cycles`);
   }
 
