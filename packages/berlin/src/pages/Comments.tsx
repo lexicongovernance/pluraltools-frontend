@@ -79,10 +79,8 @@ function Comments() {
   });
 
   const coauthors = useMemo(() => {
-    return optionUsers?.group?.users?.filter(
-      (optionUser) => optionUser.username !== option?.user.username,
-    );
-  }, [optionUsers, option?.user.username]);
+    return optionUsers?.group?.users?.filter((optionUser) => optionUser.id !== option?.userId);
+  }, [optionUsers, option]);
 
   const { data: comments } = useQuery({
     queryKey: ['option', optionId, 'comments'],

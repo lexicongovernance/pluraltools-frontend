@@ -47,6 +47,7 @@ function CommentsTable({ comment }: CommentsTableProps) {
     queryKey: ['commentLikes', comment.id],
     queryFn: () => fetchCommentLikes({ commentId: comment.id }),
     enabled: !!comment.id,
+    refetchInterval: 5000, // Poll every 5 seconds
   });
 
   useEffect(() => {
@@ -81,7 +82,7 @@ function CommentsTable({ comment }: CommentsTableProps) {
     mutationFn: deleteComment,
     onSuccess: (body) => {
       if (body) {
-        queryClient.invalidateQueries({ queryKey: ['comments'] });
+        queryClient.invalidateQueries({ queryKey: ['option', optionId, 'comments'] });
       }
     },
   });

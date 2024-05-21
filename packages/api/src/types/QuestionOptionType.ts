@@ -4,17 +4,10 @@ export type QuestionOption = {
   updatedAt: string;
   questionId: string;
   optionTitle: string;
+  userId?: string;
   optionSubTitle?: string;
   accepted: boolean;
-  user: {
-    group: {
-      id: string;
-      name: string;
-    };
-    username: string;
-    firstName?: string;
-    lastName?: string;
-  };
+  fundingRequest: string;
 };
 
 export type GetQuestionOptionRequest = {
