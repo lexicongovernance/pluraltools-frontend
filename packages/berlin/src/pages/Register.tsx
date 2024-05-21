@@ -688,6 +688,18 @@ function FormField({
           value={value}
         />
       );
+    case 'NUMBER':
+      return (
+        <NumberInput
+          id={id}
+          name={name}
+          register={register}
+          required={required}
+          disabled={disabled}
+          errors={errors}
+          value={value}
+        />
+      );
     default:
       return null;
   }
@@ -817,6 +829,52 @@ function TextAreaInput(props: {
           <CharacterCounter count={charCount} limit={props.characterLimit} />
         )
       )}
+    </FlexColumn>
+  );
+}
+
+function NumberInput(props: {
+  id: string;
+  name: string;
+  required: boolean | null;
+  disabled: boolean;
+  register: UseFormRegister<Record<string, string>>;
+  errors: FieldErrors<Record<string, string>>;
+  value: string;
+}) {
+  return (
+    <FlexColumn $gap="0.5rem">
+      <Input
+        type="number"
+        label={props.name}
+        required={!!props.required}
+        placeholder="Enter a value"
+        {...props.register(props.id, {
+          validate: (value) => {
+            if (!props.required) {
+              return true;
+            }
+
+            const v = z.coerce
+              .number()
+              .int('Value has to be an integer')
+              .min(0, 'Value must be positive')
+              .safeParse(value);
+
+            if (v.success) {
+              return true;
+            }
+
+            return v.error.errors[0].message;
+          },
+        })}
+        onChange={(event) => {
+          props.register(props.id, {
+            value: event.target.value,
+          });
+        }}
+      />
+      {props.errors?.[props.id] && <Error>{props.errors?.[props.id]?.message}</Error>}
     </FlexColumn>
   );
 }
