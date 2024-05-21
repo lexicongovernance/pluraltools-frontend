@@ -90,6 +90,15 @@ async function redirectOnLandingLoader(queryClient: QueryClient) {
   }
 
   if (events?.length === 1) {
+    const registrations = await queryClient.fetchQuery({
+      queryKey: ['event', events?.[0].id, 'registrations'],
+      queryFn: () => fetchRegistrations(events?.[0].id || ''),
+    });
+
+    if (registrations && registrations.some((registration) => registration.status === 'APPROVED')) {
+      return redirect(`/events/${events?.[0].id}/register`);
+    }
+
     return redirect(`/events/${events?.[0].id}/cycles`);
   }
 
@@ -114,7 +123,6 @@ async function redirectToOnlyOneEventLoader(queryClient: QueryClient) {
 
 /**
  * Redirects the user to the register page if they are not registered
- * Redirects the user to register page if they any approved registrations
  * Redirects the user to the holding page if they don't have any approved registrations
  */
 async function redirectToEventHoldingOrRegister(queryClient: QueryClient, eventId?: string) {
@@ -123,15 +131,15 @@ async function redirectToEventHoldingOrRegister(queryClient: QueryClient, eventI
     queryFn: () => fetchRegistrations(eventId || ''),
   });
 
-  if (
-    !registrations ||
-    !registrations.length ||
-    registrations.some((registration) => registration.status === 'APPROVED')
-  ) {
+  if (!registrations || !registrations.length) {
     return redirect(`/events/${eventId}/register`);
   }
 
-  return redirect(`/events/${eventId}/holding`);
+  if (!registrations.some((registration) => registration.status === 'APPROVED')) {
+    return redirect(`/events/${eventId}/holding`);
+  }
+
+  return null;
 }
 
 /**
@@ -172,16 +180,29 @@ async function redirectToCycleIfOpen(queryClient: QueryClient, eventId?: string,
 
 const router = (queryClient: QueryClient) =>
   createBrowserRouter([
-    { path: '/popup', element: <PassportPopupRedirect /> },
+    {
+      path: '/popup',
+      element: <PassportPopupRedirect />,
+    },
     {
       element: <BerlinLayout />,
       children: [
-        { path: '/', loader: () => redirectOnLandingLoader(queryClient), element: <Landing /> },
+        {
+          path: '/',
+          loader: () => redirectOnLandingLoader(queryClient),
+          element: <Landing />,
+        },
         {
           loader: () => redirectToLandingLoader(queryClient),
           children: [
-            { path: '/onboarding', Component: Onboarding },
-            { path: '/data-policy', Component: DataPolicy },
+            {
+              path: '/onboarding',
+              Component: Onboarding,
+            },
+            {
+              path: '/data-policy',
+              Component: DataPolicy,
+            },
             {
               path: '/account',
               Component: Account,
@@ -212,9 +233,9 @@ const router = (queryClient: QueryClient) =>
                   Component: Holding,
                 },
                 {
-                  path: ':eventId/cycles',
                   loader: ({ params }) =>
                     redirectToEventHoldingOrRegister(queryClient, params.eventId),
+                  path: ':eventId/cycles',
                   children: [
                     {
                       path: '',
@@ -227,9 +248,9 @@ const router = (queryClient: QueryClient) =>
                       Component: Cycle,
                     },
                     {
-                      path: ':cycleId/results',
                       loader: ({ params }) =>
                         redirectToCycleIfOpen(queryClient, params.eventId, params.cycleId),
+                      path: ':cycleId/results',
                       Component: Results,
                     },
                     {
