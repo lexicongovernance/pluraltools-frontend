@@ -63,7 +63,7 @@ function ResultsTable({ $expanded, option, onClick }: ResultsTableProps) {
       <Body>{option.allocatedHearts}</Body>
       <Body>{formattedQuadraticScore}</Body>
       <Body>{formattedPluralityScore}</Body>
-      {option.allocatedFunding && <Body>100.000 ARB</Body>}
+      {option.allocatedFunding && <Body>{option.allocatedFunding} ARB</Body>}
       <FlexColumn className="description">
         <Body>{option.optionSubTitle}</Body>
         <Body>
