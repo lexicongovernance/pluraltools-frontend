@@ -12,6 +12,8 @@ export const StyledButton = styled.button<StyledButtonProps>`
   padding-inline: 1rem;
   text-transform: uppercase;
 
+  align-self: ${(props) => props.$alignSelf && props.$alignSelf};
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
