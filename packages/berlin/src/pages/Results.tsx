@@ -67,8 +67,6 @@ function Results() {
     }))
     .sort((a, b) => parseFloat(b.pluralityScore) - parseFloat(a.pluralityScore));
 
-  console.log('optionStatsArray:', optionStatsArray);
-
   return (
     <FlexColumn $gap="2rem">
       <BackButton />
