@@ -1,12 +1,11 @@
 // React and third-party libraries
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 
 // API
 import {
   deleteUsersToGroups,
-  fetchUsersToGroups,
   fetchGroupMembers,
   GetUsersToGroupsResponse,
   fetchGroupRegistrations,
@@ -68,6 +67,10 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
     return { id: registration.id, userId: registration.userId, title, description };
   });
 
+  const getLeadAuthor = (userId: string) => {
+    return groupMembers?.find((member) => member.id === userId);
+  };
+
   return (
     <Card key={userToGroup.id} $expanded={expanded}>
       <FlexRow>
@@ -79,6 +82,11 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
           $flipVertical={expanded}
         />
         <Group>{userToGroup.group.name}</Group>
+      </FlexRow>
+      <FlexRow>
+        <Body>
+          {groupMembers?.map((member) => `${member.firstName} ${member.lastName}`).join(', ')}
+        </Body>
       </FlexRow>
       {userToGroup.group.secret ? (
         <FlexRow>
@@ -94,22 +102,21 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
         <Body>No secret</Body>
       )}
       <Dialog
-        trigger={<Button>Leave</Button>}
+        trigger={<Button $alignSelf="flex-start">Leave</Button>}
         title="Are you sure?"
         description={`This action cannot be undone. This will remove you from group ${userToGroup.group.name}.`}
         onActionClick={() => onLeaveGroup(userToGroup.id)}
         actionButtonText="Leave group"
       />
       <FlexColumn className="description" $gap="1.5rem">
-        <Body>
-          <Bold>Group members:</Bold> {groupMembers?.map((member) => member.username).join(', ')}
-        </Body>
         {proposals &&
           proposals.map(({ id, title, description, userId }) => (
             <GroupProposal key={id}>
               <Body>
                 <Bold>Lead Author:</Bold>{' '}
-                {groupMembers?.find((member) => member.id === userId)?.username || 'Anonymous'}
+                {getLeadAuthor(userId)
+                  ? `${getLeadAuthor(userId)?.firstName} ${getLeadAuthor(userId)?.lastName}`
+                  : 'Anonymous'}
               </Body>
               <Body>
                 <Bold>Title:</Bold> {title}
@@ -124,16 +131,10 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
   );
 }
 
-function GroupsTable({ groupCategoryName }: { groupCategoryName?: string | null }) {
+function GroupsTable({ groupsInCategory }: { groupsInCategory?: GetUsersToGroupsResponse }) {
   const { user } = useUser();
   const queryClient = useQueryClient();
   const theme = useAppStore((state) => state.theme);
-
-  const { data: usersToGroups } = useQuery({
-    queryKey: ['user', user?.id, 'users-to-groups'],
-    queryFn: () => fetchUsersToGroups(user?.id || ''),
-    enabled: !!user?.id,
-  });
 
   const { mutate } = useMutation({
     mutationFn: deleteUsersToGroups,
@@ -148,14 +149,6 @@ function GroupsTable({ groupCategoryName }: { groupCategoryName?: string | null 
       }
     },
   });
-
-  const groupsInCategory = useMemo(
-    () =>
-      usersToGroups?.filter(
-        (userToGroup) => userToGroup.group.groupCategory?.name === groupCategoryName,
-      ),
-    [usersToGroups, groupCategoryName],
-  );
 
   return groupsInCategory?.map((userToGroup) => (
     <GroupCard
