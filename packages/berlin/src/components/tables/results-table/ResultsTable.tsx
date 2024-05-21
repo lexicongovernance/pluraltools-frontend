@@ -25,6 +25,7 @@ type ResultsTableProps = {
     distinctGroups: number;
     listOfGroupNames: string[];
     quadraticScore: string;
+    allocatedFunding: number | null;
     id: string;
   };
   onClick: () => void;
@@ -44,7 +45,12 @@ function ResultsTable({ $expanded, option, onClick }: ResultsTableProps) {
   }, [option.pluralityScore]);
 
   return (
-    <Card $expanded={$expanded} onClick={onClick} $rowgap="2rem">
+    <Card
+      $expanded={$expanded}
+      $showFunding={!!option.allocatedFunding}
+      onClick={onClick}
+      $rowgap="2rem"
+    >
       <FlexRow>
         <IconButton
           $padding={0}
@@ -57,7 +63,7 @@ function ResultsTable({ $expanded, option, onClick }: ResultsTableProps) {
       <Body>{option.allocatedHearts}</Body>
       <Body>{formattedQuadraticScore}</Body>
       <Body>{formattedPluralityScore}</Body>
-      <Body>$ 10.000</Body>
+      {option.allocatedFunding && <Body>100.000 ARB</Body>}
       <FlexColumn className="description">
         <Body>{option.optionSubTitle}</Body>
         <Body>
