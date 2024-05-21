@@ -389,6 +389,10 @@ function RegisterForm(props: {
   const [selectedGroupId, setSelectedGroupId] = useState<string>('');
   const prevSelectGroupId = props.groupId ?? 'none';
 
+  // i want to differentiate between when a group is selected and it is not
+  // so i can show the correct registration fields
+  // i will use the selectedGroupId to do this
+
   const {
     register,
     formState: { errors, isSubmitting },
@@ -409,16 +413,16 @@ function RegisterForm(props: {
   }, [props.registrationData, reset]);
 
   const sortedRegistrationFields = useMemo(() => {
-    const sortedFields = filterRegistrationFields(
-      props.registrationFields || [],
-      selectedGroupId === 'none' ? 'user' : 'group',
-    );
+    const regGroupId = selectedGroupId || prevSelectGroupId;
+    const client = regGroupId === 'none' ? 'user' : 'group';
+
+    const sortedFields = filterRegistrationFields(props.registrationFields || [], client);
 
     // Sort by field_display_rank in ascending order
     sortedFields?.sort((a, b) => (a.fieldDisplayRank || 0) - (b.fieldDisplayRank || 0));
 
     return sortedFields;
-  }, [props.registrationFields, selectedGroupId]);
+  }, [props.registrationFields, selectedGroupId, prevSelectGroupId]);
 
   const redirectToHoldingPage = (isApproved: boolean) => {
     if (!isApproved) {
@@ -476,12 +480,15 @@ function RegisterForm(props: {
   });
 
   const onSubmit = (values: Record<string, string>) => {
+    const regGroupId = selectedGroupId || prevSelectGroupId;
+    const client = regGroupId === 'none' ? 'user' : 'group';
+
     if (props.mode === 'edit') {
       updateRegistrationData({
         registrationId: props.registrationId || '',
         body: {
           eventId: props.event?.id || '',
-          groupId: selectedGroupId === 'none' ? null : selectedGroupId,
+          groupId: client === 'user' ? null : regGroupId,
           status: 'DRAFT',
           registrationData: Object.entries(values).map(([key, value]) => ({
             registrationFieldId: key,
@@ -493,7 +500,7 @@ function RegisterForm(props: {
       mutateRegistrationData({
         body: {
           eventId: props.event?.id || '',
-          groupId: selectedGroupId === 'none' ? null : selectedGroupId,
+          groupId: client === 'user' ? null : regGroupId,
           status: 'DRAFT',
           registrationData: Object.entries(values).map(([key, value]) => ({
             registrationFieldId: key,
