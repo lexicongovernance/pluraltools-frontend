@@ -10,6 +10,7 @@ export { default as fetchEvent } from './fetchEvent';
 export { default as fetchEventCycles } from './fetchEventCycles';
 export { default as fetchEvents } from './fetchEvents';
 export { default as fetchForumQuestionStatistics } from './fetchForumQuestionStatistics';
+export { default as fetchForumQuestionFunding } from './fetchForumQuestionFunding';
 export { default as fetchGroupCategories } from './fetchGroupCategories';
 export { default as fetchGroupMembers } from './fetchGroupMembers';
 export { default as fetchGroupRegistrations } from './fetchGroupRegistrations';
