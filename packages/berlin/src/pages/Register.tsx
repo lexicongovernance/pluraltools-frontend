@@ -305,17 +305,17 @@ const SelectRegistrationDropdown = ({
     registrationFields: GetRegistrationFieldsResponse | null | undefined;
     mode: 'edit' | 'create';
     index: number;
-    groupName: string;
+    groupName?: string;
   }) => {
     if (mode === 'create') {
       return 'Create a new proposal';
     }
 
-    return `${index}. [${groupName}]: ${getRegistrationTitle({
+    return `${index}. ${getRegistrationTitle({
       multipleRegistrationData,
       registration,
       registrationFields,
-    })}`;
+    })} ${groupName ? `[${groupName}]` : ''}`;
   };
 
   return (
@@ -332,7 +332,7 @@ const SelectRegistrationDropdown = ({
               registrationFields,
               mode: form.mode,
               index: idx + 1,
-              groupName: form.group?.name || 'Solo',
+              groupName: form.group?.name,
             }),
           }))}
           placeholder="Select a Proposal"
@@ -857,8 +857,8 @@ function NumberInput(props: {
 
             const v = z.coerce
               .number()
-              .int('Value has to be integer')
-              .min(0, 'Value is required')
+              .int('Value has to be an integer')
+              .min(0, 'Value must be positive')
               .safeParse(value);
 
             if (v.success) {

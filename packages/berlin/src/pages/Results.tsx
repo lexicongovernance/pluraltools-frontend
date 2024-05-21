@@ -1,4 +1,4 @@
-import { fetchCycle, fetchForumQuestionStatistics } from 'api';
+import { fetchCycle, fetchForumQuestionFunding, fetchForumQuestionStatistics } from 'api';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import { useParams } from 'react-router-dom';
@@ -9,6 +9,7 @@ import ResultsColumns from '../components/columns/results-columns';
 import ResultsTable from '../components/tables/results-table';
 import StatsTable from '../components/tables/stats-table';
 import StatsColumns from '../components/columns/stats-columns';
+import { FINAL_QUESTION_TITLE } from '../utils/constants';
 
 function Results() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -27,6 +28,12 @@ function Results() {
     queryFn: () => fetchForumQuestionStatistics(cycle?.forumQuestions[0].id || ''),
     enabled: !!cycle?.id,
     retry: false,
+  });
+
+  const { data: funding } = useQuery({
+    queryKey: ['funding', cycle?.forumQuestions[0].id],
+    queryFn: () => fetchForumQuestionFunding(cycle?.forumQuestions[0].id || ''),
+    enabled: !!cycle?.id && cycle?.forumQuestions?.[0].questionTitle === FINAL_QUESTION_TITLE,
   });
 
   const overallStatistics = [
@@ -56,6 +63,7 @@ function Results() {
     .map(([id, stats]) => ({
       id,
       ...stats,
+      allocatedFunding: funding?.allocated_funding[id] || null,
     }))
     .sort((a, b) => parseFloat(b.pluralityScore) - parseFloat(a.pluralityScore));
 
@@ -64,7 +72,7 @@ function Results() {
       <BackButton />
       <Subtitle>Results for: {cycle?.forumQuestions?.[0].questionTitle}</Subtitle>
       <FlexColumn $gap="0">
-        <ResultsColumns />
+        <ResultsColumns $showFunding={!!funding} />
         {optionStatsArray.map((option, index) => (
           <ResultsTable
             key={option.id}
