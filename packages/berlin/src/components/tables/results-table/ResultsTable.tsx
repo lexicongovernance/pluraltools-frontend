@@ -47,7 +47,7 @@ function ResultsTable({ $expanded, option, onClick }: ResultsTableProps) {
   return (
     <Card
       $expanded={$expanded}
-      $showFunding={!!option.allocatedFunding}
+      $showFunding={option.allocatedFunding !== null}
       onClick={onClick}
       $rowgap="2rem"
     >
