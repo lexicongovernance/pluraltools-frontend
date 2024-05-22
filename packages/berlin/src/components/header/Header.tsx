@@ -1,7 +1,7 @@
 // React and third-party libraries
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 // Store
 import { useAppStore } from '../../store';
@@ -28,6 +28,9 @@ import {
   HeaderContainer,
   LogoContainer,
   LogoImage,
+  LogoSubtitle,
+  LogoTextContainer,
+  LogoTitle,
   MenuButton,
   MobileButtons,
   NavButtons,
@@ -40,6 +43,7 @@ import IconButton from '../icon-button';
 function Header() {
   const queryClient = useQueryClient();
   const { user } = useUser();
+  const location = useLocation();
   const theme = useAppStore((state) => state.theme);
   const toggleTheme = useAppStore((state) => state.toggleTheme);
   const navigate = useNavigate();
@@ -80,6 +84,12 @@ function Header() {
       <HeaderContainer>
         <LogoContainer onClick={() => navigate('/')}>
           <LogoImage src={header.logo.src} alt={header.logo.alt} height={96} width={96} />
+          {location.pathname === '/' && (
+            <LogoTextContainer>
+              <LogoTitle>{header.title}</LogoTitle>
+              <LogoSubtitle>{header.subtitle}</LogoSubtitle>
+            </LogoTextContainer>
+          )}
         </LogoContainer>
         <NavContainer>
           <NavButtons>
