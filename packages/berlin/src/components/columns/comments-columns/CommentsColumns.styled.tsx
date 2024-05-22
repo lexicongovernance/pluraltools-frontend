@@ -19,7 +19,7 @@ export const Comment = styled(Body)`
 export const Author = styled(Body)`
   font-weight: bold;
 `;
-export const Date = styled(Body)`
+export const Time = styled(Body)`
   font-weight: bold;
   display: none;
   @media (min-width: 600px) {
@@ -27,4 +27,6 @@ export const Date = styled(Body)`
   }
 `;
 
-export const Likes = styled(Body)``;
+export const Likes = styled(Body)`
+  font-weight: bold;
+`;
