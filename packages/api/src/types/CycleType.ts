@@ -20,6 +20,7 @@ export type GetCycleResponse = {
       optionTitle: string;
       optionSubTitle?: string;
       accepted: boolean;
+      fundingRequest: string;
       user: {
         group: {
           id: string;
