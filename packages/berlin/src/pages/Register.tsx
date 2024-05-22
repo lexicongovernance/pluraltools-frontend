@@ -747,8 +747,9 @@ function TextInput(props: {
         required={!!props.required}
         placeholder="Enter a value"
         {...props.register(props.id, {
+          setValueAs: (value) => value.trim(),
           validate: (value) => {
-            if (!props.required) {
+            if (!props.required && value.trim() === '') {
               return true;
             }
 
@@ -811,8 +812,9 @@ function TextAreaInput(props: {
         $required={!!props.required}
         placeholder="Enter a value"
         {...props.register(props.id, {
+          setValueAs: (value) => value.trim(),
           validate: (value) => {
-            if (!props.required) {
+            if (!props.required && value.trim() === '') {
               return true;
             }
 
