@@ -142,14 +142,23 @@ function Header() {
                 <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
               )}
             </DesktopButtons>
-            <MenuButton onClick={() => setIsBurgerMenuOpen(!isBurgerMenuOpen)}>
-              <Bar $isOpen={isBurgerMenuOpen} />
-              <Bar $isOpen={isBurgerMenuOpen} />
-              <Bar $isOpen={isBurgerMenuOpen} />
-            </MenuButton>
-            <ThemeButton onClick={toggleTheme}>
-              <img src={`/icons/toggle-${theme}.svg`} height={20} width={20} />
-            </ThemeButton>
+            <li>
+              <MenuButton onClick={() => setIsBurgerMenuOpen(!isBurgerMenuOpen)}>
+                <Bar $isOpen={isBurgerMenuOpen} />
+                <Bar $isOpen={isBurgerMenuOpen} />
+                <Bar $isOpen={isBurgerMenuOpen} />
+              </MenuButton>
+            </li>
+            <li>
+              <ThemeButton onClick={toggleTheme}>
+                <img
+                  src={`/icons/toggle-${theme}.svg`}
+                  alt="Toggle theme icon"
+                  height={20}
+                  width={20}
+                />
+              </ThemeButton>
+            </li>
           </NavButtons>
         </NavContainer>
         <BurgerMenuContainer $$isOpen={isBurgerMenuOpen} onClick={() => setIsBurgerMenuOpen(false)}>
