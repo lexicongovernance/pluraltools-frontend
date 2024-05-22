@@ -483,6 +483,22 @@ function RegisterForm(props: {
     const regGroupId = selectedGroupId || prevSelectGroupId;
     const client = regGroupId === 'none' ? 'user' : 'group';
 
+    // Filter out empty values
+    const filteredValues = Object.entries(values).reduce(
+      (acc, [key, value]) => {
+        if (value.trim() !== '') {
+          acc[key] = value.trim();
+        }
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
+
+    const registrationData = Object.entries(filteredValues).map(([key, value]) => ({
+      registrationFieldId: key,
+      value: value || '',
+    }));
+
     if (props.mode === 'edit') {
       updateRegistrationData({
         registrationId: props.registrationId || '',
@@ -490,10 +506,7 @@ function RegisterForm(props: {
           eventId: props.event?.id || '',
           groupId: client === 'user' ? null : regGroupId,
           status: 'DRAFT',
-          registrationData: Object.entries(values).map(([key, value]) => ({
-            registrationFieldId: key,
-            value: value || '',
-          })),
+          registrationData: registrationData,
         },
       });
     } else {
@@ -502,10 +515,7 @@ function RegisterForm(props: {
           eventId: props.event?.id || '',
           groupId: client === 'user' ? null : regGroupId,
           status: 'DRAFT',
-          registrationData: Object.entries(values).map(([key, value]) => ({
-            registrationFieldId: key,
-            value: value || '',
-          })),
+          registrationData: registrationData,
         },
       });
     }
@@ -737,8 +747,9 @@ function TextInput(props: {
         required={!!props.required}
         placeholder="Enter a value"
         {...props.register(props.id, {
+          setValueAs: (value) => value.trim(),
           validate: (value) => {
-            if (!props.required) {
+            if (!props.required && value.trim() === '') {
               return true;
             }
 
@@ -801,8 +812,9 @@ function TextAreaInput(props: {
         $required={!!props.required}
         placeholder="Enter a value"
         {...props.register(props.id, {
+          setValueAs: (value) => value.trim(),
           validate: (value) => {
-            if (!props.required) {
+            if (!props.required && value.trim() === '') {
               return true;
             }
 
