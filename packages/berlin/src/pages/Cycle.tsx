@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 // API
-import { GetUserVotesResponse, QuestionOption, fetchCycle, fetchUserVotes, postVotes } from 'api';
+import { GetCycleResponse, GetUserVotesResponse, fetchCycle, fetchUserVotes, postVotes } from 'api';
 
 // Hooks
 import useCountdown from '../hooks/useCountdown';
@@ -32,10 +32,11 @@ import BackButton from '../components/back-button';
 import Button from '../components/button';
 import CycleColumns from '../components/columns/cycle-columns';
 import OptionCard from '../components/option-card';
-import { FIVE_MINUTES_IN_SECONDS, INITIAL_HEARTS } from '../utils/constants';
+import { FINAL_QUESTION_TITLE, FIVE_MINUTES_IN_SECONDS, INITIAL_HEARTS } from '../utils/constants';
 
 type Order = 'asc' | 'desc';
 type LocalUserVotes = { optionId: string; numOfVotes: number }[];
+type QuestionOption = GetCycleResponse['forumQuestions'][number]['questionOptions'][number];
 
 function Cycle() {
   const queryClient = useQueryClient();
@@ -53,6 +54,7 @@ function Cycle() {
     enabled: !!user?.id && !!cycleId,
     retry: false,
   });
+
   const availableHearts =
     useAppStore((state) => state.availableHearts[cycle?.forumQuestions[0].id || '']) ??
     INITIAL_HEARTS;
@@ -300,6 +302,7 @@ function Cycle() {
                 key={option.id}
                 option={option}
                 numOfVotes={numOfVotes}
+                showFundingRequest={currentCycle.questionTitle === FINAL_QUESTION_TITLE}
                 onVote={() => handleVoteWrapper(option.id)}
                 onUnVote={() => handleUnVoteWrapper(option.id)}
               />

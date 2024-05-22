@@ -3,7 +3,7 @@ import { Body } from '../typography/Body.styled';
 import { Bold } from '../typography/Bold.styled';
 import { FlexColumn } from '../containers/FlexColumn.styled';
 import { FlexRow } from '../containers/FlexRow.styled';
-import { QuestionOption, fetchOptionUsers } from 'api';
+import { fetchOptionUsers, GetCycleResponse } from 'api';
 import { useAppStore } from '../../store';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -11,12 +11,19 @@ import { useMemo, useState } from 'react';
 import IconButton from '../icon-button';
 
 type OptionCardProps = {
-  option: QuestionOption;
+  option: GetCycleResponse['forumQuestions'][number]['questionOptions'][number];
+  showFundingRequest?: boolean;
   numOfVotes: number;
   onVote: () => void;
   onUnVote: () => void;
 };
-function OptionCard({ option, numOfVotes, onVote, onUnVote }: OptionCardProps) {
+function OptionCard({
+  option,
+  numOfVotes,
+  onVote,
+  onUnVote,
+  showFundingRequest = false,
+}: OptionCardProps) {
   const { eventId, cycleId } = useParams();
   const theme = useAppStore((state) => state.theme);
   const navigate = useNavigate();
@@ -87,15 +94,17 @@ function OptionCard({ option, numOfVotes, onVote, onUnVote }: OptionCardProps) {
             </FlexColumn>
             <Body>{numOfVotes}</Body>
           </Votes>
-          {/* <Plurality>
-            <Body>{formattedPluralityScore}</Body>
-          </Plurality> */}
         </FlexRow>
         <FlexColumn className="description" $gap="1.5rem">
           {coauthors && coauthors.length > 0 && (
             <Body>
               <Bold>Co-authors:</Bold>{' '}
               {coauthors.map((coauthor) => `${coauthor.firstName} ${coauthor.lastName}`).join(', ')}
+            </Body>
+          )}
+          {showFundingRequest && option.fundingRequest && (
+            <Body>
+              <Bold>Funding request:</Bold> {option.fundingRequest}
             </Body>
           )}
           {option.optionSubTitle && <Body>{option.optionSubTitle}</Body>}
