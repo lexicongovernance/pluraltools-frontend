@@ -34,9 +34,6 @@ function CommentsTable({ comment }: CommentsTableProps) {
   const [isCommentLiked, setIsCommentLiked] = useState(false);
 
   const options: Intl.DateTimeFormatOptions = {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
     hour: 'numeric',
     minute: 'numeric',
   };
