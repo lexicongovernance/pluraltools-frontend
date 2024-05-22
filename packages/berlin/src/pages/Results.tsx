@@ -63,7 +63,7 @@ function Results() {
     .map(([id, stats]) => ({
       id,
       ...stats,
-      allocatedFunding: funding?.allocated_funding[id] || null,
+      allocatedFunding: funding?.allocated_funding[id] !== undefined ? funding.allocated_funding[id] : null,
     }))
     .sort((a, b) => parseFloat(b.pluralityScore) - parseFloat(a.pluralityScore));
 
