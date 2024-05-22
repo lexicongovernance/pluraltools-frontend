@@ -109,7 +109,7 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
         actionButtonText="Leave group"
       />
       <FlexColumn className="description" $gap="1.5rem">
-        {proposals &&
+        {proposals && proposals.length > 0 ? (
           proposals.map(({ id, title, description, userId }) => (
             <GroupProposal key={id}>
               <Body>
@@ -125,7 +125,10 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
                 <Bold>Description:</Bold> {description}
               </Body>
             </GroupProposal>
-          ))}
+          ))
+        ) : (
+          <Body>This group currently has no proposals</Body>
+        )}
       </FlexColumn>
     </Card>
   );
