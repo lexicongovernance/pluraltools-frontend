@@ -867,10 +867,14 @@ function NumberInput(props: {
               return true;
             }
 
+            if (value.trim() === '') {
+              return 'Value is required';
+            }
+
             const v = z.coerce
               .number()
               .int('Value has to be an integer')
-              .min(0, 'Value must be positive')
+              .nonnegative('Value must be positive')
               .safeParse(value);
 
             if (v.success) {
