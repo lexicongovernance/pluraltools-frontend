@@ -1,7 +1,7 @@
 // React and third-party libraries
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 // Store
 import { useAppStore } from '../../store';
@@ -10,7 +10,7 @@ import { useAppStore } from '../../store';
 import header from '../../data/header';
 
 // API
-import { fetchAlerts, logout } from 'api';
+import { fetchAlerts, fetchEvents, fetchUserRegistrations, logout } from 'api';
 
 // Hooks
 import useUser from '../../hooks/useUser';
@@ -29,20 +29,21 @@ import {
   LogoContainer,
   LogoImage,
   LogoSubtitle,
+  LogoTextContainer,
   LogoTitle,
   MenuButton,
   MobileButtons,
   NavButtons,
   NavContainer,
   SyledHeader,
-  LogoTextContainer,
   ThemeButton,
 } from './Header.styled';
-import fetchUserRegistrations from 'api/src/fetchUserRegistrations';
+import IconButton from '../icon-button';
 
 function Header() {
   const queryClient = useQueryClient();
   const { user } = useUser();
+  const location = useLocation();
   const theme = useAppStore((state) => state.theme);
   const toggleTheme = useAppStore((state) => state.toggleTheme);
   const navigate = useNavigate();
@@ -67,6 +68,13 @@ function Header() {
     queryKey: ['alerts'],
     queryFn: () => fetchAlerts(),
     enabled: !!user,
+    refetchInterval: 10000, // Poll every 10 seconds
+  });
+
+  const { data: events } = useQuery({
+    queryKey: ['events'],
+    queryFn: () => fetchEvents(),
+    enabled: !!user,
   });
 
   const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState(false);
@@ -76,10 +84,12 @@ function Header() {
       <HeaderContainer>
         <LogoContainer onClick={() => navigate('/')}>
           <LogoImage src={header.logo.src} alt={header.logo.alt} height={96} width={96} />
-          <LogoTextContainer>
-            <LogoTitle>{header.title}</LogoTitle>
-            <LogoSubtitle>{header.subtitle}</LogoSubtitle>
-          </LogoTextContainer>
+          {location.pathname === '/' && (
+            <LogoTextContainer>
+              <LogoTitle>{header.title}</LogoTitle>
+              <LogoSubtitle>{header.subtitle}</LogoSubtitle>
+            </LogoTextContainer>
+          )}
         </LogoContainer>
         <NavContainer>
           <NavButtons>
@@ -92,38 +102,63 @@ function Header() {
                     <>
                       {alerts &&
                         alerts.length > 0 &&
-                        alerts?.map((alert) => {
-                          return (
-                            alert.link &&
-                            alert.title && (
-                              <NavButton to={alert.link} $color="secondary">
-                                {alert.title}
-                              </NavButton>
-                            )
-                          );
-                        })}
-                      <NavButton to="/events" $color="secondary">
+                        alerts
+                          // newest alerts first
+                          .sort(
+                            (a, b) =>
+                              new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+                          )
+                          ?.map((alert) => {
+                            return (
+                              alert.link &&
+                              alert.title && (
+                                <NavButton
+                                  key={alert.title + 1}
+                                  to={alert.link}
+                                  $color="secondary"
+                                  end
+                                >
+                                  {alert.title}
+                                </NavButton>
+                              )
+                            );
+                          })}
+                      <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
+                        My proposals
+                      </NavButton>
+                      <NavButton to={`/events/${events?.[0].id}/cycles`} $color="secondary">
                         Agenda
                       </NavButton>
                     </>
                   )}
-                  <NavButton to="/account" $color="secondary">
-                    Account
-                  </NavButton>
                   <Button onClick={() => mutateLogout()}>Log out</Button>
+                  <IconButton
+                    onClick={() => navigate('/account')}
+                    icon={{ src: `/icons/user-${theme}.svg`, alt: 'User' }}
+                    $color="primary"
+                  />
                 </>
               ) : (
                 <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
               )}
             </DesktopButtons>
-            <MenuButton onClick={() => setIsBurgerMenuOpen(!isBurgerMenuOpen)}>
-              <Bar $isOpen={isBurgerMenuOpen} />
-              <Bar $isOpen={isBurgerMenuOpen} />
-              <Bar $isOpen={isBurgerMenuOpen} />
-            </MenuButton>
-            <ThemeButton onClick={toggleTheme}>
-              <img src={`/icons/toggle-${theme}.svg`} height={20} width={20} />
-            </ThemeButton>
+            <li>
+              <MenuButton onClick={() => setIsBurgerMenuOpen(!isBurgerMenuOpen)}>
+                <Bar $isOpen={isBurgerMenuOpen} />
+                <Bar $isOpen={isBurgerMenuOpen} />
+                <Bar $isOpen={isBurgerMenuOpen} />
+              </MenuButton>
+            </li>
+            <li>
+              <ThemeButton onClick={toggleTheme}>
+                <img
+                  src={`/icons/toggle-${theme}.svg`}
+                  alt="Toggle theme icon"
+                  height={20}
+                  width={20}
+                />
+              </ThemeButton>
+            </li>
           </NavButtons>
         </NavContainer>
         <BurgerMenuContainer $$isOpen={isBurgerMenuOpen} onClick={() => setIsBurgerMenuOpen(false)}>
@@ -141,17 +176,20 @@ function Header() {
                           return (
                             alert.link &&
                             alert.title && (
-                              <NavButton to={alert.link} $color="secondary">
+                              <NavButton key={alert.title + 1} to={alert.link} $color="secondary">
                                 {alert.title}
                               </NavButton>
                             )
                           );
                         })}
-                      <NavButton to="/events" $color="secondary">
+                      <NavButton to={`/events/${events?.[0].id}/cycles`} $color="secondary">
                         Agenda
                       </NavButton>
                     </>
                   )}
+                  <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
+                    My proposals
+                  </NavButton>
                   <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>

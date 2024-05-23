@@ -8,9 +8,8 @@ import { GetCycleResponse, fetchEvent, fetchEventCycles } from 'api';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
-import { FlexColumn } from '../components/containers/FlexColum.styled';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { Table } from '../components/table';
-// import BackButton from '../components/back-button';
 import Button from '../components/button';
 import EventCard from '../components/event-card';
 import Link from '../components/link';
@@ -28,6 +27,7 @@ function Event() {
     queryKey: ['events', eventId, 'cycles'],
     queryFn: () => fetchEventCycles(eventId || ''),
     enabled: !!eventId,
+    refetchInterval: 5000, // Poll every 5 seconds
   });
 
   const openCycles = useMemo(

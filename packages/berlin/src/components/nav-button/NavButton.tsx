@@ -6,11 +6,12 @@ type NavButtonProps = {
   $color?: 'primary' | 'secondary';
   children: React.ReactNode;
   onClick?: () => void;
+  end?: boolean;
 };
 
-function NavButton({ to, children, $color = 'primary', onClick }: NavButtonProps) {
+function NavButton({ to, children, end, $color = 'primary', onClick }: NavButtonProps) {
   return (
-    <StyledNavLink to={to} tabIndex={-1}>
+    <StyledNavLink to={to} tabIndex={-1} end={end}>
       <Button onClick={onClick} $color={$color}>
         {children}
       </Button>

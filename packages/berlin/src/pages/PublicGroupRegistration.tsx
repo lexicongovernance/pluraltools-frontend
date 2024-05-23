@@ -8,18 +8,14 @@ import toast from 'react-hot-toast';
 import useUser from '../hooks/useUser';
 
 // API
-import { fetchGroups, postUserToGroups } from 'api';
-
-// Data
-import publicGroups from '../data/publicGroups';
+import { fetchGroups, postUsersToGroups, fetchUsersToGroups, putUsersToGroups } from 'api';
 
 // Components
-import { Body } from '../components/typography/Body.styled';
-import { FlexColumn } from '../components/containers/FlexColum.styled';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { Form } from '../components/containers/Form.styled';
-import { Subtitle } from '../components/typography/Subtitle.styled';
 import Button from '../components/button';
 import Select from '../components/select';
+import { useMemo } from 'react';
 
 function PublicGroupRegistration() {
   const { user } = useUser();
@@ -48,16 +44,62 @@ function PublicGroupRegistration() {
     enabled: !!user?.id && !!groupCategoryNameParam,
   });
 
-  const selectData = groups?.map((group) => ({ id: group.id, name: group.name })) ?? [];
+  const { data: usersToGroups } = useQuery({
+    queryKey: ['user', user?.id, 'users-to-groups'],
+    queryFn: () => fetchUsersToGroups(user?.id || ''),
+    enabled: !!user?.id,
+  });
 
-  const { mutate: postUserToGroupsMutation } = useMutation({
-    mutationFn: postUserToGroups,
+  const selectData = [
+    ...(groups
+      ?.map((group) => ({ id: group.id, name: group.name }))
+      // sort name
+      .sort((a, b) => {
+        // check if name is number
+        if (!isNaN(a.name as unknown as number) && !isNaN(b.name as unknown as number)) {
+          return (a.name as unknown as number) - (b.name as unknown as number);
+        }
+        // compare alphabetically
+        return (a.name as string).localeCompare(b.name as string);
+      }) ?? []),
+  ];
+
+  const prevUserToGroup = useMemo(
+    () =>
+      usersToGroups?.find(
+        (userToGroup) => userToGroup.group.groupCategory?.name === groupCategoryNameParam,
+      ),
+    [usersToGroups, groupCategoryNameParam],
+  );
+
+  const { mutate: postUsersToGroupsMutation } = useMutation({
+    mutationFn: postUsersToGroups,
     onSuccess: (body) => {
       if (!body) {
         return;
       }
-      queryClient.invalidateQueries({ queryKey: ['user', 'groups'] });
-      toast.success(`Joined ${groupCategoryNameParam} group succesfully!`);
+      queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'groups'] });
+      toast.success(`Joined ${groupCategoryNameParam} group successfully!`);
+    },
+    onError: () => {
+      toast.error('Something went wrong.');
+    },
+  });
+
+  const { mutate: putUsersToGroupsMutation } = useMutation({
+    mutationFn: putUsersToGroups,
+    onSuccess: (body) => {
+      if (!body) {
+        return;
+      }
+
+      if ('errors' in body) {
+        toast.error(body.errors.join(', '));
+        return;
+      }
+
+      queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'groups'] });
+      toast.success(`Updated ${groupCategoryNameParam} group successfully!`);
     },
     onError: () => {
       toast.error('Something went wrong.');
@@ -66,7 +108,19 @@ function PublicGroupRegistration() {
 
   const onSubmit = () => {
     if (isValid) {
-      postUserToGroupsMutation({ groupId: getValues('group') });
+      // If the user is already in the category group, update the userToGroup
+      if (prevUserToGroup) {
+        putUsersToGroupsMutation({
+          userToGroupId: prevUserToGroup.id,
+          groupId: getValues('group'),
+        });
+        setValue('group', '');
+        reset();
+        return;
+      }
+
+      // If the user is not in the category group, create a new userToGroup
+      postUsersToGroupsMutation({ groupId: getValues('group') });
       setValue('group', '');
       reset();
     }
@@ -74,8 +128,6 @@ function PublicGroupRegistration() {
 
   return (
     <FlexColumn $gap="1.5rem">
-      <Subtitle>{publicGroups.copy.subtitle}</Subtitle>
-      <Body>{publicGroups.copy.body}</Body>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Controller
           name="group"
@@ -85,8 +137,11 @@ function PublicGroupRegistration() {
           }}
           render={({ field }) => (
             <Select
-              label={`${capitalizedParam} group`}
-              placeholder={field.value ? field.value : `Select a ${groupCategoryNameParam} group`}
+              placeholder={
+                prevUserToGroup
+                  ? prevUserToGroup.group.name
+                  : `Select your ${groupCategoryNameParam} group`
+              }
               options={selectData}
               value={field.value}
               errors={[errors.group?.message ?? '']}

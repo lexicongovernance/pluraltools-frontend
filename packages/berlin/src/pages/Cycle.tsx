@@ -1,21 +1,23 @@
 // React and third-party libraries
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 // API
-import { QuestionOption, fetchCycle, fetchUserVotes, postVotes } from 'api';
+import { GetCycleResponse, GetUserVotesResponse, fetchCycle, fetchUserVotes, postVotes } from 'api';
 
 // Hooks
 import useCountdown from '../hooks/useCountdown';
 import useUser from '../hooks/useUser';
 
 // Utils
-import { handleSaveVotes, handleUnvote, handleVote } from '../utils/voting';
-
-// Types
-import { ResponseUserVotesType } from '../types/CycleType';
+import {
+  handleSaveVotes,
+  handleAvailableHearts,
+  handleLocalUnVote,
+  handleLocalVote,
+} from '../utils/voting';
 
 // Store
 import { useAppStore } from '../store';
@@ -23,22 +25,22 @@ import { useAppStore } from '../store';
 // Components
 import { Body } from '../components/typography/Body.styled';
 import { Bold } from '../components/typography/Bold.styled';
-import { FlexColumn } from '../components/containers/FlexColum.styled';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
 import { Title } from '../components/typography/Title.styled';
 import BackButton from '../components/back-button';
 import Button from '../components/button';
-import CycleColumns from '../components/cycle-columns';
+import CycleColumns from '../components/columns/cycle-columns';
 import OptionCard from '../components/option-card';
+import { FINAL_QUESTION_TITLE, FIVE_MINUTES_IN_SECONDS, INITIAL_HEARTS } from '../utils/constants';
 
 type Order = 'asc' | 'desc';
-type LocalUserVotes = ResponseUserVotesType | { optionId: string; numOfVotes: number }[];
-
-const initialHearts = 20;
+type LocalUserVotes = { optionId: string; numOfVotes: number }[];
+type QuestionOption = GetCycleResponse['forumQuestions'][number]['questionOptions'][number];
 
 function Cycle() {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
+
   const { user } = useUser();
   const { eventId, cycleId } = useParams();
   const { data: cycle } = useQuery({
@@ -46,19 +48,27 @@ function Cycle() {
     queryFn: () => fetchCycle(cycleId || ''),
     enabled: !!cycleId,
   });
-
   const { data: userVotes } = useQuery({
     queryKey: ['votes', cycleId],
     queryFn: () => fetchUserVotes(cycleId || ''),
     enabled: !!user?.id && !!cycleId,
     retry: false,
   });
-  const { availableHearts, setAvailableHearts } = useAppStore((state) => state);
+
+  const availableHearts =
+    useAppStore((state) => state.availableHearts[cycle?.forumQuestions[0].id || '']) ??
+    INITIAL_HEARTS;
+  const setAvailableHearts = useAppStore((state) => state.setAvailableHearts);
   const [startAt, setStartAt] = useState<string | null>(null);
   const [endAt, setEndAt] = useState<string | null>(null);
   const [localUserVotes, setLocalUserVotes] = useState<LocalUserVotes>([]);
-  const [sorting, setSorting] = useState<{ column: string; order: Order }>({
-    column: 'pluralityScore',
+  const [sortedOptions, setSortedOptions] = useState<{
+    options: QuestionOption[];
+    column: 'lead' | 'affiliation' | 'numOfVotes';
+    order: 'desc' | 'asc';
+  }>({
+    options: [],
+    column: 'numOfVotes',
     order: 'desc',
   });
 
@@ -69,14 +79,52 @@ function Cycle() {
     }
   }, [cycle]);
 
-  const { formattedTime, cycleState } = useCountdown(startAt, endAt);
+  useEffect(() => {
+    // Initial sorting
+    if (cycle?.forumQuestions[0].questionOptions.length) {
+      setSortedOptions((prev) => ({
+        ...prev,
+        options: sortOptions({
+          options: cycle.forumQuestions[0].questionOptions,
+          sorting: prev,
+          votes: userVotes,
+        }),
+      }));
+    }
+    // no need to add sortOptions to the dependencies array
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cycle, userVotes]);
 
-  const updateVotesAndHearts = (votes: ResponseUserVotesType) => {
+  const { formattedTime, cycleState, time } = useCountdown(startAt, endAt);
+
+  const voteInfo = useMemo(() => {
+    switch (cycleState) {
+      case 'closed':
+        return 'Vote has ended.';
+      case 'upcoming':
+        return `Vote opens in: ${formattedTime}`;
+      case 'open':
+        if (time && time <= FIVE_MINUTES_IN_SECONDS) {
+          return `Vote closes in: ${formattedTime}`;
+        } else if (time === 0) {
+          return 'Vote has ended.';
+        }
+        return '';
+      default:
+        return '';
+    }
+  }, [cycleState, time, formattedTime]);
+
+  const updateInitialVotesAndHearts = (votes: GetUserVotesResponse) => {
     const givenVotes = votes
       .map((option) => option.numOfVotes)
       .reduce((prev, curr) => prev + curr, 0);
 
-    setAvailableHearts(initialHearts - givenVotes);
+    setAvailableHearts({
+      questionId: cycle?.forumQuestions[0].id || '',
+      hearts: Math.max(0, INITIAL_HEARTS - givenVotes),
+    });
+
     setLocalUserVotes(votes);
   };
 
@@ -99,8 +147,9 @@ function Cycle() {
 
   useEffect(() => {
     if (userVotes?.length) {
-      updateVotesAndHearts(userVotes);
+      updateInitialVotesAndHearts(userVotes);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userVotes]);
 
   const { mutate: mutateVotes } = useMutation({
@@ -118,28 +167,50 @@ function Cycle() {
   });
 
   const handleVoteWrapper = (optionId: string) => {
-    handleVote(optionId, availableHearts, setAvailableHearts, setLocalUserVotes);
+    if (availableHearts === 0) {
+      toast.error('No hearts left to give');
+      return;
+    }
+
+    setLocalUserVotes((prevLocalUserVotes) => handleLocalVote(optionId, prevLocalUserVotes));
+    setAvailableHearts({
+      questionId: cycle?.forumQuestions[0].id ?? '',
+      hearts: handleAvailableHearts(availableHearts, 'vote'),
+    });
   };
 
-  const handleUnvoteWrapper = (optionId: string) => {
-    handleUnvote(optionId, availableHearts, setAvailableHearts, setLocalUserVotes);
+  const handleUnVoteWrapper = (optionId: string) => {
+    if (availableHearts === INITIAL_HEARTS) {
+      toast.error('No votes to left to remove');
+      return;
+    }
+
+    setLocalUserVotes((prevLocalUserVotes) => handleLocalUnVote(optionId, prevLocalUserVotes));
+    setAvailableHearts({
+      questionId: cycle?.forumQuestions[0].id ?? '',
+      hearts: handleAvailableHearts(availableHearts, 'unVote'),
+    });
   };
 
   const handleSaveVotesWrapper = () => {
-    handleSaveVotes(userVotes, localUserVotes, mutateVotes);
+    if (cycle?.status === 'OPEN') {
+      handleSaveVotes(userVotes, localUserVotes, mutateVotes);
+    } else {
+      toast.error('Cycle is not open');
+    }
   };
 
   const currentCycle = cycle?.forumQuestions[0];
 
-  const sortByAuthor = (a: QuestionOption, b: QuestionOption, order: Order) => {
-    const authorA = (a.user.lastName || a.user.username).toUpperCase();
-    const authorB = (b.user.lastName || b.user.username).toUpperCase();
-    return order === 'desc' ? authorB.localeCompare(authorA) : authorA.localeCompare(authorB);
+  const sortByLead = (a: QuestionOption, b: QuestionOption, order: Order) => {
+    const leadA = (a.user.lastName || a.user.username).toUpperCase();
+    const leadB = (b.user.lastName || b.user.username).toUpperCase();
+    return order === 'desc' ? leadB.localeCompare(leadA) : leadA.localeCompare(leadB);
   };
 
   const sortByAffiliation = (a: QuestionOption, b: QuestionOption, order: Order) => {
-    const affiliationA = a.user.group.name.toUpperCase();
-    const affiliationB = b.user.group.name.toUpperCase();
+    const affiliationA = a.user.group?.name.toUpperCase();
+    const affiliationB = b.user.group?.name.toUpperCase() ?? '';
     return order === 'desc'
       ? affiliationB.localeCompare(affiliationA)
       : affiliationA.localeCompare(affiliationB);
@@ -149,58 +220,64 @@ function Cycle() {
     a: QuestionOption,
     b: QuestionOption,
     order: Order,
-    localUserVotes: LocalUserVotes,
+    localUserVotes: LocalUserVotes | GetUserVotesResponse | null | undefined,
   ) => {
-    const votesA = localUserVotes.find((vote) => vote.optionId === a.id)?.numOfVotes || 0;
-    const votesB = localUserVotes.find((vote) => vote.optionId === b.id)?.numOfVotes || 0;
+    const votesA = localUserVotes?.find((vote) => vote.optionId === a.id)?.numOfVotes || 0;
+    const votesB = localUserVotes?.find((vote) => vote.optionId === b.id)?.numOfVotes || 0;
     return order === 'desc' ? votesB - votesA : votesA - votesB;
   };
 
-  const sortByVoteScore = (a: QuestionOption, b: QuestionOption, order: Order) => {
-    return order === 'desc' ? b.voteScore - a.voteScore : a.voteScore - b.voteScore;
-  };
-
-  const sortedOptions = useMemo(() => {
-    const { column, order } = sorting;
-    const sorted = [...(currentCycle?.questionOptions ?? [])].sort((a, b) => {
-      switch (column) {
-        case 'author':
-          return sortByAuthor(a, b, order);
+  const sortOptions = ({
+    options,
+    sorting,
+    votes,
+  }: {
+    options: QuestionOption[];
+    sorting: { column: string; order: Order };
+    votes: LocalUserVotes | GetUserVotesResponse | null | undefined;
+  }) => {
+    const sorted = [...options].sort((a, b) => {
+      switch (sorting.column) {
+        case 'lead':
+          return sortByLead(a, b, sorting.order);
         case 'affiliation':
-          return sortByAffiliation(a, b, order);
-        case 'numOfVotes':
-          return sortByNumOfVotes(a, b, order, localUserVotes);
+          return sortByAffiliation(a, b, sorting.order);
         default:
-          return sortByVoteScore(a, b, order);
+          return sortByNumOfVotes(a, b, sorting.order, votes);
       }
     });
     return sorted;
-  }, [currentCycle?.questionOptions, localUserVotes, sorting]);
+  };
 
   const handleColumnClick = (column: string) => {
-    setSorting((prevSorting) => ({
-      column,
-      order: prevSorting.column === column && prevSorting.order === 'asc' ? 'desc' : 'asc',
-    }));
+    setSortedOptions(
+      (prev) =>
+        ({
+          options: sortOptions({
+            options: prev.options,
+            sorting: {
+              column: column as 'lead' | 'affiliation' | 'numOfVotes',
+              order: prev.column === column && prev.order === 'asc' ? 'desc' : 'asc',
+            },
+            votes: localUserVotes,
+          }),
+          column,
+          order: prev.column === column && prev.order === 'asc' ? 'desc' : 'asc',
+        }) as typeof sortedOptions,
+    );
   };
 
   return (
     <FlexColumn $gap="2rem">
       <FlexColumn>
-        <BackButton />
+        <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
         <Title>{currentCycle?.questionTitle}</Title>
-        <Body>
-          {cycleState === 'closed'
-            ? 'Vote has ended.'
-            : cycleState === 'upcoming'
-              ? `Vote opens in: ${formattedTime}`
-              : `Vote closes in: ${formattedTime}`}
-        </Body>
+        <Body>{voteInfo}</Body>
         <Body>
           You have <Bold>{availableHearts}</Bold> hearts left to give away:
         </Body>
         <FlexRow $gap="0.25rem" $wrap>
-          {Array.from({ length: initialHearts }).map((_, id) => (
+          {Array.from({ length: INITIAL_HEARTS }).map((_, id) => (
             <img
               key={id}
               src={id < availableHearts ? '/icons/heart-full.svg' : '/icons/heart-empty.svg'}
@@ -217,7 +294,7 @@ function Cycle() {
       {currentCycle?.questionOptions.length ? (
         <FlexColumn $gap="0">
           <CycleColumns onColumnClick={handleColumnClick} />
-          {sortedOptions.map((option) => {
+          {sortedOptions.options.map((option) => {
             const userVote = localUserVotes.find((vote) => vote.optionId === option.id);
             const numOfVotes = userVote ? userVote.numOfVotes : 0;
             return (
@@ -225,8 +302,9 @@ function Cycle() {
                 key={option.id}
                 option={option}
                 numOfVotes={numOfVotes}
+                showFundingRequest={currentCycle.questionTitle === FINAL_QUESTION_TITLE}
                 onVote={() => handleVoteWrapper(option.id)}
-                onUnvote={() => handleUnvoteWrapper(option.id)}
+                onUnVote={() => handleUnVoteWrapper(option.id)}
               />
             );
           })}
@@ -235,14 +313,6 @@ function Cycle() {
         <Body>
           <i>No options to show...</i>
         </Body>
-      )}
-      {cycle?.status === 'CLOSED' && currentCycle?.questionOptions.length && (
-        <Button
-          onClick={() => navigate(`/events/${eventId}/cycles/${cycleId}/results`)}
-          $color="secondary"
-        >
-          See results
-        </Button>
       )}
     </FlexColumn>
   );

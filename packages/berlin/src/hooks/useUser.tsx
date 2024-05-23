@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchUserData } from 'api';
+import { fetchUser } from 'api';
 
 function useUser() {
   const {
@@ -8,7 +8,7 @@ function useUser() {
     isError,
   } = useQuery({
     queryKey: ['user'],
-    queryFn: fetchUserData,
+    queryFn: fetchUser,
   });
 
   return { user, isLoading, isError };

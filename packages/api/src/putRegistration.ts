@@ -1,4 +1,4 @@
-import { PutRegistrationRequest, PutRegistrationResponse } from './types/RegistrationDataType';
+import { PutRegistrationRequest, PutRegistrationResponse } from './types';
 
 async function putRegistration({
   registrationId,

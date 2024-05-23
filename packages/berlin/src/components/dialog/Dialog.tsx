@@ -3,7 +3,7 @@ import { Close, Description, Portal, Root, Title, Trigger } from '@radix-ui/reac
 
 // Components
 import { Body } from '../typography/Body.styled';
-import { FlexColumn } from '../containers/FlexColum.styled';
+import { FlexColumn } from '../containers/FlexColumn.styled';
 import { FlexRowToColumn } from '../containers/FlexRowToColumn.styled';
 import Button from '../button';
 
@@ -12,7 +12,7 @@ import { DialogContent, DialogOverlay } from './Dialog.styled';
 
 type DialogProps = {
   trigger?: React.ReactNode;
-  title: string;
+  title?: string;
   description?: string;
   content?: React.ReactNode;
   dialogButtons?: boolean;

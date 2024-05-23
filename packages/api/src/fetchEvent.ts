@@ -1,4 +1,4 @@
-import { GetEventResponse } from './types/EventType';
+import { GetEventResponse } from './types';
 
 async function fetchEvent(eventId: string): Promise<GetEventResponse | null> {
   try {

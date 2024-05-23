@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { fetchEvents, fetchGroups, fetchUserGroups, updateUserData } from 'api';
+import { fetchEvents, fetchGroups, fetchUsersToGroups, putUser } from 'api';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -36,19 +36,22 @@ function Account() {
 
   const { data: groups } = useQuery({
     queryKey: ['groups'],
-    queryFn: fetchGroups,
+    queryFn: () =>
+      fetchGroups({
+        groupCategoryName: 'affiliation',
+      }),
     enabled: !!user?.id,
   });
 
   const { data: userGroups, isLoading: userGroupsIsLoading } = useQuery({
     queryKey: ['user', user?.id, 'groups'],
-    queryFn: () => fetchUserGroups(user?.id || ''),
+    queryFn: () => fetchUsersToGroups(user?.id || ''),
     enabled: !!user?.id,
   });
 
   const initialUser = {
     username: user?.username || '',
-    name: user?.name || '',
+    name: user?.firstName || '',
     email: user?.email || '',
     group: (userGroups && userGroups[0]?.id) || '',
   };
@@ -62,7 +65,7 @@ function Account() {
       initialUser={initialUser}
       user={user}
       groups={groups}
-      userGroups={userGroups}
+      userGroups={[]}
       events={events}
     />
   );
@@ -87,7 +90,7 @@ function AccountForm({
   const setUserStatus = useAppStore((state) => state.setUserStatus);
 
   const { mutate: mutateUserData } = useMutation({
-    mutationFn: updateUserData,
+    mutationFn: putUser,
     onSuccess: (body) => {
       if (body) {
         queryClient.invalidateQueries({ queryKey: ['user'] });
@@ -115,7 +118,8 @@ function AccountForm({
         userId: user.id,
         username: value.username,
         email: value.email,
-        groupIds: [value.group],
+        firstName: '',
+        lastName: '',
         userAttributes: {
           name: value.name,
         },

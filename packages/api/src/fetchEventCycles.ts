@@ -1,4 +1,4 @@
-import { GetCyclesResponse } from './types/CycleType';
+import { GetCyclesResponse } from './types';
 
 async function fetchEventCycles(eventId: string): Promise<GetCyclesResponse | null> {
   try {

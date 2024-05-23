@@ -4,23 +4,20 @@ const groups = {
     body: [
       {
         id: 0,
-        text: 'If you are the Lead Researcher or a Solo Researcher, please create a research group.',
+        text: 'Share the access code with your collaborators so they can join your group',
       },
       {
         id: 1,
-        text: 'You will get a code that you can share with your collaborators.',
+        text: 'Any group member can assign a proposal to this group from My Proposals',
       },
     ],
     buttonText: 'Create group',
     dialog: {
-      title: 'Do you want to create a Research Group?',
-      description: 'This action will create a Research Group and join you to it.',
       actionButtonText: 'Create group',
       form: {
         input: {
-          label: 'Research Group name',
-          placeholder: 'Enter your group name',
-          requiredMessage: 'Group name must be 2 characters long or more',
+          placeholder: 'Research group name',
+          requiredMessage: 'Research group name must be 2 characters long or more',
         },
         buttonText: 'Create group',
       },
@@ -29,16 +26,11 @@ const groups = {
   },
   join: {
     subtitle: 'Join a Research Group',
-    body: [
-      {
-        id: 0,
-        text: 'As a collaborator, you can join a research group. Please ask to your Lead Researcher for the group code.',
-      },
-    ],
+    body: [],
     input: {
-      label: 'Research Group Code',
-      placeholder: 'Enter the secret code here...',
-      requiredMessage: 'Code is required',
+      label: 'Ask the group creator for the access code',
+      placeholder: 'Enter access code',
+      requiredMessage: 'Access code is required',
     },
     buttonText: 'Join group',
   },

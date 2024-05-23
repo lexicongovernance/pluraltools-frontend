@@ -12,7 +12,6 @@ import { FlexRow } from '../containers/FlexRow.styled';
 type ResearchGroupFormProps = {
   formData: {
     input: {
-      label: string;
       placeholder: string;
       requiredMessage: string;
     };
@@ -48,7 +47,6 @@ function ResearchGroupForm({ formData, handleCreateGroup, setGroupName }: Resear
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <Input
-        label={formData.input.label}
         placeholder={formData.input.placeholder}
         autoComplete="off"
         {...register('name', {

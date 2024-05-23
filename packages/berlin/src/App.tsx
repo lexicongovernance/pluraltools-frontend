@@ -6,7 +6,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { useAppStore } from './store';
 
 // API
-import { fetchEvents, fetchUserData, fetchCycle, fetchRegistrations } from 'api';
+import { fetchEvents, fetchUser, fetchCycle, fetchRegistrations } from 'api';
 
 // Pages
 import { default as BerlinLayout } from './layout/index.ts';
@@ -18,7 +18,7 @@ import Events from './pages/Events.tsx';
 import Holding from './pages/Holding';
 import Landing from './pages/Landing';
 import Onboarding from './pages/Onboarding';
-import Option from './pages/Option.tsx';
+import Comments from './pages/Comments.tsx';
 import PassportPopupRedirect from './pages/Popup';
 import PublicGroupRegistration from './pages/PublicGroupRegistration.tsx';
 import Register from './pages/Register';
@@ -31,7 +31,7 @@ import SecretGroupRegistration from './pages/SecretGroupRegistration.tsx';
 async function redirectToLandingLoader(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
     queryKey: ['user'],
-    queryFn: fetchUserData,
+    queryFn: fetchUser,
     staleTime: 10000,
   });
 
@@ -47,7 +47,7 @@ async function redirectToLandingLoader(queryClient: QueryClient) {
 async function redirectToAccount(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
     queryKey: ['user'],
-    queryFn: fetchUserData,
+    queryFn: fetchUser,
   });
 
   if (user?.username) {
@@ -65,7 +65,7 @@ async function redirectToAccount(queryClient: QueryClient) {
 async function redirectOnLandingLoader(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
     queryKey: ['user'],
-    queryFn: fetchUserData,
+    queryFn: fetchUser,
   });
 
   if (!user) {
@@ -90,6 +90,15 @@ async function redirectOnLandingLoader(queryClient: QueryClient) {
   }
 
   if (events?.length === 1) {
+    const registrations = await queryClient.fetchQuery({
+      queryKey: ['event', events?.[0].id, 'registrations'],
+      queryFn: () => fetchRegistrations(events?.[0].id || ''),
+    });
+
+    if (registrations && registrations.some((registration) => registration.status === 'APPROVED')) {
+      return redirect(`/events/${events?.[0].id}/register`);
+    }
+
     return redirect(`/events/${events?.[0].id}/cycles`);
   }
 
@@ -153,18 +162,47 @@ async function redirectToCycleResultsLoader(
   return null;
 }
 
+/**
+ * Redirects the user to the cycle page if the cycle is open
+ */
+async function redirectToCycleIfOpen(queryClient: QueryClient, eventId?: string, cycleId?: string) {
+  const cycle = await queryClient.fetchQuery({
+    queryKey: ['cycles', cycleId],
+    queryFn: () => fetchCycle(cycleId || ''),
+  });
+
+  if (cycle?.status === 'OPEN') {
+    return redirect(`/events/${eventId}/cycles/${cycleId}`);
+  }
+
+  return null;
+}
+
 const router = (queryClient: QueryClient) =>
   createBrowserRouter([
-    { path: '/popup', element: <PassportPopupRedirect /> },
+    {
+      path: '/popup',
+      element: <PassportPopupRedirect />,
+    },
     {
       element: <BerlinLayout />,
       children: [
-        { path: '/', loader: () => redirectOnLandingLoader(queryClient), element: <Landing /> },
+        {
+          path: '/',
+          loader: () => redirectOnLandingLoader(queryClient),
+          element: <Landing />,
+        },
         {
           loader: () => redirectToLandingLoader(queryClient),
           children: [
-            { path: '/onboarding', Component: Onboarding },
-            { path: '/data-policy', Component: DataPolicy },
+            {
+              path: '/onboarding',
+              Component: Onboarding,
+            },
+            {
+              path: '/data-policy',
+              Component: DataPolicy,
+            },
             {
               path: '/account',
               Component: Account,
@@ -195,9 +233,9 @@ const router = (queryClient: QueryClient) =>
                   Component: Holding,
                 },
                 {
-                  path: ':eventId/cycles',
                   loader: ({ params }) =>
                     redirectToEventHoldingOrRegister(queryClient, params.eventId),
+                  path: ':eventId/cycles',
                   children: [
                     {
                       path: '',
@@ -210,12 +248,14 @@ const router = (queryClient: QueryClient) =>
                       Component: Cycle,
                     },
                     {
+                      loader: ({ params }) =>
+                        redirectToCycleIfOpen(queryClient, params.eventId, params.cycleId),
                       path: ':cycleId/results',
                       Component: Results,
                     },
                     {
                       path: ':cycleId/options/:optionId',
-                      Component: Option,
+                      Component: Comments,
                     },
                   ],
                 },

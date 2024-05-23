@@ -21,9 +21,7 @@ function SecretCode({ groupName, secretCode }: SecretCodeProps) {
   };
   return (
     <SecretCodeContainer>
-      <Body>
-        Secret code for <i>{groupName}</i> research group:
-      </Body>
+      <Body>Access code for {groupName} research group</Body>
       <FlexRow $align="center" $justify="space-between">
         <Subtitle>{secretCode}</Subtitle>
         <IconButton

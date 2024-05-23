@@ -1,66 +1,53 @@
 import { GetUserVotesResponse, PostVotesRequest } from 'api';
 import { ResponseUserVotesType } from '../types/CycleType';
 import toast from 'react-hot-toast';
+import { INITIAL_HEARTS } from './constants';
 
-export const handleVote = (
+export const handleLocalVote = (
   optionId: string,
-  availableHearts: number,
-  setAvailableHearts: (hearts: number) => void,
-  setLocalUserVotes: React.Dispatch<
-    React.SetStateAction<
-      | ResponseUserVotesType
-      | {
-          optionId: string;
-          numOfVotes: number;
-        }[]
-    >
-  >,
+  prevLocalUserVotes: ResponseUserVotesType | { optionId: string; numOfVotes: number }[],
 ) => {
-  if (availableHearts > 0) {
-    setLocalUserVotes((prevLocalUserVotes) => {
-      const temp = prevLocalUserVotes.find((x) => x.optionId === optionId);
-      if (!temp) {
-        return [...prevLocalUserVotes, { optionId, numOfVotes: 1 }];
-      }
-      const updatedLocalVotes = prevLocalUserVotes.map((prevLocalUserVote) => {
-        if (prevLocalUserVote.optionId === optionId) {
-          return { ...prevLocalUserVote, numOfVotes: prevLocalUserVote.numOfVotes + 1 };
-        }
-        return prevLocalUserVote;
-      });
-      return updatedLocalVotes;
-    });
-    setAvailableHearts(Math.max(0, availableHearts - 1));
+  // find if the user has already voted for this option
+  const prevVote = prevLocalUserVotes.find((x) => x.optionId === optionId);
+  if (!prevVote) {
+    // if the user has not voted for this option, add a new vote
+    return [...prevLocalUserVotes, { optionId, numOfVotes: 1 }];
   }
-};
 
-export const handleUnvote = (
-  optionId: string,
-  availableHearts: number,
-  setAvailableHearts: (hearts: number) => void,
-  setLocalUserVotes: React.Dispatch<
-    React.SetStateAction<
-      | ResponseUserVotesType
-      | {
-          optionId: string;
-          numOfVotes: number;
-        }[]
-    >
-  >,
-) => {
-  setLocalUserVotes((prevLocalUserVotes) => {
-    const updatedLocalVotes = prevLocalUserVotes.map((prevLocalUserVote) => {
-      if (prevLocalUserVote.optionId === optionId) {
-        const newNumOfVotes = Math.max(0, prevLocalUserVote.numOfVotes - 1);
-        return { ...prevLocalUserVote, numOfVotes: newNumOfVotes };
-      }
-      return prevLocalUserVote;
-    });
-
-    return updatedLocalVotes;
+  // if the user has already voted for this option, update the number of votes
+  // this will just find the option and increase the number of votes by 1
+  const updatedLocalVotes = prevLocalUserVotes.map((prevLocalUserVote) => {
+    if (prevLocalUserVote.optionId === optionId) {
+      return { ...prevLocalUserVote, numOfVotes: prevLocalUserVote.numOfVotes + 1 };
+    }
+    return prevLocalUserVote;
   });
 
-  setAvailableHearts(Math.min(20, availableHearts + 1));
+  return updatedLocalVotes;
+};
+
+export const handleLocalUnVote = (
+  optionId: string,
+  prevLocalUserVotes: ResponseUserVotesType | { optionId: string; numOfVotes: number }[],
+) => {
+  // this will just find the option and decrease the number of votes by 1
+  const updatedLocalVotes = prevLocalUserVotes.map((prevLocalUserVote) => {
+    if (prevLocalUserVote.optionId === optionId) {
+      const newNumOfVotes = Math.max(0, prevLocalUserVote.numOfVotes - 1);
+      return { ...prevLocalUserVote, numOfVotes: newNumOfVotes };
+    }
+    return prevLocalUserVote;
+  });
+
+  return updatedLocalVotes;
+};
+
+export const handleAvailableHearts = (availableHearts: number, type: 'vote' | 'unVote') => {
+  if (type === 'vote') {
+    return Math.max(0, availableHearts - 1);
+  }
+
+  return Math.min(INITIAL_HEARTS, availableHearts + 1);
 };
 
 export const handleSaveVotes = (
@@ -82,18 +69,15 @@ export const handleSaveVotes = (
 
       for (const localVote of localUserVotes) {
         const matchingServerVote = serverVotesMap.get(localVote.optionId);
-
-        if (!matchingServerVote) {
-          mutateVotesReq.votes.push({
-            optionId: localVote.optionId,
-            numOfVotes: localVote.numOfVotes,
-          });
-        } else if (matchingServerVote.numOfVotes !== localVote.numOfVotes) {
-          mutateVotesReq.votes.push({
-            optionId: localVote.optionId,
-            numOfVotes: localVote.numOfVotes,
-          });
+        // if the vote is the same as the server vote, we don't need to send it
+        if (matchingServerVote && matchingServerVote.numOfVotes === localVote.numOfVotes) {
+          continue;
         }
+
+        mutateVotesReq.votes.push({
+          optionId: localVote.optionId,
+          numOfVotes: localVote.numOfVotes,
+        });
       }
 
       mutateVotes(mutateVotesReq);

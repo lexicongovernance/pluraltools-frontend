@@ -8,26 +8,32 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
 
 // API
-import { postUserToGroups, fetchGroupCategories, postGroup } from 'api';
+import { postUsersToGroups, fetchGroupCategories, postGroup, fetchUsersToGroups } from 'api';
+
+// Hooks
+import useUser from '../hooks/useUser';
 
 // Data
 import groups from '../data/groups';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
-import { FlexColumn } from '../components/containers/FlexColum.styled';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { FlexRowToColumn } from '../components/containers/FlexRowToColumn.styled';
 import { Form } from '../components/containers/Form.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import Button from '../components/button';
 import Dialog from '../components/dialog';
 import Divider from '../components/divider';
+import GroupsColumns from '../components/columns/groups-columns';
+import GroupsTable from '../components/tables/groups-table';
 import Input from '../components/input';
 import ResearchGroupForm from '../components/research-group-form';
 import SecretCode from '../components/secret-code';
 
 function SecretGroupRegistration() {
   const queryClient = useQueryClient();
+  const { user } = useUser();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [secretCode, setSecretCode] = useState<string | null>(null);
   const [groupName, setGroupName] = useState<string | null>(null);
@@ -35,7 +41,10 @@ function SecretGroupRegistration() {
   const groupCategoryNameParam = searchParams.get('groupCategory');
 
   const secretGroupRegistrationSchema = z.object({
-    secret: z.string().length(12, { message: 'Research Group code must be 12 characters long' }),
+    secret: z.string().refine((val) => /^(\w{3,})-(\w{3,})-(\w{3,})$/.test(val), {
+      message:
+        'Secret must be in the format word-word-word, with each word having at least 3 characters',
+    }),
   });
   const {
     formState: { errors, isValid },
@@ -48,6 +57,20 @@ function SecretGroupRegistration() {
     resolver: zodResolver(secretGroupRegistrationSchema),
   });
 
+  const { data: usersToGroups } = useQuery({
+    queryKey: ['user', user?.id, 'users-to-groups'],
+    queryFn: () => fetchUsersToGroups(user?.id || ''),
+    enabled: !!user?.id,
+  });
+
+  const groupsInCategory = useMemo(
+    () =>
+      usersToGroups?.filter(
+        (userToGroup) => userToGroup.group.groupCategory?.name === groupCategoryNameParam,
+      ),
+    [usersToGroups, groupCategoryNameParam],
+  );
+
   const { data: groupCategories } = useQuery({
     queryKey: ['group-categories'],
     queryFn: fetchGroupCategories,
@@ -57,9 +80,9 @@ function SecretGroupRegistration() {
     mutationFn: postGroup,
     onSuccess: (body) => {
       if (body) {
-        queryClient.invalidateQueries({ queryKey: ['groups'] });
-        toast.success(`Group ${groupName} created succesfully!`);
-        toast.success(`Joined group ${groupName} succesfully!`);
+        queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
+        toast.success(`Group ${groupName} created successfully!`);
+        toast.success(`Joined group ${groupName} successfully!`);
         setIsDialogOpen(false);
         setSecretCode(body.secret);
       }
@@ -70,14 +93,20 @@ function SecretGroupRegistration() {
     },
   });
 
-  const { mutate: postUserToGroupsMutation } = useMutation({
-    mutationFn: postUserToGroups,
+  const { mutate: postUsersToGroupsMutation } = useMutation({
+    mutationFn: postUsersToGroups,
     onSuccess: (body) => {
       if (!body) {
         return;
       }
-      queryClient.invalidateQueries({ queryKey: ['user', 'groups'] });
-      toast.success(`Joined ${groupName} group succesfully!`);
+
+      if ('errors' in body) {
+        toast.error(body.errors[0]);
+        return;
+      }
+
+      queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
+      toast.success(`Group joined successfully!`);
     },
     onError: () => {
       toast.error('Secret is not valid');
@@ -93,7 +122,7 @@ function SecretGroupRegistration() {
 
   const onSubmit = () => {
     if (isValid) {
-      postUserToGroupsMutation({ secret: getValues('secret') });
+      postUsersToGroupsMutation({ secret: getValues('secret') });
       reset();
     }
   };
@@ -103,50 +132,59 @@ function SecretGroupRegistration() {
   };
 
   return (
-    <FlexRowToColumn $gap="2rem">
-      <FlexColumn>
-        <Subtitle>{groups.create.subtitle}</Subtitle>
-        {groups.create.body.map(({ id, text }) => (
-          <Body key={id}>{text}</Body>
-        ))}
-        {groupName && secretCode && <SecretCode groupName={groupName} secretCode={secretCode} />}
-        <Dialog
-          open={isDialogOpen}
-          onOpenChange={setIsDialogOpen}
-          trigger={
-            <Button onClick={() => setIsDialogOpen(true)}>{groups.create.buttonText}</Button>
-          }
-          title={groups.create.dialog.title}
-          description={groups.create.dialog.description}
-          content={
-            <ResearchGroupForm
-              formData={groups.create.dialog.form}
-              handleCreateGroup={handleCreateGroup}
-              setGroupName={setGroupName}
-            />
-          }
-          dialogButtons={false}
-        />
-      </FlexColumn>
-      <Divider $height={330} />
-      <FlexColumn>
-        <Subtitle>{groups.join.subtitle}</Subtitle>
-        {groups.join.body.map(({ id, text }) => (
-          <Body key={id}>{text}</Body>
-        ))}
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <Input
-            label={groups.join.input.label}
-            placeholder={groups.join.input.placeholder}
-            autoComplete="off"
-            {...register('secret', { required: groups.join.input.requiredMessage })}
-            errors={errors?.secret?.message ? [errors.secret.message] : []}
-            required
+    <FlexColumn>
+      <FlexRowToColumn $gap="2rem">
+        <FlexColumn $minHeight="200px">
+          <Subtitle>{groups.create.subtitle}</Subtitle>
+          {groups.create.body.map(({ id, text }) => (
+            <Body key={id}>{text}</Body>
+          ))}
+          <Dialog
+            open={isDialogOpen}
+            onOpenChange={setIsDialogOpen}
+            trigger={
+              <Button style={{ marginTop: 'auto' }} onClick={() => setIsDialogOpen(true)}>
+                {groups.create.buttonText}
+              </Button>
+            }
+            content={
+              <ResearchGroupForm
+                formData={groups.create.dialog.form}
+                handleCreateGroup={handleCreateGroup}
+                setGroupName={setGroupName}
+              />
+            }
+            dialogButtons={false}
           />
-          <Button type="submit">{groups.join.buttonText}</Button>
-        </Form>
-      </FlexColumn>
-    </FlexRowToColumn>
+          {groupName && secretCode && <SecretCode groupName={groupName} secretCode={secretCode} />}
+        </FlexColumn>
+        <Divider $height={330} />
+        <FlexColumn $minHeight="200px">
+          <Subtitle>{groups.join.subtitle}</Subtitle>
+          {groups.join.body.map(({ id, text }) => (
+            <Body key={id}>{text}</Body>
+          ))}
+          <Form onSubmit={handleSubmit(onSubmit)} style={{ marginTop: 'auto' }}>
+            <Input
+              label={groups.join.input.label}
+              placeholder={groups.join.input.placeholder}
+              autoComplete="off"
+              {...register('secret', { required: groups.join.input.requiredMessage })}
+              errors={errors?.secret?.message ? [errors.secret.message] : []}
+              required
+            />
+            <Button type="submit">{groups.join.buttonText}</Button>
+          </Form>
+        </FlexColumn>
+      </FlexRowToColumn>
+      {groupsInCategory && groupsInCategory.length > 0 && (
+        <>
+          <Subtitle>Your groups</Subtitle>
+          <GroupsColumns />
+          <GroupsTable groupsInCategory={groupsInCategory} />
+        </>
+      )}
+    </FlexColumn>
   );
 }
 

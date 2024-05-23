@@ -6,6 +6,7 @@ type ButtonProps = {
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   type?: 'button' | 'submit';
   disabled?: boolean;
+  $alignSelf?: 'flex-start' | 'center' | 'flex-end';
   $color?: 'primary' | 'secondary';
   $variant?: 'text' | 'contained' | 'outlined' | 'link';
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
@@ -13,6 +14,7 @@ type ButtonProps = {
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
+      $alignSelf,
       $color = 'primary',
       $variant = 'contained',
       children,
@@ -28,6 +30,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         onClick={onClick}
         type={type}
+        $alignSelf={$alignSelf}
         $color={$color}
         disabled={disabled}
         $variant={$variant}
