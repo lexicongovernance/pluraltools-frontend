@@ -1,11 +1,11 @@
-import { Action, Card, Group, Members, Secret } from './GroupsColumns.styled';
+import { Action, Card, Group, Members, AccessCode } from './GroupsColumns.styled';
 
 function GroupsColumns() {
   return (
     <Card>
       <Group>Group</Group>
       <Members>Members</Members>
-      <Secret>Secret</Secret>
+      <AccessCode>Access Code</AccessCode>
       <Action>Action</Action>
     </Card>
   );
