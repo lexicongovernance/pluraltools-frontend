@@ -1,5 +1,3 @@
-// This can be optimized
-
 type RegistrationField = {
   id: string;
   eventId: string;
@@ -36,7 +34,7 @@ type Registration = {
   registrationData: RegistrationData[];
 };
 
-export type GetGroupRegistration = {
+export type GetGroupRegistrations = {
   id: string;
   name: string;
   description: string | null;

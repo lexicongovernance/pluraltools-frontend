@@ -1,4 +1,4 @@
-import { GetAlertsResponse } from './types/AlertType';
+import { GetAlertsResponse } from './types';
 
 async function fetchAlerts(): Promise<GetAlertsResponse | null> {
   try {

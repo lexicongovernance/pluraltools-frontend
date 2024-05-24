@@ -1,22 +1,29 @@
 import { Affiliation, Author, Card, Proposal, Votes } from './OptionCard.styled';
 import { Body } from '../typography/Body.styled';
 import { Bold } from '../typography/Bold.styled';
-import { FlexColumn } from '../containers/FlexColum.styled';
+import { FlexColumn } from '../containers/FlexColumn.styled';
 import { FlexRow } from '../containers/FlexRow.styled';
-import { QuestionOption, fetchOptionUsers } from 'api';
+import { fetchOptionUsers, GetCycleResponse } from 'api';
 import { useAppStore } from '../../store';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import IconButton from '../icon-button';
 
 type OptionCardProps = {
-  option: QuestionOption;
+  option: GetCycleResponse['forumQuestions'][number]['questionOptions'][number];
+  showFundingRequest?: boolean;
   numOfVotes: number;
   onVote: () => void;
   onUnVote: () => void;
 };
-function OptionCard({ option, numOfVotes, onVote, onUnVote }: OptionCardProps) {
+function OptionCard({
+  option,
+  numOfVotes,
+  onVote,
+  onUnVote,
+  showFundingRequest = false,
+}: OptionCardProps) {
   const { eventId, cycleId } = useParams();
   const theme = useAppStore((state) => state.theme);
   const navigate = useNavigate();
@@ -25,6 +32,7 @@ function OptionCard({ option, numOfVotes, onVote, onUnVote }: OptionCardProps) {
     queryFn: () => fetchOptionUsers(option.id || ''),
     enabled: !!option.id,
   });
+
   // const formattedPluralityScore = useMemo(() => {
   //   const score = parseFloat(String(option.voteScore));
   //   return score % 1 === 0 ? score.toFixed(0) : score.toFixed(1);
@@ -37,6 +45,12 @@ function OptionCard({ option, numOfVotes, onVote, onUnVote }: OptionCardProps) {
   const handleCommentsClick = () => {
     navigate(`/events/${eventId}/cycles/${cycleId}/options/${option.id}`);
   };
+
+  const coauthors = useMemo(() => {
+    return optionUsers?.group?.users?.filter(
+      (optionUser) => optionUser.username !== option.user.username,
+    );
+  }, [optionUsers, option.user.username]);
 
   return (
     <Card $expanded={expanded}>
@@ -80,15 +94,17 @@ function OptionCard({ option, numOfVotes, onVote, onUnVote }: OptionCardProps) {
             </FlexColumn>
             <Body>{numOfVotes}</Body>
           </Votes>
-          {/* <Plurality>
-            <Body>{formattedPluralityScore}</Body>
-          </Plurality> */}
         </FlexRow>
         <FlexColumn className="description" $gap="1.5rem">
-          {optionUsers?.group?.users && (
+          {coauthors && coauthors.length > 0 && (
             <Body>
               <Bold>Co-authors:</Bold>{' '}
-              {optionUsers.group.users.map((user) => `${(user.firstName, user.lastName)}`)}
+              {coauthors.map((coauthor) => `${coauthor.firstName} ${coauthor.lastName}`).join(', ')}
+            </Body>
+          )}
+          {showFundingRequest && option.fundingRequest && (
+            <Body>
+              <Bold>Funding request:</Bold> {option.fundingRequest}
             </Body>
           )}
           {option.optionSubTitle && <Body>{option.optionSubTitle}</Body>}

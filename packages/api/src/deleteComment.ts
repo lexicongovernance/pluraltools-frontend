@@ -1,4 +1,4 @@
-import { DeleteCommentRequest, DeleteCommentResponse } from '.';
+import { DeleteCommentRequest, DeleteCommentResponse } from './types';
 
 async function deleteComment({
   commentId,

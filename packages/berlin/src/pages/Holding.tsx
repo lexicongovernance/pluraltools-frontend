@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
-import { FlexColumn } from '../components/containers/FlexColum.styled';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { SafeArea } from '../layout/Layout.styled';
 import Link from '../components/link';
 

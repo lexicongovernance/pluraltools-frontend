@@ -8,26 +8,28 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
 
 // API
-import { postUsersToGroups, fetchGroupCategories, postGroup } from 'api';
+import { postUsersToGroups, fetchGroupCategories, postGroup, fetchUsersToGroups } from 'api';
+
+// Hooks
+import useUser from '../hooks/useUser';
 
 // Data
 import groups from '../data/groups';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
-import { FlexColumn } from '../components/containers/FlexColum.styled';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { FlexRowToColumn } from '../components/containers/FlexRowToColumn.styled';
 import { Form } from '../components/containers/Form.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import Button from '../components/button';
 import Dialog from '../components/dialog';
 import Divider from '../components/divider';
+import GroupsColumns from '../components/columns/groups-columns';
+import GroupsTable from '../components/tables/groups-table';
 import Input from '../components/input';
 import ResearchGroupForm from '../components/research-group-form';
 import SecretCode from '../components/secret-code';
-import GroupsColumns from '../components/columns/groups-columns';
-import GroupsTable from '../components/tables/groups-table';
-import useUser from '../hooks/useUser';
 
 function SecretGroupRegistration() {
   const queryClient = useQueryClient();
@@ -54,6 +56,20 @@ function SecretGroupRegistration() {
     defaultValues: { secret: '' },
     resolver: zodResolver(secretGroupRegistrationSchema),
   });
+
+  const { data: usersToGroups } = useQuery({
+    queryKey: ['user', user?.id, 'users-to-groups'],
+    queryFn: () => fetchUsersToGroups(user?.id || ''),
+    enabled: !!user?.id,
+  });
+
+  const groupsInCategory = useMemo(
+    () =>
+      usersToGroups?.filter(
+        (userToGroup) => userToGroup.group.groupCategory?.name === groupCategoryNameParam,
+      ),
+    [usersToGroups, groupCategoryNameParam],
+  );
 
   const { data: groupCategories } = useQuery({
     queryKey: ['group-categories'],
@@ -118,8 +134,7 @@ function SecretGroupRegistration() {
   return (
     <FlexColumn>
       <FlexRowToColumn $gap="2rem">
-        {/* // TODO: avoid inline styles */}
-        <FlexColumn style={{ minHeight: 180 }}>
+        <FlexColumn $minHeight="200px">
           <Subtitle>{groups.create.subtitle}</Subtitle>
           {groups.create.body.map(({ id, text }) => (
             <Body key={id}>{text}</Body>
@@ -144,12 +159,12 @@ function SecretGroupRegistration() {
           {groupName && secretCode && <SecretCode groupName={groupName} secretCode={secretCode} />}
         </FlexColumn>
         <Divider $height={330} />
-        <FlexColumn style={{ minHeight: 180 }}>
+        <FlexColumn $minHeight="200px">
           <Subtitle>{groups.join.subtitle}</Subtitle>
           {groups.join.body.map(({ id, text }) => (
             <Body key={id}>{text}</Body>
           ))}
-          <Form onSubmit={handleSubmit(onSubmit)}>
+          <Form onSubmit={handleSubmit(onSubmit)} style={{ marginTop: 'auto' }}>
             <Input
               label={groups.join.input.label}
               placeholder={groups.join.input.placeholder}
@@ -162,9 +177,13 @@ function SecretGroupRegistration() {
           </Form>
         </FlexColumn>
       </FlexRowToColumn>
-      <Subtitle>Your groups</Subtitle>
-      <GroupsColumns />
-      <GroupsTable groupCategoryName={groupCategoryNameParam} />
+      {groupsInCategory && groupsInCategory.length > 0 && (
+        <>
+          <Subtitle>Your groups</Subtitle>
+          <GroupsColumns />
+          <GroupsTable groupsInCategory={groupsInCategory} />
+        </>
+      )}
     </FlexColumn>
   );
 }

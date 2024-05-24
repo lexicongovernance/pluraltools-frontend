@@ -1,4 +1,4 @@
-import { GetOptionUsersResponse } from './types/OptionUsersType';
+import { GetOptionUsersResponse } from './types';
 
 async function fetchOptionUsers(optionId: string): Promise<GetOptionUsersResponse | null> {
   try {

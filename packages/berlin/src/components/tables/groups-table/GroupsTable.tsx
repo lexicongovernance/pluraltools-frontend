@@ -1,12 +1,11 @@
 // React and third-party libraries
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 
 // API
 import {
   deleteUsersToGroups,
-  fetchUsersToGroups,
   fetchGroupMembers,
   GetUsersToGroupsResponse,
   fetchGroupRegistrations,
@@ -17,13 +16,13 @@ import { useAppStore } from '../../../store';
 import useUser from '../../../hooks/useUser';
 
 // Components
-import { Card, Group, GroupProposalDescription, Secret } from './GroupsTable.styled';
+import { Card, Group, GroupProposal, Secret } from './GroupsTable.styled';
 import Button from '../../button';
 import Dialog from '../../dialog';
 import IconButton from '../../icon-button';
 import { Body } from '../../typography/Body.styled';
 import { FlexRow } from '../../containers/FlexRow.styled';
-import { FlexColumn } from '../../containers/FlexColum.styled';
+import { FlexColumn } from '../../containers/FlexColumn.styled';
 import { Bold } from '../../typography/Bold.styled';
 
 interface GroupCardProps {
@@ -52,6 +51,26 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
     toast.success(`Secret code ${secretCode} copied to clipboard`);
   };
 
+  const flattenedRegistrations = groupRegistrations?.flatMap(
+    (groupRegistration) => groupRegistration.registrations,
+  );
+
+  const proposals = flattenedRegistrations?.map((registration) => {
+    const title = registration.registrationData.find(
+      (item) => item.registrationField.fieldDisplayRank === 0,
+    )?.value;
+
+    const description = registration.registrationData.find(
+      (item) => item.registrationField.fieldDisplayRank === 1,
+    )?.value;
+
+    return { id: registration.id, userId: registration.userId, title, description };
+  });
+
+  const getLeadAuthor = (userId: string) => {
+    return groupMembers?.find((member) => member.id === userId);
+  };
+
   return (
     <Card key={userToGroup.id} $expanded={expanded}>
       <FlexRow>
@@ -63,6 +82,11 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
           $flipVertical={expanded}
         />
         <Group>{userToGroup.group.name}</Group>
+      </FlexRow>
+      <FlexRow>
+        <Body>
+          {groupMembers?.map((member) => `${member.firstName} ${member.lastName}`).join(', ')}
+        </Body>
       </FlexRow>
       {userToGroup.group.secret ? (
         <FlexRow>
@@ -78,62 +102,42 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
         <Body>No secret</Body>
       )}
       <Dialog
-        trigger={<Button>Leave</Button>}
+        trigger={<Button $alignSelf="flex-start">Leave</Button>}
         title="Are you sure?"
         description={`This action cannot be undone. This will remove you from group ${userToGroup.group.name}.`}
         onActionClick={() => onLeaveGroup(userToGroup.id)}
         actionButtonText="Leave group"
       />
       <FlexColumn className="description" $gap="1.5rem">
-        <Body>
-          <Bold>Group members:</Bold> {groupMembers?.map((member) => member.username).join(', ')}
-        </Body>
-        {groupRegistrations &&
-          groupRegistrations.flatMap((groupRegistration) =>
-            groupRegistration.registrations.flatMap((registration) =>
-              registration.registrationData
-                .filter(
-                  ({ registrationField }) =>
-                    registrationField.fieldDisplayRank === 0 ||
-                    registrationField.fieldDisplayRank === 1,
-                )
-                .map(({ id, value, registrationField }) => {
-                  if (registrationField.fieldDisplayRank === 0) {
-                    return (
-                      <div key={id}>
-                        <Body>
-                          <Bold>Title:</Bold> {value}
-                        </Body>
-                      </div>
-                    );
-                  } else if (registrationField.fieldDisplayRank === 1) {
-                    return (
-                      <div key={id}>
-                        <GroupProposalDescription>
-                          <Bold>Description:</Bold> {value}
-                        </GroupProposalDescription>
-                      </div>
-                    );
-                  }
-                  return null;
-                }),
-            ),
-          )}
+        {proposals && proposals.length > 0 ? (
+          proposals.map(({ id, title, description, userId }) => (
+            <GroupProposal key={id}>
+              <Body>
+                <Bold>Lead Author:</Bold>{' '}
+                {getLeadAuthor(userId)
+                  ? `${getLeadAuthor(userId)?.firstName} ${getLeadAuthor(userId)?.lastName}`
+                  : 'Anonymous'}
+              </Body>
+              <Body>
+                <Bold>Title:</Bold> {title}
+              </Body>
+              <Body>
+                <Bold>Description:</Bold> {description}
+              </Body>
+            </GroupProposal>
+          ))
+        ) : (
+          <Body>This group currently has no proposals</Body>
+        )}
       </FlexColumn>
     </Card>
   );
 }
 
-function GroupsTable({ groupCategoryName }: { groupCategoryName?: string | null }) {
+function GroupsTable({ groupsInCategory }: { groupsInCategory?: GetUsersToGroupsResponse }) {
   const { user } = useUser();
   const queryClient = useQueryClient();
   const theme = useAppStore((state) => state.theme);
-
-  const { data: usersToGroups } = useQuery({
-    queryKey: ['user', user?.id, 'users-to-groups'],
-    queryFn: () => fetchUsersToGroups(user?.id || ''),
-    enabled: !!user?.id,
-  });
 
   const { mutate } = useMutation({
     mutationFn: deleteUsersToGroups,
@@ -148,14 +152,6 @@ function GroupsTable({ groupCategoryName }: { groupCategoryName?: string | null 
       }
     },
   });
-
-  const groupsInCategory = useMemo(
-    () =>
-      usersToGroups?.filter(
-        (userToGroup) => userToGroup.group.groupCategory?.name === groupCategoryName,
-      ),
-    [usersToGroups, groupCategoryName],
-  );
 
   return groupsInCategory?.map((userToGroup) => (
     <GroupCard

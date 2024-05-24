@@ -1,4 +1,4 @@
-import { GetRegistrationsResponseType } from './types/RegistrationType';
+import { GetRegistrationsResponseType } from './types';
 
 async function fetchRegistrations(eventId: string): Promise<GetRegistrationsResponseType | null> {
   try {

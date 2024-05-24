@@ -1,4 +1,4 @@
-import { PutUserRequest, GetUserResponse } from './types/UserType';
+import { PutUserRequest, GetUserResponse } from './types';
 
 async function updateUserData({
   email,

@@ -4,7 +4,11 @@ const groups = {
     body: [
       {
         id: 0,
-        text: 'Share the access code with your collaborators',
+        text: 'Share the access code with your collaborators so they can join your group',
+      },
+      {
+        id: 1,
+        text: 'Any group member can assign a proposal to this group from My Proposals',
       },
     ],
     buttonText: 'Create group',

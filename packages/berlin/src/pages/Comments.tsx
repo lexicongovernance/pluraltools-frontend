@@ -31,7 +31,7 @@ import { useAppStore } from '../store';
 // Components
 import { Body } from '../components/typography/Body.styled';
 import { Bold } from '../components/typography/Bold.styled';
-import { FlexColumn } from '../components/containers/FlexColum.styled';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
 import { Form } from '../components/containers/Form.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
@@ -77,6 +77,10 @@ function Comments() {
     queryFn: () => fetchOptionUsers(optionId || ''),
     enabled: !!optionId,
   });
+
+  const coauthors = useMemo(() => {
+    return optionUsers?.group?.users?.filter((optionUser) => optionUser.id !== option?.userId);
+  }, [optionUsers, option]);
 
   const { data: comments } = useQuery({
     queryKey: ['option', optionId, 'comments'],
@@ -206,10 +210,10 @@ function Comments() {
         <Body>{option?.optionSubTitle}</Body>
         <Body>
           <Bold>Lead author:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
-          {optionUsers?.group?.users && (
+          {coauthors && coauthors.length > 0 && (
             <Body>
               <Bold>Co-authors:</Bold>{' '}
-              {optionUsers.group.users.map((user) => `${(user.firstName, user.lastName)}`)}
+              {coauthors.map((coauthor) => `${coauthor.firstName} ${coauthor.lastName}`).join(', ')}
             </Body>
           )}
         </Body>

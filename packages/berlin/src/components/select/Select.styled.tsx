@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FlexColumn } from '../containers/FlexColum.styled';
+import { FlexColumn } from '../containers/FlexColumn.styled';
 
 export const SelectContainer = styled.div<{ $minWidth?: string }>`
   position: relative;

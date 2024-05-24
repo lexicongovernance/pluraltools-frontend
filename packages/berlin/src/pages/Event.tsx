@@ -8,7 +8,7 @@ import { GetCycleResponse, fetchEvent, fetchEventCycles } from 'api';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
-import { FlexColumn } from '../components/containers/FlexColum.styled';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { Table } from '../components/table';
 import Button from '../components/button';
 import EventCard from '../components/event-card';

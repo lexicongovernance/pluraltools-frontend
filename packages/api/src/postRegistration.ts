@@ -1,4 +1,4 @@
-import { PostRegistrationRequest, PostRegistrationResponse } from './types/RegistrationDataType';
+import { PostRegistrationRequest, PostRegistrationResponse } from './types';
 
 async function postRegistration({
   body,

@@ -7,7 +7,7 @@ import { useAppStore } from '../../../store';
 // Components
 import { Body } from '../../typography/Body.styled';
 import { Bold } from '../../typography/Bold.styled';
-import { FlexColumn } from '../../containers/FlexColum.styled';
+import { FlexColumn } from '../../containers/FlexColumn.styled';
 import { FlexRow } from '../../containers/FlexRow.styled';
 import IconButton from '../../icon-button';
 
@@ -25,6 +25,7 @@ type ResultsTableProps = {
     distinctGroups: number;
     listOfGroupNames: string[];
     quadraticScore: string;
+    allocatedFunding: number | null;
     id: string;
   };
   onClick: () => void;
@@ -44,7 +45,12 @@ function ResultsTable({ $expanded, option, onClick }: ResultsTableProps) {
   }, [option.pluralityScore]);
 
   return (
-    <Card $expanded={$expanded} onClick={onClick} $rowgap="2rem">
+    <Card
+      $expanded={$expanded}
+      $showFunding={option.allocatedFunding !== null}
+      onClick={onClick}
+      $rowgap="2rem"
+    >
       <FlexRow>
         <IconButton
           $padding={0}
@@ -57,7 +63,7 @@ function ResultsTable({ $expanded, option, onClick }: ResultsTableProps) {
       <Body>{option.allocatedHearts}</Body>
       <Body>{formattedQuadraticScore}</Body>
       <Body>{formattedPluralityScore}</Body>
-      <Body>$ 10.000</Body>
+      {option.allocatedFunding !== null && <Body>{option.allocatedFunding} ARB</Body>}
       <FlexColumn className="description">
         <Body>{option.optionSubTitle}</Body>
         <Body>
