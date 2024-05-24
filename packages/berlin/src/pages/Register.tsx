@@ -873,6 +873,15 @@ function NumberInput(props: {
               return 'Value is required';
             }
 
+            const parsedValue = parseInt(value, 10);
+            if (isNaN(parsedValue)) {
+              return 'Value must be a number';
+            }
+
+            if (parsedValue < 0 || parsedValue > 10000) {
+              return 'Value must be between 0 and 10,000';
+            }
+
             const v = z.coerce
               .number()
               .int('Value has to be an integer')
