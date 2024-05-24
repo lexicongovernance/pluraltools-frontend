@@ -76,7 +76,9 @@ function Cycle() {
 
   useEffect(() => {
     if (cycle?.status === 'CLOSED') {
-      toast.success('Cycle has closed. Redirecting to the results page.');
+      toast('Cycle has closed. Redirecting to the results page.', {
+        icon: '⌛️',
+      });
       navigate(`/events/${eventId}/cycles/${cycleId}/results`);
     }
   }, [cycle?.status]);
