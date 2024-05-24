@@ -108,7 +108,7 @@ export const ThemeButton = styled(Button)`
   }
 `;
 
-export const MenuButton = styled.div`
+export const MenuButton = styled.li`
   align-items: center;
   cursor: pointer;
   display: flex;
