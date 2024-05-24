@@ -46,6 +46,7 @@ function Cycle() {
     queryKey: ['cycles', cycleId],
     queryFn: () => fetchCycle(cycleId || ''),
     enabled: !!cycleId,
+    refetchInterval: 5000, // Poll every 5 seconds
   });
 
   const { data: userVotes } = useQuery({
