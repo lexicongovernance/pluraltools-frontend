@@ -11,4 +11,15 @@ export const StyledInput = styled.input`
   &::placeholder {
     color: var(--color-gray);
   }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type='number'] {
+    -moz-appearance: textfield; /* Firefox */
+    appearance: textfield; /* Standard property */
+  }
 `;
