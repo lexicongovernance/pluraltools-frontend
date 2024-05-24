@@ -78,7 +78,7 @@ function PublicGroupRegistration() {
       if (!body) {
         return;
       }
-      queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'groups'] });
+      queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
       toast.success(`Joined ${groupCategoryNameParam} group successfully!`);
     },
     onError: () => {
@@ -98,7 +98,7 @@ function PublicGroupRegistration() {
         return;
       }
 
-      queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'groups'] });
+      queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
       toast.success(`Updated ${groupCategoryNameParam} group successfully!`);
     },
     onError: () => {

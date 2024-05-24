@@ -17,7 +17,7 @@ export const Members = styled(Body)`
   font-weight: bold;
 `;
 
-export const Secret = styled(Body)`
+export const AccessCode = styled(Body)`
   font-weight: bold;
 `;
 
