@@ -861,6 +861,8 @@ function NumberInput(props: {
         label={props.name}
         required={!!props.required}
         placeholder="Enter a value"
+        min={0}
+        max={10000}
         {...props.register(props.id, {
           validate: (value) => {
             if (!props.required) {
