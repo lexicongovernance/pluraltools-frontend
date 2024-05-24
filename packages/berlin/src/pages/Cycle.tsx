@@ -76,7 +76,7 @@ function Cycle() {
 
   useEffect(() => {
     if (cycle?.status === 'CLOSED') {
-      toast('Cycle has closed. Redirecting to the results page.', {
+      toast('Agenda has closed. Redirecting to results.', {
         icon: '⌛️',
       });
       navigate(`/events/${eventId}/cycles/${cycleId}/results`);
