@@ -1,7 +1,7 @@
 // React and third-party libraries
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { redirect, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 // API
@@ -40,7 +40,6 @@ type QuestionOption = GetCycleResponse['forumQuestions'][number]['questionOption
 
 function Cycle() {
   const queryClient = useQueryClient();
-
   const { user } = useUser();
   const { eventId, cycleId } = useParams();
   const { data: cycle } = useQuery({
@@ -48,6 +47,7 @@ function Cycle() {
     queryFn: () => fetchCycle(cycleId || ''),
     enabled: !!cycleId,
   });
+
   const { data: userVotes } = useQuery({
     queryKey: ['votes', cycleId],
     queryFn: () => fetchUserVotes(cycleId || ''),
@@ -71,6 +71,12 @@ function Cycle() {
     column: 'numOfVotes',
     order: 'desc',
   });
+
+  useEffect(() => {
+    if (cycle?.status === 'CLOSED') {
+      redirect(`/events/${eventId}/cycles/${cycleId}/results`);
+    }
+  }, [cycle?.status]);
 
   useEffect(() => {
     if (cycle && cycle.startAt && cycle.endAt) {
