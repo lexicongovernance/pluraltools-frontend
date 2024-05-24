@@ -1,7 +1,7 @@
 // React and third-party libraries
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 // API
@@ -40,14 +40,16 @@ type QuestionOption = GetCycleResponse['forumQuestions'][number]['questionOption
 
 function Cycle() {
   const queryClient = useQueryClient();
-
+  const navigate = useNavigate();
   const { user } = useUser();
   const { eventId, cycleId } = useParams();
   const { data: cycle } = useQuery({
     queryKey: ['cycles', cycleId],
     queryFn: () => fetchCycle(cycleId || ''),
     enabled: !!cycleId,
+    refetchInterval: 5000, // Poll every 5 seconds
   });
+
   const { data: userVotes } = useQuery({
     queryKey: ['votes', cycleId],
     queryFn: () => fetchUserVotes(cycleId || ''),
@@ -71,6 +73,13 @@ function Cycle() {
     column: 'numOfVotes',
     order: 'desc',
   });
+
+  useEffect(() => {
+    if (cycle?.status === 'CLOSED') {
+      toast('Agenda has closed. Redirecting to results.');
+      navigate(`/events/${eventId}/cycles/${cycleId}/results`);
+    }
+  }, [cycle?.status]);
 
   useEffect(() => {
     if (cycle && cycle.startAt && cycle.endAt) {
