@@ -76,7 +76,7 @@ function Account() {
   });
 
   const { data: usersToGroups, isLoading: userGroupsIsLoading } = useQuery({
-    queryKey: ['user', user?.id, 'groups'],
+    queryKey: ['user', user?.id, 'users-to-groups'],
     queryFn: () => fetchUsersToGroups(user?.id || ''),
     enabled: !!user?.id,
   });
