@@ -23,10 +23,6 @@ function PublicGroupRegistration() {
   const [searchParams] = useSearchParams();
   const groupCategoryNameParam = searchParams.get('groupCategory');
 
-  const capitalizedParam =
-    groupCategoryNameParam &&
-    groupCategoryNameParam?.slice(0, 1).toUpperCase() + groupCategoryNameParam?.slice(1);
-
   const {
     control,
     getValues,
@@ -79,7 +75,7 @@ function PublicGroupRegistration() {
         return;
       }
       queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
-      toast.success(`Joined ${groupCategoryNameParam} group successfully!`);
+      toast.success(`Joined group successfully!`);
     },
     onError: () => {
       toast.error('Something went wrong.');
@@ -99,7 +95,7 @@ function PublicGroupRegistration() {
       }
 
       queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
-      toast.success(`Updated ${groupCategoryNameParam} group successfully!`);
+      toast.success(`Updated group successfully!`);
     },
     onError: () => {
       toast.error('Something went wrong.');
@@ -133,15 +129,11 @@ function PublicGroupRegistration() {
           name="group"
           control={control}
           rules={{
-            required: `${capitalizedParam} group is required`,
+            required: `Group is required`,
           }}
           render={({ field }) => (
             <Select
-              placeholder={
-                prevUserToGroup
-                  ? prevUserToGroup.group.name
-                  : `Select your ${groupCategoryNameParam} group`
-              }
+              placeholder={prevUserToGroup ? prevUserToGroup.group.name : `Select your group`}
               options={selectData}
               value={field.value}
               errors={[errors.group?.message ?? '']}
@@ -151,7 +143,7 @@ function PublicGroupRegistration() {
             />
           )}
         />
-        <Button type="submit">Join {groupCategoryNameParam} group</Button>
+        <Button type="submit">Join group</Button>
       </Form>
     </FlexColumn>
   );
