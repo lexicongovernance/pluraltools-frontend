@@ -182,14 +182,15 @@ function Header() {
                             )
                           );
                         })}
+                      <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
+                        My proposals
+                      </NavButton>
+                      <NavButton to={`/events/${events?.[0].id}/cycles`} $color="secondary">
+                        Agenda
+                      </NavButton>
                     </>
                   )}
-                  <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
-                    My proposals
-                  </NavButton>
-                  <NavButton to={`/events/${events?.[0].id}/cycles`} $color="secondary">
-                    Agenda
-                  </NavButton>
+
                   <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>
