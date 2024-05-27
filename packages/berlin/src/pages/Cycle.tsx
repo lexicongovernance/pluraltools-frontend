@@ -233,6 +233,11 @@ function Cycle() {
   ) => {
     const votesA = localUserVotes?.find((vote) => vote.optionId === a.id)?.numOfVotes || 0;
     const votesB = localUserVotes?.find((vote) => vote.optionId === b.id)?.numOfVotes || 0;
+
+    if (votesA === votesB) {
+      return sortByLead(a, b, order);
+    }
+
     return order === 'desc' ? votesB - votesA : votesA - votesB;
   };
 
