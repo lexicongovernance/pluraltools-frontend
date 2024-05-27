@@ -861,7 +861,7 @@ function NumberInput(props: {
         label={props.name}
         required={!!props.required}
         placeholder="Enter a value"
-        min={0}
+        min={250}
         max={10000}
         {...props.register(props.id, {
           validate: (value) => {
@@ -876,8 +876,8 @@ function NumberInput(props: {
             const v = z.coerce
               .number()
               .int('Value has to be an integer')
-              .min(0, 'Value must be greater or equal to 0')
-              .max(10000, 'Value must be less or equal to 10,000')
+              .min(250, 'Value must be 250 or higher')
+              .max(10000, 'Value must be 10,000 or lower')
               .safeParse(value);
 
             if (v.success) {
