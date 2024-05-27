@@ -99,11 +99,11 @@ function CommentsTable({ comment }: CommentsTableProps) {
   };
 
   return (
-    <Card $columns={4}>
+    <Card>
       <FlexRow>
         <Comment>{comment.value}</Comment>
       </FlexRow>
-      <Author>@{comment.user?.username}</Author>
+      <Author title={`@${comment.user?.username}`}>@{comment.user?.username}</Author>
       <FormattedDate>{formattedDate}</FormattedDate>
       <FlexRow
         $gap="0.5rem"

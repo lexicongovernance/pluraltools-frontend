@@ -211,15 +211,32 @@ function Cycle() {
 
   const currentCycle = cycle?.forumQuestions[0];
 
+  const sortId = (a: QuestionOption, b: QuestionOption, order: Order) => {
+    const idA = a.id.toUpperCase();
+    const idB = b.id.toUpperCase();
+
+    return order === 'desc' ? idB.localeCompare(idA) : idA.localeCompare(idB);
+  };
+
   const sortByLead = (a: QuestionOption, b: QuestionOption, order: Order) => {
     const leadA = (a.user.lastName || a.user.username).toUpperCase();
     const leadB = (b.user.lastName || b.user.username).toUpperCase();
+
+    if (leadA === leadB) {
+      return sortId(a, b, order);
+    }
+
     return order === 'desc' ? leadB.localeCompare(leadA) : leadA.localeCompare(leadB);
   };
 
   const sortByAffiliation = (a: QuestionOption, b: QuestionOption, order: Order) => {
     const affiliationA = a.user.group?.name.toUpperCase();
     const affiliationB = b.user.group?.name.toUpperCase() ?? '';
+
+    if (affiliationA === affiliationB) {
+      return sortId(a, b, order);
+    }
+
     return order === 'desc'
       ? affiliationB.localeCompare(affiliationA)
       : affiliationA.localeCompare(affiliationB);
@@ -233,6 +250,11 @@ function Cycle() {
   ) => {
     const votesA = localUserVotes?.find((vote) => vote.optionId === a.id)?.numOfVotes || 0;
     const votesB = localUserVotes?.find((vote) => vote.optionId === b.id)?.numOfVotes || 0;
+
+    if (votesA === votesB) {
+      return sortId(a, b, order);
+    }
+
     return order === 'desc' ? votesB - votesA : votesA - votesB;
   };
 

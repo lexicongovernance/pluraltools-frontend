@@ -8,7 +8,7 @@ export const Card = styled(Grid)`
   grid-template-columns: minmax(200px, 600px) minmax(100px, 150px) 56px;
 
   @media (min-width: 600px) {
-    grid-template-columns: minmax(200px, 600px) minmax(100px, 150px) minmax(100px, 150px) 56px;
+    grid-template-columns: minmax(200px, 600px) minmax(100px, 200px) minmax(80px, 100px) 56px;
   }
 `;
 
