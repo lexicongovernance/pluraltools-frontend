@@ -235,7 +235,10 @@ function Cycle() {
     const votesB = localUserVotes?.find((vote) => vote.optionId === b.id)?.numOfVotes || 0;
 
     if (votesA === votesB) {
-      return sortByLead(a, b, order);
+      const idA = a.id.toUpperCase();
+      const idB = b.id.toUpperCase();
+
+      return order === 'desc' ? idB.localeCompare(idA) : idA.localeCompare(idB);
     }
 
     return order === 'desc' ? votesB - votesA : votesA - votesB;
