@@ -132,30 +132,32 @@ function SecretGroupRegistration() {
   };
 
   return (
-    <FlexColumn>
+    <FlexColumn $gap="2rem">
       <FlexRowToColumn $gap="2rem">
-        <FlexColumn $minHeight="200px">
-          <Subtitle>{groups.create.subtitle}</Subtitle>
-          {groups.create.body.map(({ id, text }) => (
-            <Body key={id}>{text}</Body>
-          ))}
-          <Dialog
-            open={isDialogOpen}
-            onOpenChange={setIsDialogOpen}
-            trigger={
-              <Button style={{ marginTop: 'auto' }} onClick={() => setIsDialogOpen(true)}>
-                {groups.create.buttonText}
-              </Button>
-            }
-            content={
-              <ResearchGroupForm
-                formData={groups.create.dialog.form}
-                handleCreateGroup={handleCreateGroup}
-                setGroupName={setGroupName}
-              />
-            }
-            dialogButtons={false}
-          />
+        <FlexColumn $gap="2rem">
+          <FlexColumn $minHeight="200px">
+            <Subtitle>{groups.create.subtitle}</Subtitle>
+            {groups.create.body.map(({ id, text }) => (
+              <Body key={id}>{text}</Body>
+            ))}
+            <Dialog
+              open={isDialogOpen}
+              onOpenChange={setIsDialogOpen}
+              trigger={
+                <Button style={{ marginTop: 'auto' }} onClick={() => setIsDialogOpen(true)}>
+                  {groups.create.buttonText}
+                </Button>
+              }
+              content={
+                <ResearchGroupForm
+                  formData={groups.create.dialog.form}
+                  handleCreateGroup={handleCreateGroup}
+                  setGroupName={setGroupName}
+                />
+              }
+              dialogButtons={false}
+            />
+          </FlexColumn>
           {groupName && secretCode && <SecretCode groupName={groupName} secretCode={secretCode} />}
         </FlexColumn>
         <Divider $height={330} />
@@ -166,7 +168,6 @@ function SecretGroupRegistration() {
           ))}
           <Form onSubmit={handleSubmit(onSubmit)} style={{ marginTop: 'auto' }}>
             <Input
-              label={groups.join.input.label}
               placeholder={groups.join.input.placeholder}
               autoComplete="off"
               {...register('secret', { required: groups.join.input.requiredMessage })}
@@ -178,11 +179,10 @@ function SecretGroupRegistration() {
         </FlexColumn>
       </FlexRowToColumn>
       {groupsInCategory && groupsInCategory.length > 0 && (
-        <>
-          <Subtitle>Your groups</Subtitle>
+        <FlexColumn>
           <GroupsColumns />
           <GroupsTable groupsInCategory={groupsInCategory} />
-        </>
+        </FlexColumn>
       )}
     </FlexColumn>
   );

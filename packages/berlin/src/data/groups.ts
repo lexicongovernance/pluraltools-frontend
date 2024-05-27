@@ -1,38 +1,42 @@
 const groups = {
   create: {
-    subtitle: 'Create a Research Group',
+    subtitle: 'Create a Group',
     body: [
       {
         id: 0,
-        text: 'Share the access code with your collaborators so they can join your group',
+        text: 'Share the access code with your collaborators',
       },
       {
         id: 1,
-        text: 'Any group member can assign a proposal to this group from My Proposals',
+        text: 'Any group member can assign their proposal to this group',
       },
     ],
-    buttonText: 'Create group',
+    buttonText: 'Create',
     dialog: {
-      actionButtonText: 'Create group',
+      actionButtonText: 'Create',
       form: {
         input: {
-          placeholder: 'Research group name',
-          requiredMessage: 'Research group name must be 2 characters long or more',
+          placeholder: 'Group name',
+          requiredMessage: 'Group name must be 2 characters long or more',
         },
-        buttonText: 'Create group',
+        buttonText: 'Create',
       },
-      buttonText: 'Create group',
+      buttonText: 'Create',
     },
   },
   join: {
-    subtitle: 'Join a Research Group',
-    body: [],
+    subtitle: 'Join a Group',
+    body: [
+      {
+        id: 0,
+        text: 'Ask the group creator for the access code',
+      },
+    ],
     input: {
-      label: 'Ask the group creator for the access code',
       placeholder: 'Enter access code',
       requiredMessage: 'Access code is required',
     },
-    buttonText: 'Join group',
+    buttonText: 'Join',
   },
 };
 
