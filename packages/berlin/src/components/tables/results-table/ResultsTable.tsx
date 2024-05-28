@@ -70,9 +70,6 @@ function ResultsTable({ $expanded, option, onClick }: ResultsTableProps) {
           <Bold>Distinct voters:</Bold> {option.distinctUsers}
         </Body>
         <Body>
-          <Bold>Distinct groups:</Bold> {option.distinctGroups}
-        </Body>
-        <Body>
           <Bold>Voter affiliations:</Bold> {option.listOfGroupNames.join(', ')}
         </Body>
       </FlexColumn>
