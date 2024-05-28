@@ -103,7 +103,9 @@ function CommentsTable({ comment }: CommentsTableProps) {
       <FlexRow>
         <Comment>{comment.value}</Comment>
       </FlexRow>
-      <Author title={`@${comment.user?.username}`}>@{comment.user?.username}</Author>
+      <Author title={`@${comment.user?.username}`}>
+        {comment.user?.firstName} {comment.user?.lastName}
+      </Author>
       <FormattedDate>{formattedDate}</FormattedDate>
       <FlexRow
         $gap="0.5rem"
