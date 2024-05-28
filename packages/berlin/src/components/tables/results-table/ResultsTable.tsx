@@ -1,5 +1,9 @@
 // React and third-party libraries
 import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+
+// API
+import { fetchOptionUsers } from 'api';
 
 // Store
 import { useAppStore } from '../../../store';
@@ -44,6 +48,12 @@ function ResultsTable({ $expanded, option, onClick }: ResultsTableProps) {
     return score % 1 === 0 ? score.toFixed(0) : score.toFixed(3);
   }, [option.pluralityScore]);
 
+  const { data: optionUsers } = useQuery({
+    queryKey: ['option', option.id, 'users'],
+    queryFn: () => fetchOptionUsers(option.id || ''),
+    enabled: !!option.id,
+  });
+
   return (
     <Card
       $expanded={$expanded}
@@ -66,6 +76,9 @@ function ResultsTable({ $expanded, option, onClick }: ResultsTableProps) {
       {option.allocatedFunding !== null && <Body>{option.allocatedFunding} ARB</Body>}
       <FlexColumn className="description">
         <Body>{option.optionSubTitle}</Body>
+        <Body>
+          <Bold>Lead Author:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
+        </Body>
         <Body>
           <Bold>Distinct voters:</Bold> {option.distinctUsers}
         </Body>
