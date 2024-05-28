@@ -1,7 +1,7 @@
 // React and third-party libraries
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 // API
@@ -40,14 +40,16 @@ type QuestionOption = GetCycleResponse['forumQuestions'][number]['questionOption
 
 function Cycle() {
   const queryClient = useQueryClient();
-
+  const navigate = useNavigate();
   const { user } = useUser();
   const { eventId, cycleId } = useParams();
   const { data: cycle } = useQuery({
     queryKey: ['cycles', cycleId],
     queryFn: () => fetchCycle(cycleId || ''),
     enabled: !!cycleId,
+    refetchInterval: 5000, // Poll every 5 seconds
   });
+
   const { data: userVotes } = useQuery({
     queryKey: ['votes', cycleId],
     queryFn: () => fetchUserVotes(cycleId || ''),
@@ -71,6 +73,13 @@ function Cycle() {
     column: 'numOfVotes',
     order: 'desc',
   });
+
+  useEffect(() => {
+    if (cycle?.status === 'CLOSED') {
+      toast('Agenda has closed. Redirecting to results.');
+      navigate(`/events/${eventId}/cycles/${cycleId}/results`);
+    }
+  }, [cycle?.status]);
 
   useEffect(() => {
     if (cycle && cycle.startAt && cycle.endAt) {
@@ -202,15 +211,32 @@ function Cycle() {
 
   const currentCycle = cycle?.forumQuestions[0];
 
+  const sortId = (a: QuestionOption, b: QuestionOption, order: Order) => {
+    const idA = a.id.toUpperCase();
+    const idB = b.id.toUpperCase();
+
+    return order === 'desc' ? idB.localeCompare(idA) : idA.localeCompare(idB);
+  };
+
   const sortByLead = (a: QuestionOption, b: QuestionOption, order: Order) => {
     const leadA = (a.user.lastName || a.user.username).toUpperCase();
     const leadB = (b.user.lastName || b.user.username).toUpperCase();
+
+    if (leadA === leadB) {
+      return sortId(a, b, order);
+    }
+
     return order === 'desc' ? leadB.localeCompare(leadA) : leadA.localeCompare(leadB);
   };
 
   const sortByAffiliation = (a: QuestionOption, b: QuestionOption, order: Order) => {
     const affiliationA = a.user.group?.name.toUpperCase();
     const affiliationB = b.user.group?.name.toUpperCase() ?? '';
+
+    if (affiliationA === affiliationB) {
+      return sortId(a, b, order);
+    }
+
     return order === 'desc'
       ? affiliationB.localeCompare(affiliationA)
       : affiliationA.localeCompare(affiliationB);
@@ -224,6 +250,11 @@ function Cycle() {
   ) => {
     const votesA = localUserVotes?.find((vote) => vote.optionId === a.id)?.numOfVotes || 0;
     const votesB = localUserVotes?.find((vote) => vote.optionId === b.id)?.numOfVotes || 0;
+
+    if (votesA === votesB) {
+      return sortId(a, b, order);
+    }
+
     return order === 'desc' ? votesB - votesA : votesA - votesB;
   };
 

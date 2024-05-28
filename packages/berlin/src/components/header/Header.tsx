@@ -136,19 +136,19 @@ function Header() {
                     onClick={() => navigate('/account')}
                     icon={{ src: `/icons/user-${theme}.svg`, alt: 'User' }}
                     $color="primary"
+                    $height={20}
+                    $width={20}
                   />
                 </>
               ) : (
                 <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
               )}
             </DesktopButtons>
-            <li>
-              <MenuButton onClick={() => setIsBurgerMenuOpen(!isBurgerMenuOpen)}>
-                <Bar $isOpen={isBurgerMenuOpen} />
-                <Bar $isOpen={isBurgerMenuOpen} />
-                <Bar $isOpen={isBurgerMenuOpen} />
-              </MenuButton>
-            </li>
+            <MenuButton onClick={() => setIsBurgerMenuOpen(!isBurgerMenuOpen)}>
+              <Bar $isOpen={isBurgerMenuOpen} />
+              <Bar $isOpen={isBurgerMenuOpen} />
+              <Bar $isOpen={isBurgerMenuOpen} />
+            </MenuButton>
             <li>
               <ThemeButton onClick={toggleTheme}>
                 <img
@@ -182,14 +182,15 @@ function Header() {
                             )
                           );
                         })}
+                      <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
+                        My proposals
+                      </NavButton>
                       <NavButton to={`/events/${events?.[0].id}/cycles`} $color="secondary">
                         Agenda
                       </NavButton>
                     </>
                   )}
-                  <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
-                    My proposals
-                  </NavButton>
+
                   <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>

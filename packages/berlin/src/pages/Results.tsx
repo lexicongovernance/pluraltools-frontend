@@ -14,7 +14,7 @@ import { FINAL_QUESTION_TITLE } from '../utils/constants';
 function Results() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
-  const { cycleId } = useParams();
+  const { eventId, cycleId } = useParams();
 
   const { data: cycle } = useQuery({
     queryKey: ['cycles', cycleId],
@@ -70,7 +70,7 @@ function Results() {
 
   return (
     <FlexColumn $gap="2rem">
-      <BackButton />
+      <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
       <Subtitle>Results for: {cycle?.forumQuestions?.[0].questionTitle}</Subtitle>
       <FlexColumn $gap="0">
         <ResultsColumns $showFunding={!!funding} />
