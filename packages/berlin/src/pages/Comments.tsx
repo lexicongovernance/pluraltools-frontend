@@ -1,29 +1,21 @@
 // React and third-party libraries
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import { useEffect, useMemo, useState } from 'react';
-import toast from 'react-hot-toast';
+import { useMemo, useState } from 'react';
 
 // API
-import {
-  fetchOption,
-  postVotes,
-  fetchUserVotes,
-  fetchComments,
-  postComment,
-  fetchOptionUsers,
-} from 'api';
+import { fetchOption, fetchComments, postComment, fetchOptionUsers } from 'api';
 
 // Hooks
-import useUser from '../hooks/useUser';
+// import useUser from '../hooks/useUser';
 
 // Utils
-import {
-  handleSaveVotes,
-  handleAvailableHearts,
-  handleLocalUnVote,
-  handleLocalVote,
-} from '../utils/voting';
+// import {
+//   handleSaveVotes,
+//   handleAvailableHearts,
+//   handleLocalUnVote,
+//   handleLocalVote,
+// } from '../utils/voting';
 
 // Store
 import { useAppStore } from '../store';
@@ -41,17 +33,17 @@ import CommentsTable from '../components/tables/comment-table';
 import CommentsColumns from '../components/columns/comments-columns';
 import IconButton from '../components/icon-button';
 import Textarea from '../components/textarea';
-import { INITIAL_HEARTS } from '../utils/constants';
+// import { INITIAL_HEARTS } from '../utils/constants';
 
-type LocalUserVotes = { optionId: string; numOfVotes: number }[];
+// type LocalUserVotes = { optionId: string; numOfVotes: number }[];
 
 function Comments() {
   const theme = useAppStore((state) => state.theme);
   const queryClient = useQueryClient();
-  const { cycleId, optionId } = useParams();
-  const { user } = useUser();
-  const [localUserVotes, setLocalUserVotes] = useState<LocalUserVotes>([]);
-  const [localOptionHearts, setLocalOptionHearts] = useState(0);
+  const { optionId } = useParams();
+  // const { user } = useUser();
+  // const [localUserVotes, setLocalUserVotes] = useState<LocalUserVotes>([]);
+  // const [localOptionHearts, setLocalOptionHearts] = useState(0);
   const [comment, setComment] = useState('');
   const [sortOrder, setSortOrder] = useState('desc'); // 'asc' for ascending, 'desc' for descending
 
@@ -61,16 +53,16 @@ function Comments() {
     enabled: !!optionId,
   });
 
-  const availableHearts =
-    useAppStore((state) => state.availableHearts[option?.questionId || '']) ?? INITIAL_HEARTS;
-  const setAvailableHearts = useAppStore((state) => state.setAvailableHearts);
+  // const availableHearts =
+  //   useAppStore((state) => state.availableHearts[option?.questionId || '']) ?? INITIAL_HEARTS;
+  // const setAvailableHearts = useAppStore((state) => state.setAvailableHearts);
 
-  const { data: userVotes } = useQuery({
-    queryKey: ['votes', cycleId],
-    queryFn: () => fetchUserVotes(cycleId || ''),
-    enabled: !!user?.id && !!cycleId,
-    retry: false,
-  });
+  // const { data: userVotes } = useQuery({
+  //   queryKey: ['votes', cycleId],
+  //   queryFn: () => fetchUserVotes(cycleId || ''),
+  //   enabled: !!user?.id && !!cycleId,
+  //   retry: false,
+  // });
 
   const { data: optionUsers } = useQuery({
     queryKey: ['option', optionId, 'users'],
@@ -99,19 +91,19 @@ function Comments() {
     });
   }, [comments, sortOrder]);
 
-  useEffect(() => {
-    if (optionId) {
-      const sumOfAllVotes = userVotes?.reduce((acc, option) => acc + option.numOfVotes, 0) || 0;
-      const hearts = userVotes?.find((option) => optionId === option.optionId)?.numOfVotes || 0;
-      setLocalOptionHearts(hearts);
-      setLocalUserVotes([{ optionId: optionId, numOfVotes: hearts }]);
-      // update the available hearts
-      setAvailableHearts({
-        questionId: option?.questionId ?? '',
-        hearts: Math.max(0, INITIAL_HEARTS - sumOfAllVotes),
-      });
-    }
-  }, [optionId, userVotes, setAvailableHearts, option?.questionId]);
+  // useEffect(() => {
+  //   if (optionId) {
+  //     const sumOfAllVotes = userVotes?.reduce((acc, option) => acc + option.numOfVotes, 0) || 0;
+  //     const hearts = userVotes?.find((option) => optionId === option.optionId)?.numOfVotes || 0;
+  //     setLocalOptionHearts(hearts);
+  //     setLocalUserVotes([{ optionId: optionId, numOfVotes: hearts }]);
+  //     // update the available hearts
+  //     setAvailableHearts({
+  //       questionId: option?.questionId ?? '',
+  //       hearts: Math.max(0, INITIAL_HEARTS - sumOfAllVotes),
+  //     });
+  //   }
+  // }, [optionId, userVotes, setAvailableHearts, option?.questionId]);
 
   const { mutate: mutateComments } = useMutation({
     mutationFn: postComment,
@@ -122,51 +114,51 @@ function Comments() {
     },
   });
 
-  const handleVoteWrapper = (optionId: string) => {
-    if (availableHearts === 0) {
-      toast.error('No hearts left to give');
-      return;
-    }
+  // const handleVoteWrapper = (optionId: string) => {
+  //   if (availableHearts === 0) {
+  //     toast.error('No hearts left to give');
+  //     return;
+  //   }
 
-    setLocalOptionHearts((prevLocalOptionHearts) => prevLocalOptionHearts + 1);
-    setLocalUserVotes((prevLocalUserVotes) => handleLocalVote(optionId, prevLocalUserVotes));
-    setAvailableHearts({
-      questionId: option?.questionId ?? '',
-      hearts: handleAvailableHearts(availableHearts, 'vote'),
-    });
-  };
+  //   setLocalOptionHearts((prevLocalOptionHearts) => prevLocalOptionHearts + 1);
+  //   setLocalUserVotes((prevLocalUserVotes) => handleLocalVote(optionId, prevLocalUserVotes));
+  //   setAvailableHearts({
+  //     questionId: option?.questionId ?? '',
+  //     hearts: handleAvailableHearts(availableHearts, 'vote'),
+  //   });
+  // };
 
-  const handleUnVoteWrapper = (optionId: string) => {
-    if (availableHearts === INITIAL_HEARTS) {
-      toast.error('No votes to left to remove');
-      return;
-    }
+  // const handleUnVoteWrapper = (optionId: string) => {
+  //   if (availableHearts === INITIAL_HEARTS) {
+  //     toast.error('No votes to left to remove');
+  //     return;
+  //   }
 
-    setLocalOptionHearts((prevLocalOptionHearts) => Math.max(0, prevLocalOptionHearts - 1));
-    setLocalUserVotes((prevLocalUserVotes) => handleLocalUnVote(optionId, prevLocalUserVotes));
-    setAvailableHearts({
-      questionId: option?.questionId ?? '',
-      hearts: handleAvailableHearts(availableHearts, 'unVote'),
-    });
-  };
+  //   setLocalOptionHearts((prevLocalOptionHearts) => Math.max(0, prevLocalOptionHearts - 1));
+  //   setLocalUserVotes((prevLocalUserVotes) => handleLocalUnVote(optionId, prevLocalUserVotes));
+  //   setAvailableHearts({
+  //     questionId: option?.questionId ?? '',
+  //     hearts: handleAvailableHearts(availableHearts, 'unVote'),
+  //   });
+  // };
 
-  const { mutate: mutateVotes } = useMutation({
-    mutationFn: postVotes,
-    onSuccess: (body) => {
-      if (body?.errors?.length) {
-        toast.error(`Failed to save votes, ${body?.errors[0].message}`);
-      } else if (body?.data.length) {
-        queryClient.invalidateQueries({ queryKey: ['votes', cycleId] });
-        // this is to update the plural scores in each option
-        queryClient.invalidateQueries({ queryKey: ['cycles', cycleId] });
-        toast.success('Votes saved successfully!');
-      }
-    },
-  });
+  // const { mutate: mutateVotes } = useMutation({
+  //   mutationFn: postVotes,
+  //   onSuccess: (body) => {
+  //     if (body?.errors?.length) {
+  //       toast.error(`Failed to save votes, ${body?.errors[0].message}`);
+  //     } else if (body?.data.length) {
+  //       queryClient.invalidateQueries({ queryKey: ['votes', cycleId] });
+  //       // this is to update the plural scores in each option
+  //       queryClient.invalidateQueries({ queryKey: ['cycles', cycleId] });
+  //       toast.success('Votes saved successfully!');
+  //     }
+  //   },
+  // });
 
-  const handleSaveVoteWrapper = () => {
-    handleSaveVotes(userVotes, localUserVotes, mutateVotes);
-  };
+  // const handleSaveVoteWrapper = () => {
+  //   handleSaveVotes(userVotes, localUserVotes, mutateVotes);
+  // };
 
   const handlePostComment = () => {
     if (optionId && comment) {
@@ -183,7 +175,7 @@ function Comments() {
     <FlexColumn $gap="2rem">
       <BackButton />
       <FlexColumn>
-        <FlexRow style={{ maxWidth: '4rem' }}>
+        {/* <FlexRow style={{ maxWidth: '4rem' }}>
           <FlexColumn $gap="-4px" style={{ maxWidth: '1rem' }}>
             <IconButton
               $padding={0}
@@ -205,7 +197,7 @@ function Comments() {
             />
           </FlexColumn>
           <Subtitle>{localOptionHearts}</Subtitle>
-        </FlexRow>
+        </FlexRow> */}
         <Subtitle>{option?.optionTitle}</Subtitle>
         <Body>{option?.optionSubTitle}</Body>
         <Body>
@@ -218,7 +210,7 @@ function Comments() {
           )}
         </Body>
       </FlexColumn>
-      <Button onClick={handleSaveVoteWrapper}>Save votes</Button>
+      {/* <Button onClick={handleSaveVoteWrapper}>Save votes</Button> */}
       <Form>
         <Textarea
           label="Leave a comment:"
