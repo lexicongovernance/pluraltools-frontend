@@ -251,8 +251,6 @@ const router = (queryClient: QueryClient) =>
                       loader: ({ params }) =>
                         redirectToCycleIfOpen(queryClient, params.eventId, params.cycleId),
                       path: ':cycleId/results',
-                      loader: ({ params }) =>
-                        redirectToCycleIfOpen(queryClient, params.eventId, params.cycleId),
                       Component: Results,
                     },
                     {

@@ -144,7 +144,11 @@ function SecretGroupRegistration() {
               open={isDialogOpen}
               onOpenChange={setIsDialogOpen}
               trigger={
-                <Button style={{ marginTop: 'auto' }} onClick={() => setIsDialogOpen(true)}>
+                <Button
+                  disabled
+                  style={{ marginTop: 'auto' }}
+                  onClick={() => setIsDialogOpen(true)}
+                >
                   {groups.create.buttonText}
                 </Button>
               }
@@ -174,7 +178,9 @@ function SecretGroupRegistration() {
               errors={errors?.secret?.message ? [errors.secret.message] : []}
               required
             />
-            <Button type="submit">{groups.join.buttonText}</Button>
+            <Button disabled type="submit">
+              {groups.join.buttonText}
+            </Button>
           </Form>
         </FlexColumn>
       </FlexRowToColumn>

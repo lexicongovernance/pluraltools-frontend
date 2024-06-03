@@ -520,7 +520,7 @@ function AccountForm({
               icon={{ src: `/icons/add-${theme}.svg`, alt: 'Add icon' }}
             />
           </FlexColumn>
-          <Button type="submit" disabled={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting || true}>
             Submit
           </Button>
         </FlexColumn>

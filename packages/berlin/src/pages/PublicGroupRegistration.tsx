@@ -143,7 +143,9 @@ function PublicGroupRegistration() {
             />
           )}
         />
-        <Button type="submit">Join group</Button>
+        <Button disabled type="submit">
+          Join group
+        </Button>
       </Form>
     </FlexColumn>
   );

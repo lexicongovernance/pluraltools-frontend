@@ -583,7 +583,7 @@ function RegisterForm(props: {
           />
         ))}
       </Form>
-      <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting || isPending}>
+      <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting || isPending || true}>
         Save
       </Button>
     </FlexColumn>
