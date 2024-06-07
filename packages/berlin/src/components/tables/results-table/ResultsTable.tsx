@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 // API
-import { fetchOptionUsers } from 'api';
+import { fetchOptionUsers, fetchRegistrationData, fetchRegistrationFields } from 'api';
 
 // Store
 import { useAppStore } from '../../../store';
@@ -56,6 +56,21 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
     queryFn: () => fetchOptionUsers(option.id || ''),
     enabled: !!option.id,
   });
+
+  const { data: registrationFields } = useQuery({
+    queryKey: ['event', eventId, 'registrations', 'fields'],
+    queryFn: () => fetchRegistrationFields(eventId || ''),
+    enabled: !!eventId,
+  });
+
+  const { data: registrationData } = useQuery({
+    queryKey: ['registrations', optionUsers?.registrationId, 'registration-data'],
+    queryFn: () => fetchRegistrationData(optionUsers?.registrationId || ''),
+    enabled: !!optionUsers?.registrationId,
+  });
+
+  console.log('🚀 ~ ResultsTable ~ registrationFields:', registrationFields);
+  console.log('🚀 ~ ResultsTable ~ registrationData:', registrationData);
 
   const collaborators = optionUsers?.group?.users
     ?.filter(
