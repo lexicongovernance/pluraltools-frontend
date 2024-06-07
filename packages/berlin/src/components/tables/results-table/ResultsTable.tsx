@@ -108,12 +108,12 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
       <Body>{option.allocatedHearts}</Body>
       <Body>{formattedQuadraticScore}</Body>
       <Body>{formattedPluralityScore}</Body>
-      <Body>
-        <Bold>Research Output:</Bold> {researchOutputValue}
-      </Body>
       {option.allocatedFunding !== null && <Body>{option.allocatedFunding} ARB</Body>}
       <FlexColumn className="description">
         <Body>{option.optionSubTitle}</Body>
+        <Body>
+          <Bold>Research Output:</Bold> {researchOutputValue}
+        </Body>
         <Body>
           <Bold>Lead Author:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
         </Body>
