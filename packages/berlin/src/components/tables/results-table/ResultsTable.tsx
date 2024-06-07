@@ -69,8 +69,13 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
     enabled: !!optionUsers?.registrationId,
   });
 
-  console.log('🚀 ~ ResultsTable ~ registrationFields:', registrationFields);
-  console.log('🚀 ~ ResultsTable ~ registrationData:', registrationData);
+  const researchOutputField = registrationFields?.find(
+    (field) => field.name === 'Select research output:',
+  );
+
+  const researchOutputValue = registrationData?.find(
+    (data) => data.registrationFieldId === researchOutputField?.id,
+  )?.value;
 
   const collaborators = optionUsers?.group?.users
     ?.filter(
@@ -103,6 +108,9 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
       <Body>{option.allocatedHearts}</Body>
       <Body>{formattedQuadraticScore}</Body>
       <Body>{formattedPluralityScore}</Body>
+      <Body>
+        <Bold>Research Output:</Bold> {researchOutputValue}
+      </Body>
       {option.allocatedFunding !== null && <Body>{option.allocatedFunding} ARB</Body>}
       <FlexColumn className="description">
         <Body>{option.optionSubTitle}</Body>
