@@ -57,8 +57,13 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
     enabled: !!option.id,
   });
 
-  const coauthors = optionUsers?.group?.users?.map((user) => `${user.firstName} ${user.lastName}`);
-  console.log('🚀 ~ ResultsTable ~ coauthors:', coauthors);
+  const collaborators = optionUsers?.group?.users
+    ?.filter(
+      (user) =>
+        user.firstName !== optionUsers?.user?.firstName ||
+        user.lastName !== optionUsers?.user?.lastName,
+    )
+    .map((user) => `${user.firstName} ${user.lastName}`);
 
   const handleCommentsClick = () => {
     navigate(`/events/${eventId}/cycles/${cycleId}/options/${option.id}`);
@@ -90,7 +95,8 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
           <Bold>Lead Author:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
         </Body>
         <Body>
-          <Bold>Collaborators</Bold> {coauthors}
+          <Bold>Collaborators:</Bold>{' '}
+          {collaborators && collaborators.length > 0 ? collaborators.join(', ') : 'None'}
         </Body>
         <Body>
           <Bold>Distinct voters:</Bold> {option.distinctUsers}
