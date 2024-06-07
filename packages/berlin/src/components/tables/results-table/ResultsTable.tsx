@@ -57,6 +57,9 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
     enabled: !!option.id,
   });
 
+  const coauthors = optionUsers?.group?.users?.map((user) => `${user.firstName} ${user.lastName}`);
+  console.log('🚀 ~ ResultsTable ~ coauthors:', coauthors);
+
   const handleCommentsClick = () => {
     navigate(`/events/${eventId}/cycles/${cycleId}/options/${option.id}`);
   };
@@ -85,6 +88,9 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
         <Body>{option.optionSubTitle}</Body>
         <Body>
           <Bold>Lead Author:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
+        </Body>
+        <Body>
+          <Bold>Collaborators</Bold> {coauthors}
         </Body>
         <Body>
           <Bold>Distinct voters:</Bold> {option.distinctUsers}
