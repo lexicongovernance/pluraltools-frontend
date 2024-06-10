@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 // API
-import { fetchOptionUsers } from 'api';
+import { fetchOptionUsers, fetchRegistrationData, fetchRegistrationFields } from 'api';
 
 // Store
 import { useAppStore } from '../../../store';
@@ -57,6 +57,34 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
     enabled: !!option.id,
   });
 
+  const { data: registrationFields } = useQuery({
+    queryKey: ['event', eventId, 'registrations', 'fields'],
+    queryFn: () => fetchRegistrationFields(eventId || ''),
+    enabled: !!eventId,
+  });
+
+  const { data: registrationData } = useQuery({
+    queryKey: ['registrations', optionUsers?.registrationId, 'registration-data'],
+    queryFn: () => fetchRegistrationData(optionUsers?.registrationId || ''),
+    enabled: !!optionUsers?.registrationId,
+  });
+
+  const researchOutputField = registrationFields?.find(
+    (field) => field.name === 'Select research output:',
+  );
+
+  const researchOutputValue = registrationData?.find(
+    (data) => data.registrationFieldId === researchOutputField?.id,
+  )?.value;
+
+  const collaborators = optionUsers?.group?.users
+    ?.filter(
+      (user) =>
+        user.firstName !== optionUsers?.user?.firstName ||
+        user.lastName !== optionUsers?.user?.lastName,
+    )
+    .map((user) => `${user.firstName} ${user.lastName}`);
+
   const handleCommentsClick = () => {
     navigate(`/events/${eventId}/cycles/${cycleId}/options/${option.id}`);
   };
@@ -84,7 +112,14 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
       <FlexColumn className="description">
         <Body>{option.optionSubTitle}</Body>
         <Body>
+          <Bold>Research Output:</Bold> {researchOutputValue}
+        </Body>
+        <Body>
           <Bold>Lead Author:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
+        </Body>
+        <Body>
+          <Bold>Collaborators:</Bold>{' '}
+          {collaborators && collaborators.length > 0 ? collaborators.join(', ') : 'None'}
         </Body>
         <Body>
           <Bold>Distinct voters:</Bold> {option.distinctUsers}
