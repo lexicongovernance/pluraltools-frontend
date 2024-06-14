@@ -3,12 +3,12 @@ import { FlexColumn } from '../containers/FlexColumn.styled';
 
 export const TableContainer = styled.table`
   display: none;
-  width: 100%;
   @media (min-width: 600px) {
-    display: block;
     border-collapse: collapse;
+    display: table;
     margin-bottom: 2rem;
     table-layout: fixed;
+    width: 100%;
   }
 `;
 
