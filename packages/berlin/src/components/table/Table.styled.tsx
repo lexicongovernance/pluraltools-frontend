@@ -1,10 +1,15 @@
 import styled from 'styled-components';
+import { FlexColumn } from '../containers/FlexColumn.styled';
 
 export const TableContainer = styled.table`
+  display: none;
   width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 2rem;
-  table-layout: fixed;
+  @media (min-width: 600px) {
+    display: block;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+    table-layout: fixed;
+  }
 `;
 
 export const TableHeader = styled.th`
@@ -23,4 +28,25 @@ export const TableCell = styled.td`
 
 export const TableRow = styled.tr`
   border-bottom: 1px solid var(--color-black);
+`;
+
+export const Cards = styled(FlexColumn)`
+  width: 100%;
+  @media (min-width: 600px) {
+    display: none;
+  }
+`;
+
+export const Card = styled.article`
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-black);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 2rem;
+  width: 100%;
+
+  @media (min-width: 600px) {
+    display: none;
+  }
 `;
