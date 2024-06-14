@@ -1,6 +1,6 @@
 import IconButton from '../../icon-button';
 import { Body } from '../../typography/Body.styled';
-import { Affiliation, Lead, Card, Hearts, Proposal } from './CycleColumns.styled';
+import { Affiliation, Lead, Card, Hearts, Proposal, Plurality } from './CycleColumns.styled';
 
 type CycleColumnsProps = {
   onColumnClick: (column: string) => void;
@@ -25,13 +25,13 @@ function CycleColumns({ onColumnClick }: CycleColumnsProps) {
           icon={{ src: `/icons/heart-full.svg`, alt: 'Full heart' }}
         />
       </Hearts>
-      {/* <Plurality onClick={() => onColumnClick('voteScore')}>
+      <Plurality onClick={() => onColumnClick('voteScore')}>
         <IconButton
           $padding={0}
           $color="secondary"
           icon={{ src: `/icons/plurality-score.svg`, alt: 'Plurality score' }}
         />
-      </Plurality> */}
+      </Plurality>
     </Card>
   );
 }

@@ -1,8 +1,16 @@
-import { Affiliation, Author, Card, Proposal, Votes } from './OptionCard.styled';
+import {
+  Affiliation,
+  Author,
+  Card,
+  Container,
+  Plurality,
+  PluralityIcon,
+  Proposal,
+  Votes,
+} from './OptionCard.styled';
 import { Body } from '../typography/Body.styled';
 import { Bold } from '../typography/Bold.styled';
 import { FlexColumn } from '../containers/FlexColumn.styled';
-import { FlexRow } from '../containers/FlexRow.styled';
 import { fetchOptionUsers, GetCycleResponse } from 'api';
 import { useAppStore } from '../../store';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -33,10 +41,10 @@ function OptionCard({
     enabled: !!option.id,
   });
 
-  // const formattedPluralityScore = useMemo(() => {
-  //   const score = parseFloat(String(option.voteScore));
-  //   return score % 1 === 0 ? score.toFixed(0) : score.toFixed(1);
-  // }, [option.voteScore]);
+  const formattedPluralityScore = useMemo(() => {
+    const score = parseFloat(String(option.voteScore));
+    return score % 1 === 0 ? score.toFixed(0) : score.toFixed(1);
+  }, [option.voteScore]);
 
   const [expanded, setExpanded] = useState(false);
 
@@ -55,7 +63,7 @@ function OptionCard({
   return (
     <Card $expanded={expanded}>
       <FlexColumn>
-        <FlexRow $gap="0">
+        <Container>
           <Proposal>
             <IconButton
               $padding={4}
@@ -94,7 +102,17 @@ function OptionCard({
             </FlexColumn>
             <Body>{numOfVotes}</Body>
           </Votes>
-        </FlexRow>
+          <Plurality>
+            <PluralityIcon>
+              <IconButton
+                $padding={0}
+                $color="secondary"
+                icon={{ src: `/icons/plurality-score.svg`, alt: 'Plurality score' }}
+              />
+            </PluralityIcon>
+            {formattedPluralityScore}
+          </Plurality>
+        </Container>
         <FlexColumn className="description" $gap="1.5rem">
           {coauthors && coauthors.length > 0 && (
             <Body>
