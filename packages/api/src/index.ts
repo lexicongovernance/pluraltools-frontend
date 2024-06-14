@@ -36,4 +36,5 @@ export { default as postVotes } from './postVotes';
 export { default as putRegistration } from './putRegistration';
 export { default as putUser } from './putUser';
 export { default as putUsersToGroups } from './putUsersToGroups';
+export { default as fetchEventGroupCategories } from './fetchEventGroupCategories';
 export * from './types';
