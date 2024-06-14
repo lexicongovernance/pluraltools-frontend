@@ -53,7 +53,7 @@ export const Hearts = styled(FlexRow)`
   padding: 1.5rem;
 `;
 
-// export const Plurality = styled(FlexRow)`
-//   max-width: 5.5rem;
-//   padding: 1.5rem;
-// `;
+export const Plurality = styled(FlexRow)`
+  max-width: 5.5rem;
+  padding: 1.5rem;
+`;
