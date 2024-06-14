@@ -2,9 +2,13 @@ import styled from 'styled-components';
 import { FlexRow } from '../../containers/FlexRow.styled';
 
 export const Card = styled(FlexRow)`
-  border-bottom: 2px solid var(--color-black);
-  gap: 0;
-  width: 100%;
+  display: none;
+  @media (min-width: 600px) {
+    display: flex;
+    border-bottom: 2px solid var(--color-black);
+    gap: 0;
+    width: 100%;
+  }
 `;
 
 export const Proposal = styled(FlexRow)`

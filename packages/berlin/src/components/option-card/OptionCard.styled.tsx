@@ -8,7 +8,7 @@ export const Card = styled.div<{ $expanded: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-block: 1rem;
+  margin-block: 0.5rem;
   padding: 2rem;
   width: 100%;
 
