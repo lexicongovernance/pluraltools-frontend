@@ -3,6 +3,7 @@ export type GetCycleResponse = {
   createdAt: string;
   updatedAt: string;
   status: 'OPEN' | 'CLOSED' | 'UPCOMING' | null;
+  showScore: boolean;
   startAt: string;
   endAt: string;
   forumQuestions: {
@@ -22,10 +23,20 @@ export type GetCycleResponse = {
       accepted: boolean;
       fundingRequest: string;
       user: {
-        group: {
+        groups: {
           id: string;
           name: string;
-        };
+          groupCategory: {
+            id: string;
+            name: string | null;
+            createdAt: Date;
+            updatedAt: Date;
+            eventId: string | null;
+            userCanCreate: boolean;
+            userCanView: boolean;
+            required: boolean;
+          };
+        }[];
         username: string;
         firstName: string;
         lastName: string;
