@@ -1,12 +1,16 @@
 import {
   Affiliation,
+  ArrowDownIcon,
+  ArrowIcon,
   Author,
   Card,
   Container,
+  Field,
   Plurality,
   PluralityIcon,
   Proposal,
   Votes,
+  VotesIcon,
 } from './OptionCard.styled';
 import { Body } from '../typography/Body.styled';
 import { Bold } from '../typography/Bold.styled';
@@ -65,23 +69,27 @@ function OptionCard({
       <FlexColumn>
         <Container>
           <Proposal>
-            <IconButton
-              $padding={4}
-              $color="secondary"
-              onClick={() => setExpanded((e) => !e)}
-              icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: '' }}
-              $flipVertical={expanded}
-            />
+            <ArrowDownIcon>
+              <IconButton
+                $padding={4}
+                $color="secondary"
+                onClick={() => setExpanded((e) => !e)}
+                icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: 'Arrow down' }}
+                $flipVertical={expanded}
+              />
+            </ArrowDownIcon>
             <Body>{option.optionTitle}</Body>
           </Proposal>
           <Author>
+            <Field>Lead:</Field>
             <Body>{author}</Body>
           </Author>
           <Affiliation>
+            <Field>Affiliation:</Field>
             <Body>{option.user?.groups.find((group) => group.groupCategory.required)?.name}</Body>
           </Affiliation>
           <Votes>
-            <FlexColumn $gap="-4px">
+            <VotesIcon $gap="-4px">
               <IconButton
                 $padding={0}
                 $color="secondary"
@@ -99,7 +107,7 @@ function OptionCard({
                 $height={16}
                 disabled={numOfVotes === 0}
               />
-            </FlexColumn>
+            </VotesIcon>
             <Body>{numOfVotes}</Body>
           </Votes>
           <Plurality>
@@ -111,6 +119,15 @@ function OptionCard({
               />
             </PluralityIcon>
             {formattedPluralityScore}
+            <ArrowIcon>
+              <IconButton
+                $padding={4}
+                $color="secondary"
+                onClick={() => setExpanded((e) => !e)}
+                icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: 'Arrow down' }}
+                $flipVertical={expanded}
+              />
+            </ArrowIcon>
           </Plurality>
         </Container>
         <FlexColumn className="description" $gap="1.5rem">
