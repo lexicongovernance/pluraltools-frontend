@@ -21,7 +21,7 @@ function PublicGroupRegistration() {
   const { user } = useUser();
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
-  const groupCategoryNameParam = searchParams.get('groupCategory');
+  const groupCategoryIdParam = searchParams.get('groupCategoryId');
 
   const {
     control,
@@ -35,9 +35,9 @@ function PublicGroupRegistration() {
   });
 
   const { data: groups } = useQuery({
-    queryKey: ['group-categories', groupCategoryNameParam, 'groups'],
-    queryFn: () => fetchGroups({ groupCategoryName: groupCategoryNameParam || '' }),
-    enabled: !!user?.id && !!groupCategoryNameParam,
+    queryKey: ['group-categories', groupCategoryIdParam, 'groups'],
+    queryFn: () => fetchGroups({ groupCategoryId: groupCategoryIdParam || '' }),
+    enabled: !!user?.id && !!groupCategoryIdParam,
   });
 
   const { data: usersToGroups } = useQuery({
@@ -63,9 +63,9 @@ function PublicGroupRegistration() {
   const prevUserToGroup = useMemo(
     () =>
       usersToGroups?.find(
-        (userToGroup) => userToGroup.group.groupCategory?.name === groupCategoryNameParam,
+        (userToGroup) => userToGroup.group.groupCategory?.id === groupCategoryIdParam,
       ),
-    [usersToGroups, groupCategoryNameParam],
+    [usersToGroups, groupCategoryIdParam],
   );
 
   const { mutate: postUsersToGroupsMutation } = useMutation({

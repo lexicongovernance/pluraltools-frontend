@@ -1,18 +1,18 @@
 // React and third-party libraries
-import { useForm } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 // API Calls
-import { type GetUserResponse, fetchEvents, putUser, GetEventsResponse } from 'api';
+import { GetEventsResponse, fetchEvents, putUser, type GetUserResponse } from 'api';
 
 // Components
-import { FlexColumn } from '../components/containers/FlexColumn.styled';
-import { Title } from '../components/typography/Title.styled';
-import { Subtitle } from '../components/typography/Subtitle.styled';
 import Button from '../components/button';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import Input from '../components/input';
+import { Subtitle } from '../components/typography/Subtitle.styled';
+import { Title } from '../components/typography/Title.styled';
 
 // Hooks
 import useUser from '../hooks/useUser';

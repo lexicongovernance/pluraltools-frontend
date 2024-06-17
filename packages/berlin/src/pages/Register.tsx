@@ -1,24 +1,29 @@
 // React and third-party libraries
-import { Control, Controller, FieldErrors, UseFormRegister, useForm } from 'react-hook-form';
-import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect, useMemo, useState } from 'react';
+import ContentLoader from 'react-content-loader';
+import { Control, Controller, FieldErrors, UseFormRegister, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
-import ContentLoader from 'react-content-loader';
-import toast from 'react-hot-toast';
 
 // API
 import {
+  GetEventResponse,
+  GetGroupCategoriesResponse,
+  GetRegistrationsResponseType,
+  GetUsersToGroupsResponse,
   fetchEvent,
+  fetchEventGroupCategories,
+  fetchGroups,
   fetchRegistrationData,
   fetchRegistrationFields,
   fetchRegistrations,
   fetchUsersToGroups,
-  GetEventResponse,
-  GetRegistrationsResponseType,
-  GetUsersToGroupsResponse,
   postRegistration,
+  postUsersToGroups,
   putRegistration,
+  putUsersToGroups,
   type GetRegistrationDataResponse,
   type GetRegistrationFieldsResponse,
   type GetRegistrationResponseType,
@@ -30,17 +35,17 @@ import {
 import useUser from '../hooks/useUser';
 
 // Components
-import { Error } from '../components/typography/Error.styled';
+import Button from '../components/button';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { Form } from '../components/containers/Form.styled';
-import { SafeArea } from '../layout/Layout.styled';
-import { Subtitle } from '../components/typography/Subtitle.styled';
-import Button from '../components/button';
-import CharacterCounter from '../components/typography/CharacterCount.styled';
 import Input from '../components/input';
-import Label from '../components/typography/Label';
 import Select from '../components/select';
 import Textarea from '../components/textarea';
+import CharacterCounter from '../components/typography/CharacterCount.styled';
+import { Error } from '../components/typography/Error.styled';
+import Label from '../components/typography/Label';
+import { Subtitle } from '../components/typography/Subtitle.styled';
+import { SafeArea } from '../layout/Layout.styled';
 
 const sortRegistrationsByCreationDate = (registrations: GetRegistrationResponseType[]) => {
   return [
@@ -107,9 +112,15 @@ function Register() {
   });
 
   const { data: usersToGroups } = useQuery({
-    queryKey: ['user', 'groups', user?.id],
+    queryKey: ['user', user?.id, 'users-to-groups'],
     queryFn: () => fetchUsersToGroups(user?.id || ''),
     enabled: !!user?.id,
+  });
+
+  const { data: groupCategories } = useQuery({
+    queryKey: ['event', eventId, 'group-categories'],
+    queryFn: () => fetchEventGroupCategories(eventId || ''),
+    enabled: !!eventId,
   });
 
   const multipleRegistrationData = useQueries({
@@ -166,6 +177,16 @@ function Register() {
   return (
     <SafeArea>
       <FlexColumn $gap="1.5rem">
+        {groupCategories
+          ?.filter((groupCategory) => groupCategory.required)
+          .map((groupCategory) => (
+            <SelectEventGroup
+              key={groupCategory.id}
+              groupCategory={groupCategory}
+              userToGroups={usersToGroups}
+              user={user}
+            />
+          ))}
         <SelectRegistrationDropdown
           onSelectedRegistrationFormKeyChange={setSelectedRegistrationFormKey}
           registrations={registrations}
@@ -204,6 +225,97 @@ function Register() {
     </SafeArea>
   );
 }
+
+const SelectEventGroup = ({
+  groupCategory,
+  userToGroups,
+  user,
+}: {
+  userToGroups: GetUsersToGroupsResponse | null | undefined;
+  groupCategory: GetGroupCategoriesResponse[number] | null | undefined;
+  user: GetUserResponse | null | undefined;
+}) => {
+  // fetch all the groups in the category
+  // show a select with all the groups
+  // if the user is in a group in that category, show that group as selected
+  const [newGroup, setNewGroup] = useState<string | undefined>('');
+  const queryClient = useQueryClient();
+  const { data: groups } = useQuery({
+    queryKey: ['group-category', groupCategory?.id, 'groups'],
+    queryFn: () => fetchGroups({ groupCategoryId: groupCategory?.id ?? '' }),
+    enabled: !!groupCategory?.id,
+  });
+
+  const { mutate: postUsersToGroupsMutation } = useMutation({
+    mutationFn: postUsersToGroups,
+    onSuccess: (body) => {
+      if (!body) {
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
+      toast.success(`Joined group successfully!`);
+    },
+    onError: () => {
+      toast.error('Something went wrong.');
+    },
+  });
+
+  const { mutate: putUsersToGroupsMutation } = useMutation({
+    mutationFn: putUsersToGroups,
+    onSuccess: (body) => {
+      if (!body) {
+        return;
+      }
+
+      if ('errors' in body) {
+        toast.error(body.errors.join(', '));
+        return;
+      }
+
+      queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
+      toast.success(`Updated group successfully!`);
+    },
+    onError: () => {
+      toast.error('Something went wrong.');
+    },
+  });
+
+  const userGroup = userToGroups?.find(
+    (userToGroup) => userToGroup.group.groupCategory?.id === groupCategory?.id,
+  );
+
+  const onSubmit = () => {
+    if (userGroup && newGroup) {
+      // update the group
+      putUsersToGroupsMutation({
+        groupId: newGroup,
+        userToGroupId: userGroup.id,
+      });
+      return;
+    }
+
+    // create a new group
+    postUsersToGroupsMutation({ groupId: newGroup });
+  };
+
+  return (
+    <FlexColumn>
+      <Label>Select {groupCategory?.name} group</Label>
+      <Select
+        value={newGroup || userGroup?.group.id || undefined}
+        options={groups?.map((group) => ({ id: group.id, name: group.name })) || []}
+        placeholder="Select a Group"
+        onChange={setNewGroup}
+      />
+      <Button
+        disabled={!newGroup || (userGroup && userGroup.group.id === newGroup)}
+        onClick={onSubmit}
+      >
+        Save
+      </Button>
+    </FlexColumn>
+  );
+};
 
 const SelectRegistrationDropdown = ({
   usersToGroups,
