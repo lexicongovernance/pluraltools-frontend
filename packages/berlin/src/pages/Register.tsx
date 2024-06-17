@@ -1,46 +1,41 @@
 // React and third-party libraries
-import { Control, Controller, FieldErrors, UseFormRegister, useForm } from 'react-hook-form';
-import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate, useParams } from 'react-router-dom';
-import { z } from 'zod';
+import { useEffect, useMemo, useState } from 'react';
 import ContentLoader from 'react-content-loader';
+import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // API
 import {
+  GetEventResponse,
+  GetRegistrationsResponseType,
+  GetUsersToGroupsResponse,
   fetchEvent,
   fetchRegistrationData,
   fetchRegistrationFields,
   fetchRegistrations,
   fetchUsersToGroups,
-  GetEventResponse,
-  GetRegistrationsResponseType,
-  GetUsersToGroupsResponse,
   postRegistration,
   putRegistration,
   type GetRegistrationDataResponse,
   type GetRegistrationFieldsResponse,
   type GetRegistrationResponseType,
   type GetUserResponse,
-  type RegistrationFieldOption,
 } from 'api';
 
 // Hooks
 import useUser from '../hooks/useUser';
 
 // Components
-import { Error } from '../components/typography/Error.styled';
+import Button from '../components/button';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { Form } from '../components/containers/Form.styled';
-import { SafeArea } from '../layout/Layout.styled';
-import { Subtitle } from '../components/typography/Subtitle.styled';
-import Button from '../components/button';
-import CharacterCounter from '../components/typography/CharacterCount.styled';
-import Input from '../components/input';
-import Label from '../components/typography/Label';
 import Select from '../components/select';
-import Textarea from '../components/textarea';
+import Label from '../components/typography/Label';
+import { Subtitle } from '../components/typography/Subtitle.styled';
+import { SafeArea } from '../layout/Layout.styled';
+import { FormInput } from '../components/form';
 
 const sortRegistrationsByCreationDate = (registrations: GetRegistrationResponseType[]) => {
   return [
@@ -393,20 +388,19 @@ function RegisterForm(props: {
   // so i can show the correct registration fields
   // i will use the selectedGroupId to do this
 
-  const {
-    register,
-    formState: { errors, isSubmitting },
-    control,
-    handleSubmit,
-    getValues,
-    reset,
-  } = useForm({
+  const form = useForm({
     defaultValues: useMemo(
       () => getDefaultValues(props.registrationData),
       [props.registrationData],
     ),
     mode: 'all',
   });
+
+  const {
+    formState: { isSubmitting },
+    handleSubmit,
+    reset,
+  } = form;
 
   useEffect(() => {
     reset(getDefaultValues(props.registrationData));
@@ -567,19 +561,17 @@ function RegisterForm(props: {
       <Subtitle>{props.event?.registrationDescription}</Subtitle>
       <Form>
         {sortedRegistrationFields?.map((regField) => (
-          <FormField
-            key={`${props.registrationId}-${regField.id}`}
-            disabled={false}
-            errors={errors}
+          <FormInput
+            key={regField.id}
+            form={form}
+            name={regField.id}
+            label={regField.name}
             required={regField.required}
-            id={regField.id}
-            name={regField.name}
-            characterLimit={regField.characterLimit}
-            options={regField.registrationFieldOptions}
-            type={regField.type}
-            register={register}
-            control={control}
-            value={getValues()[regField.id] ?? ''} // Current input value
+            type={regField.type.toLocaleUpperCase()}
+            options={regField.registrationFieldOptions?.map((option) => ({
+              name: option.value,
+              value: option.id,
+            }))}
           />
         ))}
       </Form>
@@ -631,302 +623,6 @@ function RegisterGroupSelect({
         />
       </>
     )
-  );
-}
-
-function FormField({
-  id,
-  name,
-  required,
-  type,
-  errors,
-  options,
-  disabled,
-  register,
-  characterLimit,
-  control,
-  value,
-}: {
-  id: string;
-  name: string;
-  required: boolean | null;
-  type: 'TEXT' | 'SELECT' | 'NUMBER' | 'DATE' | 'BOOLEAN' | 'TEXTAREA';
-  options: RegistrationFieldOption[];
-  disabled: boolean;
-  register: UseFormRegister<Record<string, string>>;
-  errors: FieldErrors<Record<string, string>>;
-  characterLimit: number;
-  control: Control<Record<string, string>>;
-  value: string;
-}) {
-  switch (type) {
-    case 'TEXT':
-      return (
-        <TextInput
-          id={id}
-          name={name}
-          register={register}
-          required={required}
-          disabled={disabled}
-          errors={errors}
-          characterLimit={characterLimit}
-          value={value}
-        />
-      );
-    case 'SELECT':
-      return (
-        <SelectInput
-          id={id}
-          name={name}
-          options={options}
-          required={required}
-          disabled={disabled}
-          errors={errors}
-          control={control}
-        />
-      );
-    case 'TEXTAREA':
-      return (
-        <TextAreaInput
-          id={id}
-          name={name}
-          register={register}
-          required={required}
-          disabled={disabled}
-          errors={errors}
-          characterLimit={characterLimit}
-          value={value}
-        />
-      );
-    case 'NUMBER':
-      return (
-        <NumberInput
-          id={id}
-          name={name}
-          register={register}
-          required={required}
-          disabled={disabled}
-          errors={errors}
-          value={value}
-        />
-      );
-    default:
-      return null;
-  }
-}
-
-function TextInput(props: {
-  id: string;
-  name: string;
-  required: boolean | null;
-  characterLimit: number;
-  disabled: boolean;
-  register: UseFormRegister<Record<string, string>>;
-  errors: FieldErrors<Record<string, string>>;
-  value: string;
-}) {
-  const [charCount, setCharCount] = useState(0);
-
-  useEffect(() => {
-    setCharCount(props.value.length);
-  }, [props.value.length]);
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = event.target.value;
-    setCharCount(inputValue.length);
-    props.register(props.id, {
-      value: inputValue,
-    });
-  };
-
-  return (
-    <FlexColumn $gap="0.5rem">
-      <Input
-        type="text"
-        label={props.name}
-        required={!!props.required}
-        placeholder="Enter a value"
-        {...props.register(props.id, {
-          setValueAs: (value) => value.trim(),
-          validate: (value) => {
-            if (!props.required && value.trim() === '') {
-              return true;
-            }
-
-            // validate character limit (0 character limit is no character limit)
-            if (props.characterLimit > 0 && value.length > props.characterLimit) {
-              return `Character count of ${charCount} exceeds character limit of ${props.characterLimit}`;
-            }
-
-            const v = z.string().min(1, 'Value is required').safeParse(value);
-
-            if (v.success) {
-              return true;
-            }
-
-            return v.error.errors[0].message;
-          },
-        })}
-        disabled={props.disabled}
-        onChange={handleInputChange}
-      />
-      {props.errors?.[props.id] ? (
-        <Error>{props.errors?.[props.id]?.message}</Error>
-      ) : (
-        props.characterLimit > 0 && (
-          <CharacterCounter count={charCount} limit={props.characterLimit} />
-        )
-      )}
-    </FlexColumn>
-  );
-}
-
-function TextAreaInput(props: {
-  id: string;
-  name: string;
-  required: boolean | null;
-  characterLimit: number;
-  disabled: boolean;
-  register: UseFormRegister<Record<string, string>>;
-  errors: FieldErrors<Record<string, string>>;
-  value: string;
-}) {
-  const [charCount, setCharCount] = useState(0);
-
-  useEffect(() => {
-    setCharCount(props.value.length);
-  }, [props.value.length]);
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const inputValue = event.target.value;
-    setCharCount(inputValue.length);
-    props.register(props.id, {
-      value: inputValue,
-    });
-  };
-
-  return (
-    <FlexColumn $gap="0.5rem">
-      <Textarea
-        label={props.name}
-        $required={!!props.required}
-        placeholder="Enter a value"
-        {...props.register(props.id, {
-          setValueAs: (value) => value.trim(),
-          validate: (value) => {
-            if (!props.required && value.trim() === '') {
-              return true;
-            }
-
-            // validate character limit (0 character limit is no character limit)
-            if (props.characterLimit > 0 && value.length > props.characterLimit) {
-              return `Character count of ${charCount} exceeds character limit of ${props.characterLimit}`;
-            }
-
-            const v = z.string().min(1, 'Value is required').safeParse(value);
-
-            if (v.success) {
-              return true;
-            }
-
-            return v.error.errors[0].message;
-          },
-        })}
-        onChange={handleInputChange}
-      />
-      {props.errors?.[props.id] ? (
-        <Error>{props.errors?.[props.id]?.message}</Error>
-      ) : (
-        props.characterLimit > 0 && (
-          <CharacterCounter count={charCount} limit={props.characterLimit} />
-        )
-      )}
-    </FlexColumn>
-  );
-}
-
-function NumberInput(props: {
-  id: string;
-  name: string;
-  required: boolean | null;
-  disabled: boolean;
-  register: UseFormRegister<Record<string, string>>;
-  errors: FieldErrors<Record<string, string>>;
-  value: string;
-}) {
-  return (
-    <FlexColumn $gap="0.5rem">
-      <Input
-        type="number"
-        label={props.name}
-        required={!!props.required}
-        placeholder="Enter a value"
-        min={250}
-        max={10000}
-        {...props.register(props.id, {
-          validate: (value) => {
-            if (!props.required) {
-              return true;
-            }
-
-            if (value.trim() === '') {
-              return 'Value is required';
-            }
-
-            const v = z.coerce
-              .number()
-              .int('Value has to be an integer')
-              .min(250, 'Value must be 250 or higher')
-              .max(10000, 'Value must be 10,000 or lower')
-              .safeParse(value);
-
-            if (v.success) {
-              return true;
-            }
-
-            return v.error.errors[0].message;
-          },
-        })}
-        onChange={(event) => {
-          props.register(props.id, {
-            value: event.target.value,
-          });
-        }}
-      />
-      {props.errors?.[props.id] && <Error>{props.errors?.[props.id]?.message}</Error>}
-    </FlexColumn>
-  );
-}
-
-function SelectInput(props: {
-  id: string;
-  name: string;
-  required: boolean | null;
-  disabled: boolean;
-  options: RegistrationFieldOption[];
-  errors: FieldErrors<Record<string, string>>;
-  control: Control<Record<string, string>>;
-}) {
-  return (
-    <FlexColumn $gap="0.5rem">
-      <Controller
-        name={props.id}
-        control={props.control}
-        rules={{ required: props.required ? 'Value is required' : false }}
-        render={({ field }) => (
-          <Select
-            label={props.name}
-            placeholder="Choose a value"
-            required={!!props.required}
-            options={props.options.map((option) => ({ id: option.value, name: option.value }))}
-            errors={props.errors[props.id] ? [props.errors[props.id]?.message ?? ''] : []}
-            onBlur={field.onBlur}
-            onChange={(val) => field.onChange(val)}
-            value={field.value}
-          />
-        )}
-      />
-    </FlexColumn>
   );
 }
 
