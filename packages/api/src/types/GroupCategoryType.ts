@@ -6,6 +6,7 @@ export type GetGroupCategoryResponse = {
   eventId: string | null;
   userCanCreate: boolean;
   userCanView: boolean;
+  required: boolean;
 };
 
 export type GetGroupCategoriesResponse = GetGroupCategoryResponse[];

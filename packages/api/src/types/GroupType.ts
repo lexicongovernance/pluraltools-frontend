@@ -12,6 +12,7 @@ export type GetGroupsResponse = {
     eventId: string;
     userCanCreate: boolean;
     userCanView: boolean;
+    required: boolean;
     createdAt: string;
     updatedAt: string;
   };
@@ -27,6 +28,7 @@ export type PostGroupResponse = {
   groupCategoryId: string | null;
   name: string;
   secret: string | null;
+  required: boolean;
   description: string;
   createdAt: string;
   updatedAt: string;
