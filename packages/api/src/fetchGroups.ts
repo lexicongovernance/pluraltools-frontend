@@ -1,13 +1,13 @@
 import { GetGroupsResponse } from './types';
 
 async function fetchGroups({
-  groupCategoryName,
+  groupCategoryId,
 }: {
-  groupCategoryName: string;
+  groupCategoryId: string;
 }): Promise<GetGroupsResponse[] | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/group-categories/${groupCategoryName}/groups`,
+      `${import.meta.env.VITE_SERVER_URL}/api/group-categories/${groupCategoryId}/groups`,
       {
         credentials: 'include',
         headers: {

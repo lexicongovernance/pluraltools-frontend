@@ -70,7 +70,7 @@ function OptionCard({
             <Body>{author}</Body>
           </Author>
           <Affiliation>
-            <Body>{option.user?.group?.name}</Body>
+            <Body>{option.user?.groups.find((group) => group.groupCategory.required)?.name}</Body>
           </Affiliation>
           <Votes>
             <FlexColumn $gap="-4px">
