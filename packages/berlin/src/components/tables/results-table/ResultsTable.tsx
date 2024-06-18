@@ -45,18 +45,14 @@ function ResultsTable({ $expanded, option, onClick }: ResultsTableProps) {
   }, [option.pluralityScore]);
 
   return (
-    <Card
-      $expanded={$expanded}
-      $showFunding={option.allocatedFunding !== null}
-      onClick={onClick}
-      $rowgap="2rem"
-    >
+    <Card $expanded={$expanded} $showFunding={option.allocatedFunding !== null} $rowgap="2rem">
       <TitleContainer>
         <IconButton
           $padding={0}
           $color="secondary"
           icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: '' }}
           $flipVertical={$expanded}
+          onClick={onClick}
         />
         <Body>{option.optionTitle}</Body>
       </TitleContainer>
@@ -80,7 +76,7 @@ function ResultsTable({ $expanded, option, onClick }: ResultsTableProps) {
         </Icon>
         <Body>{formattedQuadraticScore}</Body>
       </FlexRow>
-      <Plurality $showFunding={option.allocatedFunding !== null}>
+      <Plurality $showFunding={option.allocatedFunding !== null} onClick={onClick}>
         <Icon>
           <IconButton
             $padding={0}
@@ -96,7 +92,11 @@ function ResultsTable({ $expanded, option, onClick }: ResultsTableProps) {
           $flipVertical={$expanded}
         />
       </Plurality>
-      <Funding $expanded={$expanded} $showFunding={option.allocatedFunding !== null}>
+      <Funding
+        $expanded={$expanded}
+        $showFunding={option.allocatedFunding !== null}
+        onClick={onClick}
+      >
         <Icon>
           <IconButton
             $padding={0}
