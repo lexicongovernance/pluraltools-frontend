@@ -12,7 +12,7 @@ import { FlexRow } from '../../containers/FlexRow.styled';
 import IconButton from '../../icon-button';
 
 // Styled Components
-import { Card } from './ResultsTable.styled';
+import { Card, Funding, Icon, Plurality, TitleContainer } from './ResultsTable.styled';
 
 type ResultsTableProps = {
   $expanded: boolean;
@@ -45,25 +45,74 @@ function ResultsTable({ $expanded, option, onClick }: ResultsTableProps) {
   }, [option.pluralityScore]);
 
   return (
-    <Card
-      $expanded={$expanded}
-      $showFunding={option.allocatedFunding !== null}
-      onClick={onClick}
-      $rowgap="2rem"
-    >
+    <Card $expanded={$expanded} $showFunding={option.allocatedFunding !== null} $rowgap="2rem">
+      <TitleContainer>
+        <IconButton
+          $padding={0}
+          $color="secondary"
+          icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: '' }}
+          $flipVertical={$expanded}
+          onClick={onClick}
+        />
+        <Body>{option.optionTitle}</Body>
+      </TitleContainer>
       <FlexRow>
+        <Icon>
+          <IconButton
+            $padding={0}
+            $color="secondary"
+            icon={{ src: `/icons/heart-full.svg`, alt: 'Hearts' }}
+          />
+        </Icon>
+        <Body>{option.allocatedHearts}</Body>
+      </FlexRow>
+      <FlexRow>
+        <Icon>
+          <IconButton
+            $padding={0}
+            $color="secondary"
+            icon={{ src: `/icons/sqrt-${theme}.svg`, alt: 'Quadratic score' }}
+          />
+        </Icon>
+        <Body>{formattedQuadraticScore}</Body>
+      </FlexRow>
+      <Plurality $showFunding={option.allocatedFunding !== null} onClick={onClick}>
+        <Icon>
+          <IconButton
+            $padding={0}
+            $color="secondary"
+            icon={{ src: `/icons/plurality-score.svg`, alt: 'Plurality score' }}
+          />
+        </Icon>
+        <Body>{formattedPluralityScore}</Body>
         <IconButton
           $padding={0}
           $color="secondary"
           icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: '' }}
           $flipVertical={$expanded}
         />
-        <Body>{option.optionTitle}</Body>
-      </FlexRow>
-      <Body>{option.allocatedHearts}</Body>
-      <Body>{formattedQuadraticScore}</Body>
-      <Body>{formattedPluralityScore}</Body>
-      {option.allocatedFunding !== null && <Body>{option.allocatedFunding} ARB</Body>}
+      </Plurality>
+      <Funding
+        $expanded={$expanded}
+        $showFunding={option.allocatedFunding !== null}
+        onClick={onClick}
+      >
+        <Icon>
+          <IconButton
+            $padding={0}
+            $color="secondary"
+            icon={{ src: `/logos/arbitrum-${theme}.svg`, alt: 'Arbitrum' }}
+          />
+        </Icon>
+        <Body>{option.allocatedFunding} ARB</Body>
+
+        <IconButton
+          $padding={0}
+          $color="secondary"
+          icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: '' }}
+          $flipVertical={$expanded}
+        />
+      </Funding>
       <FlexColumn className="description">
         <Body>{option.optionSubTitle}</Body>
         <Body>
