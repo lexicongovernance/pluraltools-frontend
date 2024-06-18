@@ -3,11 +3,11 @@ export type GetCycleResponse = {
   createdAt: string;
   updatedAt: string;
   status: 'OPEN' | 'CLOSED' | 'UPCOMING' | null;
-  showScore: boolean;
   startAt: string;
   endAt: string;
   forumQuestions: {
     id: string;
+    showScore: boolean;
     createdAt: string;
     updatedAt: string;
     questionSubTitle: string | null;
