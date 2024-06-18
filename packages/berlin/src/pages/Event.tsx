@@ -54,7 +54,7 @@ function Event() {
       {/* <BackButton /> */}
       {!!openCycles?.length && <CycleTable cycles={openCycles} status="open" />}
       {!!closedCycles?.length && <CycleTable cycles={closedCycles} status="closed" />}
-      {event && <EventCard event={event} $direction="row" />}
+      {event && <EventCard event={event} />}
       <Body>
         Click to revisit the{' '}
         <Link
