@@ -10,13 +10,12 @@ import Markdown from 'react-markdown';
 
 type EventCardProps = {
   event: GetEventResponse;
-  $direction?: 'row' | 'column';
   onClick?: () => void;
 };
 
-function EventCard({ event, $direction = 'column', onClick }: EventCardProps) {
+function EventCard({ event, onClick }: EventCardProps) {
   return (
-    <Card $direction={$direction}>
+    <Card>
       <ImageContainer>
         <img src={event.imageUrl} alt={`${event.name} image`} />
       </ImageContainer>

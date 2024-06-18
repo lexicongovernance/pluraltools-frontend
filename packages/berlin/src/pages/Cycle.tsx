@@ -326,7 +326,7 @@ function Cycle() {
       </FlexColumn>
       {currentCycle?.questionOptions.length ? (
         <FlexColumn $gap="0">
-          <CycleColumns onColumnClick={handleColumnClick} />
+          <CycleColumns onColumnClick={handleColumnClick} showScore={currentCycle.showScore} />
           {sortedOptions.options.map((option) => {
             const userVote = localUserVotes.find((vote) => vote.optionId === option.id);
             const numOfVotes = userVote ? userVote.numOfVotes : 0;
@@ -336,6 +336,7 @@ function Cycle() {
                 option={option}
                 numOfVotes={numOfVotes}
                 showFundingRequest={currentCycle.questionTitle === FINAL_QUESTION_TITLE}
+                showScore={currentCycle.showScore}
                 onVote={() => handleVoteWrapper(option.id)}
                 onUnVote={() => handleUnVoteWrapper(option.id)}
               />
