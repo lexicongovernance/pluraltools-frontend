@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { FlexRow } from '../containers/FlexRow.styled';
 import { FlexRowToColumn } from '../containers/FlexRowToColumn.styled';
 import { FlexColumn } from '../containers/FlexColumn.styled';
@@ -68,12 +68,23 @@ export const Affiliation = styled(FlexRow)`
   }
 `;
 
-export const Votes = styled(FlexRow)`
+export const Votes = styled(FlexRow)<{ $showScore: boolean | undefined }>`
   @media (min-width: 600px) {
     gap: 0.5rem;
     max-width: 5rem;
     padding: 1.5rem;
   }
+
+  ${(props) =>
+    !props.$showScore &&
+    css`
+      border-bottom: 1px solid var(--color-black);
+      padding-bottom: 0.75rem;
+      @media (min-width: 600px) {
+        border: none;
+        padding: 1.5rem;
+      }
+    `}
 `;
 export const VotesIcon = styled(FlexColumn)`
   width: 1.25rem;

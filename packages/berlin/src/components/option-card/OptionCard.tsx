@@ -25,16 +25,19 @@ import IconButton from '../icon-button';
 type OptionCardProps = {
   option: GetCycleResponse['forumQuestions'][number]['questionOptions'][number];
   showFundingRequest?: boolean;
+  showScore?: boolean;
   numOfVotes: number;
   onVote: () => void;
   onUnVote: () => void;
 };
+
 function OptionCard({
   option,
   numOfVotes,
   onVote,
   onUnVote,
   showFundingRequest = false,
+  showScore,
 }: OptionCardProps) {
   const { eventId, cycleId } = useParams();
   const theme = useAppStore((state) => state.theme);
@@ -88,7 +91,7 @@ function OptionCard({
             <Field>Affiliation:</Field>
             <Body>{option.user?.groups.find((group) => group.groupCategory.required)?.name}</Body>
           </Affiliation>
-          <Votes>
+          <Votes $showScore={showScore}>
             <VotesIcon $gap="-4px">
               <IconButton
                 $padding={0}
@@ -109,26 +112,39 @@ function OptionCard({
               />
             </VotesIcon>
             <Body>{numOfVotes}</Body>
+            {!showScore && (
+              <ArrowIcon>
+                <IconButton
+                  $padding={4}
+                  $color="secondary"
+                  onClick={() => setExpanded((e) => !e)}
+                  icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: 'Arrow down' }}
+                  $flipVertical={expanded}
+                />
+              </ArrowIcon>
+            )}
           </Votes>
-          <Plurality>
-            <PluralityIcon>
-              <IconButton
-                $padding={0}
-                $color="secondary"
-                icon={{ src: `/icons/plurality-score.svg`, alt: 'Plurality score' }}
-              />
-            </PluralityIcon>
-            {formattedPluralityScore}
-            <ArrowIcon>
-              <IconButton
-                $padding={4}
-                $color="secondary"
-                onClick={() => setExpanded((e) => !e)}
-                icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: 'Arrow down' }}
-                $flipVertical={expanded}
-              />
-            </ArrowIcon>
-          </Plurality>
+          {showScore && (
+            <Plurality>
+              <PluralityIcon>
+                <IconButton
+                  $padding={0}
+                  $color="secondary"
+                  icon={{ src: `/icons/plurality-score.svg`, alt: 'Plurality score' }}
+                />
+              </PluralityIcon>
+              {formattedPluralityScore}
+              <ArrowIcon>
+                <IconButton
+                  $padding={4}
+                  $color="secondary"
+                  onClick={() => setExpanded((e) => !e)}
+                  icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: 'Arrow down' }}
+                  $flipVertical={expanded}
+                />
+              </ArrowIcon>
+            </Plurality>
+          )}
         </Container>
         <FlexColumn className="description" $gap="1.5rem">
           {coauthors && coauthors.length > 0 && (
