@@ -1,8 +1,8 @@
 import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
-import { SelectInput } from './SelectInput';
-import { TextAreaInput } from './TextAreaInput';
-import { TextInput } from './TextInput';
-import { NumberInput } from './NumberInput';
+import { SelectInput } from './FormSelectInput';
+import { TextAreaInput } from './FormTextAreaInput';
+import { TextInput } from './FormTextInput';
+import { NumberInput } from './FormNumberInput';
 
 export function FormInput<T extends FieldValues>(props: {
   form: UseFormReturn<T>;
