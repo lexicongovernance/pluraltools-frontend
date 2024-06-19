@@ -10,7 +10,6 @@ import { GetEventsResponse, fetchEvents, putUser, type GetUserResponse } from 'a
 // Components
 import Button from '../components/button';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
-import Input from '../components/input';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import { Title } from '../components/typography/Title.styled';
 
@@ -18,8 +17,11 @@ import { Title } from '../components/typography/Title.styled';
 import useUser from '../hooks/useUser';
 
 // Store
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { FlexRowToColumn } from '../components/containers/FlexRowToColumn.styled';
+import { TextInput } from '../components/form';
+import { z } from 'zod';
+import { returnZodError } from '../utils/validation';
 
 type InitialUser = {
   username: string;
@@ -50,7 +52,9 @@ function Account() {
     return <Title>Loading...</Title>;
   }
 
-  return <AccountForm initialUser={initialUser} user={user} events={events} />;
+  return (
+    <AccountForm key={initialUser.email} initialUser={initialUser} user={user} events={events} />
+  );
 }
 
 function AccountForm({
@@ -91,19 +95,15 @@ function AccountForm({
     },
   });
 
-  const {
-    register,
-    formState: { errors, isValid, isSubmitting },
-    handleSubmit,
-    reset,
-  } = useForm({
-    defaultValues: useMemo(() => initialUser, [initialUser]),
+  const form = useForm({
+    defaultValues: initialUser,
     mode: 'all',
   });
 
-  useEffect(() => {
-    reset(initialUser);
-  }, [initialUser, reset]);
+  const {
+    handleSubmit,
+    formState: { isValid, isSubmitting },
+  } = form;
 
   const onSubmit = async (value: typeof initialUser) => {
     if (isValid && user && user.id) {
@@ -123,32 +123,36 @@ function AccountForm({
       <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%' }}>
         <FlexColumn>
           <FlexRowToColumn>
-            <Input
+            <TextInput
+              form={form}
+              name="firstName"
               label="First name"
-              autoComplete="off"
               placeholder="Enter your first name"
               required
-              {...register('firstName', { required: 'First name is required' })}
-              errors={errors.firstName ? [errors.firstName.message ?? ''] : []}
             />
-            <Input
+            <TextInput
+              form={form}
+              name="lastName"
               label="Last name"
-              autoComplete="off"
               placeholder="Enter your last name"
               required
-              {...register('lastName', { required: 'Last name is required' })}
-              errors={errors.lastName ? [errors.lastName.message ?? ''] : []}
             />
           </FlexRowToColumn>
-          <Input
+          <TextInput
+            form={form}
+            name="username"
             label="Username"
-            placeholder="Enter your Username"
-            autoComplete="off"
+            placeholder="Enter your username"
             required
-            {...register('username', { required: 'Username is required', minLength: 3 })}
-            errors={errors.username ? [errors.username.message ?? ''] : []}
           />
-          <Input label="Email" placeholder="Enter your Email" {...register('email')} />
+          <TextInput
+            form={form}
+            name="email"
+            label="Email"
+            placeholder="Enter your email"
+            required
+            customValidation={(value) => returnZodError(() => z.string().email().parse(value))}
+          />
           <Button type="submit" disabled={isSubmitting}>
             Submit
           </Button>
