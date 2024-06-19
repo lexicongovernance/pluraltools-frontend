@@ -34,9 +34,8 @@ function Account() {
     <FlexColumn>
       <FlexRow>
         <Button onClick={() => setTab('view')}>View</Button>
-        <Button onClick={() => setTab('edit')}>Edit</Button>
       </FlexRow>
-      <TabManager tabs={tabs} tab={tab} />
+      <TabManager tabs={tabs} tab={tab} fallback={<Title>Tab not found</Title>} />
     </FlexColumn>
   );
 }
