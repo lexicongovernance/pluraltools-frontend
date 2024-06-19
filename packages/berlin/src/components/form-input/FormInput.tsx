@@ -1,8 +1,8 @@
 import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
-import { SelectInput } from './FormSelectInput';
-import { TextAreaInput } from './FormTextAreaInput';
-import { TextInput } from './FormTextInput';
-import { NumberInput } from './FormNumberInput';
+import { FormSelectInput } from './FormSelectInput';
+import { FormTextAreaInput } from './FormTextAreaInput';
+import { FormTextInput } from './FormTextInput';
+import { FormNumberInput } from './FormNumberInput';
 
 export function FormInput<T extends FieldValues>(props: {
   form: UseFormReturn<T>;
@@ -15,7 +15,7 @@ export function FormInput<T extends FieldValues>(props: {
   switch (props.type) {
     case 'TEXT':
       return (
-        <TextInput
+        <FormTextInput
           form={props.form}
           name={props.name}
           label={props.label}
@@ -24,7 +24,7 @@ export function FormInput<T extends FieldValues>(props: {
       );
     case 'TEXTAREA':
       return (
-        <TextAreaInput
+        <FormTextAreaInput
           form={props.form}
           name={props.name}
           label={props.label}
@@ -33,7 +33,7 @@ export function FormInput<T extends FieldValues>(props: {
       );
     case 'SELECT':
       return (
-        <SelectInput
+        <FormSelectInput
           form={props.form}
           name={props.name}
           label={props.label}
@@ -43,7 +43,7 @@ export function FormInput<T extends FieldValues>(props: {
       );
     case 'NUMBER':
       return (
-        <NumberInput
+        <FormNumberInput
           form={props.form}
           name={props.name}
           label={props.label}
