@@ -27,11 +27,13 @@ type InitialUser = {
 export function AccountForm({
   initialUser,
   user,
+  title,
   afterSubmit,
 }: {
   initialUser: InitialUser;
   user: GetUserResponse | null | undefined;
   afterSubmit?: () => void;
+  title: string;
 }) {
   const queryClient = useQueryClient();
 
@@ -84,7 +86,7 @@ export function AccountForm({
 
   return (
     <FlexColumn>
-      <Subtitle>Complete your registration</Subtitle>
+      <Subtitle>{title}</Subtitle>
       <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%' }}>
         <FlexColumn>
           <FlexRowToColumn>

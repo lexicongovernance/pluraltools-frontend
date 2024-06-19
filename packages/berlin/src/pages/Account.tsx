@@ -11,6 +11,7 @@ function Account() {
 
   return (
     <AccountForm
+      title={'Edit Account'}
       key={user?.email}
       initialUser={{
         email: user?.email ?? '',
