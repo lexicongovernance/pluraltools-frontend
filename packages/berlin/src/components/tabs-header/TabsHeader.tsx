@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { Body } from '../typography/Body.styled';
-import { FlexRow } from '../containers/FlexRow.styled';
-import { Tab } from './TabsHeader.styled';
+import { Tab, Tabs } from './TabsHeader.styled';
 
 type TabsHeaderProps = {
   tabNames: string[];
@@ -20,20 +19,19 @@ function TabsHeader({ tabNames, initialTab, onTabChange }: TabsHeaderProps) {
   };
 
   return (
-    <FlexRow $gap="0.5rem">
+    <Tabs $gap="0.5rem">
       {tabNames.map((tabName, index) => (
-        <>
+        <Fragment key={tabName}>
           <Tab
-            key={tabName}
             className={activeTab === tabName ? 'active' : ''}
             onClick={() => handleTabClick(tabName)}
           >
             {tabName}
           </Tab>
           {index < tabNames.length - 1 && <Body>/</Body>}
-        </>
+        </Fragment>
       ))}
-    </FlexRow>
+    </Tabs>
   );
 }
 
