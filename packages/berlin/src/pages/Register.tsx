@@ -36,7 +36,7 @@ import useUser from '../hooks/useUser';
 import Button from '../components/button';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { Form } from '../components/containers/Form.styled';
-import { FormInput } from '../components/form';
+import { FormInput } from '../components/form-input';
 import Select from '../components/select';
 import Label from '../components/typography/Label';
 import { Subtitle } from '../components/typography/Subtitle.styled';

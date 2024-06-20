@@ -28,7 +28,7 @@ import Divider from '../components/divider';
 import GroupsColumns from '../components/columns/groups-columns';
 import GroupsTable from '../components/tables/groups-table';
 import Input from '../components/input';
-import ResearchGroupForm from '../components/research-group-form';
+import { ResearchGroupForm } from '../components/form';
 import SecretCode from '../components/secret-code';
 
 function SecretGroupRegistration() {
