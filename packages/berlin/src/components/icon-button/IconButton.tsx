@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 import Button from '../button';
 import { StyledButtonProps } from '../button/Button.types';
 import { Icon, IconContainer } from './IconButton.styled';
@@ -14,7 +14,8 @@ type IconButtonProps = {
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   $height?: number;
   $width?: number;
-} & StyledButtonProps;
+} & StyledButtonProps &
+  HTMLAttributes<unknown>;
 
 const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
   ({ icon, onClick, disabled, $padding, $flipVertical, $height, $width, ...props }, ref) => {
