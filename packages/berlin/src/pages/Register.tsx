@@ -198,11 +198,6 @@ function Register() {
                 registrationId: form.registration?.id,
               })}
               usersToGroups={usersToGroups}
-              userIsApproved={
-                registrations?.some((registration) => registration.status === 'APPROVED')
-                  ? true
-                  : false
-              }
               registrationData={multipleRegistrationData[form.registration?.id || '']?.data}
               key={idx}
               user={user}
@@ -479,7 +474,6 @@ const filterRegistrationFields = (
 
 function RegisterForm(props: {
   user: GetUserResponse | null | undefined;
-  userIsApproved: boolean;
   usersToGroups: GetUsersToGroupsResponse | null | undefined;
   registrationFields: GetRegistrationFieldsResponse | null | undefined;
   registrationId: string | null | undefined;
@@ -530,10 +524,12 @@ function RegisterForm(props: {
     return sortedFields;
   }, [props.registrationFields, selectedGroupId, prevSelectGroupId]);
 
-  const redirectToHoldingPage = (isApproved: boolean) => {
+  const redirectToNextPage = (isApproved: boolean) => {
     if (!isApproved) {
       navigate(`/events/${props.event?.id}/holding`);
     }
+
+    navigate(`/events/${props.event?.id}/cycles`);
   };
 
   const { mutate: mutateRegistrationData, isPending } = useMutation({
@@ -550,7 +546,7 @@ function RegisterForm(props: {
 
         props.onRegistrationFormCreate?.(body.id);
 
-        redirectToHoldingPage(props.userIsApproved);
+        redirectToNextPage(body.status === 'APPROVED');
       } else {
         toast.error('Failed to save registration, please try again');
       }
@@ -574,7 +570,7 @@ function RegisterForm(props: {
           queryKey: ['registrations', props.registrationId, 'registration-data'],
         });
 
-        redirectToHoldingPage(props.userIsApproved);
+        redirectToNextPage(body.status === 'APPROVED');
       } else {
         toast.error('Failed to update registration, please try again');
       }
@@ -682,7 +678,7 @@ function RegisterForm(props: {
             type={regField.type.toLocaleUpperCase()}
             options={regField.registrationFieldOptions?.map((option) => ({
               name: option.value,
-              value: option.id,
+              value: option.value,
             }))}
           />
         ))}

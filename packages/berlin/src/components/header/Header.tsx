@@ -27,7 +27,6 @@ import {
   DesktopButtons,
   HeaderContainer,
   LogoContainer,
-  LogoImage,
   LogoSubtitle,
   LogoTextContainer,
   LogoTitle,
@@ -83,7 +82,7 @@ function Header() {
     <SyledHeader>
       <HeaderContainer>
         <LogoContainer onClick={() => navigate('/')}>
-          <LogoImage src={header.logo.src} alt={header.logo.alt} height={96} width={96} />
+          <img src={`/logos/lexicon-${theme}.svg`} alt="Lexicon Logo" height={64} width={64} />
           {location.pathname === '/' && (
             <LogoTextContainer>
               <LogoTitle>{header.title}</LogoTitle>

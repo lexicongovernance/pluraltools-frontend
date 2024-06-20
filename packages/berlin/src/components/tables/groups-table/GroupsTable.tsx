@@ -102,7 +102,11 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
         <Body>No secret</Body>
       )}
       <Dialog
-        trigger={<Button $alignSelf="flex-start">Leave</Button>}
+        trigger={
+          <Button disabled $alignSelf="flex-start">
+            Leave
+          </Button>
+        }
         title="Are you sure?"
         description={`This action cannot be undone. This will remove you from group ${userToGroup.group.name}.`}
         onActionClick={() => onLeaveGroup(userToGroup.id)}

@@ -8,25 +8,14 @@ export function NumberInput<T extends FieldValues>(props: {
   required: boolean | null;
   customValidation?: (value: number) => string | undefined;
 }) {
-  const handleChange = (
-    val: string,
-    onSuccess: (val: string) => void,
-    onFailure: (errorMsg: string) => void,
-  ) => {
-    if (props.customValidation) {
-      const customError = props.customValidation(Number(val));
-      if (customError) {
-        onFailure(customError);
-        return;
-      }
-    }
-    onSuccess(val);
-  };
-
   return (
     <Controller
       name={props.name}
       control={props.form.control}
+      rules={{
+        required: props.required ? `${props.label} is required` : false,
+        validate: props.customValidation,
+      }}
       render={({ field }) => (
         <Input
           type="number"
@@ -39,11 +28,8 @@ export function NumberInput<T extends FieldValues>(props: {
               : []
           }
           value={field.value ?? undefined}
-          onChange={(e) =>
-            handleChange(e.target.value, field.onChange, (err) => {
-              props.form.setError(props.name, { message: err });
-            })
-          }
+          onChange={field.onChange}
+          onBlur={field.onBlur}
         />
       )}
     />
