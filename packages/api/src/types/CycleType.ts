@@ -23,11 +23,11 @@ export type GetCycleResponse = {
       accepted: boolean;
       voteScore?: number;
       fundingRequest: string;
-      user: {
-        groups: {
+      user?: {
+        groups?: {
           id: string;
           name: string;
-          groupCategory: {
+          groupCategory?: {
             id: string;
             name: string | null;
             createdAt: Date;

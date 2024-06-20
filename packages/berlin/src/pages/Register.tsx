@@ -298,7 +298,7 @@ const SelectEventGroup = ({
       <Label>Select {groupCategory?.name} group</Label>
       <Select
         value={newGroup || userGroup?.group.id || undefined}
-        options={groups?.map((group) => ({ id: group.name, name: group.name })) || []}
+        options={groups?.map((group) => ({ id: group.id, name: group.name })) || []}
         placeholder="Select a Group"
         onChange={setNewGroup}
       />
@@ -682,7 +682,7 @@ function RegisterForm(props: {
             type={regField.type.toLocaleUpperCase()}
             options={regField.registrationFieldOptions?.map((option) => ({
               name: option.value,
-              value: option.id,
+              value: option.value,
             }))}
           />
         ))}

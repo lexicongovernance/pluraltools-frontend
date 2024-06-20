@@ -55,7 +55,7 @@ function OptionCard({
 
   const [expanded, setExpanded] = useState(false);
 
-  const author = `${option.user.firstName} ${option.user.lastName}`;
+  const author = option.user ? `${option.user?.firstName} ${option.user?.lastName}` : 'Anonymous';
 
   const handleCommentsClick = () => {
     navigate(`/events/${eventId}/cycles/${cycleId}/options/${option.id}`);
@@ -63,9 +63,9 @@ function OptionCard({
 
   const coauthors = useMemo(() => {
     return optionUsers?.group?.users?.filter(
-      (optionUser) => optionUser.username !== option.user.username,
+      (optionUser) => optionUser.username !== option.user?.username,
     );
-  }, [optionUsers, option.user.username]);
+  }, [optionUsers, option.user?.username]);
 
   return (
     <Card $expanded={expanded}>
@@ -89,7 +89,10 @@ function OptionCard({
           </Author>
           <Affiliation>
             <Field>Affiliation:</Field>
-            <Body>{option.user?.groups.find((group) => group.groupCategory.required)?.name}</Body>
+            <Body>
+              {option.user?.groups?.find((group) => group.groupCategory?.required)?.name ??
+                'No affiliation'}
+            </Body>
           </Affiliation>
           <Votes $showScore={showScore}>
             <VotesIcon $gap="-4px">
