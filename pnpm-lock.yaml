@@ -32,6 +32,9 @@ importers:
       '@tanstack/react-query-devtools':
         specifier: ^5.13.5
         version: 5.13.5(@tanstack/react-query@5.13.4(react@18.2.0))(react@18.2.0)
+      lucide-react:
+        specifier: ^0.395.0
+        version: 0.395.0(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -2635,6 +2638,11 @@ packages:
   lru-cache@6.0.0:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
+
+  lucide-react@0.395.0:
+    resolution: {integrity: sha512-6hzdNH5723A4FLaYZWpK50iyZH8iS2Jq5zuPRRotOFkhu6kxxJiebVdJ72tCR5XkiIeYFOU5NUawFZOac+VeYw==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0
 
   magic-string@0.30.5:
     resolution: {integrity: sha512-7xlpfBaQaP/T6Vh8MO/EqXSW5En6INHEvEXQiuff7Gku0PWjU3uf6w/j9o7O+SpB5fOAkrI5HeoNgwjEO0pFsA==}
@@ -6903,6 +6911,10 @@ snapshots:
   lru-cache@6.0.0:
     dependencies:
       yallist: 4.0.0
+
+  lucide-react@0.395.0(react@18.2.0):
+    dependencies:
+      react: 18.2.0
 
   magic-string@0.30.5:
     dependencies:

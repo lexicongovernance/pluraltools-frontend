@@ -4,9 +4,6 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "core:dev": "pnpm -r --filter core dev",
-    "core:build": "pnpm -r --filter core build",
-    "core:preview": "pnpm -r --filter core preview",
     "berlin:dev": "pnpm -r --filter berlin dev",
     "berlin:build": "pnpm -r --filter berlin build",
     "berlin:preview": "pnpm -r --filter berlin preview",
@@ -29,6 +26,7 @@
     "@radix-ui/react-dialog": "^1.0.5",
     "@tanstack/react-query": "^5.13.4",
     "@tanstack/react-query-devtools": "^5.13.5",
+    "lucide-react": "^0.395.0",
     "react": "^18.2.0",
     "react-content-loader": "^7.0.0",
     "react-dom": "^18.2.0",
