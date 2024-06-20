@@ -9,7 +9,7 @@ type CycleColumnsProps = {
 
 function CycleColumns({ onColumnClick, showScore }: CycleColumnsProps) {
   return (
-    <Card>
+    <Card className="third-step">
       <Proposal>
         <Body>Proposal</Body>
       </Proposal>
@@ -19,7 +19,7 @@ function CycleColumns({ onColumnClick, showScore }: CycleColumnsProps) {
       <Affiliation onClick={() => onColumnClick('affiliation')}>
         <Body>Affiliation</Body>
       </Affiliation>
-      <Hearts onClick={() => onColumnClick('numOfVotes')}>
+      <Hearts onClick={() => onColumnClick('numOfVotes')} className="fourth-step">
         <IconButton
           $padding={0}
           $color="secondary"

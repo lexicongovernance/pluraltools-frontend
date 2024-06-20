@@ -74,6 +74,7 @@ function OptionCard({
           <Proposal>
             <ArrowDownIcon>
               <IconButton
+                className="fifth-step"
                 $padding={4}
                 $color="secondary"
                 onClick={() => setExpanded((e) => !e)}
@@ -92,7 +93,7 @@ function OptionCard({
             <Body>{option.user?.groups.find((group) => group.groupCategory.required)?.name}</Body>
           </Affiliation>
           <Votes $showScore={showScore}>
-            <VotesIcon $gap="-4px">
+            <VotesIcon $gap="-4px" className="second-step">
               <IconButton
                 $padding={0}
                 $color="secondary"
