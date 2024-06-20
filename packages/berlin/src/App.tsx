@@ -6,7 +6,7 @@ import { RouterProvider, createBrowserRouter, redirect } from 'react-router-dom'
 import { useAppStore } from './store';
 
 // API
-import { fetchCycle, fetchEvents, fetchRegistrations, fetchUser } from 'api';
+import { fetchCycle, fetchRegistrations, fetchUser } from 'api';
 
 // Pages
 import { default as BerlinLayout } from './layout/index.ts';
@@ -42,25 +42,7 @@ async function redirectToLandingLoader(queryClient: QueryClient) {
 }
 
 /**
- * Redirects the user to the account page if they have not completed their profile
- */
-async function redirectToAccount(queryClient: QueryClient) {
-  const user = await queryClient.fetchQuery({
-    queryKey: ['user'],
-    queryFn: fetchUser,
-  });
-
-  if (user?.username) {
-    useAppStore.setState({ userStatus: 'COMPLETE' });
-    return null;
-  }
-
-  useAppStore.setState({ userStatus: 'INCOMPLETE' });
-  return redirect('/account');
-}
-
-/**
- * Redirects the user to the landing page to cycles or account page
+ * Redirects the user from the landing page to cycles or account page
  */
 async function redirectOnLandingLoader(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
@@ -72,53 +54,17 @@ async function redirectOnLandingLoader(queryClient: QueryClient) {
     return null;
   }
 
+  if (user.username !== '') {
+    useAppStore.setState({ onboardingStatus: 'COMPLETE' });
+  }
+
   const onboardingState = useAppStore.getState().onboardingStatus;
 
   if (onboardingState === 'INCOMPLETE') {
     return redirect('/onboarding');
   }
 
-  const events = await queryClient.fetchQuery({
-    queryKey: ['events'],
-    queryFn: fetchEvents,
-  });
-
-  const userIsComplete = await redirectToAccount(queryClient);
-
-  if (userIsComplete) {
-    return userIsComplete;
-  }
-
-  if (events?.length === 1) {
-    const registrations = await queryClient.fetchQuery({
-      queryKey: ['event', events?.[0].id, 'registrations'],
-      queryFn: () => fetchRegistrations(events?.[0].id || ''),
-    });
-
-    if (registrations && registrations.some((registration) => registration.status === 'APPROVED')) {
-      return redirect(`/events/${events?.[0].id}/register`);
-    }
-
-    return redirect(`/events/${events?.[0].id}/cycles`);
-  }
-
-  return null;
-}
-
-/**
- * Redirects the user to the only event if there is only one event
- */
-async function redirectToOnlyOneEventLoader(queryClient: QueryClient) {
-  const events = await queryClient.fetchQuery({
-    queryKey: ['events'],
-    queryFn: fetchEvents,
-  });
-
-  if (events?.length === 1) {
-    return redirect(`/events/${events?.[0].id}/cycles`);
-  }
-
-  return null;
+  return redirect('/events');
 }
 
 /**
@@ -216,11 +162,9 @@ const router = (queryClient: QueryClient) =>
               Component: PublicGroupRegistration,
             },
             {
-              loader: () => redirectToAccount(queryClient),
               path: '/events',
               children: [
                 {
-                  loader: () => redirectToOnlyOneEventLoader(queryClient),
                   path: '',
                   Component: Events,
                 },

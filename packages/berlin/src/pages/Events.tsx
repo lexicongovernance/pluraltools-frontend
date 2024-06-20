@@ -28,7 +28,7 @@ function Events() {
 
   return (
     <FlexColumn $gap="2rem">
-      <Title>Welcome, {user?.username ?? 'User'}</Title>
+      <Title>Events</Title>
       {events?.map((event) => {
         return <EventCard key={event.id} event={event} onClick={() => handleClick(event.id)} />;
       })}

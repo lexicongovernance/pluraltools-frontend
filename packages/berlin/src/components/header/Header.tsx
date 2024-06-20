@@ -45,6 +45,7 @@ function Header() {
   const { user } = useUser();
   const location = useLocation();
   const theme = useAppStore((state) => state.theme);
+  const onboardingStatus = useAppStore((state) => state.onboardingStatus);
   const toggleTheme = useAppStore((state) => state.toggleTheme);
   const navigate = useNavigate();
   const resetState = useAppStore((state) => state.reset);
@@ -77,9 +78,11 @@ function Header() {
             <DesktopButtons>
               {user ? (
                 <>
-                  <NavButton to={`/events`} $color="secondary">
-                    Events
-                  </NavButton>
+                  {onboardingStatus === 'COMPLETE' && (
+                    <NavButton to={`/events`} $color="secondary">
+                      Events
+                    </NavButton>
+                  )}
                   <Button onClick={() => mutateLogout()}>Log out</Button>
                   <IconButton
                     onClick={() => navigate('/account')}
@@ -115,10 +118,11 @@ function Header() {
             <MobileButtons>
               {user ? (
                 <>
-                  <NavButton to={`/events`} $color="secondary">
-                    Events
-                  </NavButton>
-
+                  {onboardingStatus === 'COMPLETE' && (
+                    <NavButton to={`/events`} $color="secondary">
+                      Events
+                    </NavButton>
+                  )}
                   <NavButton to="/account" $color="secondary">
                     Account
                   </NavButton>
