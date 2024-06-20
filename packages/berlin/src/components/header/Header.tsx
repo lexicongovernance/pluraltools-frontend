@@ -1,7 +1,10 @@
 // React and third-party libraries
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  // useLocation,
+  useNavigate,
+} from 'react-router-dom';
 
 // Store
 import { useAppStore } from '../../store';
@@ -42,7 +45,7 @@ import IconButton from '../icon-button';
 function Header() {
   const queryClient = useQueryClient();
   const { user } = useUser();
-  const location = useLocation();
+  // const location = useLocation();
   const theme = useAppStore((state) => state.theme);
   const toggleTheme = useAppStore((state) => state.toggleTheme);
   const navigate = useNavigate();
@@ -83,12 +86,12 @@ function Header() {
       <HeaderContainer>
         <LogoContainer onClick={() => navigate('/')}>
           <img src={`/logos/lexicon-${theme}.svg`} alt="Lexicon Logo" height={64} width={64} />
-          {location.pathname === '/' && (
-            <LogoTextContainer>
-              <LogoTitle>{header.title}</LogoTitle>
-              <LogoSubtitle>{header.subtitle}</LogoSubtitle>
-            </LogoTextContainer>
-          )}
+          {/* {location.pathname === '/' && ( */}
+          <LogoTextContainer>
+            <LogoTitle>{header.title}</LogoTitle>
+            <LogoSubtitle>{header.subtitle}</LogoSubtitle>
+          </LogoTextContainer>
+          {/* )} */}
         </LogoContainer>
         <NavContainer>
           <NavButtons>
