@@ -231,9 +231,9 @@ function Cycle() {
 
   const sortByAffiliation = (a: QuestionOption, b: QuestionOption, order: Order) => {
     const affiliationA =
-      a.user?.groups.find((group) => group.groupCategory.required)?.name.toUpperCase() ?? '';
+      a.user?.groups?.find((group) => group.groupCategory?.required)?.name.toUpperCase() ?? '';
     const affiliationB =
-      b.user?.groups.find((group) => group.groupCategory.required)?.name.toUpperCase() ?? '';
+      b.user?.groups?.find((group) => group.groupCategory?.required)?.name.toUpperCase() ?? '';
 
     if (affiliationA === affiliationB) {
       return sortId(a, b, order);

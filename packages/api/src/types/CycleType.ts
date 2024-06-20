@@ -24,10 +24,10 @@ export type GetCycleResponse = {
       voteScore?: number;
       fundingRequest: string;
       user?: {
-        groups: {
+        groups?: {
           id: string;
           name: string;
-          groupCategory: {
+          groupCategory?: {
             id: string;
             name: string | null;
             createdAt: Date;

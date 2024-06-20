@@ -89,7 +89,10 @@ function OptionCard({
           </Author>
           <Affiliation>
             <Field>Affiliation:</Field>
-            <Body>{option.user?.groups.find((group) => group.groupCategory.required)?.name}</Body>
+            <Body>
+              {option.user?.groups?.find((group) => group.groupCategory?.required)?.name ??
+                'No affiliation'}
+            </Body>
           </Affiliation>
           <Votes $showScore={showScore}>
             <VotesIcon $gap="-4px">
