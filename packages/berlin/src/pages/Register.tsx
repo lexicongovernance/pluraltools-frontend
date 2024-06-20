@@ -33,14 +33,16 @@ import {
 import useUser from '../hooks/useUser';
 
 // Components
-import Button from '../components/button';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
+import { FlexRow } from '../components/containers/FlexRow.styled';
 import { Form } from '../components/containers/Form.styled';
 import { FormInput } from '../components/form';
-import Select from '../components/select';
-import Label from '../components/typography/Label';
-import { Subtitle } from '../components/typography/Subtitle.styled';
 import { SafeArea } from '../layout/Layout.styled';
+import { Subtitle } from '../components/typography/Subtitle.styled';
+import Button from '../components/button';
+import Dots from '../components/dots';
+import Label from '../components/typography/Label';
+import Select from '../components/select';
 
 const sortRegistrationsByCreationDate = (registrations: GetRegistrationResponseType[]) => {
   return [
@@ -82,6 +84,7 @@ const createRegistrationForms = ({
 };
 
 function Register() {
+  const [step, setStep] = useState<number>(0);
   const { user, isLoading } = useUser();
   const { eventId } = useParams();
   const [selectedRegistrationFormKey, setSelectedRegistrationFormKey] = useState<
@@ -172,45 +175,52 @@ function Register() {
   return (
     <SafeArea>
       <FlexColumn $gap="1.5rem">
-        {groupCategories
-          ?.filter((groupCategory) => groupCategory.required)
-          .map((groupCategory) => (
-            <SelectEventGroup
-              key={groupCategory.id}
-              groupCategory={groupCategory}
-              userToGroups={usersToGroups}
-              user={user}
-            />
-          ))}
-        <SelectRegistrationDropdown
-          onSelectedRegistrationFormKeyChange={setSelectedRegistrationFormKey}
-          registrations={registrations}
-          usersToGroups={usersToGroups}
-          selectedRegistrationFormKey={selectedRegistrationFormKey}
-          multipleRegistrationData={multipleRegistrationData}
-          registrationFields={registrationFields}
-        />
-        {createRegistrationForms({ registrations, usersToGroups }).map((form, idx) => {
-          return (
-            <RegisterForm
-              show={showRegistrationForm({
-                selectedRegistrationFormKey,
-                registrationId: form.registration?.id,
-              })}
+        {step === 0 &&
+          groupCategories
+            ?.filter((groupCategory) => groupCategory.required)
+            .map((groupCategory) => (
+              <SelectEventGroup
+                key={groupCategory.id}
+                groupCategory={groupCategory}
+                userToGroups={usersToGroups}
+                user={user}
+                setStep={setStep}
+              />
+            ))}
+        {step === 1 && (
+          <>
+            <SelectRegistrationDropdown
+              onSelectedRegistrationFormKeyChange={setSelectedRegistrationFormKey}
+              registrations={registrations}
               usersToGroups={usersToGroups}
-              registrationData={multipleRegistrationData[form.registration?.id || '']?.data}
-              key={idx}
-              user={user}
-              groupId={form.group?.id}
+              selectedRegistrationFormKey={selectedRegistrationFormKey}
+              multipleRegistrationData={multipleRegistrationData}
               registrationFields={registrationFields}
-              registrationId={form.registration?.id}
-              mode={form.mode}
-              isLoading={multipleRegistrationData[form.registration?.id || '']?.loading}
-              event={event}
-              onRegistrationFormCreate={onRegistrationFormCreate}
             />
-          );
-        })}
+            {createRegistrationForms({ registrations, usersToGroups }).map((form, idx) => {
+              return (
+                <RegisterForm
+                  show={showRegistrationForm({
+                    selectedRegistrationFormKey,
+                    registrationId: form.registration?.id,
+                  })}
+                  usersToGroups={usersToGroups}
+                  registrationData={multipleRegistrationData[form.registration?.id || '']?.data}
+                  key={idx}
+                  user={user}
+                  groupId={form.group?.id}
+                  registrationFields={registrationFields}
+                  registrationId={form.registration?.id}
+                  mode={form.mode}
+                  isLoading={multipleRegistrationData[form.registration?.id || '']?.loading}
+                  event={event}
+                  onRegistrationFormCreate={onRegistrationFormCreate}
+                />
+              );
+            })}
+          </>
+        )}
+        <Dots dots={2} activeDotIndex={step} setStep={setStep} />
       </FlexColumn>
     </SafeArea>
   );
@@ -220,10 +230,12 @@ const SelectEventGroup = ({
   groupCategory,
   userToGroups,
   user,
+  setStep,
 }: {
   userToGroups: GetUsersToGroupsResponse | null | undefined;
   groupCategory: GetGroupCategoriesResponse[number] | null | undefined;
   user: GetUserResponse | null | undefined;
+  setStep: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   // fetch all the groups in the category
   // show a select with all the groups
@@ -281,11 +293,13 @@ const SelectEventGroup = ({
         groupId: newGroup,
         userToGroupId: userGroup.id,
       });
+      setStep((prevStep) => prevStep + 1);
       return;
     }
 
     // create a new group
     postUsersToGroupsMutation({ groupId: newGroup });
+    setStep((prevStep) => prevStep + 1);
   };
 
   return (
@@ -297,12 +311,19 @@ const SelectEventGroup = ({
         placeholder="Select a Group"
         onChange={setNewGroup}
       />
-      <Button
-        disabled={!newGroup || (userGroup && userGroup.group.id === newGroup)}
-        onClick={onSubmit}
-      >
-        Save
-      </Button>
+      <FlexRow>
+        {userGroup && (
+          <Button $color="secondary" onClick={() => setStep((prevStep) => prevStep + 1)}>
+            Skip
+          </Button>
+        )}
+        <Button
+          disabled={!newGroup || (userGroup && userGroup.group.id === newGroup)}
+          onClick={onSubmit}
+        >
+          Save
+        </Button>
+      </FlexRow>
     </FlexColumn>
   );
 };
