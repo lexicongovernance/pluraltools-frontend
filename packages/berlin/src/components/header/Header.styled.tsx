@@ -1,7 +1,7 @@
 import styled, { keyframes } from 'styled-components';
 import Button from '../button/Button';
 
-export const SyledHeader = styled.header`
+export const StyledHeader = styled.header`
   align-items: center;
   display: flex;
   justify-content: center;

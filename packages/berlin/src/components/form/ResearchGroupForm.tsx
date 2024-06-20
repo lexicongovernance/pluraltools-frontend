@@ -21,7 +21,11 @@ type ResearchGroupFormProps = {
   setGroupName: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
-function ResearchGroupForm({ formData, handleCreateGroup, setGroupName }: ResearchGroupFormProps) {
+export function ResearchGroupForm({
+  formData,
+  handleCreateGroup,
+  setGroupName,
+}: ResearchGroupFormProps) {
   const researchGroupSchema = z.object({
     name: z.string().min(2, { message: formData.input.requiredMessage }),
   });
@@ -61,5 +65,3 @@ function ResearchGroupForm({ formData, handleCreateGroup, setGroupName }: Resear
     </Form>
   );
 }
-
-export default ResearchGroupForm;

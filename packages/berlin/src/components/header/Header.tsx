@@ -1,6 +1,6 @@
 // React and third-party libraries
 import { useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 // Store
@@ -10,7 +10,7 @@ import { useAppStore } from '../../store';
 import header from '../../data/header';
 
 // API
-import { fetchAlerts, fetchEvents, fetchUserRegistrations, logout } from 'api';
+import { logout } from 'api';
 
 // Hooks
 import useUser from '../../hooks/useUser';
@@ -35,7 +35,7 @@ import {
   MobileButtons,
   NavButtons,
   NavContainer,
-  SyledHeader,
+  StyledHeader,
   ThemeButton,
 } from './Header.styled';
 import IconButton from '../icon-button';
@@ -58,29 +58,10 @@ function Header() {
     },
   });
 
-  const { data: registrationsData } = useQuery({
-    queryKey: [user?.id, 'registrations'],
-    queryFn: () => fetchUserRegistrations(user?.id ?? ''),
-    enabled: !!user,
-  });
-
-  const { data: alerts } = useQuery({
-    queryKey: ['alerts'],
-    queryFn: () => fetchAlerts(),
-    enabled: !!user,
-    refetchInterval: 10000, // Poll every 10 seconds
-  });
-
-  const { data: events } = useQuery({
-    queryKey: ['events'],
-    queryFn: () => fetchEvents(),
-    enabled: !!user,
-  });
-
   const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState(false);
 
   return (
-    <SyledHeader>
+    <StyledHeader>
       <HeaderContainer>
         <LogoContainer onClick={() => navigate('/')}>
           <LogoImage src={header.logo.src} alt={header.logo.alt} height={96} width={96} />
@@ -96,41 +77,9 @@ function Header() {
             <DesktopButtons>
               {user ? (
                 <>
-                  {registrationsData?.some(
-                    (registration) => registration.status === 'APPROVED',
-                  ) && (
-                    <>
-                      {alerts &&
-                        alerts.length > 0 &&
-                        alerts
-                          // newest alerts first
-                          .sort(
-                            (a, b) =>
-                              new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
-                          )
-                          ?.map((alert) => {
-                            return (
-                              alert.link &&
-                              alert.title && (
-                                <NavButton
-                                  key={alert.title + 1}
-                                  to={alert.link}
-                                  $color="secondary"
-                                  end
-                                >
-                                  {alert.title}
-                                </NavButton>
-                              )
-                            );
-                          })}
-                      <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
-                        My proposals
-                      </NavButton>
-                      <NavButton to={`/events/${events?.[0].id}/cycles`} $color="secondary">
-                        Agenda
-                      </NavButton>
-                    </>
-                  )}
+                  <NavButton to={`/events`} $color="secondary">
+                    Events
+                  </NavButton>
                   <Button onClick={() => mutateLogout()}>Log out</Button>
                   <IconButton
                     onClick={() => navigate('/account')}
@@ -166,30 +115,9 @@ function Header() {
             <MobileButtons>
               {user ? (
                 <>
-                  {registrationsData?.some(
-                    (registration) => registration.status === 'APPROVED',
-                  ) && (
-                    <>
-                      {alerts &&
-                        alerts.length > 0 &&
-                        alerts?.map((alert) => {
-                          return (
-                            alert.link &&
-                            alert.title && (
-                              <NavButton key={alert.title + 1} to={alert.link} $color="secondary">
-                                {alert.title}
-                              </NavButton>
-                            )
-                          );
-                        })}
-                      <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
-                        My proposals
-                      </NavButton>
-                      <NavButton to={`/events/${events?.[0].id}/cycles`} $color="secondary">
-                        Agenda
-                      </NavButton>
-                    </>
-                  )}
+                  <NavButton to={`/events`} $color="secondary">
+                    Events
+                  </NavButton>
 
                   <NavButton to="/account" $color="secondary">
                     Account
@@ -203,7 +131,7 @@ function Header() {
           </NavButtons>
         </BurgerMenuContainer>
       </HeaderContainer>
-    </SyledHeader>
+    </StyledHeader>
   );
 }
 
