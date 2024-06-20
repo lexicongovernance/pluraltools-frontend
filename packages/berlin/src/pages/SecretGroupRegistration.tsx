@@ -162,7 +162,9 @@ function SecretGroupRegistration() {
               errors={errors?.secret?.message ? [errors.secret.message] : []}
               required
             />
-            <Button type="submit">{groups.join.buttonText}</Button>
+            <Button disabled type="submit">
+              {groups.join.buttonText}
+            </Button>
           </Form>
         </FlexColumn>
       </FlexRowToColumn>

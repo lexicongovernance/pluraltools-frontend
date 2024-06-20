@@ -19,7 +19,7 @@ function Landing() {
           intersections where breakthroughs tend to emerge.
         </Body>
         <Body>
-          Our first convening is <Bold>May 28 in Berlin</Bold>, where the community is tasked to
+          Our first convening was <Bold>May 28 in Berlin</Bold>, where the community was tasked to
           allocate 100,000 ARB in research grants.
         </Body>
         <Body>

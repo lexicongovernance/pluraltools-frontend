@@ -80,6 +80,8 @@ function Results() {
             key={option.id}
             $expanded={expandedIndex === index}
             option={option}
+            cycleId={cycleId}
+            eventId={eventId}
             onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
           />
         ))}
