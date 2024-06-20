@@ -15,7 +15,7 @@ type EventCardProps = {
 
 function EventCard({ event, onClick }: EventCardProps) {
   return (
-    <Card>
+    <Card $gap="0">
       <ImageContainer>
         <img src={event.imageUrl} alt={`${event.name} image`} />
       </ImageContainer>
