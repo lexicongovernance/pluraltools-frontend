@@ -69,7 +69,9 @@ function Event() {
       {event && <EventCard event={event} />}
       <Subtitle>Questions</Subtitle>
       <TabsHeader tabNames={tabNames} onTabChange={setActiveTab} />
-      <TabsManager tabs={tabs} tab={activeTab} fallback={'Tab not found'} />
+      <FlexColumn>
+        <TabsManager tabs={tabs} tab={activeTab} fallback={'Tab not found'} />
+      </FlexColumn>
       {showGroups && <Groups groups={groupCategories} />}
       <RunningText />
     </FlexColumn>
@@ -124,7 +126,7 @@ function Groups({ groups }: { groups: GetGroupCategoriesResponse | null | undefi
         {groups.map((group) => (
           <Button
             key={group.id}
-            onClick={() => navigate(`/secret-groups?groupCategory=${group.name}`)}
+            onClick={() => navigate(`/secret-groups?groupcategory=${group.name}`)}
           >
             {group.name}
           </Button>
