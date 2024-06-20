@@ -20,8 +20,7 @@ import Button from '../components/button';
 import Cycles from '../components/cycles';
 import EventCard from '../components/event-card';
 import Link from '../components/link';
-import TabsHeader from '../components/tabs-header';
-import TabsManager from '../components/tabs-manager';
+import * as Tabs from '../components/tabs';
 
 function Event() {
   const { eventId } = useParams();
@@ -68,9 +67,9 @@ function Event() {
     <FlexColumn $gap="2rem">
       {event && <EventCard event={event} />}
       <Subtitle>Questions</Subtitle>
-      <TabsHeader tabNames={tabNames} onTabChange={setActiveTab} />
+      <Tabs.TabsHeader tabNames={tabNames} onTabChange={setActiveTab} />
       <FlexColumn>
-        <TabsManager tabs={tabs} tab={activeTab} fallback={'Tab not found'} />
+        <Tabs.TabsManager tabs={tabs} tab={activeTab} fallback={'Tab not found'} />
       </FlexColumn>
       {showGroups && <Groups groups={groupCategories} />}
       <RunningText />

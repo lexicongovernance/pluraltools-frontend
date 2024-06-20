@@ -4,7 +4,7 @@ import { Title } from '../components/typography/Title.styled';
 import useUser from '../hooks/useUser';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
-import { TabManager } from '../components/tab-manager';
+import { TabsManager } from '../components/tabs';
 import { Edit, X } from 'lucide-react';
 import {
   GetUserResponse,
@@ -64,7 +64,7 @@ function Account() {
           />
         )}
       </FlexRow>
-      <TabManager tabs={tabs} tab={tab} fallback={<Title>Tab not found</Title>} />
+      <TabsManager tabs={tabs} tab={tab} fallback={<Title>Tab not found</Title>} />
     </FlexColumn>
   );
 }

@@ -1,4 +1,4 @@
-export function TabManager<T extends string>({
+export function TabsManager<T extends string>({
   tabs,
   tab,
   fallback,

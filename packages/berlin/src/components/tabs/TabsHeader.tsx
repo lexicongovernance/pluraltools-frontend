@@ -8,7 +8,7 @@ type TabsHeaderProps = {
   onTabChange?: (tab: string) => void;
 };
 
-function TabsHeader({ tabNames, initialTab, onTabChange }: TabsHeaderProps) {
+export function TabsHeader({ tabNames, initialTab, onTabChange }: TabsHeaderProps) {
   const [activeTab, setActiveTab] = useState<string>(initialTab || tabNames[0]);
 
   const handleTabClick = (tab: string) => {
@@ -34,5 +34,3 @@ function TabsHeader({ tabNames, initialTab, onTabChange }: TabsHeaderProps) {
     </Tabs>
   );
 }
-
-export default TabsHeader;
