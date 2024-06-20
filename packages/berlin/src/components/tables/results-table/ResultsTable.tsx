@@ -1,6 +1,6 @@
 // React and third-party libraries
-import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 // API
 import { fetchOptionUsers, fetchRegistrationData, fetchRegistrationFields } from 'api';
@@ -9,19 +9,15 @@ import { fetchOptionUsers, fetchRegistrationData, fetchRegistrationFields } from
 import { useAppStore } from '../../../store';
 
 // Components
-import { Body } from '../../typography/Body.styled';
-import { Bold } from '../../typography/Bold.styled';
 import { FlexColumn } from '../../containers/FlexColumn.styled';
 import { FlexRow } from '../../containers/FlexRow.styled';
 import IconButton from '../../icon-button';
+import { Body } from '../../typography/Body.styled';
+import { Bold } from '../../typography/Bold.styled';
 
 // Styled Components
-<<<<<<< HEAD
-import { Card, Funding, Icon, Plurality, TitleContainer } from './ResultsTable.styled';
-=======
-import { Card } from './ResultsTable.styled';
 import { useNavigate } from 'react-router-dom';
->>>>>>> main
+import { Card, Funding, Icon, Plurality, TitleContainer } from './ResultsTable.styled';
 
 type ResultsTableProps = {
   $expanded: boolean;
@@ -181,9 +177,6 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
           <Bold>Voter affiliations:</Bold> {option.listOfGroupNames.join(', ')}
         </Body>
         <Body>
-<<<<<<< HEAD
-          <Bold>Voter affiliations:</Bold> {option.listOfGroupNames.join(', ')}
-=======
           <IconButton
             $padding={0}
             $color="secondary"
@@ -192,7 +185,6 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
             $width={24}
             $height={24}
           />
->>>>>>> main
         </Body>
       </FlexColumn>
     </Card>
