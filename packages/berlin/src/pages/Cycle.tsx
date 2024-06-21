@@ -2,7 +2,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import styled from 'styled-components';
 import toast from 'react-hot-toast';
 
 // API
@@ -29,6 +28,7 @@ import { FINAL_QUESTION_TITLE, FIVE_MINUTES_IN_SECONDS, INITIAL_HEARTS } from '.
 // Components
 import { Body } from '../components/typography/Body.styled';
 import { Bold } from '../components/typography/Bold.styled';
+import { Card } from '../components/onboarding/Onboaring.styled';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
@@ -44,12 +44,6 @@ import OptionCard from '../components/option-card';
 type Order = 'asc' | 'desc';
 type LocalUserVotes = { optionId: string; numOfVotes: number }[];
 type QuestionOption = GetCycleResponse['forumQuestions'][number]['questionOptions'][number];
-
-const Card = styled(FlexColumn)`
-  padding: 0rem;
-  background-color: var(--color-white);
-  text-align: left;
-`;
 
 function Cycle() {
   const queryClient = useQueryClient();
