@@ -537,12 +537,12 @@ function RegisterForm(props: {
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [selectedGroupId, setSelectedGroupId] = useState<string>('');
-  const prevSelectGroupId = props.groupId ?? 'none';
 
   // i want to differentiate between when a group is selected and it is not
   // so i can show the correct registration fields
   // i will use the selectedGroupId to do this
+  const [selectedGroupId, setSelectedGroupId] = useState<string>('');
+  const prevSelectGroupId = props.groupId ?? 'none';
 
   const form = useForm({
     defaultValues: useMemo(
