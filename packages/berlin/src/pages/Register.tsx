@@ -33,55 +33,19 @@ import {
 import useUser from '../hooks/useUser';
 
 // Components
-import Button from '../components/button';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
+import { FlexRow } from '../components/containers/FlexRow.styled';
 import { Form } from '../components/containers/Form.styled';
 import { FormInput } from '../components/form';
-import Select from '../components/select';
-import Label from '../components/typography/Label';
-import { Subtitle } from '../components/typography/Subtitle.styled';
 import { SafeArea } from '../layout/Layout.styled';
-
-const sortRegistrationsByCreationDate = (registrations: GetRegistrationResponseType[]) => {
-  return [
-    ...registrations.sort((a, b) => {
-      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-    }),
-  ];
-};
-
-const createRegistrationForms = ({
-  registrations,
-  usersToGroups,
-}: {
-  registrations: GetRegistrationsResponseType | undefined | null;
-  usersToGroups: GetUsersToGroupsResponse | undefined | null;
-}) => {
-  const sortedRegistrationsByCreationDate = sortRegistrationsByCreationDate(registrations || []);
-
-  const registrationForms: {
-    key: string | 'create';
-    registration?: GetRegistrationResponseType;
-    group?: GetUsersToGroupsResponse[number]['group'];
-    mode: 'edit' | 'create';
-  }[] = sortedRegistrationsByCreationDate.map((reg) => {
-    return {
-      key: reg.id || '',
-      registration: reg,
-      group: usersToGroups?.find((userToGroup) => userToGroup.group.id === reg.groupId)?.group,
-      mode: 'edit',
-    };
-  });
-
-  registrationForms.push({
-    key: 'create',
-    mode: 'create',
-  });
-
-  return registrationForms;
-};
+import { Subtitle } from '../components/typography/Subtitle.styled';
+import Button from '../components/button';
+import Dots from '../components/dots';
+import Label from '../components/typography/Label';
+import Select from '../components/select';
 
 function Register() {
+  const [step, setStep] = useState<number | null>(null);
   const { user, isLoading } = useUser();
   const { eventId } = useParams();
   const [selectedRegistrationFormKey, setSelectedRegistrationFormKey] = useState<
@@ -117,6 +81,22 @@ function Register() {
     queryFn: () => fetchEventGroupCategories(eventId || ''),
     enabled: !!eventId,
   });
+
+  const defaultStep = useMemo(() => {
+    // check if the user is already in all required groups for the event
+    const requiredCategories = groupCategories?.filter((category) => category.required);
+    const userGroups = usersToGroups?.map((userToGroup) => userToGroup.group.groupCategoryId);
+
+    if (requiredCategories && userGroups) {
+      const userGroupCategories = requiredCategories.map((category) => category.id);
+
+      if (userGroupCategories.every((category) => userGroups.includes(category))) {
+        return 1;
+      }
+    }
+
+    return 0;
+  }, [groupCategories, usersToGroups]);
 
   const multipleRegistrationData = useQueries({
     queries:
@@ -169,61 +149,120 @@ function Register() {
     return <Subtitle>Loading...</Subtitle>;
   }
 
+  const getRecentStep = (step: number | null, defaultStep: number) => {
+    if (step === null) {
+      return defaultStep;
+    }
+
+    return step;
+  };
+
   return (
     <SafeArea>
       <FlexColumn $gap="1.5rem">
-        {groupCategories
-          ?.filter((groupCategory) => groupCategory.required)
-          .map((groupCategory) => (
-            <SelectEventGroup
-              key={groupCategory.id}
-              groupCategory={groupCategory}
-              userToGroups={usersToGroups}
-              user={user}
-            />
-          ))}
-        <SelectRegistrationDropdown
-          onSelectedRegistrationFormKeyChange={setSelectedRegistrationFormKey}
-          registrations={registrations}
-          usersToGroups={usersToGroups}
-          selectedRegistrationFormKey={selectedRegistrationFormKey}
-          multipleRegistrationData={multipleRegistrationData}
-          registrationFields={registrationFields}
-        />
-        {createRegistrationForms({ registrations, usersToGroups }).map((form, idx) => {
-          return (
-            <RegisterForm
-              show={showRegistrationForm({
-                selectedRegistrationFormKey,
-                registrationId: form.registration?.id,
-              })}
+        {getRecentStep(step, defaultStep) === 0 &&
+          groupCategories
+            ?.filter((groupCategory) => groupCategory.required)
+            .map((groupCategory) => (
+              <SelectEventGroup
+                key={groupCategory.id}
+                groupCategory={groupCategory}
+                userToGroups={usersToGroups}
+                user={user}
+                afterSubmit={() => setStep(1)}
+              />
+            ))}
+        {getRecentStep(step, defaultStep) === 1 && (
+          <>
+            <SelectRegistrationDropdown
+              onSelectedRegistrationFormKeyChange={setSelectedRegistrationFormKey}
+              registrations={registrations}
               usersToGroups={usersToGroups}
-              registrationData={multipleRegistrationData[form.registration?.id || '']?.data}
-              key={idx}
-              user={user}
-              groupId={form.group?.id}
+              selectedRegistrationFormKey={selectedRegistrationFormKey}
+              multipleRegistrationData={multipleRegistrationData}
               registrationFields={registrationFields}
-              registrationId={form.registration?.id}
-              mode={form.mode}
-              isLoading={multipleRegistrationData[form.registration?.id || '']?.loading}
-              event={event}
-              onRegistrationFormCreate={onRegistrationFormCreate}
             />
-          );
-        })}
+            {createRegistrationForms({ registrations, usersToGroups }).map((form, idx) => {
+              return (
+                <RegisterForm
+                  show={showRegistrationForm({
+                    selectedRegistrationFormKey,
+                    registrationId: form.registration?.id,
+                  })}
+                  usersToGroups={usersToGroups}
+                  registrationData={multipleRegistrationData[form.registration?.id || '']?.data}
+                  key={idx}
+                  user={user}
+                  groupId={form.group?.id}
+                  registrationFields={registrationFields}
+                  registrationId={form.registration?.id}
+                  mode={form.mode}
+                  isLoading={multipleRegistrationData[form.registration?.id || '']?.loading}
+                  event={event}
+                  onRegistrationFormCreate={onRegistrationFormCreate}
+                />
+              );
+            })}
+          </>
+        )}
+        <Dots
+          dots={2}
+          activeDotIndex={getRecentStep(step, defaultStep)}
+          handleClick={(i) => setStep(i)}
+        />
       </FlexColumn>
     </SafeArea>
   );
 }
+const sortRegistrationsByCreationDate = (registrations: GetRegistrationResponseType[]) => {
+  return [
+    ...registrations.sort((a, b) => {
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    }),
+  ];
+};
+
+const createRegistrationForms = ({
+  registrations,
+  usersToGroups,
+}: {
+  registrations: GetRegistrationsResponseType | undefined | null;
+  usersToGroups: GetUsersToGroupsResponse | undefined | null;
+}) => {
+  const sortedRegistrationsByCreationDate = sortRegistrationsByCreationDate(registrations || []);
+
+  const registrationForms: {
+    key: string | 'create';
+    registration?: GetRegistrationResponseType;
+    group?: GetUsersToGroupsResponse[number]['group'];
+    mode: 'edit' | 'create';
+  }[] = sortedRegistrationsByCreationDate.map((reg) => {
+    return {
+      key: reg.id || '',
+      registration: reg,
+      group: usersToGroups?.find((userToGroup) => userToGroup.group.id === reg.groupId)?.group,
+      mode: 'edit',
+    };
+  });
+
+  registrationForms.push({
+    key: 'create',
+    mode: 'create',
+  });
+
+  return registrationForms;
+};
 
 const SelectEventGroup = ({
   groupCategory,
   userToGroups,
   user,
+  afterSubmit,
 }: {
   userToGroups: GetUsersToGroupsResponse | null | undefined;
   groupCategory: GetGroupCategoriesResponse[number] | null | undefined;
   user: GetUserResponse | null | undefined;
+  afterSubmit?: () => void;
 }) => {
   // fetch all the groups in the category
   // show a select with all the groups
@@ -244,6 +283,7 @@ const SelectEventGroup = ({
       }
       queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
       toast.success(`Joined group successfully!`);
+      afterSubmit?.();
     },
     onError: () => {
       toast.error('Something went wrong.');
@@ -264,6 +304,7 @@ const SelectEventGroup = ({
 
       queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
       toast.success(`Updated group successfully!`);
+      afterSubmit?.();
     },
     onError: () => {
       toast.error('Something went wrong.');
@@ -297,12 +338,14 @@ const SelectEventGroup = ({
         placeholder="Select a Group"
         onChange={setNewGroup}
       />
-      <Button
-        disabled={!newGroup || (userGroup && userGroup.group.id === newGroup)}
-        onClick={onSubmit}
-      >
-        Save
-      </Button>
+      <FlexRow>
+        <Button
+          disabled={!newGroup || (userGroup && userGroup.group.id === newGroup)}
+          onClick={onSubmit}
+        >
+          Save
+        </Button>
+      </FlexRow>
     </FlexColumn>
   );
 };
