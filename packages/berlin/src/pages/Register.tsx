@@ -208,7 +208,14 @@ function Register() {
         <Dots
           dots={2}
           activeDotIndex={getRecentStep(step, defaultStep)}
-          handleClick={(i) => setStep(i)}
+          handleClick={(i) => {
+            // the user is not allowed to go out of the first step
+            if (defaultStep == 0) {
+              return;
+            }
+
+            setStep(i);
+          }}
         />
       </FlexColumn>
     </SafeArea>
