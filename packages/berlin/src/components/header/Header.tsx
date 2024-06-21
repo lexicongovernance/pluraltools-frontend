@@ -45,7 +45,6 @@ import IconButton from '../icon-button';
 function Header() {
   const queryClient = useQueryClient();
   const { user } = useUser();
-  // const location = useLocation();
   const theme = useAppStore((state) => state.theme);
   const toggleTheme = useAppStore((state) => state.toggleTheme);
   const navigate = useNavigate();
@@ -86,12 +85,10 @@ function Header() {
       <HeaderContainer>
         <LogoContainer onClick={() => navigate('/')}>
           <img src={`/logos/lexicon-${theme}.svg`} alt="Lexicon Logo" height={64} width={64} />
-          {/* {location.pathname === '/' && ( */}
           <LogoTextContainer>
             <LogoTitle>{header.title}</LogoTitle>
             <LogoSubtitle>{header.subtitle}</LogoSubtitle>
           </LogoTextContainer>
-          {/* )} */}
         </LogoContainer>
         <NavContainer>
           <NavButtons>
