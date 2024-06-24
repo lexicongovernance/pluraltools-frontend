@@ -56,7 +56,7 @@ function Onboarding() {
       <FlexColumn $gap="3rem">
         <Subtitle>{data[step].title}</Subtitle>
         <BodyContent content={data[step].body} />
-        <Dots dots={data.length} activeDotIndex={step} setStep={setStep} />
+        <Dots dots={data.length} activeDotIndex={step} handleClick={(i) => setStep(i)} />
         <FlexRow>
           <Button onClick={handleSkip} $color="secondary">
             Skip

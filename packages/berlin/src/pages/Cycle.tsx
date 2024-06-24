@@ -219,8 +219,8 @@ function Cycle() {
   };
 
   const sortByLead = (a: QuestionOption, b: QuestionOption, order: Order) => {
-    const leadA = (a.user.lastName || a.user.username).toUpperCase();
-    const leadB = (b.user.lastName || b.user.username).toUpperCase();
+    const leadA = (a.user?.lastName || a.user?.username || '').toUpperCase();
+    const leadB = (b.user?.lastName || b.user?.username || '').toUpperCase();
 
     if (leadA === leadB) {
       return sortId(a, b, order);
@@ -231,9 +231,9 @@ function Cycle() {
 
   const sortByAffiliation = (a: QuestionOption, b: QuestionOption, order: Order) => {
     const affiliationA =
-      a.user.groups.find((group) => group.groupCategory.required)?.name.toUpperCase() ?? '';
+      a.user?.groups?.find((group) => group.groupCategory?.required)?.name.toUpperCase() ?? '';
     const affiliationB =
-      b.user.groups.find((group) => group.groupCategory.required)?.name.toUpperCase() ?? '';
+      b.user?.groups?.find((group) => group.groupCategory?.required)?.name.toUpperCase() ?? '';
 
     if (affiliationA === affiliationB) {
       return sortId(a, b, order);

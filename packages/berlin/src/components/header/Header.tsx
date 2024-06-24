@@ -1,7 +1,7 @@
 // React and third-party libraries
-import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Store
 import { useAppStore } from '../../store';
@@ -21,13 +21,13 @@ import NavButton from '../nav-button';
 import ZupassLoginButton from '../zupass-button/ZupassLoginButton';
 
 // Styled components
+import IconButton from '../icon-button';
 import {
   Bar,
   BurgerMenuContainer,
   DesktopButtons,
   HeaderContainer,
   LogoContainer,
-  LogoImage,
   LogoSubtitle,
   LogoTextContainer,
   LogoTitle,
@@ -38,12 +38,10 @@ import {
   StyledHeader,
   ThemeButton,
 } from './Header.styled';
-import IconButton from '../icon-button';
 
 function Header() {
   const queryClient = useQueryClient();
   const { user } = useUser();
-  const location = useLocation();
   const theme = useAppStore((state) => state.theme);
   const toggleTheme = useAppStore((state) => state.toggleTheme);
   const navigate = useNavigate();
@@ -64,13 +62,11 @@ function Header() {
     <StyledHeader>
       <HeaderContainer>
         <LogoContainer onClick={() => navigate('/')}>
-          <LogoImage src={header.logo.src} alt={header.logo.alt} height={96} width={96} />
-          {location.pathname === '/' && (
-            <LogoTextContainer>
-              <LogoTitle>{header.title}</LogoTitle>
-              <LogoSubtitle>{header.subtitle}</LogoSubtitle>
-            </LogoTextContainer>
-          )}
+          <img src={`/logos/lexicon-${theme}.svg`} alt="Lexicon Logo" height={64} width={64} />
+          <LogoTextContainer>
+            <LogoTitle>{header.title}</LogoTitle>
+            <LogoSubtitle>{header.subtitle}</LogoSubtitle>
+          </LogoTextContainer>
         </LogoContainer>
         <NavContainer>
           <NavButtons>
