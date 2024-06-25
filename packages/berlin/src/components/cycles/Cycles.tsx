@@ -1,6 +1,7 @@
 import { GetCycleResponse } from 'api';
 import { Body } from '../typography/Body.styled';
 import { CycleContainer } from './Cycles.styled';
+import { useNavigate } from 'react-router-dom';
 
 type CyclesProps = {
   cycles: GetCycleResponse[] | undefined;
@@ -8,6 +9,7 @@ type CyclesProps = {
 };
 
 function Cycles({ cycles, errorMessage }: CyclesProps) {
+  const navigate = useNavigate();
   const formatDate = (date: string) => {
     const eventEndDate = new Date(date);
     return eventEndDate.toLocaleDateString();
@@ -17,7 +19,10 @@ function Cycles({ cycles, errorMessage }: CyclesProps) {
     <>
       {cycles?.length ? (
         cycles.map((cycle) => (
-          <CycleContainer key={cycle.id}>
+          <CycleContainer
+            key={cycle.id}
+            onClick={() => navigate(`/events/${cycle.eventId}/cycles/${cycle.id}`)}
+          >
             <Body>{cycle.forumQuestions[0]?.questionTitle}</Body>
             <Body>{formatDate(cycle.endAt)}</Body>
           </CycleContainer>

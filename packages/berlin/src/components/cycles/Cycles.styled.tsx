@@ -6,4 +6,5 @@ export const CycleContainer = styled(FlexRowToColumn)`
   padding: 2rem;
   justify-content: space-between;
   border-radius: 0.5rem;
+  cursor: pointer;
 `;

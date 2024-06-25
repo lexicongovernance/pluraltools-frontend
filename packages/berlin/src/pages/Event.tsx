@@ -43,8 +43,8 @@ function Event() {
     enabled: !!eventId,
   });
 
-  const openCycles = useMemo(
-    () => eventCycles?.filter((cycle) => cycle.status === 'OPEN'),
+  const upcomingCycles = useMemo(
+    () => eventCycles?.filter((cycle) => cycle.status === 'OPEN' || cycle.status === 'UPCOMING'),
     [eventCycles],
   );
   const closedCycles = useMemo(
@@ -56,12 +56,12 @@ function Event() {
   const [activeTab, setActiveTab] = useState<string>('upcoming');
 
   const tabs = {
-    upcoming: <Cycles cycles={openCycles} errorMessage="No upcoming events" />,
+    upcoming: <Cycles cycles={upcomingCycles} errorMessage="No upcoming events" />,
     past: <Cycles cycles={closedCycles} errorMessage="No past events" />,
   };
 
-  // TODO: flag for showing groups.
-  const showGroups = true;
+  // Show groups if there are upcoming cycles
+  const showGroups = upcomingCycles?.length;
 
   return (
     <FlexColumn $gap="2rem">
@@ -117,7 +117,6 @@ function RunningText() {
 
 function Groups({ groups }: { groups: GetGroupCategoriesResponse | null | undefined }) {
   const navigate = useNavigate();
-
   return groups ? (
     <>
       <Subtitle>Groups</Subtitle>
