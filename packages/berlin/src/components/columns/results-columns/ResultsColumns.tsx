@@ -10,7 +10,7 @@ type ResultsColumnsType = {
 function ResultsColumns({ $showFunding }: ResultsColumnsType) {
   const theme = useAppStore((state) => state.theme);
   return (
-    <Card $showFunding={$showFunding}>
+    <Card $showFunding={$showFunding} className="second-step">
       <Bold>Title</Bold>
       <IconButton
         $padding={0}

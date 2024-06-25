@@ -93,6 +93,7 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
     <Card $expanded={$expanded} $showFunding={option.allocatedFunding !== null} $rowgap="2rem">
       <TitleContainer>
         <IconButton
+          className="third-step"
           $padding={0}
           $color="secondary"
           icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: '' }}
@@ -104,6 +105,7 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
       <FlexRow>
         <Icon>
           <IconButton
+            className="second-step"
             $padding={0}
             $color="secondary"
             icon={{ src: `/icons/heart-full.svg`, alt: 'Hearts' }}
@@ -152,6 +154,7 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
         <Body>{option.allocatedFunding} ARB</Body>
 
         <IconButton
+          className="third-step"
           $padding={0}
           $color="secondary"
           icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: '' }}
