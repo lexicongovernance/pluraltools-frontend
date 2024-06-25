@@ -1,16 +1,17 @@
 // React and third-party libraries
-import { RouterProvider, createBrowserRouter, redirect } from 'react-router-dom';
 import { QueryClient } from '@tanstack/react-query';
+import { RouterProvider, createBrowserRouter, redirect } from 'react-router-dom';
 
 // Store
 import { useAppStore } from './store';
 
 // API
-import { fetchEvents, fetchUser, fetchCycle, fetchRegistrations } from 'api';
+import { fetchCycle, fetchEvents, fetchRegistrations, fetchUser } from 'api';
 
 // Pages
 import { default as BerlinLayout } from './layout/index.ts';
 import Account from './pages/Account';
+import Comments from './pages/Comments.tsx';
 import Cycle from './pages/Cycle.tsx';
 import DataPolicy from './pages/DataPolicy.tsx';
 import Event from './pages/Event.tsx';
@@ -18,7 +19,6 @@ import Events from './pages/Events.tsx';
 import Holding from './pages/Holding';
 import Landing from './pages/Landing';
 import Onboarding from './pages/Onboarding';
-import Comments from './pages/Comments.tsx';
 import PassportPopupRedirect from './pages/Popup';
 import PublicGroupRegistration from './pages/PublicGroupRegistration.tsx';
 import Register from './pages/Register';

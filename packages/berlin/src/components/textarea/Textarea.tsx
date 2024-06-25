@@ -5,14 +5,16 @@ import Label from '../typography/Label';
 
 // Styled Components
 import { StyledTextarea } from './Textarea.styled';
+import { Error } from '../typography/Error.styled';
 
 interface TextareaProps extends React.InputHTMLAttributes<HTMLTextAreaElement> {
   label: string;
   $required?: boolean;
+  errors?: string[];
 }
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ label, $required, ...props }, ref) => {
+  ({ label, $required, errors, ...props }, ref) => {
     return (
       <FlexColumn>
         {label && (
@@ -21,6 +23,13 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           </Label>
         )}
         <StyledTextarea {...props} name={props.name} ref={ref} />
+        {errors && errors?.length > 0 && errors[0] !== '' && (
+          <FlexColumn $gap="0.25rem">
+            {errors.map((error, i) => (
+              <Error key={i}>{error}</Error>
+            ))}
+          </FlexColumn>
+        )}
       </FlexColumn>
     );
   },

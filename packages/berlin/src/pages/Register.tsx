@@ -1,87 +1,51 @@
 // React and third-party libraries
-import { Control, Controller, FieldErrors, UseFormRegister, useForm } from 'react-hook-form';
-import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate, useParams } from 'react-router-dom';
-import { z } from 'zod';
+import { useEffect, useMemo, useState } from 'react';
 import ContentLoader from 'react-content-loader';
+import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // API
 import {
+  GetEventResponse,
+  GetGroupCategoriesResponse,
+  GetRegistrationsResponseType,
+  GetUsersToGroupsResponse,
   fetchEvent,
+  fetchEventGroupCategories,
+  fetchGroups,
   fetchRegistrationData,
   fetchRegistrationFields,
   fetchRegistrations,
   fetchUsersToGroups,
-  GetEventResponse,
-  GetRegistrationsResponseType,
-  GetUsersToGroupsResponse,
   postRegistration,
+  postUsersToGroups,
   putRegistration,
+  putUsersToGroups,
   type GetRegistrationDataResponse,
   type GetRegistrationFieldsResponse,
   type GetRegistrationResponseType,
   type GetUserResponse,
-  type RegistrationFieldOption,
 } from 'api';
 
 // Hooks
 import useUser from '../hooks/useUser';
 
 // Components
-import { Error } from '../components/typography/Error.styled';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
+import { FlexRow } from '../components/containers/FlexRow.styled';
 import { Form } from '../components/containers/Form.styled';
+import { FormInput } from '../components/form';
 import { SafeArea } from '../layout/Layout.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import Button from '../components/button';
-import CharacterCounter from '../components/typography/CharacterCount.styled';
-import Input from '../components/input';
+import Dots from '../components/dots';
 import Label from '../components/typography/Label';
 import Select from '../components/select';
-import Textarea from '../components/textarea';
-
-const sortRegistrationsByCreationDate = (registrations: GetRegistrationResponseType[]) => {
-  return [
-    ...registrations.sort((a, b) => {
-      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-    }),
-  ];
-};
-
-const createRegistrationForms = ({
-  registrations,
-  usersToGroups,
-}: {
-  registrations: GetRegistrationsResponseType | undefined | null;
-  usersToGroups: GetUsersToGroupsResponse | undefined | null;
-}) => {
-  const sortedRegistrationsByCreationDate = sortRegistrationsByCreationDate(registrations || []);
-
-  const registrationForms: {
-    key: string | 'create';
-    registration?: GetRegistrationResponseType;
-    group?: GetUsersToGroupsResponse[number]['group'];
-    mode: 'edit' | 'create';
-  }[] = sortedRegistrationsByCreationDate.map((reg) => {
-    return {
-      key: reg.id || '',
-      registration: reg,
-      group: usersToGroups?.find((userToGroup) => userToGroup.group.id === reg.groupId)?.group,
-      mode: 'edit',
-    };
-  });
-
-  registrationForms.push({
-    key: 'create',
-    mode: 'create',
-  });
-
-  return registrationForms;
-};
 
 function Register() {
+  const [step, setStep] = useState<number | null>(null);
   const { user, isLoading } = useUser();
   const { eventId } = useParams();
   const [selectedRegistrationFormKey, setSelectedRegistrationFormKey] = useState<
@@ -107,10 +71,32 @@ function Register() {
   });
 
   const { data: usersToGroups } = useQuery({
-    queryKey: ['user', 'groups', user?.id],
+    queryKey: ['user', user?.id, 'users-to-groups'],
     queryFn: () => fetchUsersToGroups(user?.id || ''),
     enabled: !!user?.id,
   });
+
+  const { data: groupCategories } = useQuery({
+    queryKey: ['event', eventId, 'group-categories'],
+    queryFn: () => fetchEventGroupCategories(eventId || ''),
+    enabled: !!eventId,
+  });
+
+  const defaultStep = useMemo(() => {
+    // check if the user is already in all required groups for the event
+    const requiredCategories = groupCategories?.filter((category) => category.required);
+    const userGroups = usersToGroups?.map((userToGroup) => userToGroup.group.groupCategoryId);
+
+    if (requiredCategories && userGroups) {
+      const userGroupCategories = requiredCategories.map((category) => category.id);
+
+      if (userGroupCategories.every((category) => userGroups.includes(category))) {
+        return 1;
+      }
+    }
+
+    return 0;
+  }, [groupCategories, usersToGroups]);
 
   const multipleRegistrationData = useQueries({
     queries:
@@ -163,47 +149,213 @@ function Register() {
     return <Subtitle>Loading...</Subtitle>;
   }
 
+  const getRecentStep = (step: number | null, defaultStep: number) => {
+    if (step === null) {
+      return defaultStep;
+    }
+
+    return step;
+  };
+
   return (
     <SafeArea>
       <FlexColumn $gap="1.5rem">
-        <SelectRegistrationDropdown
-          onSelectedRegistrationFormKeyChange={setSelectedRegistrationFormKey}
-          registrations={registrations}
-          usersToGroups={usersToGroups}
-          selectedRegistrationFormKey={selectedRegistrationFormKey}
-          multipleRegistrationData={multipleRegistrationData}
-          registrationFields={registrationFields}
-        />
-        {createRegistrationForms({ registrations, usersToGroups }).map((form, idx) => {
-          return (
-            <RegisterForm
-              show={showRegistrationForm({
-                selectedRegistrationFormKey,
-                registrationId: form.registration?.id,
-              })}
+        {getRecentStep(step, defaultStep) === 0 &&
+          groupCategories
+            ?.filter((groupCategory) => groupCategory.required)
+            .map((groupCategory) => (
+              <SelectEventGroup
+                key={groupCategory.id}
+                groupCategory={groupCategory}
+                userToGroups={usersToGroups}
+                user={user}
+                afterSubmit={() => setStep(1)}
+              />
+            ))}
+        {getRecentStep(step, defaultStep) === 1 && (
+          <>
+            <SelectRegistrationDropdown
+              onSelectedRegistrationFormKeyChange={setSelectedRegistrationFormKey}
+              registrations={registrations}
               usersToGroups={usersToGroups}
-              userIsApproved={
-                registrations?.some((registration) => registration.status === 'APPROVED')
-                  ? true
-                  : false
-              }
-              registrationData={multipleRegistrationData[form.registration?.id || '']?.data}
-              key={idx}
-              user={user}
-              groupId={form.group?.id}
+              selectedRegistrationFormKey={selectedRegistrationFormKey}
+              multipleRegistrationData={multipleRegistrationData}
               registrationFields={registrationFields}
-              registrationId={form.registration?.id}
-              mode={form.mode}
-              isLoading={multipleRegistrationData[form.registration?.id || '']?.loading}
-              event={event}
-              onRegistrationFormCreate={onRegistrationFormCreate}
             />
-          );
-        })}
+            {createRegistrationForms({ registrations, usersToGroups }).map((form, idx) => {
+              return (
+                <RegisterForm
+                  show={showRegistrationForm({
+                    selectedRegistrationFormKey,
+                    registrationId: form.registration?.id,
+                  })}
+                  usersToGroups={usersToGroups}
+                  registrationData={multipleRegistrationData[form.registration?.id || '']?.data}
+                  key={idx}
+                  user={user}
+                  groupId={form.group?.id}
+                  registrationFields={registrationFields}
+                  registrationId={form.registration?.id}
+                  mode={form.mode}
+                  isLoading={multipleRegistrationData[form.registration?.id || '']?.loading}
+                  event={event}
+                  onRegistrationFormCreate={onRegistrationFormCreate}
+                />
+              );
+            })}
+          </>
+        )}
+        <Dots
+          dots={2}
+          activeDotIndex={getRecentStep(step, defaultStep)}
+          handleClick={(i) => {
+            // the user is not allowed to go out of the first step
+            if (defaultStep == 0) {
+              return;
+            }
+
+            setStep(i);
+          }}
+        />
       </FlexColumn>
     </SafeArea>
   );
 }
+const sortRegistrationsByCreationDate = (registrations: GetRegistrationResponseType[]) => {
+  return [
+    ...registrations.sort((a, b) => {
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    }),
+  ];
+};
+
+const createRegistrationForms = ({
+  registrations,
+  usersToGroups,
+}: {
+  registrations: GetRegistrationsResponseType | undefined | null;
+  usersToGroups: GetUsersToGroupsResponse | undefined | null;
+}) => {
+  const sortedRegistrationsByCreationDate = sortRegistrationsByCreationDate(registrations || []);
+
+  const registrationForms: {
+    key: string | 'create';
+    registration?: GetRegistrationResponseType;
+    group?: GetUsersToGroupsResponse[number]['group'];
+    mode: 'edit' | 'create';
+  }[] = sortedRegistrationsByCreationDate.map((reg) => {
+    return {
+      key: reg.id || '',
+      registration: reg,
+      group: usersToGroups?.find((userToGroup) => userToGroup.group.id === reg.groupId)?.group,
+      mode: 'edit',
+    };
+  });
+
+  registrationForms.push({
+    key: 'create',
+    mode: 'create',
+  });
+
+  return registrationForms;
+};
+
+const SelectEventGroup = ({
+  groupCategory,
+  userToGroups,
+  user,
+  afterSubmit,
+}: {
+  userToGroups: GetUsersToGroupsResponse | null | undefined;
+  groupCategory: GetGroupCategoriesResponse[number] | null | undefined;
+  user: GetUserResponse | null | undefined;
+  afterSubmit?: () => void;
+}) => {
+  // fetch all the groups in the category
+  // show a select with all the groups
+  // if the user is in a group in that category, show that group as selected
+  const [newGroup, setNewGroup] = useState<string | undefined>('');
+  const queryClient = useQueryClient();
+  const { data: groups } = useQuery({
+    queryKey: ['group-category', groupCategory?.id, 'groups'],
+    queryFn: () => fetchGroups({ groupCategoryId: groupCategory?.id ?? '' }),
+    enabled: !!groupCategory?.id,
+  });
+
+  const { mutate: postUsersToGroupsMutation } = useMutation({
+    mutationFn: postUsersToGroups,
+    onSuccess: (body) => {
+      if (!body) {
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
+      toast.success(`Joined group successfully!`);
+      afterSubmit?.();
+    },
+    onError: () => {
+      toast.error('Something went wrong.');
+    },
+  });
+
+  const { mutate: putUsersToGroupsMutation } = useMutation({
+    mutationFn: putUsersToGroups,
+    onSuccess: (body) => {
+      if (!body) {
+        return;
+      }
+
+      if ('errors' in body) {
+        toast.error(body.errors.join(', '));
+        return;
+      }
+
+      queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
+      toast.success(`Updated group successfully!`);
+      afterSubmit?.();
+    },
+    onError: () => {
+      toast.error('Something went wrong.');
+    },
+  });
+
+  const userGroup = userToGroups?.find(
+    (userToGroup) => userToGroup.group.groupCategory?.id === groupCategory?.id,
+  );
+
+  const onSubmit = () => {
+    if (userGroup && newGroup) {
+      // update the group
+      putUsersToGroupsMutation({
+        groupId: newGroup,
+        userToGroupId: userGroup.id,
+      });
+      return;
+    }
+
+    // create a new group
+    postUsersToGroupsMutation({ groupId: newGroup });
+  };
+
+  return (
+    <FlexColumn>
+      <Label>Select {groupCategory?.name} group</Label>
+      <Select
+        value={newGroup || userGroup?.group.id || undefined}
+        options={groups?.map((group) => ({ id: group.id, name: group.name })) || []}
+        placeholder="Select a Group"
+        onChange={setNewGroup}
+      />
+      <FlexRow>
+        <Button
+          disabled={!newGroup || (userGroup && userGroup.group.id === newGroup)}
+          onClick={onSubmit}
+        >
+          Save
+        </Button>
+      </FlexRow>
+    </FlexColumn>
+  );
+};
 
 const SelectRegistrationDropdown = ({
   usersToGroups,
@@ -372,7 +524,6 @@ const filterRegistrationFields = (
 
 function RegisterForm(props: {
   user: GetUserResponse | null | undefined;
-  userIsApproved: boolean;
   usersToGroups: GetUsersToGroupsResponse | null | undefined;
   registrationFields: GetRegistrationFieldsResponse | null | undefined;
   registrationId: string | null | undefined;
@@ -386,27 +537,26 @@ function RegisterForm(props: {
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [selectedGroupId, setSelectedGroupId] = useState<string>('');
-  const prevSelectGroupId = props.groupId ?? 'none';
 
   // i want to differentiate between when a group is selected and it is not
   // so i can show the correct registration fields
   // i will use the selectedGroupId to do this
+  const [selectedGroupId, setSelectedGroupId] = useState<string>('');
+  const prevSelectGroupId = props.groupId ?? 'none';
 
-  const {
-    register,
-    formState: { errors, isSubmitting },
-    control,
-    handleSubmit,
-    getValues,
-    reset,
-  } = useForm({
+  const form = useForm({
     defaultValues: useMemo(
       () => getDefaultValues(props.registrationData),
       [props.registrationData],
     ),
     mode: 'all',
   });
+
+  const {
+    formState: { isSubmitting },
+    handleSubmit,
+    reset,
+  } = form;
 
   useEffect(() => {
     reset(getDefaultValues(props.registrationData));
@@ -424,10 +574,12 @@ function RegisterForm(props: {
     return sortedFields;
   }, [props.registrationFields, selectedGroupId, prevSelectGroupId]);
 
-  const redirectToHoldingPage = (isApproved: boolean) => {
+  const redirectToNextPage = (isApproved: boolean) => {
     if (!isApproved) {
       navigate(`/events/${props.event?.id}/holding`);
     }
+
+    navigate(`/events/${props.event?.id}/cycles`);
   };
 
   const { mutate: mutateRegistrationData, isPending } = useMutation({
@@ -442,9 +594,15 @@ function RegisterForm(props: {
           queryKey: ['registrations', body.id, 'registration-data'],
         });
 
+        // invalidate user registrations, this is for the 1 event use case
+        // where the authentication is because you are approved to the event
+        await queryClient.invalidateQueries({
+          queryKey: [props.user?.id, 'registrations'],
+        });
+
         props.onRegistrationFormCreate?.(body.id);
 
-        redirectToHoldingPage(props.userIsApproved);
+        redirectToNextPage(body.status === 'APPROVED');
       } else {
         toast.error('Failed to save registration, please try again');
       }
@@ -468,7 +626,7 @@ function RegisterForm(props: {
           queryKey: ['registrations', props.registrationId, 'registration-data'],
         });
 
-        redirectToHoldingPage(props.userIsApproved);
+        redirectToNextPage(body.status === 'APPROVED');
       } else {
         toast.error('Failed to update registration, please try again');
       }
@@ -567,23 +725,21 @@ function RegisterForm(props: {
       <Subtitle>{props.event?.registrationDescription}</Subtitle>
       <Form>
         {sortedRegistrationFields?.map((regField) => (
-          <FormField
-            key={`${props.registrationId}-${regField.id}`}
-            disabled={false}
-            errors={errors}
+          <FormInput
+            key={regField.id}
+            form={form}
+            name={regField.id}
+            label={regField.name}
             required={regField.required}
-            id={regField.id}
-            name={regField.name}
-            characterLimit={regField.characterLimit}
-            options={regField.registrationFieldOptions}
-            type={regField.type}
-            register={register}
-            control={control}
-            value={getValues()[regField.id] ?? ''} // Current input value
+            type={regField.type.toLocaleUpperCase()}
+            options={regField.registrationFieldOptions?.map((option) => ({
+              name: option.value,
+              value: option.value,
+            }))}
           />
         ))}
       </Form>
-      <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting || isPending || true}>
+      <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting || isPending}>
         Save
       </Button>
     </FlexColumn>
@@ -631,302 +787,6 @@ function RegisterGroupSelect({
         />
       </>
     )
-  );
-}
-
-function FormField({
-  id,
-  name,
-  required,
-  type,
-  errors,
-  options,
-  disabled,
-  register,
-  characterLimit,
-  control,
-  value,
-}: {
-  id: string;
-  name: string;
-  required: boolean | null;
-  type: 'TEXT' | 'SELECT' | 'NUMBER' | 'DATE' | 'BOOLEAN' | 'TEXTAREA';
-  options: RegistrationFieldOption[];
-  disabled: boolean;
-  register: UseFormRegister<Record<string, string>>;
-  errors: FieldErrors<Record<string, string>>;
-  characterLimit: number;
-  control: Control<Record<string, string>>;
-  value: string;
-}) {
-  switch (type) {
-    case 'TEXT':
-      return (
-        <TextInput
-          id={id}
-          name={name}
-          register={register}
-          required={required}
-          disabled={disabled}
-          errors={errors}
-          characterLimit={characterLimit}
-          value={value}
-        />
-      );
-    case 'SELECT':
-      return (
-        <SelectInput
-          id={id}
-          name={name}
-          options={options}
-          required={required}
-          disabled={disabled}
-          errors={errors}
-          control={control}
-        />
-      );
-    case 'TEXTAREA':
-      return (
-        <TextAreaInput
-          id={id}
-          name={name}
-          register={register}
-          required={required}
-          disabled={disabled}
-          errors={errors}
-          characterLimit={characterLimit}
-          value={value}
-        />
-      );
-    case 'NUMBER':
-      return (
-        <NumberInput
-          id={id}
-          name={name}
-          register={register}
-          required={required}
-          disabled={disabled}
-          errors={errors}
-          value={value}
-        />
-      );
-    default:
-      return null;
-  }
-}
-
-function TextInput(props: {
-  id: string;
-  name: string;
-  required: boolean | null;
-  characterLimit: number;
-  disabled: boolean;
-  register: UseFormRegister<Record<string, string>>;
-  errors: FieldErrors<Record<string, string>>;
-  value: string;
-}) {
-  const [charCount, setCharCount] = useState(0);
-
-  useEffect(() => {
-    setCharCount(props.value.length);
-  }, [props.value.length]);
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = event.target.value;
-    setCharCount(inputValue.length);
-    props.register(props.id, {
-      value: inputValue,
-    });
-  };
-
-  return (
-    <FlexColumn $gap="0.5rem">
-      <Input
-        type="text"
-        label={props.name}
-        required={!!props.required}
-        placeholder="Enter a value"
-        {...props.register(props.id, {
-          setValueAs: (value) => value.trim(),
-          validate: (value) => {
-            if (!props.required && value.trim() === '') {
-              return true;
-            }
-
-            // validate character limit (0 character limit is no character limit)
-            if (props.characterLimit > 0 && value.length > props.characterLimit) {
-              return `Character count of ${charCount} exceeds character limit of ${props.characterLimit}`;
-            }
-
-            const v = z.string().min(1, 'Value is required').safeParse(value);
-
-            if (v.success) {
-              return true;
-            }
-
-            return v.error.errors[0].message;
-          },
-        })}
-        disabled={props.disabled}
-        onChange={handleInputChange}
-      />
-      {props.errors?.[props.id] ? (
-        <Error>{props.errors?.[props.id]?.message}</Error>
-      ) : (
-        props.characterLimit > 0 && (
-          <CharacterCounter count={charCount} limit={props.characterLimit} />
-        )
-      )}
-    </FlexColumn>
-  );
-}
-
-function TextAreaInput(props: {
-  id: string;
-  name: string;
-  required: boolean | null;
-  characterLimit: number;
-  disabled: boolean;
-  register: UseFormRegister<Record<string, string>>;
-  errors: FieldErrors<Record<string, string>>;
-  value: string;
-}) {
-  const [charCount, setCharCount] = useState(0);
-
-  useEffect(() => {
-    setCharCount(props.value.length);
-  }, [props.value.length]);
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const inputValue = event.target.value;
-    setCharCount(inputValue.length);
-    props.register(props.id, {
-      value: inputValue,
-    });
-  };
-
-  return (
-    <FlexColumn $gap="0.5rem">
-      <Textarea
-        label={props.name}
-        $required={!!props.required}
-        placeholder="Enter a value"
-        {...props.register(props.id, {
-          setValueAs: (value) => value.trim(),
-          validate: (value) => {
-            if (!props.required && value.trim() === '') {
-              return true;
-            }
-
-            // validate character limit (0 character limit is no character limit)
-            if (props.characterLimit > 0 && value.length > props.characterLimit) {
-              return `Character count of ${charCount} exceeds character limit of ${props.characterLimit}`;
-            }
-
-            const v = z.string().min(1, 'Value is required').safeParse(value);
-
-            if (v.success) {
-              return true;
-            }
-
-            return v.error.errors[0].message;
-          },
-        })}
-        onChange={handleInputChange}
-      />
-      {props.errors?.[props.id] ? (
-        <Error>{props.errors?.[props.id]?.message}</Error>
-      ) : (
-        props.characterLimit > 0 && (
-          <CharacterCounter count={charCount} limit={props.characterLimit} />
-        )
-      )}
-    </FlexColumn>
-  );
-}
-
-function NumberInput(props: {
-  id: string;
-  name: string;
-  required: boolean | null;
-  disabled: boolean;
-  register: UseFormRegister<Record<string, string>>;
-  errors: FieldErrors<Record<string, string>>;
-  value: string;
-}) {
-  return (
-    <FlexColumn $gap="0.5rem">
-      <Input
-        type="number"
-        label={props.name}
-        required={!!props.required}
-        placeholder="Enter a value"
-        min={250}
-        max={10000}
-        {...props.register(props.id, {
-          validate: (value) => {
-            if (!props.required) {
-              return true;
-            }
-
-            if (value.trim() === '') {
-              return 'Value is required';
-            }
-
-            const v = z.coerce
-              .number()
-              .int('Value has to be an integer')
-              .min(250, 'Value must be 250 or higher')
-              .max(10000, 'Value must be 10,000 or lower')
-              .safeParse(value);
-
-            if (v.success) {
-              return true;
-            }
-
-            return v.error.errors[0].message;
-          },
-        })}
-        onChange={(event) => {
-          props.register(props.id, {
-            value: event.target.value,
-          });
-        }}
-      />
-      {props.errors?.[props.id] && <Error>{props.errors?.[props.id]?.message}</Error>}
-    </FlexColumn>
-  );
-}
-
-function SelectInput(props: {
-  id: string;
-  name: string;
-  required: boolean | null;
-  disabled: boolean;
-  options: RegistrationFieldOption[];
-  errors: FieldErrors<Record<string, string>>;
-  control: Control<Record<string, string>>;
-}) {
-  return (
-    <FlexColumn $gap="0.5rem">
-      <Controller
-        name={props.id}
-        control={props.control}
-        rules={{ required: props.required ? 'Value is required' : false }}
-        render={({ field }) => (
-          <Select
-            label={props.name}
-            placeholder="Choose a value"
-            required={!!props.required}
-            options={props.options.map((option) => ({ id: option.value, name: option.value }))}
-            errors={props.errors[props.id] ? [props.errors[props.id]?.message ?? ''] : []}
-            onBlur={field.onBlur}
-            onChange={(val) => field.onChange(val)}
-            value={field.value}
-          />
-        )}
-      />
-    </FlexColumn>
   );
 }
 

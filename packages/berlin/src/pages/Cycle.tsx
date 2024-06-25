@@ -219,8 +219,8 @@ function Cycle() {
   };
 
   const sortByLead = (a: QuestionOption, b: QuestionOption, order: Order) => {
-    const leadA = (a.user.lastName || a.user.username).toUpperCase();
-    const leadB = (b.user.lastName || b.user.username).toUpperCase();
+    const leadA = (a.user?.lastName || a.user?.username || '').toUpperCase();
+    const leadB = (b.user?.lastName || b.user?.username || '').toUpperCase();
 
     if (leadA === leadB) {
       return sortId(a, b, order);
@@ -230,8 +230,10 @@ function Cycle() {
   };
 
   const sortByAffiliation = (a: QuestionOption, b: QuestionOption, order: Order) => {
-    const affiliationA = a.user.group?.name.toUpperCase();
-    const affiliationB = b.user.group?.name.toUpperCase() ?? '';
+    const affiliationA =
+      a.user?.groups?.find((group) => group.groupCategory?.required)?.name.toUpperCase() ?? '';
+    const affiliationB =
+      b.user?.groups?.find((group) => group.groupCategory?.required)?.name.toUpperCase() ?? '';
 
     if (affiliationA === affiliationB) {
       return sortId(a, b, order);
@@ -324,7 +326,7 @@ function Cycle() {
       </FlexColumn>
       {currentCycle?.questionOptions.length ? (
         <FlexColumn $gap="0">
-          <CycleColumns onColumnClick={handleColumnClick} />
+          <CycleColumns onColumnClick={handleColumnClick} showScore={currentCycle.showScore} />
           {sortedOptions.options.map((option) => {
             const userVote = localUserVotes.find((vote) => vote.optionId === option.id);
             const numOfVotes = userVote ? userVote.numOfVotes : 0;
@@ -334,6 +336,7 @@ function Cycle() {
                 option={option}
                 numOfVotes={numOfVotes}
                 showFundingRequest={currentCycle.questionTitle === FINAL_QUESTION_TITLE}
+                showScore={currentCycle.showScore}
                 onVote={() => handleVoteWrapper(option.id)}
                 onUnVote={() => handleUnVoteWrapper(option.id)}
               />

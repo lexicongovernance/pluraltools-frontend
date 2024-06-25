@@ -54,7 +54,7 @@ function Event() {
       {/* <BackButton /> */}
       {!!openCycles?.length && <CycleTable cycles={openCycles} status="open" />}
       {!!closedCycles?.length && <CycleTable cycles={closedCycles} status="closed" />}
-      {event && <EventCard event={event} $direction="row" />}
+      {event && <EventCard event={event} />}
       <Body>
         Click to revisit the{' '}
         <Link
@@ -102,22 +102,20 @@ function CycleTable({ cycles, status }: { cycles: GetCycleResponse[]; status: 'o
   };
 
   return (
-    <div>
-      <Table
-        columns={[
-          `${status.charAt(0).toUpperCase() + status.slice(1)} Agendas`,
-          formattedColumnText(),
-          '',
-        ]}
-        rows={cycles.map((cycle) => [
-          cycle.forumQuestions?.[0]?.questionTitle,
-          formatDate(cycle.endAt),
-          <Button onClick={() => handleClick(cycle.id)}>
-            {status === 'open' ? 'Vote' : 'Results'}
-          </Button>,
-        ])}
-      />
-    </div>
+    <Table
+      columns={[
+        `${status.charAt(0).toUpperCase() + status.slice(1)} Agendas`,
+        formattedColumnText(),
+        '',
+      ]}
+      rows={cycles.map((cycle) => [
+        cycle.forumQuestions?.[0]?.questionTitle,
+        formatDate(cycle.endAt),
+        <Button onClick={() => handleClick(cycle.id)}>
+          {status === 'open' ? 'Vote' : 'Results'}
+        </Button>,
+      ])}
+    />
   );
 }
 

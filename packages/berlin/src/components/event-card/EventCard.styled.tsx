@@ -1,18 +1,12 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { FlexColumn } from '../containers/FlexColumn.styled';
+import { FlexRowToColumn } from '../containers/FlexRowToColumn.styled';
 
-export const Card = styled(FlexColumn)<{ $direction?: 'row' | 'column' }>`
+export const Card = styled(FlexRowToColumn)`
   border-radius: 1rem;
   border: 1px solid var(--color-black);
-  flex-direction: column;
   overflow: hidden;
   width: 100%;
-
-  ${(props) =>
-    props.$direction === 'row' &&
-    css`
-      flex-direction: row;
-    `}
 `;
 
 export const ImageContainer = styled.div`

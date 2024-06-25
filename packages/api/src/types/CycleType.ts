@@ -7,6 +7,7 @@ export type GetCycleResponse = {
   endAt: string;
   forumQuestions: {
     id: string;
+    showScore: boolean;
     createdAt: string;
     updatedAt: string;
     questionSubTitle: string | null;
@@ -20,12 +21,23 @@ export type GetCycleResponse = {
       optionTitle: string;
       optionSubTitle?: string;
       accepted: boolean;
+      voteScore?: number;
       fundingRequest: string;
-      user: {
-        group: {
+      user?: {
+        groups?: {
           id: string;
           name: string;
-        };
+          groupCategory?: {
+            id: string;
+            name: string | null;
+            createdAt: Date;
+            updatedAt: Date;
+            eventId: string | null;
+            userCanCreate: boolean;
+            userCanView: boolean;
+            required: boolean;
+          };
+        }[];
         username: string;
         firstName: string;
         lastName: string;
