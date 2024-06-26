@@ -11,7 +11,7 @@ type VotingCardsProps = {
 function VotingCards({ state, cards }: VotingCardsProps) {
   return (
     <FlexColumn>
-      <Title style={{ textTransform: 'capitalize' }}>{state} Agendas</Title>
+      <Title style={{ textTransform: 'capitalize' }}>{state} Votes</Title>
       {cards && cards.map((card) => <CycleTable key={card.id} cycle={card} />)}
     </FlexColumn>
   );

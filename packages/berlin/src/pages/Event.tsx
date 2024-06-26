@@ -104,7 +104,7 @@ function CycleTable({ cycles, status }: { cycles: GetCycleResponse[]; status: 'o
   return (
     <Table
       columns={[
-        `${status.charAt(0).toUpperCase() + status.slice(1)} Agendas`,
+        `${status.charAt(0).toUpperCase() + status.slice(1)} Votes`,
         formattedColumnText(),
         '',
       ]}
