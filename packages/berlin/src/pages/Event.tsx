@@ -9,10 +9,58 @@ import { GetCycleResponse, fetchEvent, fetchEventCycles } from 'api';
 // Components
 import { Body } from '../components/typography/Body.styled';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
+import { OnboardingCard } from '../components/onboarding/Onboaring.styled';
+import { Subtitle } from '../components/typography/Subtitle.styled';
 import { Table } from '../components/table';
 import Button from '../components/button';
 import EventCard from '../components/event-card';
 import Link from '../components/link';
+import Onboarding from '../components/onboarding';
+
+const steps = [
+  {
+    target: '.step-1',
+    content: (
+      <OnboardingCard>
+        <Subtitle>Welcome</Subtitle>
+        <Body>Welcome to our app!</Body>
+        <Body>Would you like to take a tour to see how it works?</Body>
+      </OnboardingCard>
+    ),
+    placement: 'center',
+  },
+  {
+    target: '.step-2',
+    content: (
+      <OnboardingCard>
+        <Subtitle>Open Agendas</Subtitle>
+        <Body>Explore the current proposals, see their deadlines, and cast your vote.</Body>
+      </OnboardingCard>
+    ),
+    placement: 'center',
+  },
+  {
+    target: '.step-3',
+    content: (
+      <OnboardingCard>
+        <Subtitle>Closed Agendas</Subtitle>
+        <Body>Review past agendas and see the results by clicking the results button.</Body>
+      </OnboardingCard>
+    ),
+    placement: 'center',
+  },
+  {
+    target: '.step-4',
+    content: (
+      <OnboardingCard>
+        <Subtitle>Event Information</Subtitle>
+        <Body>Read about the current event.</Body>
+        <Body>Now, explore the Vote page on your own!</Body>
+      </OnboardingCard>
+    ),
+    placement: 'center',
+  },
+];
 
 function Event() {
   const navigate = useNavigate();
@@ -44,19 +92,21 @@ function Event() {
   };
 
   return (
-    <FlexColumn $gap="2rem">
-      {/* <BackButton /> */}
-      {!!openCycles?.length && <CycleTable cycles={openCycles} status="open" />}
-      {!!closedCycles?.length && <CycleTable cycles={closedCycles} status="closed" />}
-      {event && <EventCard event={event} />}
-      <Body>
-        Click to revisit the community’s{' '}
-        <Link to="#" onClick={handleDataPolicyClick}>
-          data policy
-        </Link>
-        .
-      </Body>
-    </FlexColumn>
+    <>
+      <Onboarding steps={steps} />
+      <FlexColumn $gap="2rem" className="step-1 step-2 step-3 step-4">
+        {!!openCycles?.length && <CycleTable cycles={openCycles} status="open" />}
+        {!!closedCycles?.length && <CycleTable cycles={closedCycles} status="closed" />}
+        {event && <EventCard event={event} />}
+        <Body>
+          Click to revisit the community’s{' '}
+          <Link to="#" onClick={handleDataPolicyClick}>
+            data policy
+          </Link>
+          .
+        </Body>
+      </FlexColumn>
+    </>
   );
 }
 

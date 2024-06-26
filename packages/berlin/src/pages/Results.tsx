@@ -11,8 +11,15 @@ import StatsTable from '../components/tables/stats-table';
 import StatsColumns from '../components/columns/stats-columns';
 import { FINAL_QUESTION_TITLE } from '../utils/constants';
 import { Column } from '../components/tables/results-table/ResultsTable.styled';
+import Onboarding from '../components/onboarding';
+import { OnboardingCard } from '../components/onboarding/Onboaring.styled';
+import { FlexRow } from '../components/containers/FlexRow.styled';
+import IconButton from '../components/icon-button';
+import { useAppStore } from '../store';
+import { Body } from '../components/typography/Body.styled';
 
 function Results() {
+  const theme = useAppStore((state) => state.theme);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   const { eventId, cycleId } = useParams();
@@ -69,31 +76,130 @@ function Results() {
     }))
     .sort((a, b) => parseFloat(b.pluralityScore) - parseFloat(a.pluralityScore));
 
+  const steps = [
+    {
+      target: '.step-1',
+      content: (
+        <OnboardingCard>
+          <Subtitle>Results Page</Subtitle>
+          <Body>Check what the community decided.</Body>
+        </OnboardingCard>
+      ),
+      placement: 'center',
+    },
+    {
+      target: '.step-2',
+      content: (
+        <OnboardingCard>
+          <Subtitle>Icons</Subtitle>
+          <FlexRow>
+            <IconButton
+              $padding={0}
+              $color="secondary"
+              icon={{ src: `/icons/sqrt-${theme}.svg`, alt: 'Quadratic score icon' }}
+              $width={24}
+              $height={24}
+            />
+            <Body>Quadratic score</Body>
+          </FlexRow>
+          <FlexRow>
+            <IconButton
+              $padding={0}
+              $color="secondary"
+              icon={{ src: `/icons/heart-full.svg`, alt: 'Heart icon' }}
+              $width={24}
+              $height={24}
+            />
+            <Body>Amount of hearts a proposal received</Body>
+          </FlexRow>
+          <FlexRow>
+            <IconButton
+              $padding={0}
+              $color="secondary"
+              icon={{ src: `/icons/plurality-score.svg`, alt: 'Plurality icon' }}
+              $width={24}
+              $height={24}
+            />
+            <Body>Plurality score</Body>
+          </FlexRow>
+          <FlexRow>
+            <IconButton
+              $padding={0}
+              $color="secondary"
+              icon={{ src: `/logos/arbitrum-${theme}.svg`, alt: 'Arbitrum logo' }}
+              $width={24}
+              $height={24}
+            />
+            <Body>Indicates the requested funding in ARB</Body>
+          </FlexRow>
+        </OnboardingCard>
+      ),
+      placement: 'center',
+    },
+    {
+      target: '.step-3',
+      content: (
+        <OnboardingCard>
+          <Subtitle>Expand a Proposal</Subtitle>
+          <FlexRow>
+            <IconButton
+              $padding={0}
+              $color="secondary"
+              icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: 'Arrow down icon' }}
+              $width={24}
+              $height={24}
+            />
+            <Body>
+              Clicking this icon will show you the proposal description, research output, lead
+              author, collaborators, distinct voters, and voter affiliations.
+            </Body>
+          </FlexRow>
+          <FlexRow>
+            <IconButton
+              $padding={0}
+              $color="secondary"
+              icon={{ src: `/icons/comments-${theme}.svg`, alt: 'Comments icon' }}
+              $width={24}
+              $height={24}
+            />
+            <Body>
+              You can also access the comments page to start a discussion with other users.
+            </Body>
+          </FlexRow>
+        </OnboardingCard>
+      ),
+      placement: 'center',
+    },
+  ];
+
   return (
-    <FlexColumn $gap="2rem">
-      <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
-      <Subtitle>Results for: {cycle?.forumQuestions?.[0].questionTitle}</Subtitle>
-      <Column>
-        <ResultsColumns $showFunding={!!funding} />
-        {optionStatsArray.map((option, index) => (
-          <ResultsTable
-            key={option.id}
-            $expanded={expandedIndex === index}
-            option={option}
-            cycleId={cycleId}
-            eventId={eventId}
-            onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
-          />
-        ))}
-      </Column>
-      <Subtitle>Overall Statistics</Subtitle>
-      <FlexColumn $gap="0">
-        <StatsColumns />
-        {overallStatistics.map((stat) => (
-          <StatsTable key={stat.id} title={stat.title} number={stat.data} />
-        ))}
+    <>
+      <Onboarding steps={steps} />
+      <FlexColumn $gap="2rem" className="step-1 step-2 step-3">
+        <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
+        <Subtitle>Results for: {cycle?.forumQuestions?.[0].questionTitle}</Subtitle>
+        <Column>
+          <ResultsColumns $showFunding={!!funding} />
+          {optionStatsArray.map((option, index) => (
+            <ResultsTable
+              key={option.id}
+              $expanded={expandedIndex === index}
+              option={option}
+              cycleId={cycleId}
+              eventId={eventId}
+              onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
+            />
+          ))}
+        </Column>
+        <Subtitle>Overall Statistics</Subtitle>
+        <FlexColumn $gap="0">
+          <StatsColumns />
+          {overallStatistics.map((stat) => (
+            <StatsTable key={stat.id} title={stat.title} number={stat.data} />
+          ))}
+        </FlexColumn>
       </FlexColumn>
-    </FlexColumn>
+    </>
   );
 }
 
