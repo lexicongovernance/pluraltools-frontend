@@ -43,12 +43,6 @@ function Event() {
     navigate(`/data-policy`);
   };
 
-  // TODO: Create functions to navigate to onboarding slides
-
-  const handleOnboardingClick = () => {
-    navigate(`/onboarding`);
-  };
-
   return (
     <FlexColumn $gap="2rem">
       {/* <BackButton /> */}
@@ -56,23 +50,7 @@ function Event() {
       {!!closedCycles?.length && <CycleTable cycles={closedCycles} status="closed" />}
       {event && <EventCard event={event} />}
       <Body>
-        Click to revisit the{' '}
-        <Link
-          to="#"
-          onClick={handleOnboardingClick}
-          state={{ onboardingStep: 2, previousPath: location.pathname }}
-        >
-          event rules
-        </Link>
-        ,{' '}
-        <Link
-          to="#"
-          onClick={handleOnboardingClick}
-          state={{ onboardingStep: 0, previousPath: location.pathname }}
-        >
-          trust assumptions
-        </Link>
-        , and the community’s{' '}
+        Click to revisit the community’s{' '}
         <Link to="#" onClick={handleDataPolicyClick}>
           data policy
         </Link>

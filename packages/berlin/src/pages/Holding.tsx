@@ -32,12 +32,6 @@ function Holding() {
     navigate(`/data-policy`);
   };
 
-  // TODO: Create functions to navigate to onboarding slides
-
-  const handleOnboardingClick = () => {
-    navigate(`/onboarding`);
-  };
-
   return (
     <SafeArea>
       <FlexColumn $gap="2rem">
@@ -58,27 +52,11 @@ function Holding() {
           <Link to="#" onClick={handleRegistrationClick}>
             edit your submission
           </Link>{' '}
-          and to revisit the{' '}
-          <Link
-            to="#"
-            onClick={handleOnboardingClick}
-            state={{ onboardingStep: 2, previousPath: location.pathname }}
-          >
-            event rules
-          </Link>
-          ,{' '}
-          <Link
-            to="#"
-            onClick={handleOnboardingClick}
-            state={{ onboardingStep: 0, previousPath: location.pathname }}
-          >
-            trust assumptions
-          </Link>
-          , and the community’s{' '}
+          and to revisit te community’s{' '}
           <Link to="#" onClick={handleDataPolicyClick}>
             data policy
           </Link>
-          . A community governance roadmap will be shared at the event.
+          .
         </Body>
         <Body>We will notify participants on a rolling basis.</Body>
         <ImageContainer>
