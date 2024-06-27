@@ -23,7 +23,7 @@ const steps = [
     content: (
       <OnboardingCard>
         <Subtitle>Welcome</Subtitle>
-        <Body>Welcome to our app!</Body>
+        <Body>Welcome to our tool!</Body>
         <Body>Would you like to take a tour to see how it works?</Body>
       </OnboardingCard>
     ),
@@ -33,8 +33,8 @@ const steps = [
     target: '.step-2',
     content: (
       <OnboardingCard>
-        <Subtitle>Open Agendas</Subtitle>
-        <Body>Explore the current proposals, see their deadlines, and cast your vote.</Body>
+        <Subtitle>Open Votes</Subtitle>
+        <Body>Explore current artifacts, the vote deadline, and cast your vote.</Body>
       </OnboardingCard>
     ),
     placement: 'center',
@@ -43,8 +43,8 @@ const steps = [
     target: '.step-3',
     content: (
       <OnboardingCard>
-        <Subtitle>Closed Agendas</Subtitle>
-        <Body>Review past agendas and see the results by clicking the results button.</Body>
+        <Subtitle>Closed Votes</Subtitle>
+        <Body>Review past votes and see results by clicking the 'Results' button.</Body>
       </OnboardingCard>
     ),
     placement: 'center',
@@ -54,8 +54,8 @@ const steps = [
     content: (
       <OnboardingCard>
         <Subtitle>Event Information</Subtitle>
-        <Body>Read about the current event.</Body>
-        <Body>Now, explore the Vote page on your own!</Body>
+        <Body>View the current event.</Body>
+        <Body>Now, explore the vote page on your own!</Body>
       </OnboardingCard>
     ),
     placement: 'center',

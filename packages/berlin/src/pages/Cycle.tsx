@@ -311,7 +311,7 @@ function Cycle() {
       content: (
         <OnboardingCard>
           <Subtitle>Voting Page</Subtitle>
-          <Body>Read the proposals and allocate your hearts.</Body>
+          <Body>View artifacts and allocate your hearts.</Body>
         </OnboardingCard>
       ),
       placement: 'center',
@@ -338,7 +338,7 @@ function Cycle() {
                 $height={16}
               />
             </FlexColumn>
-            <Body>Vote or downvote a proposal. This will reduce your available hearts.</Body>
+            <Body>Upvote or downvote an artifact.</Body>
           </FlexRow>
         </OnboardingCard>
       ),
@@ -350,11 +350,11 @@ function Cycle() {
         <OnboardingCard>
           <Subtitle>Save Your Votes</Subtitle>
           <Body>
-            Don't forget to click the{' '}
+            Click the{' '}
             <Button $color="secondary" style={{ paddingInline: 4 }}>
               save all votes
             </Button>{' '}
-            button once you are done allocating your votes.
+            button to save your heard allocation.
           </Body>
         </OnboardingCard>
       ),
@@ -365,7 +365,7 @@ function Cycle() {
       content: (
         <OnboardingCard>
           <Subtitle>Information</Subtitle>
-          <Body>Quickly read the proposal title, the lead author, and their affiliation.</Body>
+          <Body>View artifact and creator.</Body>
           <FlexRow>
             <IconButton
               $padding={0}
@@ -374,7 +374,7 @@ function Cycle() {
               $width={24}
               $height={24}
             />
-            <Body>Amount of hearts a proposal has.</Body>
+            <Body>Current number of hearts allocated to this artifact.</Body>
           </FlexRow>
         </OnboardingCard>
       ),
@@ -393,7 +393,10 @@ function Cycle() {
               $width={24}
               $height={24}
             />
-            <Body>Plurality score is calculated by [explanation here].</Body>
+            <Body>
+              Plurality score, unlike quadratic score, considers pre-existing participant
+              relationships
+            </Body>
           </FlexRow>
         </OnboardingCard>
       ),
@@ -403,7 +406,7 @@ function Cycle() {
       target: '.step-6',
       content: (
         <OnboardingCard>
-          <Subtitle>Expand a Proposal</Subtitle>
+          <Subtitle>Expand an arifact</Subtitle>
           <FlexRow>
             <IconButton
               $padding={0}
@@ -412,10 +415,7 @@ function Cycle() {
               $width={24}
               $height={24}
             />
-            <Body>
-              Clicking this icon will show you the proposal description, collaborators, and extra
-              information.
-            </Body>
+            <Body>Click to view the artifact description and other useful information.</Body>
           </FlexRow>
           <FlexRow>
             <IconButton
@@ -426,7 +426,7 @@ function Cycle() {
               $height={24}
             />
             <Body>
-              You can also access the comments page to start a discussion with other users.
+              Click to view the comments page and start a discussion with other participants.
             </Body>
           </FlexRow>
         </OnboardingCard>
@@ -444,7 +444,7 @@ function Cycle() {
           <Title>{currentCycle?.questionTitle}</Title>
           <Body>{voteInfo}</Body>
           <Body>
-            You have <Bold>{availableHearts}</Bold> hearts left to give away:
+            You have <Bold>{availableHearts}</Bold> hearts left to allocate:
           </Body>
           <FlexRow $gap="0.25rem" $wrap>
             {Array.from({ length: INITIAL_HEARTS }).map((_, id) => (

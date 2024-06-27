@@ -82,7 +82,7 @@ function Results() {
       content: (
         <OnboardingCard>
           <Subtitle>Results Page</Subtitle>
-          <Body>Check what the community decided.</Body>
+          <Body>See community decisions.</Body>
         </OnboardingCard>
       ),
       placement: 'center',
@@ -110,7 +110,7 @@ function Results() {
               $width={24}
               $height={24}
             />
-            <Body>Amount of hearts a proposal received</Body>
+            <Body>Hearts received by an artifact</Body>
           </FlexRow>
           <FlexRow>
             <IconButton
@@ -130,7 +130,7 @@ function Results() {
               $width={24}
               $height={24}
             />
-            <Body>Indicates the requested funding in ARB</Body>
+            <Body>Indicates requested funding</Body>
           </FlexRow>
         </OnboardingCard>
       ),
@@ -140,7 +140,7 @@ function Results() {
       target: '.step-3',
       content: (
         <OnboardingCard>
-          <Subtitle>Expand a Proposal</Subtitle>
+          <Subtitle>Expand an Artifact</Subtitle>
           <FlexRow>
             <IconButton
               $padding={0}
@@ -150,8 +150,7 @@ function Results() {
               $height={24}
             />
             <Body>
-              Clicking this icon will show you the proposal description, research output, lead
-              author, collaborators, distinct voters, and voter affiliations.
+              Clicking this icon will display the artifact description and other useful information.
             </Body>
           </FlexRow>
           <FlexRow>
@@ -162,9 +161,7 @@ function Results() {
               $width={24}
               $height={24}
             />
-            <Body>
-              You can also access the comments page to start a discussion with other users.
-            </Body>
+            <Body>Access the comments page to start a discussion with other participants.</Body>
           </FlexRow>
         </OnboardingCard>
       ),
