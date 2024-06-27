@@ -201,7 +201,7 @@ function Comments() {
         <Subtitle>{option?.optionTitle}</Subtitle>
         <Body>{option?.optionSubTitle}</Body>
         <Body>
-          <Bold>Lead author:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
+          <Bold>Creator:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
           {coauthors && coauthors.length > 0 && (
             <Body>
               <Bold>Co-authors:</Bold>{' '}
