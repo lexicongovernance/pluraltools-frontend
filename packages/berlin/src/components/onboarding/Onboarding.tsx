@@ -1,22 +1,37 @@
 import { CSSProperties, ReactNode } from 'react';
-import Joyride from 'react-joyride';
+import Joyride, { CallBackProps } from 'react-joyride';
+import { useAppStore } from '../../store';
 
 type OnboardingProps = {
+  type: 'event' | 'cycle' | 'results';
   steps: {
     target: string;
     content: ReactNode;
   }[];
-  run?: boolean;
 };
 
-const buttonBase = {
+const buttonBase: CSSProperties = {
   fontFamily: 'var(--font-family-button)',
   fontWeight: '500',
   padding: '8px 16px',
   textTransform: 'uppercase',
-} satisfies CSSProperties;
+};
 
-function Onboarding({ steps, run = true }: OnboardingProps) {
+function Onboarding({ steps, type }: OnboardingProps) {
+  const { onboardingStatus, setOnboardingStatus } = useAppStore((state) => ({
+    onboardingStatus: state.onboardingStatus,
+    setOnboardingStatus: state.setOnboardingStatus,
+  }));
+
+  const run = onboardingStatus[type] !== 'COMPLETE';
+
+  const handleJoyrideCallback = (data: CallBackProps) => {
+    if (data.status === 'finished' || data.status === 'skipped') {
+      setOnboardingStatus(type, 'COMPLETE');
+      console.log('Onboarding completed for', type);
+    }
+  };
+
   return (
     <Joyride
       steps={steps}
@@ -24,6 +39,8 @@ function Onboarding({ steps, run = true }: OnboardingProps) {
       continuous
       showProgress
       showSkipButton
+      hideCloseButton
+      callback={handleJoyrideCallback}
       styles={{
         buttonBack: {
           ...buttonBase,
@@ -43,7 +60,6 @@ function Onboarding({ steps, run = true }: OnboardingProps) {
         buttonClose: {
           color: 'var(--color-black)',
         },
-
         options: {
           arrowColor: 'var(--color-white)',
           backgroundColor: 'var(--color-white)',
