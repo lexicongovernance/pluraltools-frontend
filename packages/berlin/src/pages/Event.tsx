@@ -9,10 +9,58 @@ import { GetCycleResponse, fetchEvent, fetchEventCycles } from 'api';
 // Components
 import { Body } from '../components/typography/Body.styled';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
+import { OnboardingCard } from '../components/onboarding/Onboaring.styled';
+import { Subtitle } from '../components/typography/Subtitle.styled';
 import { Table } from '../components/table';
 import Button from '../components/button';
 import EventCard from '../components/event-card';
 import Link from '../components/link';
+import Onboarding from '../components/onboarding';
+
+const steps = [
+  {
+    target: '.step-1',
+    content: (
+      <OnboardingCard>
+        <Subtitle>Welcome</Subtitle>
+        <Body>Welcome to our tool!</Body>
+        <Body>Would you like to take a tour to see how it works?</Body>
+      </OnboardingCard>
+    ),
+    placement: 'center',
+  },
+  {
+    target: '.step-2',
+    content: (
+      <OnboardingCard>
+        <Subtitle>Open Votes</Subtitle>
+        <Body>Explore current artifacts, the vote deadline, and cast your vote.</Body>
+      </OnboardingCard>
+    ),
+    placement: 'center',
+  },
+  {
+    target: '.step-3',
+    content: (
+      <OnboardingCard>
+        <Subtitle>Closed Votes</Subtitle>
+        <Body>Review past votes and see results by clicking the 'Results' button.</Body>
+      </OnboardingCard>
+    ),
+    placement: 'center',
+  },
+  {
+    target: '.step-4',
+    content: (
+      <OnboardingCard>
+        <Subtitle>Event Information</Subtitle>
+        <Body>View the current event.</Body>
+        <Body>Now, explore the vote page on your own!</Body>
+      </OnboardingCard>
+    ),
+    placement: 'center',
+  },
+];
 
 function Event() {
   const navigate = useNavigate();
@@ -43,42 +91,22 @@ function Event() {
     navigate(`/data-policy`);
   };
 
-  // TODO: Create functions to navigate to onboarding slides
-
-  const handleOnboardingClick = () => {
-    navigate(`/onboarding`);
-  };
-
   return (
-    <FlexColumn $gap="2rem">
-      {/* <BackButton /> */}
-      {!!openCycles?.length && <CycleTable cycles={openCycles} status="open" />}
-      {!!closedCycles?.length && <CycleTable cycles={closedCycles} status="closed" />}
-      {event && <EventCard event={event} />}
-      <Body>
-        Click to revisit the{' '}
-        <Link
-          to="#"
-          onClick={handleOnboardingClick}
-          state={{ onboardingStep: 2, previousPath: location.pathname }}
-        >
-          event rules
-        </Link>
-        ,{' '}
-        <Link
-          to="#"
-          onClick={handleOnboardingClick}
-          state={{ onboardingStep: 0, previousPath: location.pathname }}
-        >
-          trust assumptions
-        </Link>
-        , and the community’s{' '}
-        <Link to="#" onClick={handleDataPolicyClick}>
-          data policy
-        </Link>
-        .
-      </Body>
-    </FlexColumn>
+    <>
+      <Onboarding type="event" steps={steps} />
+      <FlexColumn $gap="2rem" className="step-1 step-2 step-3 step-4">
+        {!!openCycles?.length && <CycleTable cycles={openCycles} status="open" />}
+        {!!closedCycles?.length && <CycleTable cycles={closedCycles} status="closed" />}
+        {event && <EventCard event={event} />}
+        <Body>
+          Click to revisit the community’s{' '}
+          <Link to="#" onClick={handleDataPolicyClick}>
+            data policy
+          </Link>
+          .
+        </Body>
+      </FlexColumn>
+    </>
   );
 }
 
