@@ -141,7 +141,7 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
       <FlexColumn className="description">
         <Body>{option.optionSubTitle}</Body>
         <Body>
-          <Bold>Lead Author:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
+          <Bold>Creator:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
         </Body>
         <Body>
           <Bold>Collaborators:</Bold>{' '}
@@ -149,9 +149,6 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
         </Body>
         <Body>
           <Bold>Distinct voters:</Bold> {option.distinctUsers}
-        </Body>
-        <Body>
-          <Bold>Voter affiliations:</Bold> {option.listOfGroupNames.join(', ')}
         </Body>
         <Body>
           <IconButton
