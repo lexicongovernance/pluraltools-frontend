@@ -4,51 +4,32 @@ import { Bold } from '../components/typography/Bold.styled';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { SafeArea } from '../layout/Layout.styled';
 import ZupassButton from '../components/zupass-button';
+import Link from '@/components/link';
 
 function Landing() {
   return (
     <SafeArea>
       <FlexColumn $gap="2rem">
         <Body>
-          We are a <Bold>community of open-source researchers</Bold> committed to solving the
-          hardest problems in decentralization, including the challenge of maintaining research and
-          academic independence in the wake of technological vertical integration and
-          hyper-financialization. Using <Bold>plural mechanism design</Bold>, we experiment with
-          novel ways to surface ideas in the public interest that transcend our biases — protocol,
-          politics, purse — while encouraging collaboration and insights across unlikely
-          intersections where breakthroughs tend to emerge.
+          <Link to="https://summerofprotocols.com/protocol-week">Protocol Worlds</Link> during{' '}
+          <Link to="https://www.edgeesmeralda.com/">Edge Esmeralda</Link> is a week-long practical
+          inquiry into the intersection of paradigm-shifting futures. Participants gather tensions,
+          imagine protocols which might exist to resolve them and then conjure the artefacts which
+          could exist at the intersection
         </Body>
         <Body>
-          Our first convening was <Bold>May 28 in Berlin</Bold>, where the community was tasked to
-          allocate 100,000 ARB in research grants.
-        </Body>
-        <Body>
-          The <Bold>funding mandate is MEV</Bold>. We invite research proposals that explore MEV
-          narrowly and broadly — within and across execution layers (L1), rollups (L2s), oracles,
-          applications, etc. The mandate also extends to related topics such as chain abstraction,
-          account abstraction, gas fee optimization, AI agents, ZK, trusted hardware, and topics
-          related to decentralization — including richer notions of identity, contextual integrity
-          (“privacy”), collusion resistance, and partial common ownership.
-        </Body>
-        <Body>
-          This is a community event, <Bold>where researchers set the agenda.</Bold> Through a series
-          of structured interactions, the community will prioritize research and allocate funds,
-          relying on plural mechanisms —{' '}
-          <Bold>
-            deliberation, plural voting, peer prediction, and healthy social recombination
-          </Bold>{' '}
-          — to surface research in the broader public good.
-        </Body>
-        <Body>
-          The experiment will be novel, fun, and weird — like the best of research… and Berlin.
-          Surprise the community with your proposals!
-        </Body>
-        <Body>
-          Sign up with{' '}
+          If you’re a participant in Protocol Worlds, login with your{' '}
           <ZupassButton $variant="link">
-            <Bold>Zupass here.</Bold>
+            <Bold>ZuPass.</Bold>
           </ZupassButton>{' '}
-          Submissions received before May 15 will get more attention.
+          to submit your artefacts, discuss and vote on various questions about these imagined
+          future worlds and the tensions which brought us there.
+        </Body>
+        <Body>
+          The data generated through this tool will be used as part of the{' '}
+          <Link to="https://summerofprotocols.com/protocol-week">Plurality in Practice</Link>{' '}
+          Protocol during Orienteering Grant, which aims to analyze the efficiency, effectiveness
+          and risks of quadratic and plural voting mechanisms.
         </Body>
       </FlexColumn>
     </SafeArea>
