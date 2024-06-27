@@ -1,12 +1,13 @@
 import IconButton from '../../icon-button';
 import { Body } from '../../typography/Body.styled';
-import { Affiliation, Lead, Card, Hearts, Proposal } from './CycleColumns.styled';
+import { Affiliation, Lead, Card, Hearts, Proposal, Plurality } from './CycleColumns.styled';
 
 type CycleColumnsProps = {
   onColumnClick: (column: string) => void;
+  showScore?: boolean;
 };
 
-function CycleColumns({ onColumnClick }: CycleColumnsProps) {
+function CycleColumns({ onColumnClick, showScore }: CycleColumnsProps) {
   return (
     <Card>
       <Proposal>
@@ -25,13 +26,15 @@ function CycleColumns({ onColumnClick }: CycleColumnsProps) {
           icon={{ src: `/icons/heart-full.svg`, alt: 'Full heart' }}
         />
       </Hearts>
-      {/* <Plurality onClick={() => onColumnClick('voteScore')}>
-        <IconButton
-          $padding={0}
-          $color="secondary"
-          icon={{ src: `/icons/plurality-score.svg`, alt: 'Plurality score' }}
-        />
-      </Plurality> */}
+      {showScore && (
+        <Plurality onClick={() => onColumnClick('voteScore')}>
+          <IconButton
+            $padding={0}
+            $color="secondary"
+            icon={{ src: `/icons/plurality-score.svg`, alt: 'Plurality score' }}
+          />
+        </Plurality>
+      )}
     </Card>
   );
 }

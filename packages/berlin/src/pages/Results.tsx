@@ -10,6 +10,7 @@ import ResultsTable from '../components/tables/results-table';
 import StatsTable from '../components/tables/stats-table';
 import StatsColumns from '../components/columns/stats-columns';
 import { FINAL_QUESTION_TITLE } from '../utils/constants';
+import { Column } from '../components/tables/results-table/ResultsTable.styled';
 
 function Results() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -72,17 +73,19 @@ function Results() {
     <FlexColumn $gap="2rem">
       <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
       <Subtitle>Results for: {cycle?.forumQuestions?.[0].questionTitle}</Subtitle>
-      <FlexColumn $gap="0">
+      <Column>
         <ResultsColumns $showFunding={!!funding} />
         {optionStatsArray.map((option, index) => (
           <ResultsTable
             key={option.id}
             $expanded={expandedIndex === index}
             option={option}
+            cycleId={cycleId}
+            eventId={eventId}
             onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
           />
         ))}
-      </FlexColumn>
+      </Column>
       <Subtitle>Overall Statistics</Subtitle>
       <FlexColumn $gap="0">
         <StatsColumns />
