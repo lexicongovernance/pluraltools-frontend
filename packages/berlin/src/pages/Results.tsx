@@ -174,7 +174,7 @@ function Results() {
 
   return (
     <>
-      <Onboarding steps={steps} />
+      <Onboarding type="results" steps={steps} />
       <FlexColumn $gap="2rem" className="step-1 step-2 step-3">
         <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
         <Subtitle>Results for: {cycle?.forumQuestions?.[0].questionTitle}</Subtitle>
