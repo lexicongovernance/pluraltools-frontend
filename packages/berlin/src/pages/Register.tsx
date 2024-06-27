@@ -43,7 +43,7 @@ import Label from '../components/typography/Label';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import { SafeArea } from '../layout/Layout.styled';
 import { MultiSelect } from '@/components/multi-select/MultiSelect';
-import { GROUP_CATEGORY_NAME_TENSIONS } from '@/utils/constants';
+import { GROUP_CATEGORY_NAME_TENSION } from '@/utils/constants';
 
 function Register() {
   const [step, setStep] = useState<number | null>(null);
@@ -451,7 +451,7 @@ function EventGroupsForm({
   });
 
   const tensionsGroupCategory = groupCategories?.find(
-    (groupCategory) => groupCategory.name === GROUP_CATEGORY_NAME_TENSIONS,
+    (groupCategory) => groupCategory.name === GROUP_CATEGORY_NAME_TENSION,
   );
 
   const { data: groups } = useQuery({
@@ -478,8 +478,6 @@ function EventGroupsForm({
         deleteUsersToGroupsMutation({ userToGroupId: userToGroup.id });
       }
     }
-
-    afterSubmit?.();
   };
 
   return (
@@ -497,7 +495,7 @@ function EventGroupsForm({
             form.setValue(tensionsGroupCategory?.id || '', value);
           }}
           maxCount={100}
-          name={GROUP_CATEGORY_NAME_TENSIONS}
+          name={GROUP_CATEGORY_NAME_TENSION}
         />
       )}
 
