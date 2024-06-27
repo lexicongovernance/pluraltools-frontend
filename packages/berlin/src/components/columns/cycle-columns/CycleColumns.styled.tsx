@@ -36,21 +36,6 @@ export const Lead = styled(FlexRow)`
   }
 `;
 
-export const Affiliation = styled(FlexRow)`
-  display: none;
-  @media (min-width: 600px) {
-    display: flex;
-    font-weight: bold;
-    max-width: 10rem;
-    min-width: 8rem;
-    padding: 1.5rem;
-
-    p {
-      cursor: pointer;
-    }
-  }
-`;
-
 export const Hearts = styled(FlexRow)`
   gap: 0.5rem;
   max-width: 5rem;
