@@ -40,7 +40,7 @@ function Results() {
   const overallStatistics = [
     {
       id: 0,
-      title: 'Number of proposals',
+      title: 'Number of artefacts',
       data: statistics?.numProposals,
     },
     {

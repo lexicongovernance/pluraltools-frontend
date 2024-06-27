@@ -460,7 +460,7 @@ const SelectRegistrationDropdown = ({
     groupName?: string;
   }) => {
     if (mode === 'create') {
-      return 'Create a new proposal';
+      return 'Create a new artefact';
     }
 
     return `${index}. ${getRegistrationTitle({
@@ -473,7 +473,7 @@ const SelectRegistrationDropdown = ({
   return (
     showRegistrationsSelect(registrations) && (
       <FlexColumn $gap="0.5rem">
-        <Label>Select Proposal</Label>
+        <Label>Select Artefact</Label>
         <Select
           value={selectedRegistrationFormKey ?? ''}
           options={createRegistrationForms({ registrations, usersToGroups }).map((form, idx) => ({

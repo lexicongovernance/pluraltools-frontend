@@ -8,7 +8,7 @@ const groups = {
       },
       {
         id: 1,
-        text: 'Any group member can assign their proposal to this group',
+        text: 'Any group member can assign their artefact to this group',
       },
     ],
     buttonText: 'Create',
