@@ -354,7 +354,7 @@ function Cycle() {
             <Button $color="secondary" style={{ paddingInline: 4 }}>
               save all votes
             </Button>{' '}
-            button to save your heard allocation.
+            button to save your heart allocation.
           </Body>
         </OnboardingCard>
       ),
