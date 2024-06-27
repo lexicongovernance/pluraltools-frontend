@@ -2,7 +2,7 @@
 import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import ContentLoader from 'react-content-loader';
-import { UseFormReturn, useForm } from 'react-hook-form';
+import { UseFormReturn, useForm, useWatch } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -42,6 +42,8 @@ import Select from '../components/select';
 import Label from '../components/typography/Label';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import { SafeArea } from '../layout/Layout.styled';
+import { MultiSelect } from '@/components/multi-select/MultiSelect';
+import { GROUP_CATEGORY_NAME_TENSIONS } from '@/utils/constants';
 
 function Register() {
   const [step, setStep] = useState<number | null>(null);
@@ -401,30 +403,24 @@ function EventGroupsForm({
   const form = useForm({
     mode: 'all',
     // user to groups keyed by group category id
-    defaultValues: useMemo(
-      () =>
-        groupCategories?.reduce(
-          (acc, groupCategory) => {
-            const userToGroup = usersToGroups?.find(
-              (userToGroup) => userToGroup.group.groupCategoryId === groupCategory.id,
-            );
+    defaultValues: usersToGroups?.reduce(
+      (acc, userToGroup) => {
+        if (!userToGroup.group.groupCategoryId) {
+          return acc;
+        }
 
-            if (!userToGroup) {
-              return acc;
-            }
+        if (!acc[userToGroup.groupCategoryId ?? '']) {
+          acc[userToGroup.group.groupCategoryId] = [];
+        }
 
-            if (!acc[groupCategory.id]) {
-              acc[groupCategory.id] = [];
-            }
-
-            acc[groupCategory.id] = [...acc[groupCategory.id], userToGroup?.group.id];
-            return acc;
-          },
-          {} as Record<string, string[]>,
-        ),
-      [groupCategories, usersToGroups],
+        acc[userToGroup.group.groupCategoryId].push(userToGroup.group.id);
+        return acc;
+      },
+      {} as Record<string, string[]>,
     ),
   });
+
+  const watchedForm = useWatch({ control: form.control });
 
   const { mutate: postUsersToGroupsMutation } = useMutation({
     mutationFn: postUsersToGroups,
@@ -450,31 +446,42 @@ function EventGroupsForm({
           return;
         }
 
+        toast.success(`left group successfully!`);
         queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
       }
     },
   });
 
+  const tensionsGroupCategory = groupCategories?.find(
+    (groupCategory) => groupCategory.name === GROUP_CATEGORY_NAME_TENSIONS,
+  );
+
+  const { data: groups } = useQuery({
+    queryKey: ['group-category', tensionsGroupCategory?.id, 'groups'],
+    queryFn: () => fetchGroups({ groupCategoryId: tensionsGroupCategory?.id ?? '' }),
+    enabled: !!tensionsGroupCategory?.id,
+  });
+
   const onSubmit = (values: Record<string, string[]>) => {
-    const groupIds = Object.values<string[]>(values).flat();
-    const userGroupIds = usersToGroups?.map((userToGroup) => userToGroup.group.id) || [];
+    const formGroupIds = Object.values<string[]>(values).flat();
+    const previousGroupIds = usersToGroups?.map((userToGroup) => userToGroup.group.id) || [];
 
     // add groups that are new
-    const groupsToAdd = groupIds.filter((groupId) => !userGroupIds.includes(groupId));
+    const groupsToAdd = formGroupIds.filter((groupId) => !previousGroupIds.includes(groupId));
+    console.log('[groupsToAdd]', groupsToAdd);
     for (const groupId of groupsToAdd) {
       postUsersToGroupsMutation({ groupId });
     }
 
     // delete groups that are no longer selected
-    const groupsToDelete = userGroupIds.filter((groupId) => !groupIds.includes(groupId));
+    const groupsToDelete = previousGroupIds.filter((groupId) => !formGroupIds.includes(groupId));
+    console.log('[groupsToDelete]', groupsToDelete);
     for (const groupId of groupsToDelete) {
       const userToGroup = usersToGroups?.find((userToGroup) => userToGroup.group.id === groupId);
       if (userToGroup) {
         deleteUsersToGroupsMutation({ userToGroupId: userToGroup.id });
       }
     }
-
-    afterSubmit?.();
   };
 
   return (
@@ -484,6 +491,20 @@ function EventGroupsForm({
         .map((groupCategory) => (
           <SelectEventGroup key={groupCategory.id} groupCategory={groupCategory} form={form} />
         ))}
+      {tensionsGroupCategory && (
+        <MultiSelect
+          options={groups?.map((group) => ({ value: group.id, label: group.name })) || []}
+          defaultValue={watchedForm[tensionsGroupCategory.id] || []}
+          onValueChange={(value) => {
+            console.log('[PREV]:[FORM]', form.getValues()[tensionsGroupCategory?.id || '']);
+            console.log('[CURRENT]:[VALUE]', value);
+            form.setValue(tensionsGroupCategory?.id || '', value);
+            console.log('[AFTER]:[FORM]', form.getValues()[tensionsGroupCategory?.id || '']);
+          }}
+          maxCount={100}
+          name={GROUP_CATEGORY_NAME_TENSIONS}
+        />
+      )}
 
       <Button onClick={form.handleSubmit(onSubmit)}>Save</Button>
     </FlexColumn>
