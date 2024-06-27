@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 
 // API
-import { fetchOptionUsers, fetchRegistrationData, fetchRegistrationFields } from 'api';
+import { fetchOptionUsers } from 'api';
 
 // Store
 import { useAppStore } from '../../../store';
@@ -56,26 +56,6 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
     queryFn: () => fetchOptionUsers(option.id || ''),
     enabled: !!option.id,
   });
-
-  const { data: registrationFields } = useQuery({
-    queryKey: ['event', eventId, 'registrations', 'fields'],
-    queryFn: () => fetchRegistrationFields(eventId || ''),
-    enabled: !!eventId,
-  });
-
-  const { data: registrationData } = useQuery({
-    queryKey: ['registrations', optionUsers?.registrationId, 'registration-data'],
-    queryFn: () => fetchRegistrationData(optionUsers?.registrationId || ''),
-    enabled: !!optionUsers?.registrationId,
-  });
-
-  const researchOutputField = registrationFields?.find(
-    (field) => field.name === 'Select research output:',
-  );
-
-  const researchOutputValue = registrationData?.find(
-    (data) => data.registrationFieldId === researchOutputField?.id,
-  )?.value;
 
   const collaborators = optionUsers?.group?.users
     ?.filter(
@@ -161,10 +141,7 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
       <FlexColumn className="description">
         <Body>{option.optionSubTitle}</Body>
         <Body>
-          <Bold>Research Output:</Bold> {researchOutputValue}
-        </Body>
-        <Body>
-          <Bold>Lead Author:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
+          <Bold>Creator:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
         </Body>
         <Body>
           <Bold>Collaborators:</Bold>{' '}
@@ -172,9 +149,6 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
         </Body>
         <Body>
           <Bold>Distinct voters:</Bold> {option.distinctUsers}
-        </Body>
-        <Body>
-          <Bold>Voter affiliations:</Bold> {option.listOfGroupNames.join(', ')}
         </Body>
         <Body>
           <IconButton

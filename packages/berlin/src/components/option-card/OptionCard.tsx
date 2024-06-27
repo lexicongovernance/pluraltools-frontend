@@ -1,5 +1,4 @@
 import {
-  Affiliation,
   ArrowDownIcon,
   ArrowIcon,
   Author,
@@ -84,16 +83,9 @@ function OptionCard({
             <Body>{option.optionTitle}</Body>
           </Proposal>
           <Author>
-            <Field>Lead:</Field>
+            <Field>Creator:</Field>
             <Body>{author}</Body>
           </Author>
-          <Affiliation>
-            <Field>Affiliation:</Field>
-            <Body>
-              {option.user?.groups?.find((group) => group.groupCategory?.required)?.name ??
-                'No affiliation'}
-            </Body>
-          </Affiliation>
           <Votes $showScore={showScore}>
             <VotesIcon $gap="-4px">
               <IconButton
