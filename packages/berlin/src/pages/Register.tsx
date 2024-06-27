@@ -429,7 +429,6 @@ function EventGroupsForm({
         return;
       }
       queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
-      toast.success(`Joined group successfully!`);
       afterSubmit?.();
     },
     onError: () => {
@@ -446,7 +445,6 @@ function EventGroupsForm({
           return;
         }
 
-        toast.success(`left group successfully!`);
         queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
       }
     },
@@ -468,20 +466,20 @@ function EventGroupsForm({
 
     // add groups that are new
     const groupsToAdd = formGroupIds.filter((groupId) => !previousGroupIds.includes(groupId));
-    console.log('[groupsToAdd]', groupsToAdd);
     for (const groupId of groupsToAdd) {
       postUsersToGroupsMutation({ groupId });
     }
 
     // delete groups that are no longer selected
     const groupsToDelete = previousGroupIds.filter((groupId) => !formGroupIds.includes(groupId));
-    console.log('[groupsToDelete]', groupsToDelete);
     for (const groupId of groupsToDelete) {
       const userToGroup = usersToGroups?.find((userToGroup) => userToGroup.group.id === groupId);
       if (userToGroup) {
         deleteUsersToGroupsMutation({ userToGroupId: userToGroup.id });
       }
     }
+
+    afterSubmit?.();
   };
 
   return (
@@ -496,10 +494,7 @@ function EventGroupsForm({
           options={groups?.map((group) => ({ value: group.id, label: group.name })) || []}
           defaultValue={watchedForm[tensionsGroupCategory.id] || []}
           onValueChange={(value) => {
-            console.log('[PREV]:[FORM]', form.getValues()[tensionsGroupCategory?.id || '']);
-            console.log('[CURRENT]:[VALUE]', value);
             form.setValue(tensionsGroupCategory?.id || '', value);
-            console.log('[AFTER]:[FORM]', form.getValues()[tensionsGroupCategory?.id || '']);
           }}
           maxCount={100}
           name={GROUP_CATEGORY_NAME_TENSIONS}
