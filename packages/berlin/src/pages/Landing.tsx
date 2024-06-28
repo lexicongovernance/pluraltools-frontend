@@ -27,7 +27,9 @@ function Landing() {
         </Body>
         <Body>
           The data generated through this tool will be used as part of the{' '}
-          <Link to="https://summerofprotocols.com/protocol-week">Plurality in Practice</Link>{' '}
+          <Link to="https://forum.summerofprotocols.com/t/pig-plurality-in-practice/980">
+            Plurality in Practice
+          </Link>{' '}
           Protocol during Orienteering Grant, which aims to analyze the efficiency, effectiveness
           and risks of quadratic and plural voting mechanisms.
         </Body>
