@@ -44,6 +44,7 @@ import { Subtitle } from '../components/typography/Subtitle.styled';
 import { SafeArea } from '../layout/Layout.styled';
 import { MultiSelect } from '@/components/multi-select/MultiSelect';
 import { GROUP_CATEGORY_NAME_TENSION } from '@/utils/constants';
+import { LabelContainer } from '@/components/select/Select.styled';
 
 function Register() {
   const [step, setStep] = useState<number | null>(null);
@@ -429,7 +430,6 @@ function EventGroupsForm({
         return;
       }
       queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
-      afterSubmit?.();
     },
     onError: () => {
       toast.error('Something went wrong.');
@@ -478,6 +478,8 @@ function EventGroupsForm({
         deleteUsersToGroupsMutation({ userToGroupId: userToGroup.id });
       }
     }
+
+    afterSubmit?.();
   };
 
   return (
@@ -488,17 +490,21 @@ function EventGroupsForm({
           <SelectEventGroup key={groupCategory.id} groupCategory={groupCategory} form={form} />
         ))}
       {tensionsGroupCategory && (
-        <MultiSelect
-          options={groups?.map((group) => ({ value: group.id, label: group.name })) || []}
-          defaultValue={watchedForm[tensionsGroupCategory.id] || []}
-          onValueChange={(value) => {
-            form.setValue(tensionsGroupCategory?.id || '', value);
-          }}
-          maxCount={100}
-          name={GROUP_CATEGORY_NAME_TENSION}
-        />
+        <>
+          <LabelContainer>
+            <Label>Select tensions</Label>
+          </LabelContainer>
+          <MultiSelect
+            options={groups?.map((group) => ({ value: group.id, label: group.name })) || []}
+            defaultValue={watchedForm[tensionsGroupCategory.id] || []}
+            onValueChange={(value) => {
+              form.setValue(tensionsGroupCategory?.id || '', value);
+            }}
+            maxCount={100}
+            name={GROUP_CATEGORY_NAME_TENSION}
+          />
+        </>
       )}
-
       <Button onClick={form.handleSubmit(onSubmit)}>Save</Button>
     </FlexColumn>
   );
