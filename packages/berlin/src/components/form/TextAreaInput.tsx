@@ -19,7 +19,7 @@ export function TextAreaInput<T extends FieldValues>(props: {
       render={({ field }) => (
         <Textarea
           label={props.label}
-          required={!!props.required}
+          $required={!!props.required}
           placeholder="Enter a value"
           errors={
             props.form.formState.errors[props.name]
