@@ -47,7 +47,7 @@ function Results() {
   const overallStatistics = [
     {
       id: 0,
-      title: 'Number of artefacts',
+      title: 'Number of vote items',
       data: statistics?.numProposals,
     },
     {
@@ -110,7 +110,7 @@ function Results() {
               $width={24}
               $height={24}
             />
-            <Body>Hearts received by an artifact</Body>
+            <Body>Hearts received by a vote item</Body>
           </FlexRow>
           <FlexRow>
             <IconButton
@@ -130,7 +130,7 @@ function Results() {
       target: '.step-3',
       content: (
         <OnboardingCard>
-          <Subtitle>Expand an Artifact</Subtitle>
+          <Subtitle>Expand a vote item</Subtitle>
           <FlexRow>
             <IconButton
               $padding={0}
@@ -140,7 +140,8 @@ function Results() {
               $height={24}
             />
             <Body>
-              Clicking this icon will display the artifact description and other useful information.
+              Clicking this icon will display the vote item description and other useful
+              information.
             </Body>
           </FlexRow>
           <FlexRow>

@@ -11,7 +11,7 @@ function CycleColumns({ onColumnClick, showScore }: CycleColumnsProps) {
   return (
     <Card>
       <Proposal>
-        <Body>Artefact</Body>
+        <Body>Vote Items</Body>
       </Proposal>
       <Lead onClick={() => onColumnClick('lead')}>
         <Body>Creator</Body>
