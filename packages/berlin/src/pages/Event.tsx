@@ -34,7 +34,7 @@ const steps = [
     content: (
       <OnboardingCard>
         <Subtitle>Open Votes</Subtitle>
-        <Body>Explore current artifacts, the vote deadline, and cast your vote.</Body>
+        <Body>Explore current vote items, the vote deadline, and cast your vote.</Body>
       </OnboardingCard>
     ),
     placement: 'center',

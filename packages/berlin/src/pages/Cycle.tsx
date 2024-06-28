@@ -311,7 +311,7 @@ function Cycle() {
       content: (
         <OnboardingCard>
           <Subtitle>Voting Page</Subtitle>
-          <Body>View artifacts and allocate your hearts.</Body>
+          <Body>View vote items and allocate your hearts.</Body>
         </OnboardingCard>
       ),
       placement: 'center',
@@ -338,7 +338,7 @@ function Cycle() {
                 $height={16}
               />
             </FlexColumn>
-            <Body>Upvote or downvote an artifact.</Body>
+            <Body>Upvote or downvote a vote item.</Body>
           </FlexRow>
         </OnboardingCard>
       ),
@@ -365,7 +365,7 @@ function Cycle() {
       content: (
         <OnboardingCard>
           <Subtitle>Information</Subtitle>
-          <Body>View artifact and creator.</Body>
+          <Body>View vote item and creator.</Body>
           <FlexRow>
             <IconButton
               $padding={0}
@@ -374,7 +374,7 @@ function Cycle() {
               $width={24}
               $height={24}
             />
-            <Body>Current number of hearts allocated to this artifact.</Body>
+            <Body>Current number of hearts allocated to this vote item.</Body>
           </FlexRow>
         </OnboardingCard>
       ),
@@ -406,7 +406,7 @@ function Cycle() {
       target: '.step-6',
       content: (
         <OnboardingCard>
-          <Subtitle>Expand an arifact</Subtitle>
+          <Subtitle>Expand a vote item</Subtitle>
           <FlexRow>
             <IconButton
               $padding={0}
@@ -415,7 +415,7 @@ function Cycle() {
               $width={24}
               $height={24}
             />
-            <Body>Click to view the artifact description and other useful information.</Body>
+            <Body>Click to view the vote item description and other useful information.</Body>
           </FlexRow>
           <FlexRow>
             <IconButton
