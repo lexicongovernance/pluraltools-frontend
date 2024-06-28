@@ -490,7 +490,7 @@ function EventGroupsForm({
           <SelectEventGroup key={groupCategory.id} groupCategory={groupCategory} form={form} />
         ))}
       {tensionsGroupCategory && (
-        <>
+        <FlexColumn $gap="0">
           <LabelContainer>
             <Label>Select tensions</Label>
           </LabelContainer>
@@ -503,7 +503,7 @@ function EventGroupsForm({
             maxCount={100}
             name={GROUP_CATEGORY_NAME_TENSION}
           />
-        </>
+        </FlexColumn>
       )}
       <Button onClick={form.handleSubmit(onSubmit)}>Save</Button>
     </FlexColumn>
