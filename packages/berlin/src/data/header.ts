@@ -3,7 +3,7 @@ const header = {
     src: '/logos/logo.png',
     alt: 'Lexicon Governance',
   },
-  title: 'Protocol Worlds',
+  title: 'Plural Worlds',
   subtitle: 'Edge Esmeralda',
 };
 
