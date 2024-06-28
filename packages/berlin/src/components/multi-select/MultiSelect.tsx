@@ -18,24 +18,22 @@ import {
   CommandList,
 } from '@/_components/ui/command';
 
-const multiSelectVariants = cva(
-  'm-1 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300',
-  {
-    variants: {
-      variant: {
-        default: 'border-foreground/10 text-foreground bg-card hover:bg-card/80',
-        secondary:
-          'border-foreground/10 bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        destructive:
-          'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80',
-        inverted: 'inverted',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
+const multiSelectVariants = cva('m-1', {
+  variants: {
+    variant: {
+      default:
+        'bg-[var(--color-white)] border border-solid border-[var(--color-black)] py-1 px-3 text-sm',
+      secondary:
+        'border-foreground/10 bg-secondary text-secondary-foreground hover:bg-secondary/80',
+      destructive:
+        'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80',
+      inverted: 'inverted',
     },
   },
-);
+  defaultVariants: {
+    variant: 'default',
+  },
+});
 
 interface MultiSelectProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -119,12 +117,12 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
             {...props}
             onClick={handleTogglePopover}
             className={cn(
-              'flex w-full p-1 rounded-sm border min-h-[50px] h-auto items-center justify-between bg-inherit hover:bg-inherit border-solid border-[var(--color-black)]',
+              'flex h-auto min-h-[50px] w-full items-center justify-between rounded-sm border border-solid border-[var(--color-black)] bg-inherit p-1 hover:bg-inherit',
               className,
             )}
           >
             {defaultValue.length > 0 ? (
-              <div className="flex justify-between items-center w-full">
+              <div className="flex w-full items-center justify-between">
                 <div className="flex flex-wrap items-center">
                   {defaultValue.slice(0, maxCount).map((value) => {
                     const option = options.find((o) => o.value === value);
@@ -133,15 +131,18 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                       <Badge
                         key={value}
                         className={cn(
-                          isAnimating ? 'animate-bounce' : '',
+                          isAnimating
+                            ? 'animate-bounce font-normal text-[var(--color-black)]'
+                            : 'font-normal text-[var(--color-black)]',
                           multiSelectVariants({ variant, className }),
                         )}
                         style={{ animationDuration: `${animation}s` }}
                       >
-                        {IconComponent && <IconComponent className="h-4 w-4 mr-2" />}
+                        {IconComponent && <IconComponent className="mr-2 h-4 w-4" />}
                         {option?.label}
                         <XCircle
                           className="ml-2 h-4 w-4 cursor-pointer"
+                          color="var(--color-black)"
                           onClick={(event) => {
                             event.stopPropagation();
                             toggleOption(value);
@@ -153,7 +154,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                   {defaultValue.length > maxCount && (
                     <Badge
                       className={cn(
-                        'bg-transparent text-foreground border-foreground/1 hover:bg-transparent',
+                        'border-foreground/1 font-normal text-[var(--color-black)] hover:bg-transparent',
                         isAnimating ? 'animate-bounce' : '',
                         multiSelectVariants({ variant, className }),
                       )}
@@ -162,6 +163,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                       {`+ ${defaultValue.length - maxCount} more`}
                       <XCircle
                         className="ml-2 h-4 w-4 cursor-pointer"
+                        color="var(--color-black)"
                         onClick={(event) => {
                           event.stopPropagation();
                           clearExtraOptions();
@@ -172,26 +174,35 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                 </div>
                 <div className="flex items-center justify-between">
                   <XIcon
-                    className="h-4 mx-2 cursor-pointer text-muted-foreground"
+                    className="text-muted-foreground mx-2 h-4 cursor-pointer"
+                    color="var(--color-black)"
                     onClick={(event) => {
                       event.stopPropagation();
                       handleClear();
                     }}
                   />
-                  <Separator orientation="vertical" className="flex min-h-6 h-full" />
-                  <ChevronDown className="h-4 mx-2 cursor-pointer text-muted-foreground" />
+                  <Separator orientation="vertical" className="flex h-full min-h-6" />
+                  <ChevronDown
+                    className="text-muted-foreground mx-2 h-5 cursor-pointer"
+                    color="var(--color-black)"
+                  />
                 </div>
               </div>
             ) : (
-              <div className="flex items-center justify-between w-full mx-auto">
-                <span className="text-sm text-muted-foreground mx-3">{placeholder}</span>
-                <ChevronDown className="h-4 cursor-pointer text-muted-foreground mx-2" />
+              <div className="mx-auto flex w-full items-center justify-between">
+                <span className="text-muted-foreground mx-3 text-[16px] text-[var(--color-gray)]">
+                  {placeholder}
+                </span>
+                <ChevronDown
+                  className="text-muted-foreground mx-2 h-5 cursor-pointer"
+                  color="var(--color-black)"
+                />
               </div>
             )}
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="bg-[var(--color-white)] text-[var(--color-black)] w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height] p-0"
+          className="max-h-[--radix-popover-content-available-height] w-[--radix-popover-trigger-width] border border-solid border-[var(--color-black)] bg-[var(--color-white)] p-0 text-[var(--color-black)]"
           align="start"
           onEscapeKeyDown={() => setIsPopoverOpen(false)}
         >
@@ -199,18 +210,18 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
             <CommandInput
               placeholder="Search..."
               onKeyDown={handleInputKeyDown}
-              className="text-[var(--color-black)] text-[16px]"
+              className="text-[16px] text-[var(--color-black)] placeholder:text-[var(--color-gray)]"
             />
             <CommandList>
-              <CommandEmpty className="p-4 text-center text-[var(--color-black)] text-[16px]">
+              <CommandEmpty className="p-4 text-center text-[16px] text-[var(--color-black)]">
                 No results found.
               </CommandEmpty>
-              <CommandGroup>
+              <CommandGroup className="p-0">
                 <CommandItem
                   key="all"
                   onSelect={toggleAll}
                   style={{ pointerEvents: 'auto', opacity: 1 }}
-                  className="cursor-pointer text-[var(--color-black)] hover:bg-red-400"
+                  className="cursor-pointer rounded-none p-3 text-[var(--color-black)] data-[selected=true]:bg-[var(--color-gray)] data-[selected=true]:text-[var(--color-black)]"
                 >
                   <div
                     className={cn(
@@ -231,7 +242,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                       key={option.value}
                       onSelect={() => toggleOption(option.value)}
                       style={{ pointerEvents: 'auto', opacity: 1 }}
-                      className="cursor-pointer text-[var(--color-black)]"
+                      className="cursor-pointer rounded-none p-3 text-[var(--color-black)] data-[selected=true]:bg-[var(--color-gray)] data-[selected=true]:text-[var(--color-black)]"
                     >
                       <div
                         className={cn(
@@ -244,27 +255,12 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                         <CheckIcon className="h-4 w-4" />
                       </div>
                       {option.icon && (
-                        <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+                        <option.icon className="text-muted-foreground mr-2 h-4 w-4" />
                       )}
                       <span className="text-[16px]">{option.label}</span>
                     </CommandItem>
                   );
                 })}
-              </CommandGroup>
-              <CommandGroup>
-                <div className="flex items-center justify-between">
-                  {defaultValue.length > 0 && (
-                    <>
-                      <CommandItem
-                        onSelect={handleClear}
-                        style={{ pointerEvents: 'auto', opacity: 1 }}
-                        className="flex-1 justify-center cursor-pointer"
-                      >
-                        Clear
-                      </CommandItem>
-                    </>
-                  )}
-                </div>
               </CommandGroup>
             </CommandList>
           </Command>
@@ -272,7 +268,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
         {animation > 0 && defaultValue.length > 0 && (
           <WandSparkles
             className={cn(
-              'cursor-pointer my-2 text-foreground bg-background w-3 h-3',
+              'text-foreground bg-background my-2 h-3 w-3 cursor-pointer',
               isAnimating ? '' : 'text-muted-foreground',
             )}
             onClick={() => setIsAnimating(!isAnimating)}
