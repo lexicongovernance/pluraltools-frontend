@@ -122,16 +122,6 @@ function Results() {
             />
             <Body>Plurality score</Body>
           </FlexRow>
-          <FlexRow>
-            <IconButton
-              $padding={0}
-              $color="secondary"
-              icon={{ src: `/logos/arbitrum-${theme}.svg`, alt: 'Arbitrum logo' }}
-              $width={24}
-              $height={24}
-            />
-            <Body>Indicates requested funding</Body>
-          </FlexRow>
         </OnboardingCard>
       ),
       placement: 'center',
