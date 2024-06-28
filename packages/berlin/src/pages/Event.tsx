@@ -53,6 +53,16 @@ const steps = [
     target: '.step-4',
     content: (
       <OnboardingCard>
+        <Subtitle>You can also create and join Groups</Subtitle>
+        <Body>You can link your artefacts to your group via My Artefacts.</Body>
+      </OnboardingCard>
+    ),
+    placement: 'center',
+  },
+  {
+    target: '.step-5',
+    content: (
+      <OnboardingCard>
         <Subtitle>Event Information</Subtitle>
         <Body>View the current event.</Body>
         <Body>Now, explore the vote page on your own!</Body>
@@ -94,7 +104,7 @@ function Event() {
   return (
     <>
       <Onboarding type="event" steps={steps} />
-      <FlexColumn $gap="2rem" className="step-1 step-2 step-3 step-4">
+      <FlexColumn $gap="2rem" className="step-1 step-2 step-3 step-4 step-5">
         {!!openCycles?.length && <CycleTable cycles={openCycles} status="open" />}
         {!!closedCycles?.length && <CycleTable cycles={closedCycles} status="closed" />}
         {event && <EventCard event={event} />}
