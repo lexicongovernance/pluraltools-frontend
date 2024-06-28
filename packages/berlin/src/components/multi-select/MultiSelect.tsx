@@ -16,7 +16,6 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
 } from '@/_components/ui/command';
 
 const multiSelectVariants = cva(
@@ -120,7 +119,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
             {...props}
             onClick={handleTogglePopover}
             className={cn(
-              'flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit',
+              'flex w-full p-1 rounded-sm border min-h-[50px] h-auto items-center justify-between bg-inherit hover:bg-inherit border-solid border-[var(--color-black)]',
               className,
             )}
           >
@@ -192,24 +191,30 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-full p-0"
+          className="bg-[var(--color-white)] text-[var(--color-black)] w-[--radix-popover-trigger-width] max-h-[--radix-popover-content-available-height] p-0"
           align="start"
           onEscapeKeyDown={() => setIsPopoverOpen(false)}
         >
-          <Command>
-            <CommandInput placeholder="Search..." onKeyDown={handleInputKeyDown} />
+          <Command className="bg-inherit">
+            <CommandInput
+              placeholder="Search..."
+              onKeyDown={handleInputKeyDown}
+              className="text-[var(--color-black)] text-[16px]"
+            />
             <CommandList>
-              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandEmpty className="p-4 text-center text-[var(--color-black)] text-[16px]">
+                No results found.
+              </CommandEmpty>
               <CommandGroup>
                 <CommandItem
                   key="all"
                   onSelect={toggleAll}
                   style={{ pointerEvents: 'auto', opacity: 1 }}
-                  className="cursor-pointer"
+                  className="cursor-pointer text-[var(--color-black)] hover:bg-red-400"
                 >
                   <div
                     className={cn(
-                      'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
+                      'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-[var(--color-black)]',
                       defaultValue.length === options.length
                         ? 'bg-primary text-primary-foreground'
                         : 'opacity-50 [&_svg]:invisible',
@@ -217,7 +222,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                   >
                     <CheckIcon className="h-4 w-4" />
                   </div>
-                  <span>(Select All)</span>
+                  <span className="text-[16px]">(Select All)</span>
                 </CommandItem>
                 {options.map((option) => {
                   const isSelected = defaultValue.includes(option.value);
@@ -226,11 +231,11 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                       key={option.value}
                       onSelect={() => toggleOption(option.value)}
                       style={{ pointerEvents: 'auto', opacity: 1 }}
-                      className="cursor-pointer"
+                      className="cursor-pointer text-[var(--color-black)]"
                     >
                       <div
                         className={cn(
-                          'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
+                          'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-[var(--color-black)]',
                           isSelected
                             ? 'bg-primary text-primary-foreground'
                             : 'opacity-50 [&_svg]:invisible',
@@ -241,12 +246,11 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                       {option.icon && (
                         <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
                       )}
-                      <span>{option.label}</span>
+                      <span className="text-[16px]">{option.label}</span>
                     </CommandItem>
                   );
                 })}
               </CommandGroup>
-              <CommandSeparator />
               <CommandGroup>
                 <div className="flex items-center justify-between">
                   {defaultValue.length > 0 && (
@@ -258,17 +262,8 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
                       >
                         Clear
                       </CommandItem>
-                      <Separator orientation="vertical" className="flex min-h-6 h-full" />
                     </>
                   )}
-                  <CommandSeparator />
-                  <CommandItem
-                    onSelect={() => setIsPopoverOpen(false)}
-                    style={{ pointerEvents: 'auto', opacity: 1 }}
-                    className="flex-1 justify-center cursor-pointer"
-                  >
-                    Close
-                  </CommandItem>
                 </div>
               </CommandGroup>
             </CommandList>
