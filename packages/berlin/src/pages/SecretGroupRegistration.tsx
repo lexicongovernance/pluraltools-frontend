@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
 
 // API
-import { postUsersToGroups, fetchGroupCategories, postGroup, fetchUsersToGroups } from 'api';
+import { postUsersToGroups, postGroup, fetchUsersToGroups } from 'api';
 
 // Hooks
 import useUser from '../hooks/useUser';
@@ -38,7 +38,7 @@ function SecretGroupRegistration() {
   const [secretCode, setSecretCode] = useState<string | null>(null);
   const [groupName, setGroupName] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
-  const groupCategoryNameParam = searchParams.get('groupCategory');
+  const groupCategoryIdParam = searchParams.get('groupCategoryId');
 
   const secretGroupRegistrationSchema = z.object({
     secret: z.string().refine((val) => /^(\w{3,})-(\w{3,})-(\w{3,})$/.test(val), {
@@ -66,15 +66,10 @@ function SecretGroupRegistration() {
   const groupsInCategory = useMemo(
     () =>
       usersToGroups?.filter(
-        (userToGroup) => userToGroup.group.groupCategory?.name === groupCategoryNameParam,
+        (userToGroup) => userToGroup.group.groupCategory?.id === groupCategoryIdParam,
       ),
-    [usersToGroups, groupCategoryNameParam],
+    [usersToGroups, groupCategoryIdParam],
   );
-
-  const { data: groupCategories } = useQuery({
-    queryKey: ['group-categories'],
-    queryFn: fetchGroupCategories,
-  });
 
   const { mutate: postGroupMutation } = useMutation({
     mutationFn: postGroup,
@@ -113,13 +108,6 @@ function SecretGroupRegistration() {
     },
   });
 
-  const groupCategoryId = useMemo(() => {
-    return groupCategories?.find(
-      (groupCategory) =>
-        groupCategory.name?.toLowerCase() === groupCategoryNameParam?.toLowerCase(),
-    )?.id;
-  }, [groupCategoryNameParam, groupCategories]);
-
   const onSubmit = () => {
     if (isValid) {
       postUsersToGroupsMutation({ secret: getValues('secret') });
@@ -128,7 +116,7 @@ function SecretGroupRegistration() {
   };
 
   const handleCreateGroup = (name: string) => {
-    postGroupMutation({ name, groupCategoryId: groupCategoryId || '' });
+    postGroupMutation({ name, groupCategoryId: groupCategoryIdParam || '' });
   };
 
   return (
@@ -144,11 +132,7 @@ function SecretGroupRegistration() {
               open={isDialogOpen}
               onOpenChange={setIsDialogOpen}
               trigger={
-                <Button
-                  disabled
-                  style={{ marginTop: 'auto' }}
-                  onClick={() => setIsDialogOpen(true)}
-                >
+                <Button style={{ marginTop: 'auto' }} onClick={() => setIsDialogOpen(true)}>
                   {groups.create.buttonText}
                 </Button>
               }
@@ -178,9 +162,7 @@ function SecretGroupRegistration() {
               errors={errors?.secret?.message ? [errors.secret.message] : []}
               required
             />
-            <Button disabled type="submit">
-              {groups.join.buttonText}
-            </Button>
+            <Button type="submit">{groups.join.buttonText}</Button>
           </Form>
         </FlexColumn>
       </FlexRowToColumn>

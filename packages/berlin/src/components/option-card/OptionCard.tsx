@@ -1,8 +1,20 @@
-import { Affiliation, Author, Card, Proposal, Votes } from './OptionCard.styled';
+import {
+  Affiliation,
+  ArrowDownIcon,
+  ArrowIcon,
+  Author,
+  Card,
+  Container,
+  Field,
+  Plurality,
+  PluralityIcon,
+  Proposal,
+  Votes,
+  VotesIcon,
+} from './OptionCard.styled';
 import { Body } from '../typography/Body.styled';
 import { Bold } from '../typography/Bold.styled';
 import { FlexColumn } from '../containers/FlexColumn.styled';
-import { FlexRow } from '../containers/FlexRow.styled';
 import { fetchOptionUsers, GetCycleResponse } from 'api';
 import { useAppStore } from '../../store';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -13,16 +25,19 @@ import IconButton from '../icon-button';
 type OptionCardProps = {
   option: GetCycleResponse['forumQuestions'][number]['questionOptions'][number];
   showFundingRequest?: boolean;
+  showScore?: boolean;
   numOfVotes: number;
   onVote: () => void;
   onUnVote: () => void;
 };
+
 function OptionCard({
   option,
   numOfVotes,
   onVote,
   onUnVote,
   showFundingRequest = false,
+  showScore,
 }: OptionCardProps) {
   const { eventId, cycleId } = useParams();
   const theme = useAppStore((state) => state.theme);
@@ -33,14 +48,14 @@ function OptionCard({
     enabled: !!option.id,
   });
 
-  // const formattedPluralityScore = useMemo(() => {
-  //   const score = parseFloat(String(option.voteScore));
-  //   return score % 1 === 0 ? score.toFixed(0) : score.toFixed(1);
-  // }, [option.voteScore]);
+  const formattedPluralityScore = useMemo(() => {
+    const score = parseFloat(String(option.voteScore));
+    return score % 1 === 0 ? score.toFixed(0) : score.toFixed(1);
+  }, [option.voteScore]);
 
   const [expanded, setExpanded] = useState(false);
 
-  const author = `${option.user.firstName} ${option.user.lastName}`;
+  const author = option.user ? `${option.user?.firstName} ${option.user?.lastName}` : 'Anonymous';
 
   const handleCommentsClick = () => {
     navigate(`/events/${eventId}/cycles/${cycleId}/options/${option.id}`);
@@ -48,32 +63,39 @@ function OptionCard({
 
   const coauthors = useMemo(() => {
     return optionUsers?.group?.users?.filter(
-      (optionUser) => optionUser.username !== option.user.username,
+      (optionUser) => optionUser.username !== option.user?.username,
     );
-  }, [optionUsers, option.user.username]);
+  }, [optionUsers, option.user?.username]);
 
   return (
     <Card $expanded={expanded}>
       <FlexColumn>
-        <FlexRow $gap="0">
+        <Container>
           <Proposal>
-            <IconButton
-              $padding={4}
-              $color="secondary"
-              onClick={() => setExpanded((e) => !e)}
-              icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: '' }}
-              $flipVertical={expanded}
-            />
+            <ArrowDownIcon>
+              <IconButton
+                $padding={4}
+                $color="secondary"
+                onClick={() => setExpanded((e) => !e)}
+                icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: 'Arrow down' }}
+                $flipVertical={expanded}
+              />
+            </ArrowDownIcon>
             <Body>{option.optionTitle}</Body>
           </Proposal>
           <Author>
+            <Field>Lead:</Field>
             <Body>{author}</Body>
           </Author>
           <Affiliation>
-            <Body>{option.user?.group?.name}</Body>
+            <Field>Affiliation:</Field>
+            <Body>
+              {option.user?.groups?.find((group) => group.groupCategory?.required)?.name ??
+                'No affiliation'}
+            </Body>
           </Affiliation>
-          <Votes>
-            <FlexColumn $gap="-4px">
+          <Votes $showScore={showScore}>
+            <VotesIcon $gap="-4px">
               <IconButton
                 $padding={0}
                 $color="secondary"
@@ -91,10 +113,42 @@ function OptionCard({
                 $height={16}
                 disabled={numOfVotes === 0}
               />
-            </FlexColumn>
+            </VotesIcon>
             <Body>{numOfVotes}</Body>
+            {!showScore && (
+              <ArrowIcon>
+                <IconButton
+                  $padding={4}
+                  $color="secondary"
+                  onClick={() => setExpanded((e) => !e)}
+                  icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: 'Arrow down' }}
+                  $flipVertical={expanded}
+                />
+              </ArrowIcon>
+            )}
           </Votes>
-        </FlexRow>
+          {showScore && (
+            <Plurality>
+              <PluralityIcon>
+                <IconButton
+                  $padding={0}
+                  $color="secondary"
+                  icon={{ src: `/icons/plurality-score.svg`, alt: 'Plurality score' }}
+                />
+              </PluralityIcon>
+              {formattedPluralityScore}
+              <ArrowIcon>
+                <IconButton
+                  $padding={4}
+                  $color="secondary"
+                  onClick={() => setExpanded((e) => !e)}
+                  icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: 'Arrow down' }}
+                  $flipVertical={expanded}
+                />
+              </ArrowIcon>
+            </Plurality>
+          )}
+        </Container>
         <FlexColumn className="description" $gap="1.5rem">
           {coauthors && coauthors.length > 0 && (
             <Body>
