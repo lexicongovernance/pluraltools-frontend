@@ -16,7 +16,7 @@ import { Bold } from '../typography/Bold.styled';
 import { FlexColumn } from '../containers/FlexColumn.styled';
 import { fetchOptionUsers, GetCycleResponse } from 'api';
 import { useAppStore } from '../../store';
-import { useNavigate, useParams } from 'react-router-dom';
+// import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import IconButton from '../icon-button';
@@ -38,9 +38,9 @@ function OptionCard({
   showFundingRequest = false,
   showScore,
 }: OptionCardProps) {
-  const { eventId, cycleId } = useParams();
+  // const { eventId, cycleId } = useParams();
   const theme = useAppStore((state) => state.theme);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { data: optionUsers } = useQuery({
     queryKey: ['option', option.id, 'users'],
     queryFn: () => fetchOptionUsers(option.id || ''),
@@ -56,9 +56,9 @@ function OptionCard({
 
   const author = option.user ? `${option.user?.firstName} ${option.user?.lastName}` : 'Anonymous';
 
-  const handleCommentsClick = () => {
-    navigate(`/events/${eventId}/cycles/${cycleId}/options/${option.id}`);
-  };
+  // const handleCommentsClick = () => {
+  //   navigate(`/events/${eventId}/cycles/${cycleId}/options/${option.id}`);
+  // };
 
   const coauthors = useMemo(() => {
     return optionUsers?.group?.users?.filter(
@@ -154,14 +154,14 @@ function OptionCard({
             </Body>
           )}
           {option.optionSubTitle && <Body>{option.optionSubTitle}</Body>}
-          <IconButton
+          {/* <IconButton
             $padding={0}
             $color="secondary"
             icon={{ src: `/icons/comments-${theme}.svg`, alt: 'Comments icon' }}
             onClick={handleCommentsClick}
             $width={24}
             $height={24}
-          />
+          /> */}
         </FlexColumn>
       </FlexColumn>
     </Card>
