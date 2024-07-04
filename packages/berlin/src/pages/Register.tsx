@@ -36,7 +36,6 @@ import useUser from '../hooks/useUser';
 import Button from '../components/button';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { Form } from '../components/containers/Form.styled';
-import Dots from '../components/dots';
 import { FormInput, SelectInput } from '../components/form';
 import Select from '../components/select';
 import Label from '../components/typography/Label';
@@ -45,16 +44,16 @@ import { SafeArea } from '../layout/Layout.styled';
 import { MultiSelect } from '@/components/multi-select/MultiSelect';
 import { GROUP_CATEGORY_NAME_TENSION } from '@/utils/constants';
 import { LabelContainer } from '@/components/select/Select.styled';
+import { Carousel, CarouselProvider, useCarousel } from '@/components/carousel';
 
 function Register() {
-  const [step, setStep] = useState<number | null>(null);
-
   const { user, isLoading } = useUser();
   const { eventId } = useParams();
   const [selectedRegistrationFormKey, setSelectedRegistrationFormKey] = useState<
     string | undefined
   >();
 
+  const { setStep } = useCarousel();
   const { data: event } = useQuery({
     queryKey: ['event', eventId],
     queryFn: () => fetchEvent(eventId || ''),
@@ -137,54 +136,50 @@ function Register() {
     return <Subtitle>Loading...</Subtitle>;
   }
 
-  const getRecentStep = (step: number | null, defaultStep: number) => {
-    if (step === null) {
-      return defaultStep;
-    }
-
-    return step;
-  };
-
   return (
     <SafeArea>
       <FlexColumn $gap="1.5rem">
-        {getRecentStep(step, defaultStep) === 0 && (
-          <EventGroupsForm
-            groupCategories={groupCategories}
-            usersToGroups={usersToGroups}
-            user={user}
-            afterSubmit={() => setStep(1)}
+        <CarouselProvider>
+          <Carousel
+            defaultStep={defaultStep}
+            steps={[
+              {
+                node: (
+                  <EventGroupsForm
+                    groupCategories={groupCategories}
+                    usersToGroups={usersToGroups}
+                    user={user}
+                    afterSubmit={() => {
+                      setStep(1);
+                    }}
+                  />
+                ),
+                enabled: (groupCategories?.filter((category) => category.required).length ?? 0) > 0,
+              },
+              {
+                node: (
+                  <RegistrationForm
+                    registrations={registrations}
+                    usersToGroups={usersToGroups}
+                    selectedRegistrationFormKey={selectedRegistrationFormKey}
+                    multipleRegistrationData={multipleRegistrationData}
+                    registrationFields={registrationFields}
+                    user={user}
+                    event={event}
+                    onRegistrationFormCreate={onRegistrationFormCreate}
+                    onSelectedRegistrationFormKeyChange={setSelectedRegistrationFormKey}
+                  />
+                ),
+                enabled: (registrationFields?.length ?? 0) > 0,
+              },
+            ]}
           />
-        )}
-        {getRecentStep(step, defaultStep) === 1 && (
-          <RegistrationForm
-            registrations={registrations}
-            usersToGroups={usersToGroups}
-            selectedRegistrationFormKey={selectedRegistrationFormKey}
-            multipleRegistrationData={multipleRegistrationData}
-            registrationFields={registrationFields}
-            user={user}
-            event={event}
-            onRegistrationFormCreate={onRegistrationFormCreate}
-            onSelectedRegistrationFormKeyChange={setSelectedRegistrationFormKey}
-          />
-        )}
-        <Dots
-          dots={2}
-          activeDotIndex={getRecentStep(step, defaultStep)}
-          handleClick={(i) => {
-            // the user is not allowed to go out of the first step
-            if (defaultStep == 0) {
-              return;
-            }
-
-            setStep(i);
-          }}
-        />
+        </CarouselProvider>
       </FlexColumn>
     </SafeArea>
   );
 }
+
 const sortRegistrationsByCreationDate = (registrations: GetRegistrationResponseType[]) => {
   return [
     ...registrations.sort((a, b) => {
