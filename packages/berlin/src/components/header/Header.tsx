@@ -21,7 +21,14 @@ import useUser from '../../hooks/useUser';
 // Components
 import Button from '../button';
 import NavButton from '../nav-button';
-import ZupassLoginButton from '../zupass-button/ZupassLoginButton';
+// import ZupassLoginButton from '../zupass-button/ZupassLoginButton';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from '@/_components/ui/navigation-menu';
 
 // Styled components
 import {
@@ -34,13 +41,13 @@ import {
   LogoTextContainer,
   LogoTitle,
   MenuButton,
-  MobileButtons,
+  // MobileButtons,
   NavButtons,
   NavContainer,
   SyledHeader,
   ThemeButton,
 } from './Header.styled';
-import IconButton from '../icon-button';
+// import IconButton from '../icon-button';
 
 function Header() {
   const queryClient = useQueryClient();
@@ -93,7 +100,7 @@ function Header() {
         <NavContainer>
           <NavButtons>
             <DesktopButtons>
-              {user ? (
+              {/* {user ? (
                 <>
                   {registrationsData?.some(
                     (registration) => registration.status === 'APPROVED',
@@ -142,13 +149,50 @@ function Header() {
               ) : (
                 <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
               )}
+
+              */}
+              {/* <NavigationMenuDemo />
+               */}
+
+              <NavigationMenu>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    {/* <NavigationMenuTrigger className="bg-[var(--color-black)] hover:bg-[var(--color-black)]">
+                      <img src={`/icons/user-${theme}.svg`} alt="User" />
+                    </NavigationMenuTrigger> */}
+                    <NavigationMenuTrigger className="bg-[var(--color-black)] text-[var(--color-white)] font-[raleway] uppercase font-semibold hover:bg-[var(--color-black)] focus:bg-[var(--color-black)] data-[state=open]:bg-[var(--color-black)] hover:text-[var(--color-white)]">
+                      Account
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent className="bg-[var(--color-black)]">
+                      <ul className="flex flex-col gap-2 py-4 px-2 ">
+                        <li>
+                          <ThemeButton onClick={toggleTheme}>
+                            <img
+                              src={`/icons/toggle-${theme}.svg`}
+                              alt="Toggle theme icon"
+                              height={20}
+                              width={20}
+                            />
+                          </ThemeButton>
+                        </li>
+                        <li>
+                          <NavButton to="/account">Account</NavButton>
+                        </li>
+                        <li>
+                          <Button onClick={() => mutateLogout()}>Log out</Button>
+                        </li>
+                      </ul>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
             </DesktopButtons>
             <MenuButton onClick={() => setIsBurgerMenuOpen(!isBurgerMenuOpen)}>
               <Bar $isOpen={isBurgerMenuOpen} />
               <Bar $isOpen={isBurgerMenuOpen} />
               <Bar $isOpen={isBurgerMenuOpen} />
             </MenuButton>
-            <li>
+            {/* <li>
               <ThemeButton onClick={toggleTheme}>
                 <img
                   src={`/icons/toggle-${theme}.svg`}
@@ -157,12 +201,44 @@ function Header() {
                   width={20}
                 />
               </ThemeButton>
-            </li>
+            </li> */}
           </NavButtons>
         </NavContainer>
         <BurgerMenuContainer $$isOpen={isBurgerMenuOpen} onClick={() => setIsBurgerMenuOpen(false)}>
           <NavButtons>
-            <MobileButtons>
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  {/* <NavigationMenuTrigger className="bg-[var(--color-black)] hover:bg-[var(--color-black)]">
+                      <img src={`/icons/user-${theme}.svg`} alt="User" />
+                    </NavigationMenuTrigger> */}
+                  <NavigationMenuTrigger className="bg-[var(--color-black)] text-[var(--color-white)] font-[raleway] uppercase font-semibold text-lg hover:text-[#fff] [data-state=open]:bg-red-500">
+                    Account
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent className="bg-[var(--color-black)]">
+                    <ul className="flex flex-col gap-2 py-4 px-2 ">
+                      <li>
+                        <ThemeButton onClick={toggleTheme}>
+                          <img
+                            src={`/icons/toggle-${theme}.svg`}
+                            alt="Toggle theme icon"
+                            height={20}
+                            width={20}
+                          />
+                        </ThemeButton>
+                      </li>
+                      <li>
+                        <NavButton to="/account">Account</NavButton>
+                      </li>
+                      <li>
+                        <Button onClick={() => mutateLogout()}>Log out</Button>
+                      </li>
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+            {/* <MobileButtons>
               {user ? (
                 <>
                   {registrationsData?.some(
@@ -198,7 +274,7 @@ function Header() {
               ) : (
                 <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
               )}
-            </MobileButtons>
+            </MobileButtons> */}
           </NavButtons>
         </BurgerMenuContainer>
       </HeaderContainer>
