@@ -53,7 +53,6 @@ function Register() {
     string | undefined
   >();
 
-  const { setStep } = useCarousel();
   const { data: event } = useQuery({
     queryKey: ['event', eventId],
     queryFn: () => fetchEvent(eventId || ''),
@@ -140,45 +139,95 @@ function Register() {
     <SafeArea>
       <FlexColumn $gap="1.5rem">
         <CarouselProvider>
-          <Carousel
+          <CarouselWrapper
             defaultStep={defaultStep}
-            steps={[
-              {
-                node: (
-                  <EventGroupsForm
-                    groupCategories={groupCategories}
-                    usersToGroups={usersToGroups}
-                    user={user}
-                    afterSubmit={() => {
-                      setStep(1);
-                    }}
-                  />
-                ),
-                enabled: (groupCategories?.filter((category) => category.required).length ?? 0) > 0,
-              },
-              {
-                node: (
-                  <RegistrationForm
-                    registrations={registrations}
-                    usersToGroups={usersToGroups}
-                    selectedRegistrationFormKey={selectedRegistrationFormKey}
-                    multipleRegistrationData={multipleRegistrationData}
-                    registrationFields={registrationFields}
-                    user={user}
-                    event={event}
-                    onRegistrationFormCreate={onRegistrationFormCreate}
-                    onSelectedRegistrationFormKeyChange={setSelectedRegistrationFormKey}
-                  />
-                ),
-                enabled: (registrationFields?.length ?? 0) > 0,
-              },
-            ]}
+            groupCategories={groupCategories}
+            usersToGroups={usersToGroups}
+            user={user}
+            registrations={registrations}
+            selectedRegistrationFormKey={selectedRegistrationFormKey}
+            multipleRegistrationData={multipleRegistrationData}
+            registrationFields={registrationFields}
+            event={event}
+            onRegistrationFormCreate={onRegistrationFormCreate}
+            setSelectedRegistrationFormKey={setSelectedRegistrationFormKey}
           />
         </CarouselProvider>
       </FlexColumn>
     </SafeArea>
   );
 }
+
+const CarouselWrapper = ({
+  defaultStep,
+  groupCategories,
+  usersToGroups,
+  user,
+  registrations,
+  selectedRegistrationFormKey,
+  multipleRegistrationData,
+  registrationFields,
+  event,
+  onRegistrationFormCreate,
+  setSelectedRegistrationFormKey,
+}: {
+  defaultStep: number;
+  groupCategories: GetGroupCategoriesResponse | null | undefined;
+  usersToGroups: GetUsersToGroupsResponse | null | undefined;
+  user: GetUserResponse | null | undefined;
+  registrations: GetRegistrationsResponseType | undefined | null;
+  selectedRegistrationFormKey: string | undefined;
+  multipleRegistrationData: Record<
+    string,
+    {
+      data: GetRegistrationDataResponse | null | undefined;
+      loading: boolean;
+    }
+  >;
+  registrationFields: GetRegistrationFieldsResponse | null | undefined;
+  event: GetEventResponse | null | undefined;
+  onRegistrationFormCreate: (newRegistrationId: string) => void;
+  setSelectedRegistrationFormKey: (key: string) => void;
+}) => {
+  const { nextStep } = useCarousel();
+
+  return (
+    <Carousel
+      defaultStep={defaultStep}
+      steps={[
+        {
+          node: (
+            <EventGroupsForm
+              groupCategories={groupCategories}
+              usersToGroups={usersToGroups}
+              user={user}
+              afterSubmit={() => {
+                nextStep();
+              }}
+            />
+          ),
+          enabled: (groupCategories?.filter((category) => category.required).length ?? 0) > 0,
+        },
+        {
+          node: (
+            <RegistrationForm
+              registrations={registrations}
+              usersToGroups={usersToGroups}
+              selectedRegistrationFormKey={selectedRegistrationFormKey}
+              multipleRegistrationData={multipleRegistrationData}
+              registrationFields={registrationFields}
+              user={user}
+              event={event}
+              onRegistrationFormCreate={onRegistrationFormCreate}
+              onSelectedRegistrationFormKeyChange={setSelectedRegistrationFormKey}
+            />
+          ),
+          enabled: (registrationFields?.length ?? 0) > 0,
+        },
+      ]}
+    />
+  );
+};
 
 const sortRegistrationsByCreationDate = (registrations: GetRegistrationResponseType[]) => {
   return [

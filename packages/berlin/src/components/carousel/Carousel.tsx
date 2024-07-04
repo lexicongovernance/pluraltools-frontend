@@ -6,6 +6,7 @@ const CarouselContext = createContext<
   | {
       step: number;
       setStep: (step: number) => void;
+      nextStep: () => void;
     }
   | undefined
 >(undefined);
@@ -13,9 +14,14 @@ const CarouselContext = createContext<
 export const CarouselProvider = ({ children }: { children: React.ReactNode }) => {
   const [step, setStep] = useState(0);
 
+  const nextStep = () => {
+    setStep((prevStep) => prevStep + 1);
+  };
+
   const value = {
     step,
     setStep,
+    nextStep,
   };
 
   return <CarouselContext.Provider value={value}>{children}</CarouselContext.Provider>;
@@ -76,7 +82,7 @@ export const Carousel = ({
 
   return (
     <FlexColumn $gap="1.5rem">
-      <div>{steps?.[getStep(step, defaultStep, steps)].node ?? <></>}</div>
+      <div>{steps?.[getStep(step, defaultStep, steps)]?.node ?? <></>}</div>
       <Dots
         dots={steps.filter((step) => step.enabled).length}
         activeDotIndex={getStep(step, defaultStep, steps)}
