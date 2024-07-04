@@ -21,6 +21,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import IconButton from '../icon-button';
+import Markdown from 'react-markdown';
+import Link from '../link';
 
 type OptionCardProps = {
   option: GetCycleResponse['forumQuestions'][number]['questionOptions'][number];
@@ -161,7 +163,16 @@ function OptionCard({
               <Bold>Funding request:</Bold> {option.fundingRequest}
             </Body>
           )}
-          {option.optionSubTitle && <Body>{option.optionSubTitle}</Body>}
+          {option.optionSubTitle && (
+            <Markdown
+              components={{
+                a: ({ node, ...props }) => <Link to={props.href ?? ''}>{props.children}</Link>,
+                p: ({ node, ...props }) => <Body>{props.children}</Body>,
+              }}
+            >
+              {option.optionSubTitle}
+            </Markdown>
+          )}
           <IconButton
             $padding={0}
             $color="secondary"
