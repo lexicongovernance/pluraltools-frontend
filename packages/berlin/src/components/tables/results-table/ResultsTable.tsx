@@ -18,6 +18,8 @@ import { Bold } from '../../typography/Bold.styled';
 // Styled Components
 import { useNavigate } from 'react-router-dom';
 import { Card, Funding, Icon, Plurality, TitleContainer } from './ResultsTable.styled';
+import Markdown from 'react-markdown';
+import Link from '@/components/link';
 
 type ResultsTableProps = {
   $expanded: boolean;
@@ -139,7 +141,16 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
         />
       </Funding>
       <FlexColumn className="description">
-        <Body>{option.optionSubTitle}</Body>
+        {option.optionSubTitle && (
+          <Markdown
+            components={{
+              a: ({ node, ...props }) => <Link to={props.href ?? ''}>{props.children}</Link>,
+              p: ({ node, ...props }) => <Body>{props.children}</Body>,
+            }}
+          >
+            {option.optionSubTitle}
+          </Markdown>
+        )}
         <Body>
           <Bold>Creator:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
         </Body>
