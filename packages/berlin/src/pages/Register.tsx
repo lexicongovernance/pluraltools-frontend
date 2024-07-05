@@ -136,25 +136,23 @@ function Register() {
   }
 
   return (
-    <SafeArea>
-      <FlexColumn $gap="1.5rem">
-        <CarouselProvider>
-          <CarouselWrapper
-            defaultStep={defaultStep}
-            groupCategories={groupCategories}
-            usersToGroups={usersToGroups}
-            user={user}
-            registrations={registrations}
-            selectedRegistrationFormKey={selectedRegistrationFormKey}
-            multipleRegistrationData={multipleRegistrationData}
-            registrationFields={registrationFields}
-            event={event}
-            onRegistrationFormCreate={onRegistrationFormCreate}
-            setSelectedRegistrationFormKey={setSelectedRegistrationFormKey}
-          />
-        </CarouselProvider>
-      </FlexColumn>
-    </SafeArea>
+    <CarouselProvider>
+      <SafeArea>
+        <CarouselWrapper
+          defaultStep={defaultStep}
+          groupCategories={groupCategories}
+          usersToGroups={usersToGroups}
+          user={user}
+          registrations={registrations}
+          selectedRegistrationFormKey={selectedRegistrationFormKey}
+          multipleRegistrationData={multipleRegistrationData}
+          registrationFields={registrationFields}
+          event={event}
+          onRegistrationFormCreate={onRegistrationFormCreate}
+          setSelectedRegistrationFormKey={setSelectedRegistrationFormKey}
+        />
+      </SafeArea>
+    </CarouselProvider>
   );
 }
 

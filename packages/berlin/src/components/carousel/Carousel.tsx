@@ -82,7 +82,7 @@ export const Carousel = ({
 
   return (
     <FlexColumn $gap="1.5rem">
-      <div>{steps?.[getStep(step, defaultStep, steps)]?.node ?? <></>}</div>
+      {steps?.[getStep(step, defaultStep, steps)]?.node ?? <></>}
       <Dots
         dots={steps.filter((step) => step.enabled).length}
         activeDotIndex={getStep(step, defaultStep, steps)}
