@@ -23,6 +23,8 @@ type CarouselProps = {
 export function Carousel({ steps, initialStep = 0, onComplete }: CarouselProps) {
   const [currentStepIndex, setCurrentStepIndex] = useState(initialStep);
 
+  const enabledSteps = steps.filter((step) => step.isEnabled);
+
   const goToNextStep = () => {
     setCurrentStepIndex((prevIndex) => {
       let nextIndex = prevIndex + 1;
@@ -50,7 +52,7 @@ export function Carousel({ steps, initialStep = 0, onComplete }: CarouselProps) 
   };
 
   const handleStepComplete = async () => {
-    if (currentStepIndex === steps.length - 1) {
+    if (currentStepIndex === enabledSteps.length - 1) {
       await onComplete();
     } else {
       goToNextStep();
@@ -59,7 +61,7 @@ export function Carousel({ steps, initialStep = 0, onComplete }: CarouselProps) 
 
   const currentStep = steps[currentStepIndex];
   const isFirstStep = currentStepIndex === 0;
-  const isLastStep = currentStepIndex === steps.length - 1;
+  const isLastStep = currentStepIndex === enabledSteps.length - 1;
 
   return (
     <FlexColumn $gap="1.5rem">

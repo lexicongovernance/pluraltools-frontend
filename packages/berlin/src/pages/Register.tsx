@@ -195,6 +195,74 @@ const CarouselWrapper = ({
     navigate(`/events/${eventId}/cycles`);
   };
 
+  const { mutate: postRegistrationMutation } = useMutation({
+    mutationFn: postRegistration,
+    onSuccess: async (body) => {
+      if (body) {
+        toast.success('Registration saved successfully!');
+        await queryClient.invalidateQueries({
+          queryKey: ['event', body.eventId, 'registrations'],
+        });
+
+        // invalidate user registrations, this is for the 1 event use case
+        // where the authentication is because you are approved to the event
+        await queryClient.invalidateQueries({
+          queryKey: [user?.id, 'registrations'],
+        });
+      } else {
+        toast.error('Failed to save registration, please try again');
+      }
+    },
+    onError: (error) => {
+      console.error('Error saving registration:', error);
+      toast.error('Failed to save registration, please try again');
+    },
+  });
+
+  const { mutate: updateRegistrationMutation } = useMutation({
+    mutationFn: putRegistration,
+    onSuccess: async (body) => {
+      if (body) {
+        toast.success('Registration updated successfully!');
+
+        await queryClient.invalidateQueries({
+          queryKey: ['event', event?.id, 'registrations'],
+        });
+      } else {
+        toast.error('Failed to update registration, please try again');
+      }
+    },
+    onError: (error) => {
+      console.error('Error updating registration:', error);
+      toast.error('Failed to update registration, please try again');
+    },
+  });
+
+  const onSubmit = () => {
+    const foundRegistration = registrations?.find((reg) => reg.status === 'DRAFT');
+
+    if (foundRegistration) {
+      updateRegistrationMutation({
+        registrationId: foundRegistration.id || '',
+        body: {
+          eventId: event?.id || '',
+          groupId: null,
+          status: 'DRAFT',
+          registrationData: [],
+        },
+      });
+    } else {
+      postRegistrationMutation({
+        body: {
+          eventId: event?.id || '',
+          groupId: null,
+          status: 'DRAFT',
+          registrationData: [],
+        },
+      });
+    }
+  };
+
   return (
     <Carousel
       onComplete={async () => {
@@ -218,8 +286,12 @@ const CarouselWrapper = ({
               usersToGroups={usersToGroups}
               user={user}
               onStepComplete={() => {
+                console.log('step complete');
+                console.log('isLastStep', isLastStep);
                 if (isLastStep) {
-                  // create registration
+                  onSubmit();
+                  onStepComplete();
+                  return;
                 }
 
                 onStepComplete();
