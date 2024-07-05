@@ -1,100 +1,79 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FlexColumn } from '../containers/FlexColumn.styled';
 import Dots from '../dots';
 
-const CarouselContext = createContext<
-  | {
-      step: number;
-      setStep: (step: number) => void;
-      nextStep: () => void;
-    }
-  | undefined
->(undefined);
-
-export const CarouselProvider = ({ children }: { children: React.ReactNode }) => {
-  const [step, setStep] = useState(0);
-
-  const nextStep = () => {
-    setStep((prevStep) => prevStep + 1);
-  };
-
-  const value = {
-    step,
-    setStep,
-    nextStep,
-  };
-
-  return <CarouselContext.Provider value={value}>{children}</CarouselContext.Provider>;
+type CarouselStepProps = {
+  onStepComplete: () => void;
+  goToPreviousStep: () => void;
+  isFirstStep: boolean;
+  isLastStep: boolean;
 };
 
-export const useCarousel = () => {
-  const context = useContext(CarouselContext);
-  if (context === undefined) {
-    throw new Error('useCarousel must be used within a CarouselProvider');
-  }
-  return context;
+type Step = {
+  render: (props: CarouselStepProps) => React.ReactNode;
+  isEnabled: boolean;
 };
 
-export const Carousel = ({
-  defaultStep,
-  steps,
-  onComplete,
-}: {
-  steps: { node: React.ReactNode; enabled: boolean }[];
-  defaultStep: number;
-  onComplete?: () => void;
-}) => {
-  const { step, setStep } = useCarousel();
+type CarouselProps = {
+  steps: Step[];
+  initialStep?: number;
+  onComplete: () => Promise<void>;
+};
 
-  useEffect(() => {
-    const enabledSteps = steps.filter((step) => step.enabled);
-    const lastStep = enabledSteps.length - 1;
-    if (step === lastStep) {
-      onComplete?.();
-    }
-  }, [step, defaultStep, steps, onComplete]);
+export function Carousel({ steps, initialStep = 0, onComplete }: CarouselProps) {
+  const [currentStepIndex, setCurrentStepIndex] = useState(initialStep);
 
-  const getStep = (
-    step: number,
-    defaultStep: number,
-    steps: { node: React.ReactNode; enabled: boolean }[],
-  ) => {
-    const enabledSteps = steps.filter((step) => step.enabled);
-
-    if (step === undefined) {
-      return defaultStep;
-    }
-
-    if (step < 0) {
-      return 0;
-    }
-
-    if (step >= enabledSteps.length) {
-      return enabledSteps.length - 1;
-    }
-
-    return step;
+  const goToNextStep = () => {
+    setCurrentStepIndex((prevIndex) => {
+      let nextIndex = prevIndex + 1;
+      while (nextIndex < steps.length && !steps[nextIndex].isEnabled) {
+        nextIndex++;
+      }
+      return nextIndex < steps.length ? nextIndex : prevIndex;
+    });
   };
 
-  if (steps.length === 0) {
-    return <></>;
-  }
+  const goToPreviousStep = () => {
+    setCurrentStepIndex((prevIndex) => {
+      let previousIndex = prevIndex - 1;
+      while (previousIndex >= 0 && !steps[previousIndex].isEnabled) {
+        previousIndex--;
+      }
+      return previousIndex >= 0 ? previousIndex : prevIndex;
+    });
+  };
+
+  const goToStep = (index: number) => {
+    if (index >= 0 && index < steps.length && steps[index].isEnabled) {
+      setCurrentStepIndex(index);
+    }
+  };
+
+  const handleStepComplete = async () => {
+    if (currentStepIndex === steps.length - 1) {
+      await onComplete();
+    } else {
+      goToNextStep();
+    }
+  };
+
+  const currentStep = steps[currentStepIndex];
+  const isFirstStep = currentStepIndex === 0;
+  const isLastStep = currentStepIndex === steps.length - 1;
 
   return (
     <FlexColumn $gap="1.5rem">
-      {steps?.[getStep(step, defaultStep, steps)]?.node ?? <></>}
+      {currentStep.render({
+        onStepComplete: handleStepComplete,
+        goToPreviousStep,
+        isFirstStep,
+        isLastStep,
+      })}
       <Dots
-        dots={steps.filter((step) => step.enabled).length}
-        activeDotIndex={getStep(step, defaultStep, steps)}
-        handleClick={(i) => {
-          // the user is not allowed to go out of the first step
-          if (defaultStep == 0) {
-            return;
-          }
-
-          setStep(i);
-        }}
+        dots={steps.filter((step) => step.isEnabled).length}
+        activeDotIndex={currentStepIndex}
+        handleClick={goToStep}
       />
     </FlexColumn>
   );
-};
+}
