@@ -131,7 +131,7 @@ function Header() {
                   )}
                   <Button onClick={() => mutateLogout()}>Log out</Button>
                   <Button onClick={() => navigate('/account')}>
-                    <User height={20} width={20} />
+                    <User />
                   </Button>
                 </>
               ) : (
@@ -145,7 +145,7 @@ function Header() {
             </MenuButton>
             <li>
               <Button onClick={toggleTheme}>
-                <SunMoon height={20} width={20} />
+                <SunMoon />
               </Button>
             </li>
           </NavButtons>
