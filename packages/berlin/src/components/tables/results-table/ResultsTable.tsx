@@ -1,6 +1,9 @@
 // React and third-party libraries
-import { useQuery } from '@tanstack/react-query';
+import { MessageSquareText } from 'lucide-react';
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import Markdown from 'react-markdown';
 
 // API
 import { fetchOptionUsers, fetchRegistrationData, fetchRegistrationFields } from 'api';
@@ -9,17 +12,15 @@ import { fetchOptionUsers, fetchRegistrationData, fetchRegistrationFields } from
 import { useAppStore } from '../../../store';
 
 // Components
+import { Body } from '../../typography/Body.styled';
+import { Bold } from '../../typography/Bold.styled';
 import { FlexColumn } from '../../containers/FlexColumn.styled';
 import { FlexRow } from '../../containers/FlexRow.styled';
 import IconButton from '../../icon-button';
-import { Body } from '../../typography/Body.styled';
-import { Bold } from '../../typography/Bold.styled';
+import Link from '../../link';
 
 // Styled Components
-import { useNavigate } from 'react-router-dom';
 import { Card, Funding, Icon, Plurality, TitleContainer } from './ResultsTable.styled';
-import Markdown from 'react-markdown';
-import Link from '../../link';
 
 type ResultsTableProps = {
   $expanded: boolean;
@@ -188,14 +189,9 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
           <Bold>Voter affiliations:</Bold> {option.listOfGroupNames.join(', ')}
         </Body>
         <Body>
-          <IconButton
-            $padding={0}
-            $color="secondary"
-            icon={{ src: `/icons/comments-${theme}.svg`, alt: 'Comments icon' }}
-            onClick={handleCommentsClick}
-            $width={24}
-            $height={24}
-          />
+          <Icon>
+            <MessageSquareText onClick={handleCommentsClick} />
+          </Icon>
         </Body>
       </FlexColumn>
     </Card>
