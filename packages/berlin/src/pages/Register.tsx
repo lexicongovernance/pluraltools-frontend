@@ -36,7 +36,6 @@ import useUser from '../hooks/useUser';
 import Button from '../components/button';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { Form } from '../components/containers/Form.styled';
-import Dots from '../components/dots';
 import { FormInput, SelectInput } from '../components/form';
 import Select from '../components/select';
 import Label from '../components/typography/Label';
@@ -45,10 +44,9 @@ import { SafeArea } from '../layout/Layout.styled';
 import { MultiSelect } from '@/components/multi-select/MultiSelect';
 import { GROUP_CATEGORY_NAME_TENSION } from '@/utils/constants';
 import { LabelContainer } from '@/components/select/Select.styled';
+import { Carousel } from '@/components/carousel';
 
 function Register() {
-  const [step, setStep] = useState<number | null>(null);
-
   const { user, isLoading } = useUser();
   const { eventId } = useParams();
   const [selectedRegistrationFormKey, setSelectedRegistrationFormKey] = useState<
@@ -137,54 +135,192 @@ function Register() {
     return <Subtitle>Loading...</Subtitle>;
   }
 
-  const getRecentStep = (step: number | null, defaultStep: number) => {
-    if (step === null) {
-      return defaultStep;
-    }
-
-    return step;
-  };
-
   return (
     <SafeArea>
-      <FlexColumn $gap="1.5rem">
-        {getRecentStep(step, defaultStep) === 0 && (
-          <EventGroupsForm
-            groupCategories={groupCategories}
-            usersToGroups={usersToGroups}
-            user={user}
-            afterSubmit={() => setStep(1)}
-          />
-        )}
-        {getRecentStep(step, defaultStep) === 1 && (
-          <RegistrationForm
-            registrations={registrations}
-            usersToGroups={usersToGroups}
-            selectedRegistrationFormKey={selectedRegistrationFormKey}
-            multipleRegistrationData={multipleRegistrationData}
-            registrationFields={registrationFields}
-            user={user}
-            event={event}
-            onRegistrationFormCreate={onRegistrationFormCreate}
-            onSelectedRegistrationFormKeyChange={setSelectedRegistrationFormKey}
-          />
-        )}
-        <Dots
-          dots={2}
-          activeDotIndex={getRecentStep(step, defaultStep)}
-          handleClick={(i) => {
-            // the user is not allowed to go out of the first step
-            if (defaultStep == 0) {
-              return;
-            }
-
-            setStep(i);
-          }}
-        />
-      </FlexColumn>
+      <CarouselWrapper
+        defaultStep={defaultStep}
+        groupCategories={groupCategories}
+        usersToGroups={usersToGroups}
+        user={user}
+        registrations={registrations}
+        selectedRegistrationFormKey={selectedRegistrationFormKey}
+        multipleRegistrationData={multipleRegistrationData}
+        registrationFields={registrationFields}
+        event={event}
+        onRegistrationFormCreate={onRegistrationFormCreate}
+        setSelectedRegistrationFormKey={setSelectedRegistrationFormKey}
+      />
     </SafeArea>
   );
 }
+
+const CarouselWrapper = ({
+  groupCategories,
+  usersToGroups,
+  user,
+  registrations,
+  selectedRegistrationFormKey,
+  multipleRegistrationData,
+  registrationFields,
+  event,
+  onRegistrationFormCreate,
+  setSelectedRegistrationFormKey,
+}: {
+  defaultStep: number;
+  groupCategories: GetGroupCategoriesResponse | null | undefined;
+  usersToGroups: GetUsersToGroupsResponse | null | undefined;
+  user: GetUserResponse | null | undefined;
+  registrations: GetRegistrationsResponseType | undefined | null;
+  selectedRegistrationFormKey: string | undefined;
+  multipleRegistrationData: Record<
+    string,
+    {
+      data: GetRegistrationDataResponse | null | undefined;
+      loading: boolean;
+    }
+  >;
+  registrationFields: GetRegistrationFieldsResponse | null | undefined;
+  event: GetEventResponse | null | undefined;
+  onRegistrationFormCreate: (newRegistrationId: string) => void;
+  setSelectedRegistrationFormKey: (key: string) => void;
+}) => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const redirectToNextPage = (isApproved: boolean, eventId: string) => {
+    if (!isApproved) {
+      navigate(`/events/${eventId}/holding`);
+    }
+
+    navigate(`/events/${eventId}/cycles`);
+  };
+
+  const { mutate: postRegistrationMutation } = useMutation({
+    mutationFn: postRegistration,
+    onSuccess: async (body) => {
+      if (body) {
+        toast.success('Registration saved successfully!');
+        await queryClient.invalidateQueries({
+          queryKey: ['event', body.eventId, 'registrations'],
+        });
+
+        // invalidate user registrations, this is for the 1 event use case
+        // where the authentication is because you are approved to the event
+        await queryClient.invalidateQueries({
+          queryKey: [user?.id, 'registrations'],
+        });
+      } else {
+        toast.error('Failed to save registration, please try again');
+      }
+    },
+    onError: (error) => {
+      console.error('Error saving registration:', error);
+      toast.error('Failed to save registration, please try again');
+    },
+  });
+
+  const { mutate: updateRegistrationMutation } = useMutation({
+    mutationFn: putRegistration,
+    onSuccess: async (body) => {
+      if (body) {
+        toast.success('Registration updated successfully!');
+
+        await queryClient.invalidateQueries({
+          queryKey: ['event', event?.id, 'registrations'],
+        });
+      } else {
+        toast.error('Failed to update registration, please try again');
+      }
+    },
+    onError: (error) => {
+      console.error('Error updating registration:', error);
+      toast.error('Failed to update registration, please try again');
+    },
+  });
+
+  const onSubmit = () => {
+    const foundRegistration = registrations?.find((reg) => reg.status === 'DRAFT');
+
+    if (foundRegistration) {
+      updateRegistrationMutation({
+        registrationId: foundRegistration.id || '',
+        body: {
+          eventId: event?.id || '',
+          groupId: null,
+          status: 'DRAFT',
+          registrationData: [],
+        },
+      });
+    } else {
+      postRegistrationMutation({
+        body: {
+          eventId: event?.id || '',
+          groupId: null,
+          status: 'DRAFT',
+          registrationData: [],
+        },
+      });
+    }
+  };
+
+  return (
+    <Carousel
+      onComplete={async () => {
+        // query registration to check if it is approved
+        const registrations = await queryClient.fetchQuery({
+          queryKey: ['event', event?.id, 'registrations'],
+          queryFn: () => fetchRegistrations(event?.id || ''),
+        });
+
+        redirectToNextPage(
+          registrations?.some((reg) => reg.status === 'APPROVED') ?? false,
+          event?.id || '',
+        );
+      }}
+      steps={[
+        {
+          isEnabled: (groupCategories?.filter((category) => category.required).length ?? 0) > 0,
+          render: ({ isLastStep, onStepComplete }) => (
+            <EventGroupsForm
+              groupCategories={groupCategories}
+              usersToGroups={usersToGroups}
+              user={user}
+              onStepComplete={() => {
+                console.log('step complete');
+                console.log('isLastStep', isLastStep);
+                if (isLastStep) {
+                  onSubmit();
+                  onStepComplete();
+                  return;
+                }
+
+                onStepComplete();
+              }}
+            />
+          ),
+        },
+        {
+          isEnabled: (registrationFields?.length ?? 0) > 0,
+          render: ({ onStepComplete }) => (
+            <RegistrationForm
+              registrations={registrations}
+              usersToGroups={usersToGroups}
+              selectedRegistrationFormKey={selectedRegistrationFormKey}
+              multipleRegistrationData={multipleRegistrationData}
+              registrationFields={registrationFields}
+              user={user}
+              event={event}
+              onRegistrationFormCreate={onRegistrationFormCreate}
+              onSelectedRegistrationFormKeyChange={setSelectedRegistrationFormKey}
+              onStepComplete={onStepComplete}
+            />
+          ),
+        },
+      ]}
+    />
+  );
+};
+
 const sortRegistrationsByCreationDate = (registrations: GetRegistrationResponseType[]) => {
   return [
     ...registrations.sort((a, b) => {
@@ -393,12 +529,12 @@ function EventGroupsForm({
   groupCategories,
   usersToGroups,
   user,
-  afterSubmit,
+  onStepComplete,
 }: {
   groupCategories: GetGroupCategoriesResponse | null | undefined;
   usersToGroups: GetUsersToGroupsResponse | null | undefined;
   user: GetUserResponse | null | undefined;
-  afterSubmit: () => void;
+  onStepComplete?: () => void;
 }) {
   const queryClient = useQueryClient();
   const form = useForm({
@@ -479,7 +615,7 @@ function EventGroupsForm({
       }
     }
 
-    afterSubmit?.();
+    onStepComplete?.();
   };
 
   return (
@@ -546,6 +682,7 @@ function RegistrationForm({
   usersToGroups,
   onRegistrationFormCreate,
   onSelectedRegistrationFormKeyChange,
+  onStepComplete,
 }: {
   registrations: GetRegistrationsResponseType | undefined | null;
   usersToGroups: GetUsersToGroupsResponse | undefined | null;
@@ -562,6 +699,7 @@ function RegistrationForm({
   event: GetEventResponse | null | undefined;
   onRegistrationFormCreate?: (newRegistrationId: string) => void;
   onSelectedRegistrationFormKeyChange: (key: string) => void;
+  onStepComplete?: () => void;
 }) {
   const showRegistrationForm = ({
     registrationId,
@@ -606,6 +744,7 @@ function RegistrationForm({
             isLoading={multipleRegistrationData[form.registration?.id || '']?.loading}
             event={event}
             onRegistrationFormCreate={onRegistrationFormCreate}
+            onStepComplete={onStepComplete}
           />
         );
       })}
@@ -625,8 +764,8 @@ function DynamicRegistrationFieldsForm(props: {
   isLoading: boolean;
   onRegistrationFormCreate?: (newRegistrationId: string) => void;
   registrationData: GetRegistrationDataResponse | null | undefined;
+  onStepComplete?: () => void;
 }) {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   // i want to differentiate between when a group is selected and it is not
@@ -665,14 +804,6 @@ function DynamicRegistrationFieldsForm(props: {
     return sortedFields;
   }, [props.registrationFields, selectedGroupId, prevSelectGroupId]);
 
-  const redirectToNextPage = (isApproved: boolean) => {
-    if (!isApproved) {
-      navigate(`/events/${props.event?.id}/holding`);
-    }
-
-    navigate(`/events/${props.event?.id}/cycles`);
-  };
-
   const { mutate: mutateRegistrationData, isPending } = useMutation({
     mutationFn: postRegistration,
     onSuccess: async (body) => {
@@ -693,7 +824,7 @@ function DynamicRegistrationFieldsForm(props: {
 
         props.onRegistrationFormCreate?.(body.id);
 
-        redirectToNextPage(body.status === 'APPROVED');
+        props.onStepComplete?.();
       } else {
         toast.error('Failed to save registration, please try again');
       }
@@ -717,7 +848,7 @@ function DynamicRegistrationFieldsForm(props: {
           queryKey: ['registrations', props.registrationId, 'registration-data'],
         });
 
-        redirectToNextPage(body.status === 'APPROVED');
+        props.onStepComplete?.();
       } else {
         toast.error('Failed to update registration, please try again');
       }
