@@ -282,16 +282,14 @@ const CarouselWrapper = ({
           isEnabled: (groupCategories?.filter((category) => category.required).length ?? 0) > 0,
           render: ({ isLastStep, onStepComplete }) => (
             <EventGroupsForm
+              // re render on user to groups change
+              key={JSON.stringify(usersToGroups)}
               groupCategories={groupCategories}
               usersToGroups={usersToGroups}
               user={user}
               onStepComplete={() => {
-                console.log('step complete');
-                console.log('isLastStep', isLastStep);
                 if (isLastStep) {
                   onSubmit();
-                  onStepComplete();
-                  return;
                 }
 
                 onStepComplete();
