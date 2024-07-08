@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { useAppStore } from '../../store';
-import IconButton from '../icon-button';
+import { ArrowLeft } from 'lucide-react';
+import Icon from '../icon';
 
 type BackButtonProps = {
   fallbackRoute?: string;
@@ -8,7 +8,6 @@ type BackButtonProps = {
 
 function BackButton({ fallbackRoute }: BackButtonProps) {
   const navigate = useNavigate();
-  const theme = useAppStore((state) => state.theme);
 
   const handleBackClick = () => {
     if (fallbackRoute) {
@@ -19,12 +18,9 @@ function BackButton({ fallbackRoute }: BackButtonProps) {
   };
 
   return (
-    <IconButton
-      onClick={handleBackClick}
-      $color="secondary"
-      icon={{ src: `/icons/arrow-back-${theme}.svg`, alt: 'Back icon' }}
-      $padding={0}
-    />
+    <Icon>
+      <ArrowLeft onClick={handleBackClick} />
+    </Icon>
   );
 }
 
