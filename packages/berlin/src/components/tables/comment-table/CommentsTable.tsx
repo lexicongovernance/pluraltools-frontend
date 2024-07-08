@@ -1,5 +1,5 @@
 // React and third-party libraries
-import { Trash } from 'lucide-react';
+import { ThumbsUp, Trash } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
@@ -10,14 +10,10 @@ import { GetCommentsResponse, deleteComment, deleteLike, fetchCommentLikes, post
 // Hooks
 import useUser from '../../../hooks/useUser';
 
-// Store
-import { useAppStore } from '../../../store';
-
 // Components
 import { FlexRow } from '../../containers/FlexRow.styled';
 import Button from '../../button';
 import Dialog from '../../dialog';
-import IconButton from '../../icon-button';
 import Icon from '../../icon';
 
 // Styled Components
@@ -29,7 +25,6 @@ type CommentsTableProps = {
 
 function CommentsTable({ comment }: CommentsTableProps) {
   const { optionId } = useParams();
-  const theme = useAppStore((state) => state.theme);
   const queryClient = useQueryClient();
   const { user } = useUser();
 
@@ -116,16 +111,7 @@ function CommentsTable({ comment }: CommentsTableProps) {
         onClick={handleLikeClick}
         style={{ userSelect: 'none' }}
       >
-        <IconButton
-          icon={{
-            src: isCommentLiked ? `/icons/thumb-up-active.svg` : `/icons/thumb-up-${theme}.svg`,
-            alt: 'Thumb up icon',
-          }}
-          $padding={4}
-          $color="secondary"
-          $height={20}
-          $width={20}
-        />
+        <Icon>{isCommentLiked ? <ThumbsUp fill="#0866ff" /> : <ThumbsUp />}</Icon>
         <Button $variant="text" $color="secondary">
           ({commentLikes?.length})
         </Button>
