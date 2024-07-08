@@ -122,9 +122,9 @@ function Header() {
                               )
                             );
                           })}
-                      <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
+                      {/* <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
                         My Artefacts
-                      </NavButton>
+                      </NavButton> */}
                       <NavButton to={`/events/${events?.[0].id}/cycles`} $color="secondary">
                         Vote
                       </NavButton>
@@ -181,9 +181,9 @@ function Header() {
                             )
                           );
                         })}
-                      <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
+                      {/* <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
                         My Artefacts
-                      </NavButton>
+                      </NavButton> */}
                       <NavButton to={`/events/${events?.[0].id}/cycles`} $color="secondary">
                         Vote
                       </NavButton>

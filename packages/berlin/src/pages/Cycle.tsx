@@ -417,7 +417,7 @@ function Cycle() {
             />
             <Body>Click to view the vote item description and other useful information.</Body>
           </FlexRow>
-          <FlexRow>
+          {/* <FlexRow>
             <IconButton
               $padding={0}
               $color="secondary"
@@ -428,7 +428,7 @@ function Cycle() {
             <Body>
               Click to view the comments page and start a discussion with other participants.
             </Body>
-          </FlexRow>
+          </FlexRow> */}
         </OnboardingCard>
       ),
       placement: 'center',

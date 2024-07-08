@@ -1,7 +1,6 @@
 // React and third-party libraries
-import { useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { useMemo, useState } from 'react';
 import Markdown from 'react-markdown';
 
 // Store
@@ -11,12 +10,13 @@ import { useAppStore } from '../../store';
 import { fetchOptionUsers, GetCycleResponse } from 'api';
 
 // Components
-import { Body } from '../typography/Body.styled';
-import { Bold } from '../typography/Bold.styled';
 import { FlexColumn } from '../containers/FlexColumn.styled';
 import IconButton from '../icon-button';
+import { Body } from '../typography/Body.styled';
+import { Bold } from '../typography/Bold.styled';
 
 // Styled Components
+import Link from '../link';
 import {
   ArrowDownIcon,
   ArrowIcon,
@@ -30,7 +30,7 @@ import {
   Votes,
   VotesIcon,
 } from './OptionCard.styled';
-import Link from '../link';
+// import { useNavigate, useParams } from 'react-router-dom';
 
 type OptionCardProps = {
   option: GetCycleResponse['forumQuestions'][number]['questionOptions'][number];
@@ -49,9 +49,9 @@ function OptionCard({
   showFundingRequest = false,
   showScore,
 }: OptionCardProps) {
-  const { eventId, cycleId } = useParams();
+  // const { eventId, cycleId } = useParams();
   const theme = useAppStore((state) => state.theme);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { data: optionUsers } = useQuery({
     queryKey: ['option', option.id, 'users'],
     queryFn: () => fetchOptionUsers(option.id || ''),
@@ -67,9 +67,9 @@ function OptionCard({
 
   const author = option.user ? `${option.user?.firstName} ${option.user?.lastName}` : 'Anonymous';
 
-  const handleCommentsClick = () => {
-    navigate(`/events/${eventId}/cycles/${cycleId}/options/${option.id}`);
-  };
+  // const handleCommentsClick = () => {
+  //   navigate(`/events/${eventId}/cycles/${cycleId}/options/${option.id}`);
+  // };
 
   const coauthors = useMemo(() => {
     return optionUsers?.group?.users?.filter(
@@ -174,14 +174,14 @@ function OptionCard({
               {option.optionSubTitle}
             </Markdown>
           )}
-          <IconButton
+          {/* <IconButton
             $padding={0}
             $color="secondary"
             icon={{ src: `/icons/comments-${theme}.svg`, alt: 'Comments icon' }}
             onClick={handleCommentsClick}
             $width={24}
             $height={24}
-          />
+          /> */}
         </FlexColumn>
       </FlexColumn>
     </Card>

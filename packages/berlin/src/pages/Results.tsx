@@ -144,7 +144,7 @@ function Results() {
               information.
             </Body>
           </FlexRow>
-          <FlexRow>
+          {/* <FlexRow>
             <IconButton
               $padding={0}
               $color="secondary"
@@ -153,7 +153,7 @@ function Results() {
               $height={24}
             />
             <Body>Access the comments page to start a discussion with other participants.</Body>
-          </FlexRow>
+          </FlexRow> */}
         </OnboardingCard>
       ),
       placement: 'center',
