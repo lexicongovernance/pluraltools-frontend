@@ -1,6 +1,7 @@
 // React and third-party libraries
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
+// import { useNavigate } from 'react-router-dom';
 
 // API
 import { fetchOptionUsers } from 'api';
@@ -16,7 +17,6 @@ import { Body } from '../../typography/Body.styled';
 import { Bold } from '../../typography/Bold.styled';
 
 // Styled Components
-import { useNavigate } from 'react-router-dom';
 import { Card, Funding, Icon, Plurality, TitleContainer } from './ResultsTable.styled';
 
 type ResultsTableProps = {
@@ -38,9 +38,15 @@ type ResultsTableProps = {
   onClick: () => void;
 };
 
-function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsTableProps) {
+function ResultsTable({
+  $expanded,
+  option,
+  onClick,
+  // cycleId,
+  // eventId
+}: ResultsTableProps) {
   const theme = useAppStore((state) => state.theme);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const formattedQuadraticScore = useMemo(() => {
     const score = parseFloat(option.quadraticScore);
     return score % 1 === 0 ? score.toFixed(0) : score.toFixed(3);
@@ -65,9 +71,9 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
     )
     .map((user) => `${user.firstName} ${user.lastName}`);
 
-  const handleCommentsClick = () => {
-    navigate(`/events/${eventId}/cycles/${cycleId}/options/${option.id}`);
-  };
+  // const handleCommentsClick = () => {
+  //   navigate(`/events/${eventId}/cycles/${cycleId}/options/${option.id}`);
+  // };
 
   return (
     <Card $expanded={$expanded} $showFunding={option.allocatedFunding !== null} $rowgap="2rem">
@@ -150,7 +156,7 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
         <Body>
           <Bold>Distinct voters:</Bold> {option.distinctUsers}
         </Body>
-        <Body>
+        {/* <Body>
           <IconButton
             $padding={0}
             $color="secondary"
@@ -159,7 +165,7 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
             $width={24}
             $height={24}
           />
-        </Body>
+        </Body> */}
       </FlexColumn>
     </Card>
   );
