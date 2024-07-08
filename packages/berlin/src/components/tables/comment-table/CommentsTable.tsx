@@ -1,4 +1,5 @@
 // React and third-party libraries
+import { Trash } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
@@ -17,6 +18,7 @@ import { FlexRow } from '../../containers/FlexRow.styled';
 import Button from '../../button';
 import Dialog from '../../dialog';
 import IconButton from '../../icon-button';
+import Icon from '../../icon';
 
 // Styled Components
 import { Author, Card, Comment, FormattedDate } from './CommentsTable.styled';
@@ -131,13 +133,11 @@ function CommentsTable({ comment }: CommentsTableProps) {
       {comment.user?.username === user?.username && (
         <Dialog
           trigger={
-            <IconButton
-              icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash bin icon' }}
-              $color="secondary"
-              $height={20}
-              $padding={0}
-              $width={20}
-            />
+            <div style={{ width: 24 }}>
+              <Icon>
+                <Trash />
+              </Icon>
+            </div>
           }
           title="Are you sure?"
           description="This action cannot be undone. This will permanently delete your comment from our servers."
