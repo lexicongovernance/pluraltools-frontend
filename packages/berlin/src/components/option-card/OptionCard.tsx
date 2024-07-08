@@ -1,3 +1,22 @@
+// React and third-party libraries
+import { useQuery } from '@tanstack/react-query';
+import { useMemo, useState } from 'react';
+import Markdown from 'react-markdown';
+
+// Store
+import { useAppStore } from '../../store';
+
+// API
+import { fetchOptionUsers, GetCycleResponse } from 'api';
+
+// Components
+import { FlexColumn } from '../containers/FlexColumn.styled';
+import IconButton from '../icon-button';
+import { Body } from '../typography/Body.styled';
+import { Bold } from '../typography/Bold.styled';
+
+// Styled Components
+import Link from '../link';
 import {
   ArrowDownIcon,
   ArrowIcon,
@@ -11,15 +30,7 @@ import {
   Votes,
   VotesIcon,
 } from './OptionCard.styled';
-import { Body } from '../typography/Body.styled';
-import { Bold } from '../typography/Bold.styled';
-import { FlexColumn } from '../containers/FlexColumn.styled';
-import { fetchOptionUsers, GetCycleResponse } from 'api';
-import { useAppStore } from '../../store';
 // import { useNavigate, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
-import IconButton from '../icon-button';
 
 type OptionCardProps = {
   option: GetCycleResponse['forumQuestions'][number]['questionOptions'][number];
@@ -153,7 +164,16 @@ function OptionCard({
               <Bold>Funding request:</Bold> {option.fundingRequest}
             </Body>
           )}
-          {option.optionSubTitle && <Body>{option.optionSubTitle}</Body>}
+          {option.optionSubTitle && (
+            <Markdown
+              components={{
+                a: ({ node, ...props }) => <Link to={props.href ?? ''}>{props.children}</Link>,
+                p: ({ node, ...props }) => <Body>{props.children}</Body>,
+              }}
+            >
+              {option.optionSubTitle}
+            </Markdown>
+          )}
           {/* <IconButton
             $padding={0}
             $color="secondary"
