@@ -33,6 +33,7 @@ import Button from '../components/button';
 import CycleColumns from '../components/columns/cycle-columns';
 import OptionCard from '../components/option-card';
 import { FINAL_QUESTION_TITLE, FIVE_MINUTES_IN_SECONDS, INITIAL_HEARTS } from '../utils/constants';
+import { Heart } from 'lucide-react';
 
 type Order = 'asc' | 'desc';
 type LocalUserVotes = { optionId: string; numOfVotes: number }[];
@@ -311,13 +312,7 @@ function Cycle() {
         </Body>
         <FlexRow $gap="0.25rem" $wrap>
           {Array.from({ length: INITIAL_HEARTS }).map((_, id) => (
-            <img
-              key={id}
-              src={id < availableHearts ? '/icons/heart-full.svg' : '/icons/heart-empty.svg'}
-              height={24}
-              width={24}
-              alt={id < availableHearts ? 'Full Heart' : 'Empty Heart'}
-            />
+            <Heart key={id} fill={id < availableHearts ? '#ff0000' : 'none'} />
           ))}
         </FlexRow>
         <Button onClick={handleSaveVotesWrapper} disabled={!votesAreDifferent}>

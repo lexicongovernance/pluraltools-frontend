@@ -1,5 +1,5 @@
 // React and third-party libraries
-import { MessageSquareText } from 'lucide-react';
+import { Heart, MessageSquareText, Radical } from 'lucide-react';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -106,21 +106,13 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
       </TitleContainer>
       <FlexRow>
         <Icon>
-          <IconButton
-            $padding={0}
-            $color="secondary"
-            icon={{ src: `/icons/heart-full.svg`, alt: 'Hearts' }}
-          />
+          <Heart fill="#ff0000" />
         </Icon>
         <Body>{option.allocatedHearts}</Body>
       </FlexRow>
       <FlexRow>
         <Icon>
-          <IconButton
-            $padding={0}
-            $color="secondary"
-            icon={{ src: `/icons/sqrt-${theme}.svg`, alt: 'Quadratic score' }}
-          />
+          <Radical />
         </Icon>
         <Body>{formattedQuadraticScore}</Body>
       </FlexRow>
