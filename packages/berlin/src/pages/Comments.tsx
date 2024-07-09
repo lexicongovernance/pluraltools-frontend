@@ -4,7 +4,12 @@ import { useParams } from 'react-router-dom';
 import { useMemo, useState } from 'react';
 
 // API
-import { fetchOption, fetchComments, postComment, fetchOptionUsers } from 'api';
+import {
+  fetchOption,
+  fetchComments,
+  postComment,
+  // fetchOptionUsers
+} from 'api';
 
 // Hooks
 // import useUser from '../hooks/useUser';
@@ -64,15 +69,15 @@ function Comments() {
   //   retry: false,
   // });
 
-  const { data: optionUsers } = useQuery({
-    queryKey: ['option', optionId, 'users'],
-    queryFn: () => fetchOptionUsers(optionId || ''),
-    enabled: !!optionId,
-  });
+  // const { data: optionUsers } = useQuery({
+  //   queryKey: ['option', optionId, 'users'],
+  //   queryFn: () => fetchOptionUsers(optionId || ''),
+  //   enabled: !!optionId,
+  // });
 
-  const coauthors = useMemo(() => {
-    return optionUsers?.group?.users?.filter((optionUser) => optionUser.id !== option?.userId);
-  }, [optionUsers, option]);
+  // const coauthors = useMemo(() => {
+  //   return optionUsers?.group?.users?.filter((optionUser) => optionUser.id !== option?.userId);
+  // }, [optionUsers, option]);
 
   const { data: comments } = useQuery({
     queryKey: ['option', optionId, 'comments'],
@@ -200,7 +205,7 @@ function Comments() {
         </FlexRow> */}
         <Subtitle>{option?.optionTitle}</Subtitle>
         <Body>{option?.optionSubTitle}</Body>
-        <Body>
+        {/* <Body>
           <Bold>Creator:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
           {coauthors && coauthors.length > 0 && (
             <Body>
@@ -208,7 +213,7 @@ function Comments() {
               {coauthors.map((coauthor) => `${coauthor.firstName} ${coauthor.lastName}`).join(', ')}
             </Body>
           )}
-        </Body>
+        </Body> */}
       </FlexColumn>
       {/* <Button onClick={handleSaveVoteWrapper}>Save votes</Button> */}
       <Form>

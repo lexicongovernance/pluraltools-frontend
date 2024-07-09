@@ -365,7 +365,7 @@ function Cycle() {
       content: (
         <OnboardingCard>
           <Subtitle>Information</Subtitle>
-          <Body>View vote item and creator.</Body>
+          <Body>View vote item.</Body>
           <FlexRow>
             <IconButton
               $padding={0}

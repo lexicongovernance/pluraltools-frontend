@@ -1,10 +1,10 @@
 // React and third-party libraries
-import { useQuery } from '@tanstack/react-query';
+// import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 // import { useNavigate } from 'react-router-dom';
 
 // API
-import { fetchOptionUsers } from 'api';
+// import { fetchOptionUsers } from 'api';
 
 // Store
 import { useAppStore } from '../../../store';
@@ -59,19 +59,19 @@ function ResultsTable({
     return score % 1 === 0 ? score.toFixed(0) : score.toFixed(3);
   }, [option.pluralityScore]);
 
-  const { data: optionUsers } = useQuery({
-    queryKey: ['option', option.id, 'users'],
-    queryFn: () => fetchOptionUsers(option.id || ''),
-    enabled: !!option.id,
-  });
+  // const { data: optionUsers } = useQuery({
+  //   queryKey: ['option', option.id, 'users'],
+  //   queryFn: () => fetchOptionUsers(option.id || ''),
+  //   enabled: !!option.id,
+  // });
 
-  const collaborators = optionUsers?.group?.users
-    ?.filter(
-      (user) =>
-        user.firstName !== optionUsers?.user?.firstName ||
-        user.lastName !== optionUsers?.user?.lastName,
-    )
-    .map((user) => `${user.firstName} ${user.lastName}`);
+  // const collaborators = optionUsers?.group?.users
+  //   ?.filter(
+  //     (user) =>
+  //       user.firstName !== optionUsers?.user?.firstName ||
+  //       user.lastName !== optionUsers?.user?.lastName,
+  //   )
+  //   .map((user) => `${user.firstName} ${user.lastName}`);
 
   // const handleCommentsClick = () => {
   //   navigate(`/events/${eventId}/cycles/${cycleId}/options/${option.id}`);
@@ -157,13 +157,13 @@ function ResultsTable({
             {option.optionSubTitle}
           </Markdown>
         )}
-        <Body>
+        {/* <Body>
           <Bold>Creator:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
         </Body>
         <Body>
           <Bold>Collaborators:</Bold>{' '}
           {collaborators && collaborators.length > 0 ? collaborators.join(', ') : 'None'}
-        </Body>
+        </Body> */}
         <Body>
           <Bold>Distinct voters:</Bold> {option.distinctUsers}
         </Body>
