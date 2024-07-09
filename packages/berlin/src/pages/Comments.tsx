@@ -1,4 +1,5 @@
 // React and third-party libraries
+import { ArrowDownUp } from 'lucide-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { useMemo, useState } from 'react';
@@ -17,9 +18,6 @@ import { fetchOption, fetchComments, postComment, fetchOptionUsers } from 'api';
 //   handleLocalVote,
 // } from '../utils/voting';
 
-// Store
-import { useAppStore } from '../store';
-
 // Components
 import { Body } from '../components/typography/Body.styled';
 import { Bold } from '../components/typography/Bold.styled';
@@ -29,16 +27,15 @@ import { Form } from '../components/containers/Form.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import BackButton from '../components/back-button';
 import Button from '../components/button';
-import CommentsTable from '../components/tables/comment-table';
 import CommentsColumns from '../components/columns/comments-columns';
-import IconButton from '../components/icon-button';
+import CommentsTable from '../components/tables/comment-table';
+import Icon from '../components/icon';
 import Textarea from '../components/textarea';
 // import { INITIAL_HEARTS } from '../utils/constants';
 
 // type LocalUserVotes = { optionId: string; numOfVotes: number }[];
 
 function Comments() {
-  const theme = useAppStore((state) => state.theme);
   const queryClient = useQueryClient();
   const { optionId } = useParams();
   // const { user } = useUser();
@@ -223,20 +220,17 @@ function Comments() {
         <>
           <FlexRow $justify="space-between">
             <Subtitle>Total comments ({sortedComments.length})</Subtitle>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+
+            <FlexRow
+              $gap="0.25rem"
+              style={{ flex: 0 }}
+              onClick={() => setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'))}
+            >
               <Bold>Sort</Bold>
-              <IconButton
-                onClick={() => setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'))}
-                icon={{
-                  src: `/icons/sort-${theme}.svg`,
-                  alt: 'Sort icon',
-                }}
-                $padding={4}
-                $color="secondary"
-                $height={24}
-                $width={24}
-              />
-            </div>
+              <Icon>
+                <ArrowDownUp />
+              </Icon>
+            </FlexRow>
           </FlexRow>
           <FlexColumn>
             <CommentsColumns />

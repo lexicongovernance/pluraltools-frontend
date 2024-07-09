@@ -1,4 +1,5 @@
 // React and third-party libraries
+import { Copy } from 'lucide-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -7,8 +8,8 @@ import toast from 'react-hot-toast';
 import {
   deleteUsersToGroups,
   fetchGroupMembers,
-  GetUsersToGroupsResponse,
   fetchGroupRegistrations,
+  GetUsersToGroupsResponse,
 } from 'api';
 
 // Hooks
@@ -16,14 +17,15 @@ import { useAppStore } from '../../../store';
 import useUser from '../../../hooks/useUser';
 
 // Components
+import { Body } from '../../typography/Body.styled';
+import { Bold } from '../../typography/Bold.styled';
 import { Card, Group, GroupProposal, Secret } from './GroupsTable.styled';
+import { FlexColumn } from '../../containers/FlexColumn.styled';
+import { FlexRow } from '../../containers/FlexRow.styled';
 import Button from '../../button';
 import Dialog from '../../dialog';
+import Icon from '../../icon';
 import IconButton from '../../icon-button';
-import { Body } from '../../typography/Body.styled';
-import { FlexRow } from '../../containers/FlexRow.styled';
-import { FlexColumn } from '../../containers/FlexColumn.styled';
-import { Bold } from '../../typography/Bold.styled';
 
 interface GroupCardProps {
   userToGroup: GetUsersToGroupsResponse[0];
@@ -91,12 +93,9 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
       {userToGroup.group.secret ? (
         <FlexRow>
           <Secret>{userToGroup.group.secret}</Secret>
-          <IconButton
-            onClick={() => handleCopyButtonClick(userToGroup.group.secret || '')}
-            icon={{ src: `/icons/copy-${theme}.svg`, alt: 'Copy icon' }}
-            $color="secondary"
-            $padding={4}
-          />
+          <Icon>
+            <Copy onClick={() => handleCopyButtonClick(userToGroup.group.secret || '')} />
+          </Icon>
         </FlexRow>
       ) : (
         <Body>No secret</Body>
