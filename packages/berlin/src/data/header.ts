@@ -4,7 +4,7 @@ const header = {
     alt: 'Lexicon Governance',
   },
   title: 'Plural PILL Vote',
-  subtitle: 'Summer Protocols',
+  subtitle: 'Summer of Protocols',
 };
 
 export default header;
