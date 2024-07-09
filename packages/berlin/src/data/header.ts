@@ -3,8 +3,8 @@ const header = {
     src: '/logos/logo.png',
     alt: 'Lexicon Governance',
   },
-  title: 'Plural Worlds',
-  subtitle: 'Edge Esmeralda',
+  title: 'Plural PILL Vote',
+  subtitle: 'Summer Protocols',
 };
 
 export default header;
