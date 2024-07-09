@@ -1,6 +1,6 @@
 import IconButton from '../../icon-button';
 import { Body } from '../../typography/Body.styled';
-import { Lead, Card, Hearts, Proposal, Plurality } from './CycleColumns.styled';
+import { Card, Hearts, Proposal, Plurality } from './CycleColumns.styled';
 
 type CycleColumnsProps = {
   onColumnClick: (column: string) => void;
@@ -13,9 +13,9 @@ function CycleColumns({ onColumnClick, showScore }: CycleColumnsProps) {
       <Proposal>
         <Body>Vote Items</Body>
       </Proposal>
-      <Lead onClick={() => onColumnClick('lead')}>
+      {/* <Lead onClick={() => onColumnClick('lead')}>
         <Body>Creator</Body>
-      </Lead>
+      </Lead> */}
       <Hearts onClick={() => onColumnClick('numOfVotes')}>
         <IconButton
           $padding={0}

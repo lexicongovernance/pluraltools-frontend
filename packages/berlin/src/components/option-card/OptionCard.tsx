@@ -20,10 +20,10 @@ import Link from '../link';
 import {
   ArrowDownIcon,
   ArrowIcon,
-  Author,
+  // Author,
   Card,
   Container,
-  Field,
+  // Field,
   Plurality,
   PluralityIcon,
   Proposal,
@@ -65,7 +65,7 @@ function OptionCard({
 
   const [expanded, setExpanded] = useState(false);
 
-  const author = option.user ? `${option.user?.firstName} ${option.user?.lastName}` : 'Anonymous';
+  // const author = option.user ? `${option.user?.firstName} ${option.user?.lastName}` : 'Anonymous';
 
   // const handleCommentsClick = () => {
   //   navigate(`/events/${eventId}/cycles/${cycleId}/options/${option.id}`);
@@ -93,10 +93,10 @@ function OptionCard({
             </ArrowDownIcon>
             <Body>{option.optionTitle}</Body>
           </Proposal>
-          <Author>
+          {/* <Author>
             <Field>Creator:</Field>
             <Body>{author}</Body>
-          </Author>
+          </Author> */}
           <Votes $showScore={showScore}>
             <VotesIcon $gap="-4px">
               <IconButton
