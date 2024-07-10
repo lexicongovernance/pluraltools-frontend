@@ -33,7 +33,11 @@ function Landing() {
             Plurality in Practice
           </Link>{' '}
           Protocol during Orienteering Grant, which aims to analyze the efficiency, effectiveness
-          and risks of quadratic and plural voting mechanisms.
+          and risks of quadratic and plural voting mechanisms. You can learn more about the plural
+          voting mechanism{' '}
+          <Link to="https://github.com/lexicongovernance/pluraltools-backend/wiki/Plural-Voting-Model">
+            here
+          </Link>
         </Body>
       </FlexColumn>
     </SafeArea>
