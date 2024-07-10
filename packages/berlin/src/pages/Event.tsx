@@ -16,6 +16,7 @@ import Button from '../components/button';
 import EventCard from '../components/event-card';
 import Link from '../components/link';
 import Onboarding from '../components/onboarding';
+import { Skeleton } from '@/_components/ui/skeleton';
 
 const steps = [
   {
@@ -81,14 +82,14 @@ const steps = [
 function Event() {
   const navigate = useNavigate();
   const { eventId } = useParams();
-  const { data: event } = useQuery({
+  const { data: event, isLoading: eventIsLoading } = useQuery({
     queryKey: ['event', eventId],
     queryFn: () => fetchEvent(eventId || ''),
     enabled: !!eventId,
   });
 
-  const { data: eventCycles } = useQuery({
-    queryKey: ['events', eventId, 'cycles'],
+  const { data: eventCycles, isLoading: cycleIsLoading } = useQuery({
+    queryKey: ['event', eventId, 'cycles'],
     queryFn: () => fetchEventCycles(eventId || ''),
     enabled: !!eventId,
     refetchInterval: 5000, // Poll every 5 seconds
@@ -111,9 +112,19 @@ function Event() {
     <>
       <Onboarding type="event" steps={steps} />
       <FlexColumn $gap="2rem" className="step-1 step-2 step-3 step-4">
-        {!!openCycles?.length && <CycleTable cycles={openCycles} status="open" />}
-        {!!closedCycles?.length && <CycleTable cycles={closedCycles} status="closed" />}
-        {event && <EventCard event={event} />}
+        {cycleIsLoading || !eventCycles ? (
+          <Skeleton className="bg-background h-[200px] min-w-full rounded-xl" />
+        ) : (
+          <>
+            {!!openCycles?.length && <CycleTable cycles={openCycles} status="open" />}
+            {!!closedCycles?.length && <CycleTable cycles={closedCycles} status="closed" />}
+          </>
+        )}
+        {eventIsLoading || !event ? (
+          <Skeleton className="bg-background h-[250px] min-w-full rounded-xl" />
+        ) : (
+          <EventCard event={event} />
+        )}
         <Body>
           Click to revisit the community’s{' '}
           <Link to="#" onClick={handleDataPolicyClick}>

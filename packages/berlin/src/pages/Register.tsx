@@ -817,7 +817,7 @@ function DynamicRegistrationFieldsForm(props: {
         // invalidate user registrations, this is for the 1 event use case
         // where the authentication is because you are approved to the event
         await queryClient.invalidateQueries({
-          queryKey: [props.user?.id, 'registrations'],
+          queryKey: ['user', props.user?.id, 'registrations'],
         });
 
         props.onRegistrationFormCreate?.(body.id);

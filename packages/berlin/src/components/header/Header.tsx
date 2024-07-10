@@ -60,7 +60,7 @@ function Header() {
   });
 
   const { data: registrationsData } = useQuery({
-    queryKey: [user?.id, 'registrations'],
+    queryKey: ['user', user?.id, 'registrations'],
     queryFn: () => fetchUserRegistrations(user?.id ?? ''),
     enabled: !!user,
   });
