@@ -287,9 +287,9 @@ const CarouselWrapper = ({
               groupCategories={groupCategories}
               usersToGroups={usersToGroups}
               user={user}
-              onStepComplete={() => {
+              onStepComplete={async () => {
                 if (isLastStep) {
-                  onSubmit();
+                  await onSubmit();
                 }
 
                 onStepComplete();
@@ -532,7 +532,7 @@ function EventGroupsForm({
   groupCategories: GetGroupCategoriesResponse | null | undefined;
   usersToGroups: GetUsersToGroupsResponse | null | undefined;
   user: GetUserResponse | null | undefined;
-  onStepComplete?: () => void;
+  onStepComplete?: () => Promise<void>;
 }) {
   const queryClient = useQueryClient();
   const form = useForm({
@@ -594,7 +594,7 @@ function EventGroupsForm({
     enabled: !!tensionsGroupCategory?.id,
   });
 
-  const onSubmit = (values: Record<string, string[]>) => {
+  const onSubmit = async (values: Record<string, string[]>) => {
     const formGroupIds = Object.values<string[]>(values).flat();
     const previousGroupIds = usersToGroups?.map((userToGroup) => userToGroup.group.id) || [];
 
@@ -613,7 +613,7 @@ function EventGroupsForm({
       }
     }
 
-    onStepComplete?.();
+    await onStepComplete?.();
   };
 
   return (
