@@ -14,6 +14,7 @@ import { useAppStore } from '@/store';
 import { NavLink } from 'react-router-dom';
 import Icon from '../icon';
 import { User } from 'lucide-react';
+import ThemeToggler from '../theme-toggler';
 
 const components = [
   {
@@ -55,7 +56,7 @@ const components = [
 export default function NewHeader() {
   const theme = useAppStore((state) => state.theme);
   return (
-    <header className="border-secondary border-b">
+    <header className="bg-primary border-secondary border-b">
       <section className="mx-auto flex min-h-16 w-[min(90%,1080px)] items-center justify-between">
         <div className="flex items-center gap-2">
           <img src={`/logos/lexicon-${theme}.svg`} alt="Lexicon Logo" height={32} width={32} />
@@ -79,9 +80,17 @@ export default function NewHeader() {
                   <User />
                 </Icon>
               </NavigationMenuTrigger>
-              <NavigationMenuContent className="bg-primary text-secondary p-4">
-                Hello
+              <NavigationMenuContent className="bg-primary flex flex-col p-4">
+                <NavigationMenuLink>
+                  <NavLink to="/account">Account</NavLink>
+                </NavigationMenuLink>
+                <NavigationMenuLink>Log out</NavigationMenuLink>
               </NavigationMenuContent>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink>
+                <ThemeToggler />
+              </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
