@@ -195,7 +195,7 @@ const CarouselWrapper = ({
     navigate(`/events/${eventId}/cycles`);
   };
 
-  const { mutate: postRegistrationMutation } = useMutation({
+  const { mutateAsync: postRegistrationMutation } = useMutation({
     mutationFn: postRegistration,
     onSuccess: async (body) => {
       if (body) {
@@ -219,7 +219,7 @@ const CarouselWrapper = ({
     },
   });
 
-  const { mutate: updateRegistrationMutation } = useMutation({
+  const { mutateAsync: updateRegistrationMutation } = useMutation({
     mutationFn: putRegistration,
     onSuccess: async (body) => {
       if (body) {
@@ -238,11 +238,11 @@ const CarouselWrapper = ({
     },
   });
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const foundRegistration = registrations?.find((reg) => reg.status === 'DRAFT');
 
     if (foundRegistration) {
-      updateRegistrationMutation({
+      await updateRegistrationMutation({
         registrationId: foundRegistration.id || '',
         body: {
           eventId: event?.id || '',
@@ -252,7 +252,7 @@ const CarouselWrapper = ({
         },
       });
     } else {
-      postRegistrationMutation({
+      await postRegistrationMutation({
         body: {
           eventId: event?.id || '',
           groupId: null,
