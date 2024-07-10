@@ -1,12 +1,11 @@
 import styled, { keyframes } from 'styled-components';
-import Button from '../button/Button';
+import Button from '../button';
 
 export const SyledHeader = styled.header`
   align-items: center;
   display: flex;
   justify-content: center;
-  min-height: 10rem;
-  padding-block: 2rem;
+  min-height: 4rem;
 `;
 
 export const HeaderContainer = styled.div`
@@ -23,53 +22,18 @@ export const LogoContainer = styled.div`
   align-items: center;
   cursor: pointer;
   display: flex;
-  gap: 0.75rem;
+  gap: 0.5rem;
 `;
 
 export const LogoImage = styled.img`
-  height: 3.5rem;
-  max-width: 3.5rem;
-
-  @media (min-width: 430px) {
-    height: 5rem;
-    max-width: 5rem;
-  }
-`;
-
-export const LogoTextContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  height: 2rem;
+  max-width: 2rem;
 `;
 
 export const LogoTitle = styled.h1`
   font-size: 1.5rem;
-  line-height: 1.65rem;
-
-  @media (min-width: 430px) {
-    display: block;
-    font-family: var(--font-family-title);
-    font-size: 1.75rem;
-    font-weight: 600;
-    line-height: 1.75rem;
-  }
-
-  @media (min-width: 600px) {
-    max-width: none;
-  }
-`;
-
-export const LogoSubtitle = styled.h2`
-  display: block;
-  font-family: var(--font-family-body);
-  font-size: 0.65rem;
-  font-style: italic;
-  font-weight: 600;
-  line-height: 0.75rem;
-  max-width: 360px;
-  @media (min-width: 600px) {
-    font-size: 1rem;
-  }
+  line-height: 1.5rem;
+  font-weight: 500;
 `;
 
 export const NavContainer = styled.nav`
@@ -167,4 +131,8 @@ export const BurgerMenuContainer = styled.nav<{ $$isOpen: boolean }>`
 
   display: ${(props) => (props.$$isOpen ? 'flex' : 'none')};
   animation: ${fadeIn} 0.3s ease-out;
+`;
+
+export const IconButton = styled(Button)`
+  padding: 0.25rem 0.5rem;
 `;

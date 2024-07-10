@@ -30,9 +30,8 @@ import {
   BurgerMenuContainer,
   DesktopButtons,
   HeaderContainer,
+  IconButton,
   LogoContainer,
-  LogoSubtitle,
-  LogoTextContainer,
   LogoTitle,
   MenuButton,
   MobileButtons,
@@ -83,11 +82,8 @@ function Header() {
     <SyledHeader>
       <HeaderContainer>
         <LogoContainer onClick={() => navigate('/')}>
-          <img src={`/logos/lexicon-${theme}.svg`} alt="Lexicon Logo" height={64} width={64} />
-          <LogoTextContainer>
-            <LogoTitle>{header.title}</LogoTitle>
-            <LogoSubtitle>{header.subtitle}</LogoSubtitle>
-          </LogoTextContainer>
+          <img src={`/logos/lexicon-${theme}.svg`} alt="Lexicon Logo" height={32} width={32} />
+          <LogoTitle>{header.title}</LogoTitle>
         </LogoContainer>
         <NavContainer>
           <NavButtons>
@@ -130,9 +126,9 @@ function Header() {
                     </>
                   )}
                   <Button onClick={() => mutateLogout()}>Log out</Button>
-                  <Button onClick={() => navigate('/account')}>
+                  <IconButton onClick={() => navigate('/account')}>
                     <User />
-                  </Button>
+                  </IconButton>
                 </>
               ) : (
                 <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
@@ -143,11 +139,9 @@ function Header() {
               <Bar $isOpen={isBurgerMenuOpen} />
               <Bar $isOpen={isBurgerMenuOpen} />
             </MenuButton>
-            <li>
-              <Button onClick={toggleTheme}>
-                <SunMoon />
-              </Button>
-            </li>
+            <IconButton onClick={toggleTheme}>
+              <SunMoon />
+            </IconButton>
           </NavButtons>
         </NavContainer>
         <BurgerMenuContainer $$isOpen={isBurgerMenuOpen} onClick={() => setIsBurgerMenuOpen(false)}>
