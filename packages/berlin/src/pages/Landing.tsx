@@ -23,7 +23,7 @@ function Landing() {
           If you’re a member of the 2024 or 2023 Summer of Protocols cohorts or the organizing team,
           please log in with your{' '}
           <ZupassButton $variant="link">
-            <Bold>ZuPass.</Bold>
+            <Bold>ZuPass</Bold>
           </ZupassButton>{' '}
           and vote on your favourite PILL project to receive a follow-on grant.
         </Body>
@@ -33,7 +33,12 @@ function Landing() {
             Plurality in Practice
           </Link>{' '}
           Protocol during Orienteering Grant, which aims to analyze the efficiency, effectiveness
-          and risks of quadratic and plural voting mechanisms.
+          and risks of quadratic and plural voting mechanisms. You can learn more about the plural
+          voting mechanism{' '}
+          <Link to="https://github.com/lexicongovernance/pluraltools-backend/wiki/Plural-Voting-Model">
+            here
+          </Link>
+          .
         </Body>
       </FlexColumn>
     </SafeArea>
