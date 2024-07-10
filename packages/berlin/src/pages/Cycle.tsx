@@ -346,11 +346,11 @@ function Cycle() {
         <OnboardingCard>
           <Subtitle>Save Your Votes</Subtitle>
           <Body>
-            Click the{' '}
+            You must click the
             <Button $color="secondary" style={{ paddingInline: 4 }}>
               save all votes
             </Button>{' '}
-            button to save your heart allocation.
+            button or your vote will not be recorded.
           </Body>
         </OnboardingCard>
       ),

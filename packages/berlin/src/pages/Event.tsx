@@ -65,17 +65,6 @@ const steps = [
   //   ),
   //   placement: 'center',
   // },
-  {
-    target: '.step-4',
-    content: (
-      <OnboardingCard>
-        <Subtitle>Event Information</Subtitle>
-        <Body>View the current event.</Body>
-        <Body>Now, explore the vote page on your own!</Body>
-      </OnboardingCard>
-    ),
-    placement: 'center',
-  },
 ];
 
 function Event() {
@@ -110,7 +99,7 @@ function Event() {
   return (
     <>
       <Onboarding type="event" steps={steps} />
-      <FlexColumn $gap="2rem" className="step-1 step-2 step-3 step-4">
+      <FlexColumn $gap="2rem" className="step-1 step-2 step-3">
         {!!openCycles?.length && <CycleTable cycles={openCycles} status="open" />}
         {!!closedCycles?.length && <CycleTable cycles={closedCycles} status="closed" />}
         {event && <EventCard event={event} />}
