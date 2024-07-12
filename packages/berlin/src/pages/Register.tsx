@@ -639,7 +639,9 @@ function EventGroupsForm({
           />
         </FlexColumn>
       )}
-      <Button onClick={form.handleSubmit(onSubmit)}>Save</Button>
+      <Button onClick={form.handleSubmit(onSubmit)} disabled={form.formState.isSubmitting}>
+        Save
+      </Button>
     </FlexColumn>
   );
 }
