@@ -3,7 +3,7 @@ import { FlexColumn } from '../containers/FlexColumn.styled';
 import Dots from '../dots';
 
 type CarouselStepProps = {
-  onStepComplete: () => void;
+  handleStepComplete: () => Promise<void>;
   goToPreviousStep: () => void;
   isFirstStep: boolean;
   isLastStep: boolean;
@@ -22,6 +22,7 @@ type CarouselProps = {
 
 export function Carousel({ steps, initialStep = 0, onComplete }: CarouselProps) {
   const [currentStepIndex, setCurrentStepIndex] = useState(initialStep);
+  const [isCompletingStep, setIsCompletingStep] = useState(false);
 
   const enabledSteps = steps.filter((step) => step.isEnabled);
 
@@ -52,10 +53,15 @@ export function Carousel({ steps, initialStep = 0, onComplete }: CarouselProps) 
   };
 
   const handleStepComplete = async () => {
-    if (currentStepIndex === enabledSteps.length - 1) {
-      await onComplete();
-    } else {
-      goToNextStep();
+    if (!isCompletingStep) {
+      // Check if not already running
+      setIsCompletingStep(true); // Mark as running
+      if (currentStepIndex === enabledSteps.length - 1) {
+        await onComplete();
+      } else {
+        goToNextStep();
+      }
+      setIsCompletingStep(false); // Reset after completion
     }
   };
 
@@ -66,7 +72,7 @@ export function Carousel({ steps, initialStep = 0, onComplete }: CarouselProps) 
   return (
     <FlexColumn $gap="1.5rem">
       {currentStep.render({
-        onStepComplete: handleStepComplete,
+        handleStepComplete,
         goToPreviousStep,
         isFirstStep,
         isLastStep,

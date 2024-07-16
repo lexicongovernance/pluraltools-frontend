@@ -185,6 +185,7 @@ const CarouselWrapper = ({
   setSelectedRegistrationFormKey: (key: string) => void;
 }) => {
   const navigate = useNavigate();
+
   const queryClient = useQueryClient();
 
   const redirectToNextPage = (isApproved: boolean, eventId: string) => {
@@ -195,54 +196,56 @@ const CarouselWrapper = ({
     navigate(`/events/${eventId}/cycles`);
   };
 
-  const { mutate: postRegistrationMutation } = useMutation({
-    mutationFn: postRegistration,
-    onSuccess: async (body) => {
-      if (body) {
-        toast.success('Registration saved successfully!');
-        await queryClient.invalidateQueries({
-          queryKey: ['event', body.eventId, 'registrations'],
-        });
+  const { mutateAsync: postRegistrationMutation, isPending: postRegistrationIsPending } =
+    useMutation({
+      mutationFn: postRegistration,
+      onSuccess: async (body) => {
+        if (body) {
+          toast.success('Registration saved successfully!');
+          await queryClient.invalidateQueries({
+            queryKey: ['event', body.eventId, 'registrations'],
+          });
 
-        // invalidate user registrations, this is for the 1 event use case
-        // where the authentication is because you are approved to the event
-        await queryClient.invalidateQueries({
-          queryKey: [user?.id, 'registrations'],
-        });
-      } else {
+          // invalidate user registrations, this is for the 1 event use case
+          // where the authentication is because you are approved to the event
+          await queryClient.invalidateQueries({
+            queryKey: [user?.id, 'registrations'],
+          });
+        } else {
+          toast.error('Failed to save registration, please try again');
+        }
+      },
+      onError: (error) => {
+        console.error('Error saving registration:', error);
         toast.error('Failed to save registration, please try again');
-      }
-    },
-    onError: (error) => {
-      console.error('Error saving registration:', error);
-      toast.error('Failed to save registration, please try again');
-    },
-  });
+      },
+    });
 
-  const { mutate: updateRegistrationMutation } = useMutation({
-    mutationFn: putRegistration,
-    onSuccess: async (body) => {
-      if (body) {
-        toast.success('Registration updated successfully!');
+  const { mutateAsync: updateRegistrationMutation, isPending: updateRegistrationIsPending } =
+    useMutation({
+      mutationFn: putRegistration,
+      onSuccess: async (body) => {
+        if (body) {
+          toast.success('Registration updated successfully!');
 
-        await queryClient.invalidateQueries({
-          queryKey: ['event', event?.id, 'registrations'],
-        });
-      } else {
+          await queryClient.invalidateQueries({
+            queryKey: ['event', event?.id, 'registrations'],
+          });
+        } else {
+          toast.error('Failed to update registration, please try again');
+        }
+      },
+      onError: (error) => {
+        console.error('Error updating registration:', error);
         toast.error('Failed to update registration, please try again');
-      }
-    },
-    onError: (error) => {
-      console.error('Error updating registration:', error);
-      toast.error('Failed to update registration, please try again');
-    },
-  });
+      },
+    });
 
-  const onSubmit = () => {
-    const foundRegistration = registrations?.find((reg) => reg.status === 'DRAFT');
+  const handleSubmit = async () => {
+    const foundRegistration = registrations?.at(0);
 
     if (foundRegistration) {
-      updateRegistrationMutation({
+      await updateRegistrationMutation({
         registrationId: foundRegistration.id || '',
         body: {
           eventId: event?.id || '',
@@ -252,7 +255,7 @@ const CarouselWrapper = ({
         },
       });
     } else {
-      postRegistrationMutation({
+      await postRegistrationMutation({
         body: {
           eventId: event?.id || '',
           groupId: null,
@@ -280,26 +283,30 @@ const CarouselWrapper = ({
       steps={[
         {
           isEnabled: (groupCategories?.filter((category) => category.required).length ?? 0) > 0,
-          render: ({ isLastStep, onStepComplete }) => (
+          render: ({ isLastStep, handleStepComplete }) => (
             <EventGroupsForm
               // re render on user to groups change
               key={JSON.stringify(usersToGroups)}
               groupCategories={groupCategories}
               usersToGroups={usersToGroups}
               user={user}
-              onStepComplete={() => {
-                if (isLastStep) {
-                  onSubmit();
+              onStepComplete={async () => {
+                if (updateRegistrationIsPending || postRegistrationIsPending) {
+                  return;
                 }
 
-                onStepComplete();
+                if (isLastStep) {
+                  await handleSubmit();
+                }
+
+                await handleStepComplete();
               }}
             />
           ),
         },
         {
           isEnabled: (registrationFields?.length ?? 0) > 0,
-          render: ({ onStepComplete }) => (
+          render: ({ handleStepComplete }) => (
             <RegistrationForm
               registrations={registrations}
               usersToGroups={usersToGroups}
@@ -310,7 +317,7 @@ const CarouselWrapper = ({
               event={event}
               onRegistrationFormCreate={onRegistrationFormCreate}
               onSelectedRegistrationFormKeyChange={setSelectedRegistrationFormKey}
-              onStepComplete={onStepComplete}
+              onStepComplete={handleStepComplete}
             />
           ),
         },
@@ -532,7 +539,7 @@ function EventGroupsForm({
   groupCategories: GetGroupCategoriesResponse | null | undefined;
   usersToGroups: GetUsersToGroupsResponse | null | undefined;
   user: GetUserResponse | null | undefined;
-  onStepComplete?: () => void;
+  onStepComplete?: () => Promise<void>;
 }) {
   const queryClient = useQueryClient();
   const form = useForm({
@@ -557,32 +564,34 @@ function EventGroupsForm({
 
   const watchedForm = useWatch({ control: form.control });
 
-  const { mutate: postUsersToGroupsMutation } = useMutation({
-    mutationFn: postUsersToGroups,
-    onSuccess: (body) => {
-      if (!body) {
-        return;
-      }
-      queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
-    },
-    onError: () => {
-      toast.error('Something went wrong.');
-    },
-  });
-
-  const { mutate: deleteUsersToGroupsMutation } = useMutation({
-    mutationFn: deleteUsersToGroups,
-    onSuccess: (body) => {
-      if (body) {
-        if ('errors' in body) {
-          toast.error(body.errors[0]);
+  const { mutateAsync: postUsersToGroupsMutation, isPending: postUsersToGroupsIsLoading } =
+    useMutation({
+      mutationFn: postUsersToGroups,
+      onSuccess: (body) => {
+        if (!body) {
           return;
         }
-
         queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
-      }
-    },
-  });
+      },
+      onError: () => {
+        toast.error('Something went wrong.');
+      },
+    });
+
+  const { mutateAsync: deleteUsersToGroupsMutation, isPending: deleteUsersToGroupsIsLoading } =
+    useMutation({
+      mutationFn: deleteUsersToGroups,
+      onSuccess: (body) => {
+        if (body) {
+          if ('errors' in body) {
+            toast.error(body.errors[0]);
+            return;
+          }
+
+          queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
+        }
+      },
+    });
 
   const tensionsGroupCategory = groupCategories?.find(
     (groupCategory) => groupCategory.name === GROUP_CATEGORY_NAME_TENSION,
@@ -594,26 +603,38 @@ function EventGroupsForm({
     enabled: !!tensionsGroupCategory?.id,
   });
 
-  const onSubmit = (values: Record<string, string[]>) => {
+  const onSubmit = async (values: Record<string, string[]>) => {
     const formGroupIds = Object.values<string[]>(values).flat();
     const previousGroupIds = usersToGroups?.map((userToGroup) => userToGroup.group.id) || [];
-
     // add groups that are new
-    const groupsToAdd = formGroupIds.filter((groupId) => !previousGroupIds.includes(groupId));
-    for (const groupId of groupsToAdd) {
-      postUsersToGroupsMutation({ groupId });
-    }
-
     // delete groups that are no longer selected
+    const groupsToAdd = formGroupIds.filter((groupId) => !previousGroupIds.includes(groupId));
     const groupsToDelete = previousGroupIds.filter((groupId) => !formGroupIds.includes(groupId));
-    for (const groupId of groupsToDelete) {
-      const userToGroup = usersToGroups?.find((userToGroup) => userToGroup.group.id === groupId);
-      if (userToGroup) {
-        deleteUsersToGroupsMutation({ userToGroupId: userToGroup.id });
-      }
-    }
 
-    onStepComplete?.();
+    try {
+      await Promise.all(
+        groupsToAdd.map((groupId) =>
+          postUsersToGroupsMutation({
+            groupId,
+          }),
+        ),
+      );
+
+      await Promise.all(
+        groupsToDelete.map(async (groupId) => {
+          const userToGroup = usersToGroups?.find(
+            (userToGroup) => userToGroup.group.id === groupId,
+          );
+          if (userToGroup) {
+            await deleteUsersToGroupsMutation({ userToGroupId: userToGroup.id });
+          }
+        }),
+      );
+
+      await onStepComplete?.();
+    } catch (e) {
+      console.error('Error saving groups:', e);
+    }
   };
 
   return (
@@ -639,7 +660,14 @@ function EventGroupsForm({
           />
         </FlexColumn>
       )}
-      <Button onClick={form.handleSubmit(onSubmit)}>Save</Button>
+      <Button
+        disabled={
+          form.formState.isSubmitting || postUsersToGroupsIsLoading || deleteUsersToGroupsIsLoading
+        }
+        onClick={form.handleSubmit(onSubmit)}
+      >
+        Save
+      </Button>
     </FlexColumn>
   );
 }
