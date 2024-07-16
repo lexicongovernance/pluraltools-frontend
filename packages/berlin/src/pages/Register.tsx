@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import ContentLoader from 'react-content-loader';
 import { UseFormReturn, useForm, useWatch } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { useNavigate, useNavigation, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // API
 import {
@@ -185,7 +185,6 @@ const CarouselWrapper = ({
   setSelectedRegistrationFormKey: (key: string) => void;
 }) => {
   const navigate = useNavigate();
-  const navigation = useNavigation();
 
   const queryClient = useQueryClient();
 
@@ -275,11 +274,6 @@ const CarouselWrapper = ({
           queryKey: ['event', event?.id, 'registrations'],
           queryFn: () => fetchRegistrations(event?.id || ''),
         });
-
-        // there is a navigation pending
-        if (navigation.state !== 'idle') {
-          return;
-        }
 
         redirectToNextPage(
           registrations?.some((reg) => reg.status === 'APPROVED') ?? false,
@@ -570,32 +564,34 @@ function EventGroupsForm({
 
   const watchedForm = useWatch({ control: form.control });
 
-  const { mutateAsync: postUsersToGroupsMutation } = useMutation({
-    mutationFn: postUsersToGroups,
-    onSuccess: (body) => {
-      if (!body) {
-        return;
-      }
-      queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
-    },
-    onError: () => {
-      toast.error('Something went wrong.');
-    },
-  });
-
-  const { mutateAsync: deleteUsersToGroupsMutation } = useMutation({
-    mutationFn: deleteUsersToGroups,
-    onSuccess: (body) => {
-      if (body) {
-        if ('errors' in body) {
-          toast.error(body.errors[0]);
+  const { mutateAsync: postUsersToGroupsMutation, isPending: postUsersToGroupsIsLoading } =
+    useMutation({
+      mutationFn: postUsersToGroups,
+      onSuccess: (body) => {
+        if (!body) {
           return;
         }
-
         queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
-      }
-    },
-  });
+      },
+      onError: () => {
+        toast.error('Something went wrong.');
+      },
+    });
+
+  const { mutateAsync: deleteUsersToGroupsMutation, isPending: deleteUsersToGroupsIsLoading } =
+    useMutation({
+      mutationFn: deleteUsersToGroups,
+      onSuccess: (body) => {
+        if (body) {
+          if ('errors' in body) {
+            toast.error(body.errors[0]);
+            return;
+          }
+
+          queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
+        }
+      },
+    });
 
   const tensionsGroupCategory = groupCategories?.find(
     (groupCategory) => groupCategory.name === GROUP_CATEGORY_NAME_TENSION,
@@ -664,7 +660,12 @@ function EventGroupsForm({
           />
         </FlexColumn>
       )}
-      <Button disabled={form.formState.isSubmitting} onClick={form.handleSubmit(onSubmit)}>
+      <Button
+        disabled={
+          form.formState.isSubmitting || postUsersToGroupsIsLoading || deleteUsersToGroupsIsLoading
+        }
+        onClick={form.handleSubmit(onSubmit)}
+      >
         Save
       </Button>
     </FlexColumn>
