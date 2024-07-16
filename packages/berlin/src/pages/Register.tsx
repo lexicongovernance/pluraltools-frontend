@@ -607,13 +607,35 @@ function EventGroupsForm({
     const previousGroupIds = usersToGroups?.map((userToGroup) => userToGroup.group.id) || [];
 
     // add groups that are new
+    // delete groups that are no longer selected
     const groupsToAdd = formGroupIds.filter((groupId) => !previousGroupIds.includes(groupId));
-    for (const groupId of groupsToAdd) {
-      await postUsersToGroupsMutation({ groupId });
+    const groupsToDelete = previousGroupIds.filter((groupId) => !formGroupIds.includes(groupId));
+
+    try {
+      await Promise.all(
+        groupsToAdd.map((groupId) =>
+          postUsersToGroupsMutation({
+            groupId,
+          }),
+        ),
+      );
+
+      await Promise.all(
+        groupsToDelete.map(async (groupId) => {
+          const userToGroup = usersToGroups?.find(
+            (userToGroup) => userToGroup.group.id === groupId,
+          );
+          if (userToGroup) {
+            await deleteUsersToGroupsMutation({ userToGroupId: userToGroup.id });
+          }
+        }),
+      );
+
+      await onStepComplete?.();
+    } catch (e) {
+      console.error('Error saving groups:', e);
     }
 
-    // delete groups that are no longer selected
-    const groupsToDelete = previousGroupIds.filter((groupId) => !formGroupIds.includes(groupId));
     for (const groupId of groupsToDelete) {
       const userToGroup = usersToGroups?.find((userToGroup) => userToGroup.group.id === groupId);
       if (userToGroup) {
