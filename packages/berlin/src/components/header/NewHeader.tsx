@@ -18,6 +18,39 @@ import ThemeToggler from '../theme-toggler';
 import { useNavigate } from 'react-router-dom';
 import ZupassLoginButton from '../zupass-button';
 
+export default function NewHeader() {
+  const theme = useAppStore((state) => state.theme);
+  const { user } = useUser();
+
+  return (
+    <header className="bg-primary border-secondary border-b text-sm">
+      <section className="mx-auto flex min-h-16 w-[min(90%,1080px)] items-center justify-between">
+        <div className="flex items-center gap-2">
+          <img src={`/logos/lexicon-${theme}.svg`} alt="Lexicon Logo" height={32} width={32} />
+          <h1 className="text-2xl font-semibold leading-6">Lexicon</h1>
+        </div>
+        <NavigationMenu className="font-raleway uppercase">
+          <NavigationMenuList className="gap-3">
+            {user ? (
+              <>
+                <HeaderLinks user={user} />
+                <UserMenu />
+              </>
+            ) : (
+              <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
+            )}
+            <NavigationMenuItem>
+              <NavigationMenuLink>
+                <ThemeToggler />
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+      </section>
+    </header>
+  );
+}
+
 const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
   const { data: events } = useQuery({
     queryKey: ['events'],
@@ -97,6 +130,21 @@ const UserMenu = () => {
       navigate('/');
     },
   });
+
+  const links = useMemo(() => {
+    return [
+      {
+        title: 'Account',
+        link: '/account',
+      },
+      {
+        title: 'Log out',
+        link: '/',
+        onClick: () => mutateLogout(),
+      },
+    ];
+  }, [mutateLogout]);
+
   return (
     <NavigationMenuItem className="relative">
       <NavigationMenuTrigger className="flex">
@@ -105,51 +153,18 @@ const UserMenu = () => {
         </Icon>
       </NavigationMenuTrigger>
       <NavigationMenuContent className="flex flex-col gap-4 p-4">
-        <NavigationMenuLink asChild>
-          <NavLink
-            to="/account"
-            className="border-secondary aria-[current=page]:border-b-2 aria-[current=page]:pb-2"
-          >
-            Account
-          </NavLink>
-        </NavigationMenuLink>
-        <NavigationMenuLink onClick={() => mutateLogout()} className="cursor-pointer">
-          Log out
-        </NavigationMenuLink>
+        {links.map(({ title, link, onClick }) => (
+          <NavigationMenuLink key={title} asChild>
+            <NavLink
+              to={link}
+              onClick={onClick}
+              className="border-secondary aria-[current=page]:border-b-2 aria-[current=page]:pb-2"
+            >
+              {title}
+            </NavLink>
+          </NavigationMenuLink>
+        ))}
       </NavigationMenuContent>
     </NavigationMenuItem>
   );
 };
-
-export default function NewHeader() {
-  const theme = useAppStore((state) => state.theme);
-  const { user } = useUser();
-
-  return (
-    <header className="bg-primary border-secondary border-b text-sm">
-      <section className="mx-auto flex min-h-16 w-[min(90%,1080px)] items-center justify-between">
-        <div className="flex items-center gap-2">
-          <img src={`/logos/lexicon-${theme}.svg`} alt="Lexicon Logo" height={32} width={32} />
-          <h1 className="text-2xl font-semibold leading-6">Lexicon</h1>
-        </div>
-        <NavigationMenu className="font-raleway uppercase">
-          <NavigationMenuList className="gap-3">
-            {user ? (
-              <>
-                <HeaderLinks user={user} />
-                <UserMenu />
-              </>
-            ) : (
-              <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
-            )}
-            <NavigationMenuItem>
-              <NavigationMenuLink>
-                <ThemeToggler />
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
-      </section>
-    </header>
-  );
-}
