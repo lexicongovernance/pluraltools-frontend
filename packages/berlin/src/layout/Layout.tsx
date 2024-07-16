@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom';
 import { Main } from './Layout.styled';
 
 // Components
-import Header from '../components/header';
+// import Header from '../components/header';
 import Footer from '../components/footer';
 import NewHeader from '@/components/header/NewHeader';
 
@@ -14,7 +14,7 @@ function Layout() {
   return (
     <>
       <Toaster position="top-center" toastOptions={{ style: { fontFamily: 'Raleway' } }} />
-      <Header />
+      {/* <Header /> */}
       <NewHeader />
       <Main>
         <Outlet />
