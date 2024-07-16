@@ -32,7 +32,7 @@ import BackButton from '../components/back-button';
 import Button from '../components/button';
 import CycleColumns from '../components/columns/cycle-columns';
 import OptionCard from '../components/option-card';
-import { FINAL_QUESTION_TITLE, FIVE_MINUTES_IN_SECONDS, INITIAL_HEARTS } from '../utils/constants';
+import { FINAL_QUESTION_TITLE, INITIAL_HEARTS } from '../utils/constants';
 import { Heart } from 'lucide-react';
 
 type Order = 'asc' | 'desc';
@@ -114,12 +114,7 @@ function Cycle() {
       case 'upcoming':
         return `Vote opens in: ${formattedTime}`;
       case 'open':
-        if (time && time <= FIVE_MINUTES_IN_SECONDS) {
-          return `Vote closes in: ${formattedTime}`;
-        } else if (time === 0) {
-          return 'Vote has ended.';
-        }
-        return '';
+        return time === 0 ? 'Vote has ended.' : `Vote closes in: ${formattedTime}`;
       default:
         return '';
     }
