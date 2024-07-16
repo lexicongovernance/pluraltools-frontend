@@ -3,7 +3,7 @@ import { FlexColumn } from '../containers/FlexColumn.styled';
 import Dots from '../dots';
 
 type CarouselStepProps = {
-  onStepComplete: () => void;
+  handleStepComplete: () => Promise<void>;
   goToPreviousStep: () => void;
   isFirstStep: boolean;
   isLastStep: boolean;
@@ -66,7 +66,7 @@ export function Carousel({ steps, initialStep = 0, onComplete }: CarouselProps) 
   return (
     <FlexColumn $gap="1.5rem">
       {currentStep.render({
-        onStepComplete: handleStepComplete,
+        handleStepComplete,
         goToPreviousStep,
         isFirstStep,
         isLastStep,

@@ -195,7 +195,7 @@ const CarouselWrapper = ({
     navigate(`/events/${eventId}/cycles`);
   };
 
-  const { mutate: postRegistrationMutation } = useMutation({
+  const { mutateAsync: postRegistrationMutation } = useMutation({
     mutationFn: postRegistration,
     onSuccess: async (body) => {
       if (body) {
@@ -219,7 +219,7 @@ const CarouselWrapper = ({
     },
   });
 
-  const { mutate: updateRegistrationMutation } = useMutation({
+  const { mutateAsync: updateRegistrationMutation } = useMutation({
     mutationFn: putRegistration,
     onSuccess: async (body) => {
       if (body) {
@@ -238,11 +238,11 @@ const CarouselWrapper = ({
     },
   });
 
-  const onSubmit = () => {
-    const foundRegistration = registrations?.find((reg) => reg.status === 'DRAFT');
+  const handleSubmit = async () => {
+    const foundRegistration = registrations?.at(0);
 
     if (foundRegistration) {
-      updateRegistrationMutation({
+      await updateRegistrationMutation({
         registrationId: foundRegistration.id || '',
         body: {
           eventId: event?.id || '',
@@ -252,7 +252,7 @@ const CarouselWrapper = ({
         },
       });
     } else {
-      postRegistrationMutation({
+      await postRegistrationMutation({
         body: {
           eventId: event?.id || '',
           groupId: null,
@@ -280,26 +280,26 @@ const CarouselWrapper = ({
       steps={[
         {
           isEnabled: (groupCategories?.filter((category) => category.required).length ?? 0) > 0,
-          render: ({ isLastStep, onStepComplete }) => (
+          render: ({ isLastStep, handleStepComplete }) => (
             <EventGroupsForm
               // re render on user to groups change
               key={JSON.stringify(usersToGroups)}
               groupCategories={groupCategories}
               usersToGroups={usersToGroups}
               user={user}
-              onStepComplete={() => {
+              onStepComplete={async () => {
                 if (isLastStep) {
-                  onSubmit();
+                  await handleSubmit();
                 }
 
-                onStepComplete();
+                await handleStepComplete();
               }}
             />
           ),
         },
         {
           isEnabled: (registrationFields?.length ?? 0) > 0,
-          render: ({ onStepComplete }) => (
+          render: ({ handleStepComplete }) => (
             <RegistrationForm
               registrations={registrations}
               usersToGroups={usersToGroups}
@@ -310,7 +310,7 @@ const CarouselWrapper = ({
               event={event}
               onRegistrationFormCreate={onRegistrationFormCreate}
               onSelectedRegistrationFormKeyChange={setSelectedRegistrationFormKey}
-              onStepComplete={onStepComplete}
+              onStepComplete={handleStepComplete}
             />
           ),
         },
@@ -532,7 +532,7 @@ function EventGroupsForm({
   groupCategories: GetGroupCategoriesResponse | null | undefined;
   usersToGroups: GetUsersToGroupsResponse | null | undefined;
   user: GetUserResponse | null | undefined;
-  onStepComplete?: () => void;
+  onStepComplete?: () => Promise<void>;
 }) {
   const queryClient = useQueryClient();
   const form = useForm({
@@ -557,32 +557,34 @@ function EventGroupsForm({
 
   const watchedForm = useWatch({ control: form.control });
 
-  const { mutate: postUsersToGroupsMutation } = useMutation({
-    mutationFn: postUsersToGroups,
-    onSuccess: (body) => {
-      if (!body) {
-        return;
-      }
-      queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
-    },
-    onError: () => {
-      toast.error('Something went wrong.');
-    },
-  });
-
-  const { mutate: deleteUsersToGroupsMutation } = useMutation({
-    mutationFn: deleteUsersToGroups,
-    onSuccess: (body) => {
-      if (body) {
-        if ('errors' in body) {
-          toast.error(body.errors[0]);
+  const { mutateAsync: postUsersToGroupsMutation, isPending: postUsersToGroupsIsPending } =
+    useMutation({
+      mutationFn: postUsersToGroups,
+      onSuccess: (body) => {
+        if (!body) {
           return;
         }
-
         queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
-      }
-    },
-  });
+      },
+      onError: () => {
+        toast.error('Something went wrong.');
+      },
+    });
+
+  const { mutateAsync: deleteUsersToGroupsMutation, isPending: deleteUsersToGroupsIsPending } =
+    useMutation({
+      mutationFn: deleteUsersToGroups,
+      onSuccess: (body) => {
+        if (body) {
+          if ('errors' in body) {
+            toast.error(body.errors[0]);
+            return;
+          }
+
+          queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
+        }
+      },
+    });
 
   const tensionsGroupCategory = groupCategories?.find(
     (groupCategory) => groupCategory.name === GROUP_CATEGORY_NAME_TENSION,
@@ -594,14 +596,14 @@ function EventGroupsForm({
     enabled: !!tensionsGroupCategory?.id,
   });
 
-  const onSubmit = (values: Record<string, string[]>) => {
+  const onSubmit = async (values: Record<string, string[]>) => {
     const formGroupIds = Object.values<string[]>(values).flat();
     const previousGroupIds = usersToGroups?.map((userToGroup) => userToGroup.group.id) || [];
 
     // add groups that are new
     const groupsToAdd = formGroupIds.filter((groupId) => !previousGroupIds.includes(groupId));
     for (const groupId of groupsToAdd) {
-      postUsersToGroupsMutation({ groupId });
+      await postUsersToGroupsMutation({ groupId });
     }
 
     // delete groups that are no longer selected
@@ -609,11 +611,11 @@ function EventGroupsForm({
     for (const groupId of groupsToDelete) {
       const userToGroup = usersToGroups?.find((userToGroup) => userToGroup.group.id === groupId);
       if (userToGroup) {
-        deleteUsersToGroupsMutation({ userToGroupId: userToGroup.id });
+        await deleteUsersToGroupsMutation({ userToGroupId: userToGroup.id });
       }
     }
 
-    onStepComplete?.();
+    await onStepComplete?.();
   };
 
   return (
@@ -639,7 +641,12 @@ function EventGroupsForm({
           />
         </FlexColumn>
       )}
-      <Button onClick={form.handleSubmit(onSubmit)}>Save</Button>
+      <Button
+        disabled={postUsersToGroupsIsPending || deleteUsersToGroupsIsPending}
+        onClick={form.handleSubmit(onSubmit)}
+      >
+        Save
+      </Button>
     </FlexColumn>
   );
 }
