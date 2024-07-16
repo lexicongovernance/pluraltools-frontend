@@ -52,17 +52,13 @@ const useCountdown = (startAt: string | null, endAt: string | null): Countdown =
     const minutes = Math.floor((time % 3600) / 60);
     const seconds = time % 60;
 
-    if (days > 0) {
-      return `${pluralize(days, 'day')} ${pluralize(hours, 'hour')} ${pluralize(
-        minutes,
-        'minute',
-      )} ${pluralize(seconds, 'second')}`;
+    if (days > 1) {
+      return `${pluralize(days, 'day')} ${pluralize(hours, 'hour')}`;
+    } else if (hours >= 1) {
+      return `${pluralize(hours, 'hour')} ${pluralize(minutes, 'minute')}`;
+    } else {
+      return `${pluralize(minutes, 'minute')} ${pluralize(seconds, 'second')}`;
     }
-
-    return `${pluralize(hours, 'hour')} ${pluralize(minutes, 'minute')} ${pluralize(
-      seconds,
-      'second',
-    )}`;
   };
 
   return { formattedTime: calculateTime(), cycleState, time };
