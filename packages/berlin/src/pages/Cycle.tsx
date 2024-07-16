@@ -55,7 +55,6 @@ function Cycle() {
     queryKey: ['votes', cycleId],
     queryFn: () => fetchUserVotes(cycleId || ''),
     enabled: !!user?.id && !!cycleId,
-    retry: false,
   });
 
   const availableHearts =
@@ -120,17 +119,16 @@ function Cycle() {
     }
   }, [cycleState, time, formattedTime]);
 
-  const updateInitialVotesAndHearts = (votes: GetUserVotesResponse) => {
-    const givenVotes = votes
-      .map((option) => option.numOfVotes)
-      .reduce((prev, curr) => prev + curr, 0);
+  const updateInitialVotesAndHearts = (votes: GetUserVotesResponse | null | undefined) => {
+    const givenVotes =
+      votes?.map((option) => option.numOfVotes).reduce((prev, curr) => prev + curr, 0) ?? 0;
 
     setAvailableHearts({
       questionId: cycle?.forumQuestions[0].id || '',
       hearts: Math.max(0, INITIAL_HEARTS - givenVotes),
     });
 
-    setLocalUserVotes(votes);
+    setLocalUserVotes(votes ?? []);
   };
 
   const votesAreDifferent = useMemo(() => {
@@ -151,9 +149,7 @@ function Cycle() {
   }, [localUserVotes, userVotes]);
 
   useEffect(() => {
-    if (userVotes?.length) {
-      updateInitialVotesAndHearts(userVotes);
-    }
+    updateInitialVotesAndHearts(userVotes);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userVotes]);
 
