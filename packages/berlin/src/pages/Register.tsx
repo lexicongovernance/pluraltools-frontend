@@ -606,6 +606,7 @@ function EventGroupsForm({
     const formGroupIds = Object.values<string[]>(values).flat();
     const previousGroupIds = usersToGroups?.map((userToGroup) => userToGroup.group.id) || [];
     console.log('formGroupIds', formGroupIds);
+    console.log('previousGroupIds', previousGroupIds);
     // add groups that are new
     // delete groups that are no longer selected
     const groupsToAdd = formGroupIds.filter((groupId) => !previousGroupIds.includes(groupId));
