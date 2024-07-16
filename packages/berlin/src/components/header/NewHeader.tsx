@@ -104,7 +104,7 @@ const UserMenu = () => {
           <User />
         </Icon>
       </NavigationMenuTrigger>
-      <NavigationMenuContent className="flex flex-col p-4 gap-4">
+      <NavigationMenuContent className="flex flex-col gap-4 p-4">
         <NavigationMenuLink asChild>
           <NavLink
             to="/account"
