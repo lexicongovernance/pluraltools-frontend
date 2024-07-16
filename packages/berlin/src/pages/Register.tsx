@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import ContentLoader from 'react-content-loader';
 import { UseFormReturn, useForm, useWatch } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useNavigation, useParams } from 'react-router-dom';
 
 // API
 import {
@@ -185,6 +185,8 @@ const CarouselWrapper = ({
   setSelectedRegistrationFormKey: (key: string) => void;
 }) => {
   const navigate = useNavigate();
+  const navigation = useNavigation();
+
   const queryClient = useQueryClient();
 
   const redirectToNextPage = (isApproved: boolean, eventId: string) => {
@@ -273,6 +275,11 @@ const CarouselWrapper = ({
           queryKey: ['event', event?.id, 'registrations'],
           queryFn: () => fetchRegistrations(event?.id || ''),
         });
+
+        // there is a navigation pending
+        if (navigation.state !== 'idle') {
+          return;
+        }
 
         redirectToNextPage(
           registrations?.some((reg) => reg.status === 'APPROVED') ?? false,
