@@ -23,7 +23,6 @@ export const useAppStore = create<AppState>()(
       (set) => ({
         onboardingStatus: 'INCOMPLETE',
         userStatus: 'INCOMPLETE',
-        eventRegistrationStatus: 'INCOMPLETE',
         theme: 'dark', // Default theme is dark
         availableHearts: {}, // Set the initial hearts value
         setUserStatus: (status: COMPLETION_STATUS) => set(() => ({ userStatus: status })),
@@ -39,7 +38,15 @@ export const useAppStore = create<AppState>()(
             availableHearts: {},
           })),
       }),
-      { name: 'lexicon-store' },
+      {
+        name: 'lexicon-store',
+        // Partialize the store to only persist the required keys
+        partialize: (state) => ({
+          onboardingStatus: state.onboardingStatus,
+          userStatus: state.userStatus,
+          theme: state.theme,
+        }),
+      },
     ),
   ),
 );
