@@ -612,14 +612,10 @@ function EventGroupsForm({
   const onSubmit = async (values: Record<string, string[]>) => {
     const formGroupIds = Object.values<string[]>(values).flat();
     const previousGroupIds = usersToGroups?.map((userToGroup) => userToGroup.group.id) || [];
-    console.log('formGroupIds', formGroupIds);
-    console.log('previousGroupIds', previousGroupIds);
     // add groups that are new
     // delete groups that are no longer selected
     const groupsToAdd = formGroupIds.filter((groupId) => !previousGroupIds.includes(groupId));
-    console.log('groupsToAdd', groupsToAdd);
     const groupsToDelete = previousGroupIds.filter((groupId) => !formGroupIds.includes(groupId));
-    console.log('groupsToDelete', groupsToDelete);
 
     try {
       await Promise.all(
