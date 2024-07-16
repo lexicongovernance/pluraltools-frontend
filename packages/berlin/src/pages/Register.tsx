@@ -635,15 +635,6 @@ function EventGroupsForm({
     } catch (e) {
       console.error('Error saving groups:', e);
     }
-
-    for (const groupId of groupsToDelete) {
-      const userToGroup = usersToGroups?.find((userToGroup) => userToGroup.group.id === groupId);
-      if (userToGroup) {
-        await deleteUsersToGroupsMutation({ userToGroupId: userToGroup.id });
-      }
-    }
-
-    await onStepComplete?.();
   };
 
   return (
