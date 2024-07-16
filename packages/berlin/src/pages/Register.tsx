@@ -33,16 +33,16 @@ import {
 import useUser from '../hooks/useUser';
 
 // Components
-import Button from '../components/button';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
 import { Form } from '../components/containers/Form.styled';
-import Dots from '../components/dots';
 import { FormInput } from '../components/form-input';
-import Select from '../components/select';
-import Label from '../components/typography/Label';
-import { Subtitle } from '../components/typography/Subtitle.styled';
 import { SafeArea } from '../layout/Layout.styled';
+import { Subtitle } from '../components/typography/Subtitle.styled';
+import Button from '../components/button';
+import Dots from '../components/dots';
+import Label from '../components/typography/Label';
+import Select from '../components/select';
 
 function Register() {
   const [step, setStep] = useState<number | null>(null);

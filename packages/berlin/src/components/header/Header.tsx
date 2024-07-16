@@ -1,7 +1,11 @@
 // React and third-party libraries
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {
+  // useLocation,
+  useNavigate,
+} from 'react-router-dom';
+import { SunMoon, User } from 'lucide-react';
 
 // Store
 import { useAppStore } from '../../store';
@@ -21,7 +25,6 @@ import NavButton from '../nav-button';
 import ZupassLoginButton from '../zupass-button/ZupassLoginButton';
 
 // Styled components
-import IconButton from '../icon-button';
 import {
   Bar,
   BurgerMenuContainer,
@@ -36,7 +39,6 @@ import {
   NavButtons,
   NavContainer,
   StyledHeader,
-  ThemeButton,
 } from './Header.styled';
 
 function Header() {
@@ -77,13 +79,9 @@ function Header() {
                     Events
                   </NavButton>
                   <Button onClick={() => mutateLogout()}>Log out</Button>
-                  <IconButton
-                    onClick={() => navigate('/account')}
-                    icon={{ src: `/icons/user-${theme}.svg`, alt: 'User' }}
-                    $color="primary"
-                    $height={20}
-                    $width={20}
-                  />
+                  <Button onClick={() => navigate('/account')}>
+                    <User />
+                  </Button>
                 </>
               ) : (
                 <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
@@ -95,14 +93,9 @@ function Header() {
               <Bar $isOpen={isBurgerMenuOpen} />
             </MenuButton>
             <li>
-              <ThemeButton onClick={toggleTheme}>
-                <img
-                  src={`/icons/toggle-${theme}.svg`}
-                  alt="Toggle theme icon"
-                  height={20}
-                  width={20}
-                />
-              </ThemeButton>
+              <Button onClick={toggleTheme}>
+                <SunMoon />
+              </Button>
             </li>
           </NavButtons>
         </NavContainer>

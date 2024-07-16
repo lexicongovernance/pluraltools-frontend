@@ -32,7 +32,8 @@ import BackButton from '../components/back-button';
 import Button from '../components/button';
 import CycleColumns from '../components/columns/cycle-columns';
 import OptionCard from '../components/option-card';
-import { FINAL_QUESTION_TITLE, FIVE_MINUTES_IN_SECONDS, INITIAL_HEARTS } from '../utils/constants';
+import { FINAL_QUESTION_TITLE, INITIAL_HEARTS } from '../utils/constants';
+import { Heart } from 'lucide-react';
 
 type Order = 'asc' | 'desc';
 type LocalUserVotes = { optionId: string; numOfVotes: number }[];
@@ -54,7 +55,6 @@ function Cycle() {
     queryKey: ['votes', cycleId],
     queryFn: () => fetchUserVotes(cycleId || ''),
     enabled: !!user?.id && !!cycleId,
-    retry: false,
   });
 
   const availableHearts =
@@ -113,28 +113,22 @@ function Cycle() {
       case 'upcoming':
         return `Vote opens in: ${formattedTime}`;
       case 'open':
-        if (time && time <= FIVE_MINUTES_IN_SECONDS) {
-          return `Vote closes in: ${formattedTime}`;
-        } else if (time === 0) {
-          return 'Vote has ended.';
-        }
-        return '';
+        return time === 0 ? 'Vote has ended.' : `Vote closes in: ${formattedTime}`;
       default:
         return '';
     }
   }, [cycleState, time, formattedTime]);
 
-  const updateInitialVotesAndHearts = (votes: GetUserVotesResponse) => {
-    const givenVotes = votes
-      .map((option) => option.numOfVotes)
-      .reduce((prev, curr) => prev + curr, 0);
+  const updateInitialVotesAndHearts = (votes: GetUserVotesResponse | null | undefined) => {
+    const givenVotes =
+      votes?.map((option) => option.numOfVotes).reduce((prev, curr) => prev + curr, 0) ?? 0;
 
     setAvailableHearts({
       questionId: cycle?.forumQuestions[0].id || '',
       hearts: Math.max(0, INITIAL_HEARTS - givenVotes),
     });
 
-    setLocalUserVotes(votes);
+    setLocalUserVotes(votes ?? []);
   };
 
   const votesAreDifferent = useMemo(() => {
@@ -155,9 +149,7 @@ function Cycle() {
   }, [localUserVotes, userVotes]);
 
   useEffect(() => {
-    if (userVotes?.length) {
-      updateInitialVotesAndHearts(userVotes);
-    }
+    updateInitialVotesAndHearts(userVotes);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userVotes]);
 
@@ -311,13 +303,7 @@ function Cycle() {
         </Body>
         <FlexRow $gap="0.25rem" $wrap>
           {Array.from({ length: INITIAL_HEARTS }).map((_, id) => (
-            <img
-              key={id}
-              src={id < availableHearts ? '/icons/heart-full.svg' : '/icons/heart-empty.svg'}
-              height={24}
-              width={24}
-              alt={id < availableHearts ? 'Full Heart' : 'Empty Heart'}
-            />
+            <Heart key={id} fill={id < availableHearts ? '#ff0000' : 'none'} />
           ))}
         </FlexRow>
         <Button onClick={handleSaveVotesWrapper} disabled={!votesAreDifferent}>
