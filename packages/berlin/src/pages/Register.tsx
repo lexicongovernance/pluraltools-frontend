@@ -195,48 +195,50 @@ const CarouselWrapper = ({
     navigate(`/events/${eventId}/cycles`);
   };
 
-  const { mutateAsync: postRegistrationMutation } = useMutation({
-    mutationFn: postRegistration,
-    onSuccess: async (body) => {
-      if (body) {
-        toast.success('Registration saved successfully!');
-        await queryClient.invalidateQueries({
-          queryKey: ['event', body.eventId, 'registrations'],
-        });
+  const { mutateAsync: postRegistrationMutation, isPending: postRegistrationIsPending } =
+    useMutation({
+      mutationFn: postRegistration,
+      onSuccess: async (body) => {
+        if (body) {
+          toast.success('Registration saved successfully!');
+          await queryClient.invalidateQueries({
+            queryKey: ['event', body.eventId, 'registrations'],
+          });
 
-        // invalidate user registrations, this is for the 1 event use case
-        // where the authentication is because you are approved to the event
-        await queryClient.invalidateQueries({
-          queryKey: [user?.id, 'registrations'],
-        });
-      } else {
+          // invalidate user registrations, this is for the 1 event use case
+          // where the authentication is because you are approved to the event
+          await queryClient.invalidateQueries({
+            queryKey: [user?.id, 'registrations'],
+          });
+        } else {
+          toast.error('Failed to save registration, please try again');
+        }
+      },
+      onError: (error) => {
+        console.error('Error saving registration:', error);
         toast.error('Failed to save registration, please try again');
-      }
-    },
-    onError: (error) => {
-      console.error('Error saving registration:', error);
-      toast.error('Failed to save registration, please try again');
-    },
-  });
+      },
+    });
 
-  const { mutateAsync: updateRegistrationMutation } = useMutation({
-    mutationFn: putRegistration,
-    onSuccess: async (body) => {
-      if (body) {
-        toast.success('Registration updated successfully!');
+  const { mutateAsync: updateRegistrationMutation, isPending: updateRegistrationIsPending } =
+    useMutation({
+      mutationFn: putRegistration,
+      onSuccess: async (body) => {
+        if (body) {
+          toast.success('Registration updated successfully!');
 
-        await queryClient.invalidateQueries({
-          queryKey: ['event', event?.id, 'registrations'],
-        });
-      } else {
+          await queryClient.invalidateQueries({
+            queryKey: ['event', event?.id, 'registrations'],
+          });
+        } else {
+          toast.error('Failed to update registration, please try again');
+        }
+      },
+      onError: (error) => {
+        console.error('Error updating registration:', error);
         toast.error('Failed to update registration, please try again');
-      }
-    },
-    onError: (error) => {
-      console.error('Error updating registration:', error);
-      toast.error('Failed to update registration, please try again');
-    },
-  });
+      },
+    });
 
   const handleSubmit = async () => {
     const foundRegistration = registrations?.at(0);
@@ -288,6 +290,10 @@ const CarouselWrapper = ({
               usersToGroups={usersToGroups}
               user={user}
               onStepComplete={async () => {
+                if (updateRegistrationIsPending || postRegistrationIsPending) {
+                  return;
+                }
+
                 if (isLastStep) {
                   await handleSubmit();
                 }
