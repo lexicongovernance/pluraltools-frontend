@@ -570,34 +570,32 @@ function EventGroupsForm({
 
   const watchedForm = useWatch({ control: form.control });
 
-  const { mutateAsync: postUsersToGroupsMutation, isPending: postUsersToGroupsIsPending } =
-    useMutation({
-      mutationFn: postUsersToGroups,
-      onSuccess: (body) => {
-        if (!body) {
+  const { mutateAsync: postUsersToGroupsMutation } = useMutation({
+    mutationFn: postUsersToGroups,
+    onSuccess: (body) => {
+      if (!body) {
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
+    },
+    onError: () => {
+      toast.error('Something went wrong.');
+    },
+  });
+
+  const { mutateAsync: deleteUsersToGroupsMutation } = useMutation({
+    mutationFn: deleteUsersToGroups,
+    onSuccess: (body) => {
+      if (body) {
+        if ('errors' in body) {
+          toast.error(body.errors[0]);
           return;
         }
+
         queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
-      },
-      onError: () => {
-        toast.error('Something went wrong.');
-      },
-    });
-
-  const { mutateAsync: deleteUsersToGroupsMutation, isPending: deleteUsersToGroupsIsPending } =
-    useMutation({
-      mutationFn: deleteUsersToGroups,
-      onSuccess: (body) => {
-        if (body) {
-          if ('errors' in body) {
-            toast.error(body.errors[0]);
-            return;
-          }
-
-          queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'users-to-groups'] });
-        }
-      },
-    });
+      }
+    },
+  });
 
   const tensionsGroupCategory = groupCategories?.find(
     (groupCategory) => groupCategory.name === GROUP_CATEGORY_NAME_TENSION,
@@ -666,10 +664,7 @@ function EventGroupsForm({
           />
         </FlexColumn>
       )}
-      <Button
-        disabled={postUsersToGroupsIsPending || deleteUsersToGroupsIsPending}
-        onClick={form.handleSubmit(onSubmit)}
-      >
+      <Button disabled={form.formState.isSubmitting} onClick={form.handleSubmit(onSubmit)}>
         Save
       </Button>
     </FlexColumn>
