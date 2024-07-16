@@ -557,7 +557,7 @@ function EventGroupsForm({
 
   const watchedForm = useWatch({ control: form.control });
 
-  const { mutate: postUsersToGroupsMutation } = useMutation({
+  const { mutate: postUsersToGroupsMutation, isPending } = useMutation({
     mutationFn: postUsersToGroups,
     onSuccess: (body) => {
       if (!body) {
@@ -639,7 +639,12 @@ function EventGroupsForm({
           />
         </FlexColumn>
       )}
-      <Button onClick={form.handleSubmit(onSubmit)}>Save</Button>
+      <Button
+        onClick={form.handleSubmit(onSubmit)}
+        disabled={form.formState.isSubmitting || isPending}
+      >
+        Save
+      </Button>
     </FlexColumn>
   );
 }
