@@ -1,60 +1,80 @@
-// React and third-party libraries
-import { useState } from 'react';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from '@/_components/ui/navigation-menu';
+import useUser from '@/hooks/useUser';
+import { useAppStore } from '@/store';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  // useLocation,
-  useNavigate,
-} from 'react-router-dom';
-import { SunMoon, User } from 'lucide-react';
+import { fetchAlerts, fetchEvents, fetchUserRegistrations, GetUserResponse, logout } from 'api';
+import { Menu, User } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { NavLink } from 'react-router-dom';
+import Icon from '../icon';
+import ThemeToggler from '../theme-toggler';
+import { useNavigate } from 'react-router-dom';
+import ZupassLoginButton from '../zupass-button';
 
-// Store
-import { useAppStore } from '../../store';
-
-// Data
-import header from '../../data/header';
-
-// API
-import { fetchAlerts, fetchEvents, fetchUserRegistrations, logout } from 'api';
-
-// Hooks
-import useUser from '../../hooks/useUser';
-
-// Components
-import Button from '../button';
-import NavButton from '../nav-button';
-import ZupassLoginButton from '../zupass-button/ZupassLoginButton';
-
-// Styled components
-import {
-  Bar,
-  BurgerMenuContainer,
-  DesktopButtons,
-  HeaderContainer,
-  IconButton,
-  LogoContainer,
-  LogoTitle,
-  MenuButton,
-  MobileButtons,
-  NavButtons,
-  NavContainer,
-  SyledHeader,
-} from './Header.styled';
-
-function Header() {
-  const queryClient = useQueryClient();
-  const { user } = useUser();
+export default function NewHeader() {
   const theme = useAppStore((state) => state.theme);
-  const toggleTheme = useAppStore((state) => state.toggleTheme);
-  const navigate = useNavigate();
-  const resetState = useAppStore((state) => state.reset);
-  const { mutate: mutateLogout } = useMutation({
-    mutationFn: logout,
-    onSuccess: async () => {
-      resetState();
-      await queryClient.invalidateQueries();
-      await queryClient.removeQueries();
-      navigate('/');
-    },
+  const { user } = useUser();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  return (
+    <header className="bg-primary border-secondary border-b text-sm">
+      {isMenuOpen && (
+        <NavigationMenu
+          className="font-raleway bg-primary absolute z-20 mt-[65px] flex h-full flex-col items-center justify-center uppercase"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          <NavigationMenuList className="w-screen flex-col gap-5">
+            {user && <HeaderLinks user={user} />}
+            <UserMenuLinks />
+          </NavigationMenuList>
+        </NavigationMenu>
+      )}
+      <section className="mx-auto flex min-h-16 w-[min(90%,1080px)] items-center justify-between">
+        <div className="flex items-center gap-2">
+          <img src={`/logos/lexicon-${theme}.svg`} alt="Lexicon Logo" height={32} width={32} />
+          <h1 className="text-2xl font-semibold leading-6">Lexicon</h1>
+        </div>
+        <NavigationMenu className="font-raleway uppercase">
+          <NavigationMenuList className="gap-3">
+            {user ? (
+              <>
+                <div className="hidden gap-3 md:flex">
+                  <HeaderLinks user={user} />
+                  <UserMenu />
+                </div>
+                <div className="md:hidden">
+                  <Icon onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                    <Menu />
+                  </Icon>
+                </div>
+              </>
+            ) : (
+              <ZupassLoginButton>Login</ZupassLoginButton>
+            )}
+            <NavigationMenuItem>
+              <NavigationMenuLink>
+                <ThemeToggler />
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+      </section>
+    </header>
+  );
+}
+
+const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
+  const { data: events } = useQuery({
+    queryKey: ['events'],
+    queryFn: fetchEvents,
+    enabled: !!user,
   });
 
   const { data: registrationsData } = useQuery({
@@ -67,127 +87,103 @@ function Header() {
     queryKey: ['alerts'],
     queryFn: () => fetchAlerts(),
     enabled: !!user,
-    refetchInterval: 10000, // Poll every 10 seconds
+    refetchInterval: 10000,
   });
 
-  const { data: events } = useQuery({
-    queryKey: ['events'],
-    queryFn: () => fetchEvents(),
-    enabled: !!user,
-  });
+  const links = useMemo(() => {
+    const baseLinks = [
+      {
+        title: 'My Proposals',
+        link: events ? `/events/${events?.[0].id}/register` : '',
+      },
+      {
+        title: 'Agenda',
+        link: events ? `/events/${events?.[0].id}/cycles` : '',
+      },
+    ];
 
-  const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState(false);
+    if (
+      registrationsData?.some((registration) => registration.status === 'APPROVED') &&
+      alerts &&
+      alerts.length > 0
+    ) {
+      const alertsLinks = alerts.map((alert) => ({
+        title: alert.title,
+        link: alert.link || '',
+      }));
+      return [...baseLinks, ...alertsLinks];
+    }
 
+    return baseLinks;
+  }, [events, registrationsData, alerts]);
+
+  return links.map(({ title, link }) => (
+    <NavigationMenuItem key={title}>
+      <NavigationMenuLink asChild>
+        <NavLink
+          to={link}
+          className="border-secondary aria-[current=page]:border-b-2 aria-[current=page]:pb-1"
+        >
+          {title}
+        </NavLink>
+      </NavigationMenuLink>
+    </NavigationMenuItem>
+  ));
+};
+
+const UserMenu = () => {
   return (
-    <SyledHeader>
-      <HeaderContainer>
-        <LogoContainer onClick={() => navigate('/')}>
-          <img src={`/logos/lexicon-${theme}.svg`} alt="Lexicon Logo" height={32} width={32} />
-          <LogoTitle>{header.title}</LogoTitle>
-        </LogoContainer>
-        <NavContainer>
-          <NavButtons>
-            <DesktopButtons>
-              {user ? (
-                <>
-                  {registrationsData?.some(
-                    (registration) => registration.status === 'APPROVED',
-                  ) && (
-                    <>
-                      {alerts &&
-                        alerts.length > 0 &&
-                        alerts
-                          // newest alerts first
-                          .sort(
-                            (a, b) =>
-                              new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
-                          )
-                          ?.map((alert) => {
-                            return (
-                              alert.link &&
-                              alert.title && (
-                                <NavButton
-                                  key={alert.title + 1}
-                                  to={alert.link}
-                                  $color="secondary"
-                                  end
-                                >
-                                  {alert.title}
-                                </NavButton>
-                              )
-                            );
-                          })}
-                      <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
-                        My proposals
-                      </NavButton>
-                      <NavButton to={`/events/${events?.[0].id}/cycles`} $color="secondary">
-                        Agenda
-                      </NavButton>
-                    </>
-                  )}
-                  <Button onClick={() => mutateLogout()}>Log out</Button>
-                  <IconButton onClick={() => navigate('/account')}>
-                    <User />
-                  </IconButton>
-                </>
-              ) : (
-                <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
-              )}
-            </DesktopButtons>
-            <MenuButton onClick={() => setIsBurgerMenuOpen(!isBurgerMenuOpen)}>
-              <Bar $isOpen={isBurgerMenuOpen} />
-              <Bar $isOpen={isBurgerMenuOpen} />
-              <Bar $isOpen={isBurgerMenuOpen} />
-            </MenuButton>
-            <IconButton onClick={toggleTheme}>
-              <SunMoon />
-            </IconButton>
-          </NavButtons>
-        </NavContainer>
-        <BurgerMenuContainer $$isOpen={isBurgerMenuOpen} onClick={() => setIsBurgerMenuOpen(false)}>
-          <NavButtons>
-            <MobileButtons>
-              {user ? (
-                <>
-                  {registrationsData?.some(
-                    (registration) => registration.status === 'APPROVED',
-                  ) && (
-                    <>
-                      {alerts &&
-                        alerts.length > 0 &&
-                        alerts?.map((alert) => {
-                          return (
-                            alert.link &&
-                            alert.title && (
-                              <NavButton key={alert.title + 1} to={alert.link} $color="secondary">
-                                {alert.title}
-                              </NavButton>
-                            )
-                          );
-                        })}
-                      <NavButton to={`/events/${events?.[0].id}/register`} $color="secondary">
-                        My proposals
-                      </NavButton>
-                      <NavButton to={`/events/${events?.[0].id}/cycles`} $color="secondary">
-                        Agenda
-                      </NavButton>
-                    </>
-                  )}
-
-                  <NavButton to="/account" $color="secondary">
-                    Account
-                  </NavButton>
-                  <Button onClick={() => mutateLogout()}>Log out</Button>
-                </>
-              ) : (
-                <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
-              )}
-            </MobileButtons>
-          </NavButtons>
-        </BurgerMenuContainer>
-      </HeaderContainer>
-    </SyledHeader>
+    <NavigationMenuItem className="relative">
+      <NavigationMenuTrigger className="flex">
+        <Icon>
+          <User />
+        </Icon>
+      </NavigationMenuTrigger>
+      <NavigationMenuContent className="flex flex-col gap-4 p-4">
+        <UserMenuLinks />
+      </NavigationMenuContent>
+    </NavigationMenuItem>
   );
-}
+};
 
-export default Header;
+const UserMenuLinks = () => {
+  const queryClient = useQueryClient();
+  const resetState = useAppStore((state) => state.reset);
+  const navigate = useNavigate();
+
+  const { mutate: mutateLogout } = useMutation({
+    mutationFn: logout,
+    onSuccess: async () => {
+      resetState();
+      await queryClient.invalidateQueries();
+      await queryClient.removeQueries();
+      navigate('/');
+    },
+  });
+  const links = useMemo(() => {
+    return [
+      {
+        title: 'Account',
+        link: '/account',
+      },
+      {
+        title: 'Log out',
+        onClick: () => mutateLogout(),
+      },
+    ];
+  }, [mutateLogout]);
+
+  return links.map(({ title, link, onClick }) => (
+    <NavigationMenuItem key={title}>
+      <NavigationMenuLink asChild>
+        <NavLink
+          to={link || ''}
+          onClick={onClick}
+          className="border-secondary aria-[current=page]:border-b-2 aria-[current=page]:pb-1"
+        >
+          {title}
+        </NavLink>
+      </NavigationMenuLink>
+    </NavigationMenuItem>
+  ));
+};
