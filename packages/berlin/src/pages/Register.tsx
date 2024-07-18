@@ -36,7 +36,7 @@ import useUser from '../hooks/useUser';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
 import { Form } from '../components/containers/Form.styled';
-import { FormInput } from '../components/form';
+import { FormInput } from '../components/form-input';
 import { SafeArea } from '../layout/Layout.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import Button from '../components/button';

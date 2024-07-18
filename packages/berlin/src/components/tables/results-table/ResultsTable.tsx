@@ -1,8 +1,8 @@
 // React and third-party libraries
+import { useQuery } from '@tanstack/react-query';
 import { Heart, MessageSquareText, Radical } from 'lucide-react';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
 import Markdown from 'react-markdown';
 
 // API
@@ -12,11 +12,11 @@ import { fetchOptionUsers, fetchRegistrationData, fetchRegistrationFields } from
 import { useAppStore } from '../../../store';
 
 // Components
-import { Body } from '../../typography/Body.styled';
-import { Bold } from '../../typography/Bold.styled';
 import { FlexColumn } from '../../containers/FlexColumn.styled';
 import { FlexRow } from '../../containers/FlexRow.styled';
 import IconButton from '../../icon-button';
+import { Body } from '../../typography/Body.styled';
+import { Bold } from '../../typography/Bold.styled';
 import Link from '../../link';
 
 // Styled Components
@@ -164,6 +164,16 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
             {option.optionSubTitle}
           </Markdown>
         )}
+        <Body>
+          <Bold>Research Output:</Bold> {researchOutputValue}
+        </Body>
+        <Body>
+          <Bold>Lead Author:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
+        </Body>
+        <Body>
+          <Bold>Collaborators:</Bold>{' '}
+          {collaborators && collaborators.length > 0 ? collaborators.join(', ') : 'None'}
+        </Body>
         <Body>
           <Bold>Research Output:</Bold> {researchOutputValue}
         </Body>

@@ -1,5 +1,6 @@
 export type GetCycleResponse = {
   id: string;
+  eventId: string;
   createdAt: string;
   updatedAt: string;
   status: 'OPEN' | 'CLOSED' | 'UPCOMING' | null;

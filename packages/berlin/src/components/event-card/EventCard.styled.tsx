@@ -3,7 +3,7 @@ import { FlexColumn } from '../containers/FlexColumn.styled';
 import { FlexRowToColumn } from '../containers/FlexRowToColumn.styled';
 
 export const Card = styled(FlexRowToColumn)`
-  border-radius: 1rem;
+  border-radius: 0.5rem;
   border: 1px solid var(--color-black);
   overflow: hidden;
   width: 100%;

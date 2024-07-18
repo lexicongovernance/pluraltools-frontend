@@ -1,12 +1,13 @@
 import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import Input from '../input';
 
-export function NumberInput<T extends FieldValues>(props: {
+export function FormTextInput<T extends FieldValues>(props: {
   form: UseFormReturn<T>;
   name: Path<T>;
   label: string;
   required: boolean | null;
-  customValidation?: (value: number) => string | undefined;
+  placeholder?: string;
+  customValidation?: (value: string) => string | undefined;
 }) {
   return (
     <Controller
@@ -18,18 +19,18 @@ export function NumberInput<T extends FieldValues>(props: {
       }}
       render={({ field }) => (
         <Input
-          type="number"
+          type="text"
           label={props.label}
           required={!!props.required}
-          placeholder="Enter a value"
+          placeholder={props.placeholder ?? 'Please enter a value'}
           errors={
             props.form.formState.errors[props.name]
               ? [props.form.formState.errors[props.name]?.message?.toString() ?? '']
               : []
           }
           value={field.value ?? undefined}
-          onChange={field.onChange}
           onBlur={field.onBlur}
+          onChange={field.onChange}
         />
       )}
     />

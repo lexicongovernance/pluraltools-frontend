@@ -1,21 +1,28 @@
 // React and third-party libraries
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 
 // API
-import { GetCycleResponse, fetchEvent, fetchEventCycles } from 'api';
+import {
+  fetchEvent,
+  fetchEventCycles,
+  fetchEventGroupCategories,
+  GetGroupCategoriesResponse,
+} from 'api';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
-import { Table } from '../components/table';
+import { FlexRow } from '../components/containers/FlexRow.styled';
+import { Subtitle } from '../components/typography/Subtitle.styled';
 import Button from '../components/button';
+import Cycles from '../components/cycles';
 import EventCard from '../components/event-card';
 import Link from '../components/link';
+import * as Tabs from '../components/tabs';
 
 function Event() {
-  const navigate = useNavigate();
   const { eventId } = useParams();
   const { data: event } = useQuery({
     queryKey: ['event', eventId],
@@ -30,6 +37,12 @@ function Event() {
     refetchInterval: 5000, // Poll every 5 seconds
   });
 
+  const { data: groupCategories } = useQuery({
+    queryKey: ['event', eventId, 'group-categories'],
+    queryFn: () => fetchEventGroupCategories(eventId || ''),
+    enabled: !!eventId,
+  });
+
   const openCycles = useMemo(
     () => eventCycles?.filter((cycle) => cycle.status === 'OPEN'),
     [eventCycles],
@@ -39,83 +52,88 @@ function Event() {
     [eventCycles],
   );
 
+  const tabNames = ['upcoming', 'past'];
+  const [activeTab, setActiveTab] = useState<string>('upcoming');
+
+  const tabs = {
+    upcoming: <Cycles cycles={openCycles} errorMessage="No upcoming events" />,
+    past: <Cycles cycles={closedCycles} errorMessage="No past events" />,
+  };
+
+  // TODO: flag for showing groups.
+  const showGroups = true;
+
+  return (
+    <FlexColumn $gap="2rem">
+      {event && <EventCard event={event} />}
+      <Subtitle>Questions</Subtitle>
+      <Tabs.TabsHeader tabNames={tabNames} onTabChange={setActiveTab} />
+      <FlexColumn>
+        <Tabs.TabsManager tabs={tabs} tab={activeTab} fallback={'Tab not found'} />
+      </FlexColumn>
+      {showGroups && <Groups groups={groupCategories} />}
+      <RunningText />
+    </FlexColumn>
+  );
+}
+
+function RunningText() {
+  const navigate = useNavigate();
+
   const handleDataPolicyClick = () => {
     navigate(`/data-policy`);
   };
-
-  // TODO: Create functions to navigate to onboarding slides
 
   const handleOnboardingClick = () => {
     navigate(`/onboarding`);
   };
 
   return (
-    <FlexColumn $gap="2rem">
-      {/* <BackButton /> */}
-      {!!openCycles?.length && <CycleTable cycles={openCycles} status="open" />}
-      {!!closedCycles?.length && <CycleTable cycles={closedCycles} status="closed" />}
-      {event && <EventCard event={event} />}
-      <Body>
-        Click to revisit the{' '}
-        <Link
-          to="#"
-          onClick={handleOnboardingClick}
-          state={{ onboardingStep: 2, previousPath: location.pathname }}
-        >
-          event rules
-        </Link>
-        ,{' '}
-        <Link
-          to="#"
-          onClick={handleOnboardingClick}
-          state={{ onboardingStep: 0, previousPath: location.pathname }}
-        >
-          trust assumptions
-        </Link>
-        , and the community’s{' '}
-        <Link to="#" onClick={handleDataPolicyClick}>
-          data policy
-        </Link>
-        .
-      </Body>
-    </FlexColumn>
+    <Body>
+      Click to revisit the{' '}
+      <Link
+        to="#"
+        onClick={handleOnboardingClick}
+        state={{ onboardingStep: 2, previousPath: location.pathname }}
+      >
+        event rules
+      </Link>
+      ,{' '}
+      <Link
+        to="#"
+        onClick={handleOnboardingClick}
+        state={{ onboardingStep: 0, previousPath: location.pathname }}
+      >
+        trust assumptions
+      </Link>
+      , and the community’s{' '}
+      <Link to="#" onClick={handleDataPolicyClick}>
+        data policy
+      </Link>
+      .
+    </Body>
   );
 }
 
-function CycleTable({ cycles, status }: { cycles: GetCycleResponse[]; status: 'open' | 'closed' }) {
-  const { eventId } = useParams();
+function Groups({ groups }: { groups: GetGroupCategoriesResponse | null | undefined }) {
   const navigate = useNavigate();
-  const formatDate = (date: string) => {
-    const eventEndDate = new Date(date);
-    return eventEndDate.toLocaleDateString();
-  };
-  const handleClick = (cycleId: string) => {
-    navigate(`/events/${eventId}/cycles/${cycleId}`);
-  };
 
-  const formattedColumnText = () => {
-    if (status === 'open') {
-      return 'Closes on';
-    } else {
-      return 'Closed on';
-    }
-  };
-
-  return (
-    <Table
-      columns={[
-        `${status.charAt(0).toUpperCase() + status.slice(1)} Agendas`,
-        formattedColumnText(),
-        '',
-      ]}
-      rows={cycles.map((cycle) => [
-        cycle.forumQuestions?.[0]?.questionTitle,
-        formatDate(cycle.endAt),
-        <Button onClick={() => handleClick(cycle.id)}>
-          {status === 'open' ? 'Vote' : 'Results'}
-        </Button>,
-      ])}
-    />
+  return groups ? (
+    <>
+      <Subtitle>Groups</Subtitle>
+      <FlexRow $wrap>
+        {groups.map((group) => (
+          <Button
+            key={group.id}
+            onClick={() => navigate(`/secret-groups?groupcategory=${group.name}`)}
+          >
+            {group.name}
+          </Button>
+        ))}
+      </FlexRow>
+    </>
+  ) : (
+    <Body>No groups</Body>
   );
 }
 
