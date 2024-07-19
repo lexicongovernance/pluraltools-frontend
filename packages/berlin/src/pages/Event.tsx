@@ -1,26 +1,20 @@
 // React and third-party libraries
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 // API
-import {
-  fetchEvent,
-  fetchEventCycles,
-  fetchEventGroupCategories,
-  GetGroupCategoriesResponse,
-} from 'api';
+import { fetchEvent, fetchEventCycles } from 'api';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
-import { FlexRow } from '../components/containers/FlexRow.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
-import Button from '../components/button';
 import Cycles from '../components/cycles';
-import EventCard from '../components/event-card';
 import Link from '../components/link';
 import * as Tabs from '../components/tabs';
+import Markdown from 'react-markdown';
+import BackButton from '@/components/back-button';
 
 function Event() {
   const { eventId } = useParams();
@@ -35,12 +29,6 @@ function Event() {
     queryFn: () => fetchEventCycles(eventId || ''),
     enabled: !!eventId,
     refetchInterval: 5000, // Poll every 5 seconds
-  });
-
-  const { data: groupCategories } = useQuery({
-    queryKey: ['event', eventId, 'group-categories'],
-    queryFn: () => fetchEventGroupCategories(eventId || ''),
-    enabled: !!eventId,
   });
 
   const openCycles = useMemo(
@@ -60,80 +48,28 @@ function Event() {
     past: <Cycles cycles={closedCycles} errorMessage="No past events" />,
   };
 
-  // TODO: flag for showing groups.
-  const showGroups = true;
-
   return (
     <FlexColumn $gap="2rem">
-      {event && <EventCard event={event} />}
-      <Subtitle>Questions</Subtitle>
-      <Tabs.TabsHeader tabNames={tabNames} onTabChange={setActiveTab} />
+      <BackButton />
+      <Subtitle>{event?.name}</Subtitle>
+      {event?.description && (
+        <Markdown
+          components={{
+            a: ({ node, ...props }) => <Link to={props.href ?? ''}>{props.children}</Link>,
+            p: ({ node, ...props }) => <Body>{props.children}</Body>,
+          }}
+        >
+          {event.description}
+        </Markdown>
+      )}
+      <div className="flex flex-col md:flex-row justify-between md:items-center gap-2 w-full">
+        <Subtitle>Questions</Subtitle>
+        <Tabs.TabsHeader tabNames={tabNames} onTabChange={setActiveTab} />
+      </div>
       <FlexColumn>
         <Tabs.TabsManager tabs={tabs} tab={activeTab} fallback={'Tab not found'} />
       </FlexColumn>
-      {showGroups && <Groups groups={groupCategories} />}
-      <RunningText />
     </FlexColumn>
-  );
-}
-
-function RunningText() {
-  const navigate = useNavigate();
-
-  const handleDataPolicyClick = () => {
-    navigate(`/data-policy`);
-  };
-
-  const handleOnboardingClick = () => {
-    navigate(`/onboarding`);
-  };
-
-  return (
-    <Body>
-      Click to revisit the{' '}
-      <Link
-        to="#"
-        onClick={handleOnboardingClick}
-        state={{ onboardingStep: 2, previousPath: location.pathname }}
-      >
-        event rules
-      </Link>
-      ,{' '}
-      <Link
-        to="#"
-        onClick={handleOnboardingClick}
-        state={{ onboardingStep: 0, previousPath: location.pathname }}
-      >
-        trust assumptions
-      </Link>
-      , and the community’s{' '}
-      <Link to="#" onClick={handleDataPolicyClick}>
-        data policy
-      </Link>
-      .
-    </Body>
-  );
-}
-
-function Groups({ groups }: { groups: GetGroupCategoriesResponse | null | undefined }) {
-  const navigate = useNavigate();
-
-  return groups ? (
-    <>
-      <Subtitle>Groups</Subtitle>
-      <FlexRow $wrap>
-        {groups.map((group) => (
-          <Button
-            key={group.id}
-            onClick={() => navigate(`/secret-groups?groupcategory=${group.name}`)}
-          >
-            {group.name}
-          </Button>
-        ))}
-      </FlexRow>
-    </>
-  ) : (
-    <Body>No groups</Body>
   );
 }
 

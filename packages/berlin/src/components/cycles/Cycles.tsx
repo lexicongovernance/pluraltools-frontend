@@ -1,6 +1,5 @@
 import { GetCycleResponse } from 'api';
 import { Body } from '../typography/Body.styled';
-import { CycleContainer } from './Cycles.styled';
 
 type CyclesProps = {
   cycles: GetCycleResponse[] | undefined;
@@ -10,17 +9,17 @@ type CyclesProps = {
 function Cycles({ cycles, errorMessage }: CyclesProps) {
   const formatDate = (date: string) => {
     const eventEndDate = new Date(date);
-    return eventEndDate.toLocaleDateString();
+    return new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric' }).format(eventEndDate);
   };
 
   return (
     <>
       {cycles?.length ? (
         cycles.map((cycle) => (
-          <CycleContainer key={cycle.id}>
+          <div className='flex flex-col border-secondary w-full p-4 gap-4' key={cycle.id}>
             <Body>{cycle.forumQuestions[0]?.questionTitle}</Body>
             <Body>{formatDate(cycle.endAt)}</Body>
-          </CycleContainer>
+          </div>
         ))
       ) : (
         <Body>{errorMessage}</Body>
