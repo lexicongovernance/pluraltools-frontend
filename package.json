@@ -7,9 +7,9 @@
     "berlin:dev": "pnpm -r --filter berlin dev",
     "berlin:build": "pnpm -r --filter berlin build",
     "berlin:preview": "pnpm -r --filter berlin preview",
-    "format": "prettier --check \"packages/**/*.{ts,tsx,json,md}\"",
-    "format:fix": "prettier --write \"packages/**/*.{ts,tsx,json,md}\"",
-    "lint": "eslint ."
+    "format": "pnpm exec prettier --check \"packages/**/*.{ts,tsx,json,md}\"",
+    "format:fix": "pnpm exec prettier --write \"packages/**/*.{ts,tsx,json,md}\"",
+    "lint": "pnpm exec eslint ."
   },
   "keywords": [],
   "author": "",
