@@ -1,13 +1,10 @@
 // React and third-party libraries
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import {  useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 // API
-import {
-  fetchEvent,
-  fetchEventCycles,
-} from 'api';
+import { fetchEvent, fetchEventCycles } from 'api';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
@@ -34,7 +31,6 @@ function Event() {
     refetchInterval: 5000, // Poll every 5 seconds
   });
 
-
   const openCycles = useMemo(
     () => eventCycles?.filter((cycle) => cycle.status === 'OPEN'),
     [eventCycles],
@@ -51,7 +47,6 @@ function Event() {
     upcoming: <Cycles cycles={openCycles} errorMessage="No upcoming events" />,
     past: <Cycles cycles={closedCycles} errorMessage="No past events" />,
   };
-
 
   return (
     <FlexColumn $gap="2rem">
@@ -77,44 +72,5 @@ function Event() {
     </FlexColumn>
   );
 }
-
-// function RunningText() {
-//   const navigate = useNavigate();
-
-//   const handleDataPolicyClick = () => {
-//     navigate(`/data-policy`);
-//   };
-
-//   const handleOnboardingClick = () => {
-//     navigate(`/onboarding`);
-//   };
-
-//   return (
-//     <Body>
-//       Click to revisit the{' '}
-//       <Link
-//         to="#"
-//         onClick={handleOnboardingClick}
-//         state={{ onboardingStep: 2, previousPath: location.pathname }}
-//       >
-//         event rules
-//       </Link>
-//       ,{' '}
-//       <Link
-//         to="#"
-//         onClick={handleOnboardingClick}
-//         state={{ onboardingStep: 0, previousPath: location.pathname }}
-//       >
-//         trust assumptions
-//       </Link>
-//       , and the community’s{' '}
-//       <Link to="#" onClick={handleDataPolicyClick}>
-//         data policy
-//       </Link>
-//       .
-//     </Body>
-//   );
-// }
-
 
 export default Event;
