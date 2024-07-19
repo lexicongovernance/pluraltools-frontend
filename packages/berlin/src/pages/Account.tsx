@@ -110,7 +110,7 @@ function AccountHub({ user }: { user: GetUserResponse | null | undefined }) {
           {registrations
             ?.filter((registrations) => registrations.status !== 'REJECTED')
             .map((registration) => (
-              <Link to={`/events/${registration.eventId}/cycles`}>
+              <Link key={registration.eventId} to={`/events/${registration.eventId}/cycles`}>
                 - {registration.event?.name}
               </Link>
             ))}
