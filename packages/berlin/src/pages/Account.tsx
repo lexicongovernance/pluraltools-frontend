@@ -131,7 +131,7 @@ function AccountHub({ user }: { user: GetUserResponse | null | undefined }) {
       <div>
         <Subtitle>Groups</Subtitle>
         <FlexColumn>
-          {usersToGroups?.map((userToGroup) => <Underline>- {userToGroup.group?.name}</Underline>)}
+          {usersToGroups?.map((userToGroup) => <Underline key={userToGroup.group?.id}>- {userToGroup.group?.name}</Underline>)}
         </FlexColumn>
       </div>
     </FlexColumn>
