@@ -1,6 +1,6 @@
 import { Fragment, useState } from 'react';
 import { Body } from '../typography/Body.styled';
-import { Tab, Tabs } from './TabsHeader.styled';
+import { Tab } from './TabsHeader.styled';
 
 type TabsHeaderProps = {
   tabNames: string[];
@@ -19,7 +19,7 @@ export function TabsHeader({ tabNames, initialTab, onTabChange }: TabsHeaderProp
   };
 
   return (
-    <Tabs $gap="0.5rem">
+    <div className='flex gap-2'>
       {tabNames.map((tabName, index) => (
         <Fragment key={tabName}>
           <Tab
@@ -31,6 +31,6 @@ export function TabsHeader({ tabNames, initialTab, onTabChange }: TabsHeaderProp
           {index < tabNames.length - 1 && <Body>/</Body>}
         </Fragment>
       ))}
-    </Tabs>
+    </div>
   );
 }
