@@ -6,8 +6,8 @@ import { Outlet } from 'react-router-dom';
 import { Main } from './Layout.styled';
 
 // Components
-import Header from '../components/header';
 import Footer from '../components/footer';
+import Header from '@/components/header';
 
 function Layout() {
   return (

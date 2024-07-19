@@ -80,7 +80,12 @@ function ZupassLoginButton({ children, $variant, ...props }: ZupassLoginButtonPr
 
   return (
     <>
-      <Button onClick={handleLoginClick} {...props} $variant={$variant}>
+      <Button
+        onClick={handleLoginClick}
+        {...props}
+        $variant={$variant}
+        style={{ fontSize: '14px', lineHeight: '14px', borderRadius: 4 }}
+      >
         {children}
       </Button>
     </>
