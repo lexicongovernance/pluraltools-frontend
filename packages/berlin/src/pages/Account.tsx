@@ -121,6 +121,7 @@ function AccountHub({ user }: { user: GetUserResponse | null | undefined }) {
         <FlexColumn>
           {options?.map((option) => (
             <Link
+              key={option.id}
               to={`/events/${cycles.find((c) => c.data?.id === option.forumQuestion.cycleId)?.data?.eventId}/cycles/${option.forumQuestion.cycleId}/options/${option.id}`}
             >
               - {option.optionTitle}
