@@ -17,6 +17,8 @@ import IconButton from '@/components/icon-button';
 import { FlexRow } from '@/components/containers/FlexRow.styled';
 import { useAppStore } from '@/store';
 import Onboarding from '@/components/onboarding';
+import Icon from '@/components/icon';
+import { Heart, Radical } from 'lucide-react';
 
 function Results() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -84,23 +86,15 @@ function Results() {
         <OnboardingCard>
           <Subtitle>Icons</Subtitle>
           <FlexRow>
-            <IconButton
-              $padding={0}
-              $color="secondary"
-              icon={{ src: `/icons/sqrt-${theme}.svg`, alt: 'Quadratic score icon' }}
-              $width={24}
-              $height={24}
-            />
+            <Icon>
+              <Radical />
+            </Icon>
             <Body>Quadratic score</Body>
           </FlexRow>
           <FlexRow>
-            <IconButton
-              $padding={0}
-              $color="secondary"
-              icon={{ src: `/icons/heart-full.svg`, alt: 'Heart icon' }}
-              $width={24}
-              $height={24}
-            />
+            <Icon>
+              <Heart fill="#ff0000" />
+            </Icon>
             <Body>Hearts received by a vote item</Body>
           </FlexRow>
           <FlexRow>
