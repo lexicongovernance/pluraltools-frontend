@@ -23,7 +23,7 @@ function Landing() {
           to continue.
         </Body>
         <Body>
-          If you’ve arrived here by other means,{' '}
+          If you’ve arrived here by other means, please check out our{' '}
           <Link to="https://github.com/lexicongovernance">GitHub</Link> .
         </Body>
       </FlexColumn>
