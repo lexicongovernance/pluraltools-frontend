@@ -24,7 +24,8 @@ function Landing() {
         </Body>
         <Body>
           If you’ve arrived here by other means, please check out our{' '}
-          <Link to="https://github.com/lexicongovernance">GitHub</Link> .
+          <Link to="https://github.com/lexicongovernance">GitHub</Link> or{' '}
+          <Link to="link to be inserted">click here</Link> to request a demonstration.
         </Body>
       </FlexColumn>
     </SafeArea>
