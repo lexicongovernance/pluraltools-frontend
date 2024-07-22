@@ -13,6 +13,49 @@ import { Table } from '../components/table';
 import Button from '../components/button';
 import EventCard from '../components/event-card';
 import Link from '../components/link';
+import { OnboardingCard } from '@/components/onboarding/Onboaring.styled';
+import { Subtitle } from '@/components/typography/Subtitle.styled';
+import Onboarding from '@/components/onboarding';
+
+const steps = [
+  {
+    target: '.step-1',
+    content: (
+      <OnboardingCard>
+        <Subtitle>Welcome</Subtitle>
+        <Body>Welcome to our tool!</Body>
+        <Body>Would you like to take a tour to see how it works?</Body>
+      </OnboardingCard>
+    ),
+    placement: 'center',
+  },
+  {
+    target: '.step-2',
+    content: (
+      <OnboardingCard>
+        <Subtitle>Open Votes</Subtitle>
+        <Body>Explore current vote items, the vote deadline, and cast your vote.</Body>
+      </OnboardingCard>
+    ),
+    placement: 'center',
+  },
+  {
+    target: '.step-3',
+    content: (
+      <OnboardingCard>
+        <Subtitle>Closed Votes</Subtitle>
+        <Body>
+          Review past votes and see results by clicking the
+          <Button $color="secondary" style={{ paddingInline: 4 }}>
+            results
+          </Button>{' '}
+          button.
+        </Body>
+      </OnboardingCard>
+    ),
+    placement: 'center',
+  },
+];
 
 function Event() {
   const navigate = useNavigate();
@@ -50,35 +93,38 @@ function Event() {
   };
 
   return (
-    <FlexColumn $gap="2rem">
-      {/* <BackButton /> */}
-      {!!openCycles?.length && <CycleTable cycles={openCycles} status="open" />}
-      {!!closedCycles?.length && <CycleTable cycles={closedCycles} status="closed" />}
-      {event && <EventCard event={event} />}
-      <Body>
-        Click to revisit the{' '}
-        <Link
-          to="#"
-          onClick={handleOnboardingClick}
-          state={{ onboardingStep: 2, previousPath: location.pathname }}
-        >
-          event rules
-        </Link>
-        ,{' '}
-        <Link
-          to="#"
-          onClick={handleOnboardingClick}
-          state={{ onboardingStep: 0, previousPath: location.pathname }}
-        >
-          trust assumptions
-        </Link>
-        , and the community’s{' '}
-        <Link to="#" onClick={handleDataPolicyClick}>
-          data policy
-        </Link>
-        .
-      </Body>
-    </FlexColumn>
+    <>
+      <Onboarding steps={steps} type="event" />
+      <FlexColumn $gap="2rem" className="step-1 step-2 step-3">
+        {/* <BackButton /> */}
+        {!!openCycles?.length && <CycleTable cycles={openCycles} status="open" />}
+        {!!closedCycles?.length && <CycleTable cycles={closedCycles} status="closed" />}
+        {event && <EventCard event={event} />}
+        <Body>
+          Click to revisit the{' '}
+          <Link
+            to="#"
+            onClick={handleOnboardingClick}
+            state={{ onboardingStep: 2, previousPath: location.pathname }}
+          >
+            event rules
+          </Link>
+          ,{' '}
+          <Link
+            to="#"
+            onClick={handleOnboardingClick}
+            state={{ onboardingStep: 0, previousPath: location.pathname }}
+          >
+            trust assumptions
+          </Link>
+          , and the community’s{' '}
+          <Link to="#" onClick={handleDataPolicyClick}>
+            data policy
+          </Link>
+          .
+        </Body>
+      </FlexColumn>
+    </>
   );
 }
 
