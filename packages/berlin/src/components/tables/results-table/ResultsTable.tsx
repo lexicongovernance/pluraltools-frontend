@@ -18,6 +18,7 @@ import { FlexColumn } from '../../containers/FlexColumn.styled';
 import { FlexRow } from '../../containers/FlexRow.styled';
 import IconButton from '../../icon-button';
 import Link from '../../link';
+import LucideIcon from '@/components/icon';
 
 // Styled Components
 import { Card, Funding, Icon, Plurality, TitleContainer } from './ResultsTable.styled';
@@ -180,11 +181,9 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
         <Body>
           <Bold>Voter affiliations:</Bold> {option.listOfGroupNames.join(', ')}
         </Body>
-        <Body>
-          <Icon>
-            <MessageSquareText onClick={handleCommentsClick} />
-          </Icon>
-        </Body>
+        <LucideIcon>
+          <MessageSquareText onClick={handleCommentsClick} />
+        </LucideIcon>
       </FlexColumn>
     </Card>
   );
