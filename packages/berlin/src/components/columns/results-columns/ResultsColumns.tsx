@@ -1,3 +1,4 @@
+import { Heart, Radical } from 'lucide-react';
 import { useAppStore } from '../../../store';
 import IconButton from '../../icon-button';
 import { Bold } from '../../typography/Bold.styled';
@@ -12,16 +13,8 @@ function ResultsColumns({ $showFunding }: ResultsColumnsType) {
   return (
     <Card $showFunding={$showFunding}>
       <Bold>Title</Bold>
-      <IconButton
-        $padding={0}
-        $color="secondary"
-        icon={{ src: `/icons/heart-full.svg`, alt: 'Hearts' }}
-      />
-      <IconButton
-        $padding={0}
-        $color="secondary"
-        icon={{ src: `/icons/sqrt-${theme}.svg`, alt: 'Quadratic score' }}
-      />
+      <Heart fill="#ff0000" />
+      <Radical />
       <IconButton
         $padding={0}
         $color="secondary"

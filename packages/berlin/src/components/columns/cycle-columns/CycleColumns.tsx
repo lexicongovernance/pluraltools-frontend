@@ -1,6 +1,8 @@
+import { Heart } from 'lucide-react';
 import IconButton from '../../icon-button';
 import { Body } from '../../typography/Body.styled';
 import { Affiliation, Lead, Card, Hearts, Proposal, Plurality } from './CycleColumns.styled';
+import Icon from '../../icon';
 
 type CycleColumnsProps = {
   onColumnClick: (column: string) => void;
@@ -20,11 +22,9 @@ function CycleColumns({ onColumnClick, showScore }: CycleColumnsProps) {
         <Body>Affiliation</Body>
       </Affiliation>
       <Hearts onClick={() => onColumnClick('numOfVotes')}>
-        <IconButton
-          $padding={0}
-          $color="secondary"
-          icon={{ src: `/icons/heart-full.svg`, alt: 'Full heart' }}
-        />
+        <Icon>
+          <Heart fill="#ff0000" />
+        </Icon>
       </Hearts>
       {showScore && (
         <Plurality onClick={() => onColumnClick('voteScore')}>

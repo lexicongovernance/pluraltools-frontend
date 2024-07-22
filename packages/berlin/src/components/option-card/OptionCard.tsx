@@ -1,3 +1,25 @@
+// React and third-party libraries
+import { MessageSquareText } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import Markdown from 'react-markdown';
+
+// Store
+import { useAppStore } from '../../store';
+
+// API
+import { fetchOptionUsers, GetCycleResponse } from 'api';
+
+// Components
+import { Body } from '../typography/Body.styled';
+import { Bold } from '../typography/Bold.styled';
+import { FlexColumn } from '../containers/FlexColumn.styled';
+import IconButton from '../icon-button';
+import Link from '../link';
+import Icon from '../icon';
+
+// Styled Components
 import {
   Affiliation,
   ArrowDownIcon,
@@ -12,15 +34,6 @@ import {
   Votes,
   VotesIcon,
 } from './OptionCard.styled';
-import { Body } from '../typography/Body.styled';
-import { Bold } from '../typography/Bold.styled';
-import { FlexColumn } from '../containers/FlexColumn.styled';
-import { fetchOptionUsers, GetCycleResponse } from 'api';
-import { useAppStore } from '../../store';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
-import IconButton from '../icon-button';
 
 type OptionCardProps = {
   option: GetCycleResponse['forumQuestions'][number]['questionOptions'][number];
@@ -161,15 +174,19 @@ function OptionCard({
               <Bold>Funding request:</Bold> {option.fundingRequest}
             </Body>
           )}
-          {option.optionSubTitle && <Body>{option.optionSubTitle}</Body>}
-          <IconButton
-            $padding={0}
-            $color="secondary"
-            icon={{ src: `/icons/comments-${theme}.svg`, alt: 'Comments icon' }}
-            onClick={handleCommentsClick}
-            $width={24}
-            $height={24}
-          />
+          {option.optionSubTitle && (
+            <Markdown
+              components={{
+                a: ({ node, ...props }) => <Link to={props.href ?? ''}>{props.children}</Link>,
+                p: ({ node, ...props }) => <Body>{props.children}</Body>,
+              }}
+            >
+              {option.optionSubTitle}
+            </Markdown>
+          )}
+          <Icon>
+            <MessageSquareText onClick={handleCommentsClick} />
+          </Icon>
         </FlexColumn>
       </FlexColumn>
     </Card>

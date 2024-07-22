@@ -11,9 +11,18 @@ import StatsTable from '../components/tables/stats-table';
 import StatsColumns from '../components/columns/stats-columns';
 import { FINAL_QUESTION_TITLE } from '../utils/constants';
 import { Column } from '../components/tables/results-table/ResultsTable.styled';
+import { OnboardingCard } from '@/components/onboarding/Onboaring.styled';
+import { Body } from '@/components/typography/Body.styled';
+import IconButton from '@/components/icon-button';
+import { FlexRow } from '@/components/containers/FlexRow.styled';
+import { useAppStore } from '@/store';
+import Onboarding from '@/components/onboarding';
+import Icon from '@/components/icon';
+import { Heart, Radical } from 'lucide-react';
 
 function Results() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const theme = useAppStore((state) => state.theme);
 
   const { eventId, cycleId } = useParams();
 
@@ -60,6 +69,82 @@ function Results() {
     },
   ];
 
+  const steps = [
+    {
+      target: '.step-1',
+      content: (
+        <OnboardingCard>
+          <Subtitle>Results Page</Subtitle>
+          <Body>See community decisions.</Body>
+        </OnboardingCard>
+      ),
+      placement: 'center',
+    },
+    {
+      target: '.step-2',
+      content: (
+        <OnboardingCard>
+          <Subtitle>Icons</Subtitle>
+          <FlexRow>
+            <Icon>
+              <Radical />
+            </Icon>
+            <Body>Quadratic score</Body>
+          </FlexRow>
+          <FlexRow>
+            <Icon>
+              <Heart fill="#ff0000" />
+            </Icon>
+            <Body>Hearts received by a vote item</Body>
+          </FlexRow>
+          <FlexRow>
+            <IconButton
+              $padding={0}
+              $color="secondary"
+              icon={{ src: `/icons/plurality-score.svg`, alt: 'Plurality icon' }}
+              $width={24}
+              $height={24}
+            />
+            <Body>Plurality score</Body>
+          </FlexRow>
+        </OnboardingCard>
+      ),
+      placement: 'center',
+    },
+    {
+      target: '.step-3',
+      content: (
+        <OnboardingCard>
+          <Subtitle>Expand a vote item</Subtitle>
+          <FlexRow>
+            <IconButton
+              $padding={0}
+              $color="secondary"
+              icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: 'Arrow down icon' }}
+              $width={24}
+              $height={24}
+            />
+            <Body>
+              Clicking this icon will display the vote item description and other useful
+              information.
+            </Body>
+          </FlexRow>
+          {/* <FlexRow>
+            <IconButton
+              $padding={0}
+              $color="secondary"
+              icon={{ src: `/icons/comments-${theme}.svg`, alt: 'Comments icon' }}
+              $width={24}
+              $height={24}
+            />
+            <Body>Access the comments page to start a discussion with other participants.</Body>
+          </FlexRow> */}
+        </OnboardingCard>
+      ),
+      placement: 'center',
+    },
+  ];
+
   const optionStatsArray = Object.entries(statistics?.optionStats || {})
     .map(([id, stats]) => ({
       id,
@@ -70,30 +155,33 @@ function Results() {
     .sort((a, b) => parseFloat(b.pluralityScore) - parseFloat(a.pluralityScore));
 
   return (
-    <FlexColumn $gap="2rem">
-      <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
-      <Subtitle>Results for: {cycle?.forumQuestions?.[0].questionTitle}</Subtitle>
-      <Column>
-        <ResultsColumns $showFunding={!!funding} />
-        {optionStatsArray.map((option, index) => (
-          <ResultsTable
-            key={option.id}
-            $expanded={expandedIndex === index}
-            option={option}
-            cycleId={cycleId}
-            eventId={eventId}
-            onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
-          />
-        ))}
-      </Column>
-      <Subtitle>Overall Statistics</Subtitle>
-      <FlexColumn $gap="0">
-        <StatsColumns />
-        {overallStatistics.map((stat) => (
-          <StatsTable key={stat.id} title={stat.title} number={stat.data} />
-        ))}
+    <>
+      <Onboarding steps={steps} type="results" />
+      <FlexColumn $gap="2rem" className="step-1 step-2 step-3">
+        <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
+        <Subtitle>Results for: {cycle?.forumQuestions?.[0].questionTitle}</Subtitle>
+        <Column>
+          <ResultsColumns $showFunding={!!funding} />
+          {optionStatsArray.map((option, index) => (
+            <ResultsTable
+              key={option.id}
+              $expanded={expandedIndex === index}
+              option={option}
+              cycleId={cycleId}
+              eventId={eventId}
+              onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
+            />
+          ))}
+        </Column>
+        <Subtitle>Overall Statistics</Subtitle>
+        <FlexColumn $gap="0">
+          <StatsColumns />
+          {overallStatistics.map((stat) => (
+            <StatsTable key={stat.id} title={stat.title} number={stat.data} />
+          ))}
+        </FlexColumn>
       </FlexColumn>
-    </FlexColumn>
+    </>
   );
 }
 

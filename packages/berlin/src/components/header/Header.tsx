@@ -5,6 +5,7 @@ import {
   // useLocation,
   useNavigate,
 } from 'react-router-dom';
+import { SunMoon, User } from 'lucide-react';
 
 // Store
 import { useAppStore } from '../../store';
@@ -38,9 +39,7 @@ import {
   NavButtons,
   NavContainer,
   SyledHeader,
-  ThemeButton,
 } from './Header.styled';
-import IconButton from '../icon-button';
 
 function Header() {
   const queryClient = useQueryClient();
@@ -131,13 +130,9 @@ function Header() {
                     </>
                   )}
                   <Button onClick={() => mutateLogout()}>Log out</Button>
-                  <IconButton
-                    onClick={() => navigate('/account')}
-                    icon={{ src: `/icons/user-${theme}.svg`, alt: 'User' }}
-                    $color="primary"
-                    $height={20}
-                    $width={20}
-                  />
+                  <Button onClick={() => navigate('/account')}>
+                    <User />
+                  </Button>
                 </>
               ) : (
                 <ZupassLoginButton>Login with Zupass</ZupassLoginButton>
@@ -149,14 +144,9 @@ function Header() {
               <Bar $isOpen={isBurgerMenuOpen} />
             </MenuButton>
             <li>
-              <ThemeButton onClick={toggleTheme}>
-                <img
-                  src={`/icons/toggle-${theme}.svg`}
-                  alt="Toggle theme icon"
-                  height={20}
-                  width={20}
-                />
-              </ThemeButton>
+              <Button onClick={toggleTheme}>
+                <SunMoon />
+              </Button>
             </li>
           </NavButtons>
         </NavContainer>
