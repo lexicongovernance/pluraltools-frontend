@@ -16,7 +16,7 @@ function Cycles({ cycles, errorMessage }: CyclesProps) {
     <>
       {cycles?.length ? (
         cycles.map((cycle) => (
-          <div className='flex flex-col border-secondary w-full p-4 gap-4' key={cycle.id}>
+          <div className="border-secondary flex w-full flex-col gap-4 border p-4" key={cycle.id}>
             <Body>{cycle.forumQuestions[0]?.questionTitle}</Body>
             <Body>{formatDate(cycle.endAt)}</Body>
           </div>
