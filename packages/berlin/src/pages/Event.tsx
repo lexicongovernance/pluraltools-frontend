@@ -8,13 +8,15 @@ import { fetchEvent, fetchEventCycles } from 'api';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
+import { eventSteps } from '@/components/onboarding/Steps';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
+import * as Tabs from '../components/tabs';
+import BackButton from '@/components/back-button';
 import Cycles from '../components/cycles';
 import Link from '../components/link';
-import * as Tabs from '../components/tabs';
 import Markdown from 'react-markdown';
-import BackButton from '@/components/back-button';
+import Onboarding from '@/components/onboarding';
 
 function Event() {
   const { eventId } = useParams();
@@ -49,29 +51,32 @@ function Event() {
   };
 
   return (
-    <FlexColumn $gap="2rem">
-      <BackButton />
-      <section className="flex flex-col gap-4">
-        <Subtitle>{event?.name}</Subtitle>
-        {event?.description && (
-          <Markdown
-            components={{
-              a: ({ node, ...props }) => <Link to={props.href ?? ''}>{props.children}</Link>,
-              p: ({ node, ...props }) => <Body>{props.children}</Body>,
-            }}
-          >
-            {event.description}
-          </Markdown>
-        )}
-      </section>
-      <section className="flex w-full flex-col justify-between gap-2 md:flex-row md:items-center">
-        <Subtitle>Questions</Subtitle>
-        <Tabs.TabsHeader tabNames={tabNames} onTabChange={setActiveTab} />
-      </section>
-      <FlexColumn>
-        <Tabs.TabsManager tabs={tabs} tab={activeTab} fallback={'Tab not found'} />
+    <>
+      <Onboarding steps={eventSteps} type="event" />
+      <FlexColumn $gap="2rem" className="event">
+        <BackButton />
+        <section className="flex flex-col gap-4">
+          <Subtitle>{event?.name}</Subtitle>
+          {event?.description && (
+            <Markdown
+              components={{
+                a: ({ node, ...props }) => <Link to={props.href ?? ''}>{props.children}</Link>,
+                p: ({ node, ...props }) => <Body>{props.children}</Body>,
+              }}
+            >
+              {event.description}
+            </Markdown>
+          )}
+        </section>
+        <section className="flex w-full flex-col justify-between gap-2 md:flex-row md:items-center">
+          <Subtitle>Questions</Subtitle>
+          <Tabs.TabsHeader className="tabs" tabNames={tabNames} onTabChange={setActiveTab} />
+        </section>
+        <FlexColumn className="cycles">
+          <Tabs.TabsManager tabs={tabs} tab={activeTab} fallback={'Tab not found'} />
+        </FlexColumn>
       </FlexColumn>
-    </FlexColumn>
+    </>
   );
 }
 
