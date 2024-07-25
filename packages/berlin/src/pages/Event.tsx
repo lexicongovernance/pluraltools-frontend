@@ -51,21 +51,23 @@ function Event() {
   return (
     <FlexColumn $gap="2rem">
       <BackButton />
-      <Subtitle>{event?.name}</Subtitle>
-      {event?.description && (
-        <Markdown
-          components={{
-            a: ({ node, ...props }) => <Link to={props.href ?? ''}>{props.children}</Link>,
-            p: ({ node, ...props }) => <Body>{props.children}</Body>,
-          }}
-        >
-          {event.description}
-        </Markdown>
-      )}
-      <div className="flex flex-col md:flex-row justify-between md:items-center gap-2 w-full">
+      <section className="flex flex-col gap-4">
+        <Subtitle>{event?.name}</Subtitle>
+        {event?.description && (
+          <Markdown
+            components={{
+              a: ({ node, ...props }) => <Link to={props.href ?? ''}>{props.children}</Link>,
+              p: ({ node, ...props }) => <Body>{props.children}</Body>,
+            }}
+          >
+            {event.description}
+          </Markdown>
+        )}
+      </section>
+      <section className="flex w-full flex-col justify-between gap-2 md:flex-row md:items-center">
         <Subtitle>Questions</Subtitle>
         <Tabs.TabsHeader tabNames={tabNames} onTabChange={setActiveTab} />
-      </div>
+      </section>
       <FlexColumn>
         <Tabs.TabsManager tabs={tabs} tab={activeTab} fallback={'Tab not found'} />
       </FlexColumn>
