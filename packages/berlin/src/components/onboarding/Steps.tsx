@@ -68,7 +68,7 @@ export const cycleSteps = [
   createStep({
     target: 'save',
     title: 'Save Your Votes',
-    children: <Body>You must click this button or your vote will not be recorded.</Body>,
+    children: <Body>You must click this button or your votes will not be recorded.</Body>,
   }),
   createStep({
     target: 'hearts',
