@@ -5,7 +5,6 @@ import { Heart } from 'lucide-react';
 import { OnboardingCard } from './Onboarding';
 import { ReactNode } from 'react';
 import { Subtitle } from '../typography/Subtitle.styled';
-import Button from '../button';
 import Icon from '../icon';
 import IconButton from '../icon-button';
 
@@ -35,15 +34,15 @@ export const eventSteps = [
 
 export const cycleSteps = [
   createStep({
-    target: 'step-1',
+    target: 'welcome',
     title: 'Voting Page',
     placement: 'center',
     children: <Body>View vote items and allocate your hearts.</Body>,
   }),
   createStep({
-    target: 'step-2',
+    target: 'votes',
     title: 'Vote',
-    placement: 'center',
+
     children: (
       <FlexRow>
         <FlexColumn $gap="-4px" style={{ width: 16 }}>
@@ -67,23 +66,13 @@ export const cycleSteps = [
     ),
   }),
   createStep({
-    target: 'step-3',
+    target: 'save',
     title: 'Save Your Votes',
-    placement: 'center',
-    children: (
-      <Body>
-        You must click the
-        <Button $color="secondary" style={{ paddingInline: 4 }}>
-          save all votes
-        </Button>{' '}
-        button or your vote will not be recorded.
-      </Body>
-    ),
+    children: <Body>You must click this button or your vote will not be recorded.</Body>,
   }),
   createStep({
-    target: 'step-4',
+    target: 'hearts',
     title: 'Information',
-    placement: 'center',
     children: (
       <>
         <Body>View vote item.</Body>
@@ -97,7 +86,7 @@ export const cycleSteps = [
     ),
   }),
   createStep({
-    target: 'step-5',
+    target: 'plurality',
     title: 'Voting Mechanisms',
     placement: 'center',
     children: (
@@ -116,9 +105,9 @@ export const cycleSteps = [
     ),
   }),
   createStep({
-    target: 'step-6',
+    target: 'expand',
     title: 'Expand a vote item',
-    placement: 'center',
+
     children: (
       <FlexRow>
         <IconButton

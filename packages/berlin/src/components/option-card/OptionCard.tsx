@@ -108,7 +108,7 @@ function OptionCard({
             </Body>
           </Affiliation>
           <Votes $showScore={showScore}>
-            <VotesIcon $gap="-4px">
+            <VotesIcon $gap="-4px" className="votes">
               <IconButton
                 $padding={0}
                 $color="secondary"

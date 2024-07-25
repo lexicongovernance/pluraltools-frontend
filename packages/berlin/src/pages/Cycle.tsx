@@ -298,7 +298,7 @@ function Cycle() {
     <>
       <Onboarding steps={cycleSteps} type="cycle" />
       <FlexColumn $gap="2rem">
-        <FlexColumn>
+        <FlexColumn className="welcome plurality expand">
           <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
           <Title>{currentCycle?.questionTitle}</Title>
           <Body>{voteInfo}</Body>
@@ -310,7 +310,7 @@ function Cycle() {
               <Heart key={id} fill={id < availableHearts ? '#ff0000' : 'none'} />
             ))}
           </FlexRow>
-          <Button onClick={handleSaveVotesWrapper} disabled={!votesAreDifferent}>
+          <Button onClick={handleSaveVotesWrapper} disabled={!votesAreDifferent} className="save">
             Save all votes
           </Button>
         </FlexColumn>
