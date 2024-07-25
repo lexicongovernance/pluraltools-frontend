@@ -27,6 +27,30 @@ export const eventSteps = [
   }),
 ];
 
+export const cycleSteps = [
+  createStep({
+    target: 'event',
+    placement: 'center',
+    title: 'Welcome',
+    children: (
+      <>
+        <Body>Welcome to our tool!</Body>
+        <Body>Would you like to take a tour to see how it works?</Body>
+      </>
+    ),
+  }),
+  createStep({
+    target: 'cycles',
+    title: 'Open Votes',
+    children: <Body>Explore current vote items, the vote deadline, and cast your vote.</Body>,
+  }),
+  createStep({
+    target: 'tabs',
+    title: 'Closed Votes',
+    children: <Body>Review past votes and see the results.</Body>,
+  }),
+];
+
 type StepProps = {
   target: string;
   placement?: string;
