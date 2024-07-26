@@ -1,63 +1,29 @@
 {
   "name": "lexicon-frontend",
   "private": true,
-  "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "berlin:dev": "pnpm -r --filter berlin dev",
-    "berlin:build": "pnpm -r --filter berlin build",
-    "berlin:preview": "pnpm -r --filter berlin preview",
-    "format": "prettier --check \"packages/**/*.{ts,tsx,json,md}\"",
-    "format:fix": "prettier --write \"packages/**/*.{ts,tsx,json,md}\"",
-    "lint": "eslint ."
+    "dev": "pnpm -r --filter berlin dev",
+    "build": "pnpm -r --filter berlin build",
+    "preview": "pnpm -r --filter berlin preview",
+    "format": "pnpm exec prettier --check \"packages/**/*.{ts,tsx,json,md}\"",
+    "format:fix": "pnpm exec prettier --write \"packages/**/*.{ts,tsx,json,md}\"",
+    "lint": "pnpm exec eslint ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "engines": {
-    "node": "^20"
-  },
-  "dependencies": {
-    "@hookform/resolvers": "^3.3.4",
-    "@pcd/passport-interface": "^0.8.0",
-    "@pcd/pcd-types": "^0.8.0",
-    "@pcd/semaphore-identity-pcd": "^0.8.0",
-    "@pcd/semaphore-signature-pcd": "^0.9.0",
-    "@radix-ui/react-dialog": "^1.0.5",
-    "@radix-ui/react-icons": "^1.3.0",
-    "@tanstack/react-query": "^5.13.4",
-    "@tanstack/react-query-devtools": "^5.13.5",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.0",
-    "lucide-react": "^0.397.0",
-    "react": "^18.2.0",
-    "react-content-loader": "^7.0.0",
-    "react-dom": "^18.2.0",
-    "react-hook-form": "^7.49.3",
-    "react-hot-toast": "^2.4.1",
-    "react-markdown": "^9.0.1",
-    "react-router-dom": "^6.20.1",
-    "styled-components": "^6.1.1",
-    "zod": "^3.22.4",
-    "zustand": "^4.4.7"
-  },
   "devDependencies": {
-    "@hookform/devtools": "^4.3.1",
-    "@tanstack/eslint-plugin-query": "^5.18.0",
-    "@types/node": "^20.12.4",
-    "@types/react-dom": "^18.2.15",
-    "@types/react": "^18.2.37",
-    "@typescript-eslint/eslint-plugin": "^6.19.0",
-    "@typescript-eslint/parser": "^6.19.0",
-    "@vitejs/plugin-react": "^4.2.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.4",
-    "eslint": "^8.56.0",
     "prettier-plugin-tailwindcss": "^0.6.5",
     "prettier": "^3.1.1",
-    "typescript": "^5.5.2",
-    "vite-plugin-node-polyfills": "^0.17.0",
-    "vite": "^5.0.0"
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "@typescript-eslint/parser": "^7.2.0",
+    "typescript": "^5.5.2"
+  },
+  "engines": {
+    "node": "^20"
   }
 }
