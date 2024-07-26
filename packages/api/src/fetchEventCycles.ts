@@ -1,6 +1,6 @@
 import { GetCyclesResponse } from './types';
 
-async function fetchEventCycles(eventId: string): Promise<GetCyclesResponse | null> {
+export async function fetchEventCycles(eventId: string): Promise<GetCyclesResponse | null> {
   try {
     const response = await fetch(
       `${process.env.VITE_SERVER_URL}/api/events/${eventId}/cycles`,
@@ -23,5 +23,3 @@ async function fetchEventCycles(eventId: string): Promise<GetCyclesResponse | nu
     return null;
   }
 }
-
-export default fetchEventCycles;

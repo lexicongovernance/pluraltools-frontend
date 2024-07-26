@@ -1,6 +1,6 @@
 import { GetCommentsRequest, GetCommentsResponse } from './types';
 
-async function fetchComments({
+export async function fetchComments({
   optionId,
 }: GetCommentsRequest): Promise<GetCommentsResponse | null> {
   try {
@@ -25,5 +25,3 @@ async function fetchComments({
     return null;
   }
 }
-
-export default fetchComments;

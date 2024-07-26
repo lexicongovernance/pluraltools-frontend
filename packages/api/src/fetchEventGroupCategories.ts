@@ -1,6 +1,6 @@
 import { GetGroupCategoriesResponse } from './types';
 
-async function fetchEventGroupCategories(
+export async function fetchEventGroupCategories(
   eventId: string,
 ): Promise<GetGroupCategoriesResponse | null> {
   try {
@@ -25,5 +25,3 @@ async function fetchEventGroupCategories(
     return null;
   }
 }
-
-export default fetchEventGroupCategories;

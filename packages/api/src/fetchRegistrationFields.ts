@@ -1,6 +1,6 @@
 import { GetRegistrationFieldsResponse } from './types';
 
-async function fetchRegistrationFields(
+export async function fetchRegistrationFields(
   eventId: string,
 ): Promise<GetRegistrationFieldsResponse | null> {
   try {
@@ -26,4 +26,3 @@ async function fetchRegistrationFields(
   }
 }
 
-export default fetchRegistrationFields;

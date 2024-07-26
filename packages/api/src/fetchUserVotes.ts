@@ -1,6 +1,6 @@
 import { GetUserVotesResponse } from './types';
 
-async function fetchUserVotes(cycleId: string): Promise<GetUserVotesResponse | null> {
+export async function fetchUserVotes(cycleId: string): Promise<GetUserVotesResponse | null> {
   try {
     const response = await fetch(`${process.env.VITE_SERVER_URL}/api/cycles/${cycleId}/votes`, {
       credentials: 'include',
@@ -20,4 +20,3 @@ async function fetchUserVotes(cycleId: string): Promise<GetUserVotesResponse | n
   }
 }
 
-export default fetchUserVotes;

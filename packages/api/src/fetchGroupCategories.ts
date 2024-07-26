@@ -1,6 +1,6 @@
 import { GetGroupCategoriesResponse } from './types';
 
-async function fetchGroupCategories(): Promise<GetGroupCategoriesResponse | null> {
+export async function fetchGroupCategories(): Promise<GetGroupCategoriesResponse | null> {
   try {
     const response = await fetch(`${process.env.VITE_SERVER_URL}/api/group-categories`, {
       credentials: 'include',
@@ -20,5 +20,3 @@ async function fetchGroupCategories(): Promise<GetGroupCategoriesResponse | null
     return null;
   }
 }
-
-export default fetchGroupCategories;

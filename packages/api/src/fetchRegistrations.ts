@@ -1,6 +1,6 @@
 import { GetRegistrationsResponseType } from './types';
 
-async function fetchRegistrations(eventId: string): Promise<GetRegistrationsResponseType | null> {
+export async function fetchRegistrations(eventId: string): Promise<GetRegistrationsResponseType | null> {
   try {
     const response = await fetch(
       `${process.env.VITE_SERVER_URL}/api/events/${eventId}/registrations`,
@@ -28,4 +28,3 @@ async function fetchRegistrations(eventId: string): Promise<GetRegistrationsResp
   }
 }
 
-export default fetchRegistrations;

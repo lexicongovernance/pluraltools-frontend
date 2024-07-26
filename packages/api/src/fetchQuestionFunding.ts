@@ -1,9 +1,9 @@
 import { GetFundingResponse } from './types';
 
-async function fetchForumQuestionFunding(questionId: string): Promise<GetFundingResponse | null> {
+export async function fetchQuestionFunding(questionId: string): Promise<GetFundingResponse | null> {
   try {
     const response = await fetch(
-      `${process.env.VITE_SERVER_URL}/api/forum-questions/${questionId}/funding`,
+      `${process.env.VITE_SERVER_URL}/api/questions/${questionId}/funding`,
       {
         credentials: 'include',
         headers: {
@@ -23,4 +23,3 @@ async function fetchForumQuestionFunding(questionId: string): Promise<GetFunding
   }
 }
 
-export default fetchForumQuestionFunding;

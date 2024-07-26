@@ -1,6 +1,6 @@
 import { GetUserOptionsResponse } from './types/UserOptions';
 
-async function fetchUserOptions(userId: string): Promise<GetUserOptionsResponse | null> {
+export async function fetchUserOptions(userId: string): Promise<GetUserOptionsResponse | null> {
   try {
     const response = await fetch(`${process.env.VITE_SERVER_URL}/api/users/${userId}/options`, {
       credentials: 'include',
@@ -21,4 +21,3 @@ async function fetchUserOptions(userId: string): Promise<GetUserOptionsResponse 
   }
 }
 
-export default fetchUserOptions;

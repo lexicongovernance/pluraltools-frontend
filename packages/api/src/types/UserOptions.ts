@@ -10,7 +10,7 @@ export type GetUserOptionsResponse = {
   accepted: boolean | null;
   voteScore: string;
   fundingRequest: string | null;
-  forumQuestion: {
+  question: {
     id: string;
     createdAt: string;
     updatedAt: string;

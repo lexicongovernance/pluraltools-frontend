@@ -1,6 +1,6 @@
 import { GetUserResponse } from './types';
 
-async function fetchUserData(): Promise<GetUserResponse | null> {
+export async function fetchUserData(): Promise<GetUserResponse | null> {
   try {
     const response = await fetch(`${process.env.VITE_SERVER_URL}/api/users`, {
       credentials: 'include',
@@ -21,4 +21,3 @@ async function fetchUserData(): Promise<GetUserResponse | null> {
   }
 }
 
-export default fetchUserData;

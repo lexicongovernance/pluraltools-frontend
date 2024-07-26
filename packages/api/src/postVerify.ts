@@ -1,6 +1,6 @@
 import { GetUserResponse } from './types';
 
-async function postVerify(body: {
+export async function postVerify(body: {
   pcdStr: string;
   email: string;
   uuid: string;
@@ -26,5 +26,3 @@ async function postVerify(body: {
     return null;
   }
 }
-
-export default postVerify;

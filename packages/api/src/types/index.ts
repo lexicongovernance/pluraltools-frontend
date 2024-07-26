@@ -10,7 +10,7 @@ export * from './GroupRegistrations';
 export * from './Groups';
 export * from './Likes';
 export * from './OptionUsers';
-export * from './QuestionOptions';
+export * from './Options';
 export * from './RegistrationData';
 export * from './RegistrationFieldOptions';
 export * from './RegistrationFields';

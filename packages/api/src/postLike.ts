@@ -1,6 +1,6 @@
 import { PostLikeRequest, PostLikeResponse } from './types';
 
-async function postLike({ commentId }: PostLikeRequest): Promise<PostLikeResponse | null> {
+export async function postLike({ commentId }: PostLikeRequest): Promise<PostLikeResponse | null> {
   try {
     const response = await fetch(
       `${process.env.VITE_SERVER_URL}/api/comments/${commentId}/likes`,
@@ -25,4 +25,3 @@ async function postLike({ commentId }: PostLikeRequest): Promise<PostLikeRespons
   }
 }
 
-export default postLike;

@@ -1,6 +1,6 @@
 import { GetGroupsResponse } from './types';
 
-async function fetchGroups({
+export async function fetchGroups({
   groupCategoryId,
 }: {
   groupCategoryId: string;
@@ -28,4 +28,3 @@ async function fetchGroups({
   }
 }
 
-export default fetchGroups;

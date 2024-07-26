@@ -1,6 +1,6 @@
 import { GetRegistrationDataResponse } from './types';
 
-async function fetchRegistrationData(
+export async function fetchRegistrationData(
   registrationId: string,
 ): Promise<GetRegistrationDataResponse | null> {
   try {
@@ -26,4 +26,3 @@ async function fetchRegistrationData(
   }
 }
 
-export default fetchRegistrationData;

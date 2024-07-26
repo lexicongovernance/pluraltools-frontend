@@ -1,6 +1,6 @@
 import { DeleteUsersToGroupsRequest, DeleteUsersToGroupsResponse } from './types';
 
-async function deleteUsersToGroups({
+export async function deleteUsersToGroups({
   userToGroupId,
 }: DeleteUsersToGroupsRequest): Promise<DeleteUsersToGroupsResponse | { errors: string[] } | null> {
   try {
@@ -33,5 +33,3 @@ async function deleteUsersToGroups({
     return null;
   }
 }
-
-export default deleteUsersToGroups;

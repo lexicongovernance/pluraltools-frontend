@@ -1,6 +1,6 @@
 import { PutRegistrationRequest, PutRegistrationResponse } from './types';
 
-async function putRegistration({
+export async function putRegistration({
   registrationId,
   body,
 }: {
@@ -32,4 +32,3 @@ async function putRegistration({
   }
 }
 
-export default putRegistration;

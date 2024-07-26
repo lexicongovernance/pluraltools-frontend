@@ -1,6 +1,6 @@
 import { GetUsersToGroupsResponse } from './types';
 
-async function fetchUsersToGroups(userId: string): Promise<GetUsersToGroupsResponse | null> {
+export async function fetchUsersToGroups(userId: string): Promise<GetUsersToGroupsResponse | null> {
   try {
     const response = await fetch(
       `${process.env.VITE_SERVER_URL}/api/users/${userId}/users-to-groups`,
@@ -24,4 +24,4 @@ async function fetchUsersToGroups(userId: string): Promise<GetUsersToGroupsRespo
   }
 }
 
-export default fetchUsersToGroups;
+

@@ -1,6 +1,6 @@
 import { GetAlertsResponse } from './types';
 
-async function fetchAlerts(): Promise<GetAlertsResponse | null> {
+export async function fetchAlerts(): Promise<GetAlertsResponse | null> {
   try {
     const response = await fetch(`${process.env.VITE_SERVER_URL}/api/alerts`, {
       credentials: 'include',
@@ -20,5 +20,3 @@ async function fetchAlerts(): Promise<GetAlertsResponse | null> {
     return null;
   }
 }
-
-export default fetchAlerts;

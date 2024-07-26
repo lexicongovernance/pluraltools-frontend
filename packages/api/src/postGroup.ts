@@ -1,6 +1,6 @@
 import { PostGroupRequest, PostGroupResponse } from './types';
 
-async function postGroup({
+export async function postGroup({
   name,
   groupCategoryId,
 }: PostGroupRequest): Promise<PostGroupResponse | null> {
@@ -29,4 +29,3 @@ async function postGroup({
   }
 }
 
-export default postGroup;

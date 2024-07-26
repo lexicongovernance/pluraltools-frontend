@@ -1,11 +1,11 @@
-import { GetForumQuestionStatisticsResponse } from './types';
+import { GetQuestionStatisticsResponse } from './types';
 
-async function fetchForumQuestionStatistics(
+export async function fetchQuestionStatistics(
   questionId: string,
-): Promise<GetForumQuestionStatisticsResponse | null> {
+): Promise<GetQuestionStatisticsResponse | null> {
   try {
     const response = await fetch(
-      `${process.env.VITE_SERVER_URL}/api/forum-questions/${questionId}/statistics`,
+      `${process.env.VITE_SERVER_URL}/api/questions/${questionId}/statistics`,
       {
         credentials: 'include',
         headers: {
@@ -17,7 +17,7 @@ async function fetchForumQuestionStatistics(
       throw new Error(`HTTP Error! Status: ${response.status}`);
     }
 
-    const stats = (await response.json()) as { data: GetForumQuestionStatisticsResponse };
+    const stats = (await response.json()) as { data: GetQuestionStatisticsResponse };
     return stats.data;
   } catch (error) {
     console.error('Error fetching forum question statistics:', error);
@@ -25,4 +25,3 @@ async function fetchForumQuestionStatistics(
   }
 }
 
-export default fetchForumQuestionStatistics;

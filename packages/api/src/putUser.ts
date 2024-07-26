@@ -1,11 +1,10 @@
 import { PutUserRequest, GetUserResponse } from './types';
 
-async function updateUserData({
+export async function updateUserData({
   email,
   firstName,
   lastName,
   telegram,
-  userAttributes,
   userId,
   username,
 }: PutUserRequest): Promise<{ data: GetUserResponse } | { errors: string[] } | null> {
@@ -21,7 +20,6 @@ async function updateUserData({
         firstName,
         lastName,
         telegram,
-        userAttributes,
         username,
       }),
     });
@@ -42,4 +40,3 @@ async function updateUserData({
   }
 }
 
-export default updateUserData;

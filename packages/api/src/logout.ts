@@ -1,4 +1,4 @@
-async function logout() {
+export async function logout() {
   try {
     const response = await fetch(`${process.env.VITE_SERVER_URL}/api/auth/logout`, {
       method: 'POST',
@@ -18,5 +18,3 @@ async function logout() {
     throw new Error('Logout failed');
   }
 }
-
-export default logout;

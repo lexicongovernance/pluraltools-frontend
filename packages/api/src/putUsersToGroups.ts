@@ -1,6 +1,6 @@
 import { PostUsersToGroupsResponse, PutUsersToGroupsRequest } from './types';
 
-async function postUsersToGroups({
+export async function postUsersToGroups({
   groupId,
   userToGroupId,
 }: PutUsersToGroupsRequest): Promise<PostUsersToGroupsResponse | { errors: string[] } | null> {
@@ -35,5 +35,3 @@ async function postUsersToGroups({
     return null;
   }
 }
-
-export default postUsersToGroups;

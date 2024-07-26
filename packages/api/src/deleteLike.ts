@@ -1,6 +1,6 @@
 import { DeleteLikeRequest, DeleteLikeResponse } from './types';
 
-async function deleteLike({ commentId }: DeleteLikeRequest): Promise<DeleteLikeResponse | null> {
+export async function deleteLike({ commentId }: DeleteLikeRequest): Promise<DeleteLikeResponse | null> {
   try {
     const response = await fetch(
       `${process.env.VITE_SERVER_URL}/api/comments/${commentId}/likes`,
@@ -24,5 +24,3 @@ async function deleteLike({ commentId }: DeleteLikeRequest): Promise<DeleteLikeR
     return null;
   }
 }
-
-export default deleteLike;

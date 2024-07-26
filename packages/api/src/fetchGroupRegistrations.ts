@@ -1,6 +1,6 @@
 import { GetGroupRegistrations } from './types';
 
-async function fetchGroupRegistrations(groupId: string): Promise<GetGroupRegistrations | null> {
+export async function fetchGroupRegistrations(groupId: string): Promise<GetGroupRegistrations | null> {
   try {
     const response = await fetch(
       `${process.env.VITE_SERVER_URL}/api/groups/${groupId}/registrations`,
@@ -24,4 +24,3 @@ async function fetchGroupRegistrations(groupId: string): Promise<GetGroupRegistr
   }
 }
 
-export default fetchGroupRegistrations;

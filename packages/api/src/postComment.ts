@@ -1,6 +1,6 @@
 import { PostCommentRequest, PostCommentResponse } from './types';
 
-async function postComment({
+export async function postComment({
   questionOptionId,
   value,
 }: PostCommentRequest): Promise<PostCommentResponse | null> {
@@ -26,4 +26,3 @@ async function postComment({
   }
 }
 
-export default postComment;

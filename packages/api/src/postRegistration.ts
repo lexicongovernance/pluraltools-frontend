@@ -1,6 +1,6 @@
 import { PostRegistrationRequest, PostRegistrationResponse } from './types';
 
-async function postRegistration({
+export async function postRegistration({
   body,
 }: {
   body: PostRegistrationRequest;
@@ -26,5 +26,3 @@ async function postRegistration({
     return null;
   }
 }
-
-export default postRegistration;

@@ -1,6 +1,6 @@
 import { GetEventResponse } from './types';
 
-async function fetchEvent(eventId: string): Promise<GetEventResponse | null> {
+export async function fetchEvent(eventId: string): Promise<GetEventResponse | null> {
   try {
     const response = await fetch(`${process.env.VITE_SERVER_URL}/api/events/${eventId}`, {
       credentials: 'include',
@@ -20,5 +20,3 @@ async function fetchEvent(eventId: string): Promise<GetEventResponse | null> {
     return null;
   }
 }
-
-export default fetchEvent;

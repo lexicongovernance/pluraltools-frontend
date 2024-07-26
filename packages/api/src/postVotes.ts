@@ -1,6 +1,6 @@
 import { PostVotesRequest, PostVotesResponse } from './types';
 
-async function postVotes({ votes }: PostVotesRequest): Promise<PostVotesResponse | null> {
+export async function postVotes({ votes }: PostVotesRequest): Promise<PostVotesResponse | null> {
   try {
     const response = await fetch(`${process.env.VITE_SERVER_URL}/api/votes`, {
       method: 'POST',
@@ -23,4 +23,3 @@ async function postVotes({ votes }: PostVotesRequest): Promise<PostVotesResponse
   }
 }
 
-export default postVotes;

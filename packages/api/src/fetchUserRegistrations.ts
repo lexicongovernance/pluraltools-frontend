@@ -1,6 +1,6 @@
 import { GetRegistrationsResponseType } from './types';
 
-async function fetchUserRegistrations(
+export async function fetchUserRegistrations(
   userId: string,
 ): Promise<GetRegistrationsResponseType | null> {
   try {
@@ -25,5 +25,3 @@ async function fetchUserRegistrations(
     return null;
   }
 }
-
-export default fetchUserRegistrations;
