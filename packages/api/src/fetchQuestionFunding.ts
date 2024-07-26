@@ -22,4 +22,3 @@ export async function fetchQuestionFunding(questionId: string): Promise<GetFundi
     return null;
   }
 }
-

@@ -24,4 +24,3 @@ export async function fetchQuestionStatistics(
     return null;
   }
 }
-

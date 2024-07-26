@@ -19,4 +19,3 @@ export async function fetchOption(optionId: string): Promise<GetQuestionOptionRe
     return null;
   }
 }
-

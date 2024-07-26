@@ -22,4 +22,3 @@ export async function postVotes({ votes }: PostVotesRequest): Promise<PostVotesR
     return null;
   }
 }
-

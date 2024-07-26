@@ -2,7 +2,7 @@ import { DeleteCommentRequest, DeleteCommentResponse } from './types';
 
 export async function deleteComment({
   commentId,
-}: DeleteCommentRequest ): Promise<DeleteCommentResponse | null> {
+}: DeleteCommentRequest): Promise<DeleteCommentResponse | null> {
   try {
     const response = await fetch(`${process.env.VITE_SERVER_URL}/api/comments/${commentId}`, {
       method: 'DELETE',

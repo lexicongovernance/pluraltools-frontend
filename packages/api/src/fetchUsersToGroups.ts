@@ -23,5 +23,3 @@ export async function fetchUsersToGroups(userId: string): Promise<GetUsersToGrou
     return null;
   }
 }
-
-

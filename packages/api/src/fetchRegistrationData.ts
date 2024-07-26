@@ -25,4 +25,3 @@ export async function fetchRegistrationData(
     return null;
   }
 }
-

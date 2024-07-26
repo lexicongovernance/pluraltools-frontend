@@ -19,4 +19,3 @@ export async function fetchUserVotes(cycleId: string): Promise<GetUserVotesRespo
     return null;
   }
 }
-

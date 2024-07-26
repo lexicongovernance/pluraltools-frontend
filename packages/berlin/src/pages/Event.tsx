@@ -62,7 +62,7 @@ function Event() {
           {event.description}
         </Markdown>
       )}
-      <div className="flex flex-col md:flex-row justify-between md:items-center gap-2 w-full">
+      <div className="flex w-full flex-col justify-between gap-2 md:flex-row md:items-center">
         <Subtitle>Questions</Subtitle>
         <Tabs.TabsHeader tabNames={tabNames} onTabChange={setActiveTab} />
       </div>

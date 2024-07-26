@@ -32,4 +32,3 @@ export async function postUsersToGroups({
     return null;
   }
 }
-

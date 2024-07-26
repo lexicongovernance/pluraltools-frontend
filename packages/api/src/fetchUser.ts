@@ -20,4 +20,3 @@ export async function fetchUser(): Promise<GetUserResponse | null> {
     return null;
   }
 }
-

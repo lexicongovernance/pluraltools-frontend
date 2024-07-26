@@ -2,16 +2,13 @@ import { PostLikeRequest, PostLikeResponse } from './types';
 
 export async function postLike({ commentId }: PostLikeRequest): Promise<PostLikeResponse | null> {
   try {
-    const response = await fetch(
-      `${process.env.VITE_SERVER_URL}/api/comments/${commentId}/likes`,
-      {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/comments/${commentId}/likes`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);
@@ -24,4 +21,3 @@ export async function postLike({ commentId }: PostLikeRequest): Promise<PostLike
     return null;
   }
 }
-

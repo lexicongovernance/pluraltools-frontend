@@ -20,4 +20,3 @@ export async function fetchCycle(cycleId: string): Promise<GetCyclesResponse[num
     return null;
   }
 }
-

@@ -20,4 +20,3 @@ export async function fetchUserOptions(userId: string): Promise<GetUserOptionsRe
     return null;
   }
 }
-

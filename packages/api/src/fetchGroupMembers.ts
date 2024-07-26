@@ -23,4 +23,3 @@ export async function fetchGroupMembers(groupId: string): Promise<GetGroupMember
     return null;
   }
 }
-

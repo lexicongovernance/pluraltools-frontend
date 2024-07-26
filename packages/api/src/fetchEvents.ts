@@ -20,4 +20,3 @@ export async function fetchEvents(): Promise<GetEventsResponse | null> {
     return null;
   }
 }
-

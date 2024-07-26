@@ -31,4 +31,3 @@ export async function putRegistration({
     return null;
   }
 }
-
