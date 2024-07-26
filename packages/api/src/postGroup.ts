@@ -1,11 +1,12 @@
-import { PostGroupRequest, PostGroupResponse } from './types';
+import { ApiRequest, PostGroupRequest, PostGroupResponse } from './types';
 
 export async function postGroup({
   name,
   groupCategoryId,
-}: PostGroupRequest): Promise<PostGroupResponse | null> {
+  serverUrl,
+}: ApiRequest<PostGroupRequest>): Promise<PostGroupResponse | null> {
   try {
-    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/groups`, {
+    const response = await fetch(`${serverUrl}/api/groups`, {
       method: 'POST',
       credentials: 'include',
       headers: {

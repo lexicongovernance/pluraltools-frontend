@@ -1,16 +1,16 @@
-import { GetGroupMembers } from './types';
+import { ApiRequest, GetGroupMembers } from './types';
 
-export async function fetchGroupMembers(groupId: string): Promise<GetGroupMembers | null> {
+export async function fetchGroupMembers({
+  serverUrl,
+  groupId,
+}: ApiRequest<{ groupId: string }>): Promise<GetGroupMembers | null> {
   try {
-    const response = await fetch(
-      `${process.env.VITE_SERVER_URL}/api/groups/${groupId}/users-to-groups`,
-      {
-        credentials: 'include',
-        headers: {
-          'Content-type': 'application/json',
-        },
+    const response = await fetch(`${serverUrl}/api/groups/${groupId}/users-to-groups`, {
+      credentials: 'include',
+      headers: {
+        'Content-type': 'application/json',
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);

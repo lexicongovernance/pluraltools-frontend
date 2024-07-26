@@ -72,25 +72,35 @@ function Account() {
 function AccountHub({ user }: { user: GetUserResponse | null | undefined }) {
   const { data: registrations } = useQuery({
     queryKey: ['users', user?.id, 'registrations'],
-    queryFn: () => fetchUserRegistrations(user?.id ?? ''),
+    queryFn: () =>
+      fetchUserRegistrations({
+        userId: user?.id ?? '',
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      }),
   });
 
   const { data: options } = useQuery({
     queryKey: ['users', user?.id, 'options'],
-    queryFn: () => fetchUserOptions(user?.id ?? ''),
+    queryFn: () =>
+      fetchUserOptions({ userId: user?.id ?? '', serverUrl: import.meta.env.VITE_SERVER_URL }),
   });
 
   const { data: usersToGroups } = useQuery({
     queryKey: ['users', user?.id, 'groups'],
-    queryFn: () => fetchUsersToGroups(user?.id ?? ''),
+    queryFn: () =>
+      fetchUsersToGroups({ userId: user?.id ?? '', serverUrl: import.meta.env.VITE_SERVER_URL }),
   });
 
   const cycles = useQueries({
     queries:
       // can be improved by filtering repeated cycles
       options?.map((option) => ({
-        queryKey: ['cycles', option.forumQuestion.cycleId],
-        queryFn: () => fetchCycle(option.forumQuestion.cycleId),
+        queryKey: ['cycles', option.question.cycleId],
+        queryFn: () =>
+          fetchCycle({
+            cycleId: option.question.cycleId,
+            serverUrl: import.meta.env.VITE_SERVER_URL,
+          }),
       })) ?? [],
   });
 
@@ -122,7 +132,7 @@ function AccountHub({ user }: { user: GetUserResponse | null | undefined }) {
           {options?.map((option) => (
             <Link
               key={option.id}
-              to={`/events/${cycles.find((c) => c.data?.id === option.forumQuestion.cycleId)?.data?.eventId}/cycles/${option.forumQuestion.cycleId}/options/${option.id}`}
+              to={`/events/${cycles.find((c) => c.data?.id === option.question.cycleId)?.data?.eventId}/cycles/${option.question.cycleId}/options/${option.id}`}
             >
               - {option.optionTitle}
             </Link>

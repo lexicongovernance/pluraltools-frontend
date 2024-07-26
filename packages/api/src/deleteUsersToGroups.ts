@@ -1,19 +1,19 @@
-import { DeleteUsersToGroupsRequest, DeleteUsersToGroupsResponse } from './types';
+import { ApiRequest, DeleteUsersToGroupsRequest, DeleteUsersToGroupsResponse } from './types';
 
 export async function deleteUsersToGroups({
   userToGroupId,
-}: DeleteUsersToGroupsRequest): Promise<DeleteUsersToGroupsResponse | { errors: string[] } | null> {
+  serverUrl,
+}: ApiRequest<DeleteUsersToGroupsRequest>): Promise<
+  DeleteUsersToGroupsResponse | { errors: string[] } | null
+> {
   try {
-    const response = await fetch(
-      `${process.env.VITE_SERVER_URL}/api/users-to-groups/${userToGroupId}`,
-      {
-        method: 'DELETE',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const response = await fetch(`${serverUrl}/api/users-to-groups/${userToGroupId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+    });
 
     if (!response.ok) {
       if (response.status < 500) {

@@ -1,8 +1,11 @@
-import { PostLikeRequest, PostLikeResponse } from './types';
+import { ApiRequest, PostLikeRequest, PostLikeResponse } from './types';
 
-export async function postLike({ commentId }: PostLikeRequest): Promise<PostLikeResponse | null> {
+export async function postLike({
+  commentId,
+  serverUrl,
+}: ApiRequest<PostLikeRequest>): Promise<PostLikeResponse | null> {
   try {
-    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/comments/${commentId}/likes`, {
+    const response = await fetch(`${serverUrl}/api/comments/${commentId}/likes`, {
       method: 'POST',
       credentials: 'include',
       headers: {

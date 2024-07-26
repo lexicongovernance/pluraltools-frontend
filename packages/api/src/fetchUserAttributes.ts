@@ -1,10 +1,11 @@
-import { GetUserAttributesResponse } from './types';
+import { ApiRequest, GetUserAttributesResponse } from './types';
 
-export async function fetchUserAttributes(
-  userId: string,
-): Promise<GetUserAttributesResponse | null> {
+export async function fetchUserAttributes({
+  serverUrl,
+  userId,
+}: ApiRequest<{ userId: string }>): Promise<GetUserAttributesResponse | null> {
   try {
-    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/users/${userId}/attributes`, {
+    const response = await fetch(`${serverUrl}/api/users/${userId}/attributes`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',

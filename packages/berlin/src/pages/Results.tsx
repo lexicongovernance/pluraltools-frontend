@@ -19,21 +19,30 @@ function Results() {
 
   const { data: cycle } = useQuery({
     queryKey: ['cycles', cycleId],
-    queryFn: () => fetchCycle(cycleId || ''),
+    queryFn: () =>
+      fetchCycle({ cycleId: cycleId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!cycleId,
     retry: false,
   });
 
   const { data: statistics } = useQuery({
     queryKey: ['cycles', cycleId, 'forumQuestions', 0, 'statistics', cycle?.questions[0].id],
-    queryFn: () => fetchQuestionStatistics(cycle?.questions[0].id || ''),
+    queryFn: () =>
+      fetchQuestionStatistics({
+        questionId: cycle?.questions[0].id || '',
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      }),
     enabled: !!cycle?.id,
     retry: false,
   });
 
   const { data: funding } = useQuery({
     queryKey: ['funding', cycle?.questions[0].id],
-    queryFn: () => fetchQuestionFunding(cycle?.questions[0].id || ''),
+    queryFn: () =>
+      fetchQuestionFunding({
+        questionId: cycle?.questions[0].id || '',
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      }),
     enabled: !!cycle?.id && cycle?.questions?.[0].questionTitle === FINAL_QUESTION_TITLE,
   });
 

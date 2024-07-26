@@ -1,10 +1,11 @@
-import { DeleteLikeRequest, DeleteLikeResponse } from './types';
+import { ApiRequest, DeleteLikeRequest, DeleteLikeResponse } from './types';
 
 export async function deleteLike({
   commentId,
-}: DeleteLikeRequest): Promise<DeleteLikeResponse | null> {
+  serverUrl,
+}: ApiRequest<DeleteLikeRequest>): Promise<DeleteLikeResponse | null> {
   try {
-    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/comments/${commentId}/likes`, {
+    const response = await fetch(`${serverUrl}/api/comments/${commentId}/likes`, {
       method: 'DELETE',
       credentials: 'include',
       headers: {

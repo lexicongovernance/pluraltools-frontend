@@ -36,7 +36,7 @@ import {
 } from './OptionCard.styled';
 
 type OptionCardProps = {
-  option: GetCycleResponse['forumQuestions'][number]['questionOptions'][number];
+  option: GetCycleResponse['questions'][number]['options'][number];
   showFundingRequest?: boolean;
   showScore?: boolean;
   numOfVotes: number;
@@ -57,7 +57,8 @@ function OptionCard({
   const navigate = useNavigate();
   const { data: optionUsers } = useQuery({
     queryKey: ['option', option.id, 'users'],
-    queryFn: () => fetchOptionUsers(option.id || ''),
+    queryFn: () =>
+      fetchOptionUsers({ optionId: option.id || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!option.id,
   });
 

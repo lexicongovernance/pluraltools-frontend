@@ -1,8 +1,11 @@
-import { GetCyclesResponse } from './types';
+import { ApiRequest, GetCyclesResponse } from './types';
 
-export async function fetchEventCycles(eventId: string): Promise<GetCyclesResponse | null> {
+export async function fetchEventCycles({
+  eventId,
+  serverUrl,
+}: ApiRequest<{ eventId: string }>): Promise<GetCyclesResponse | null> {
   try {
-    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/events/${eventId}/cycles`, {
+    const response = await fetch(`${serverUrl}/api/events/${eventId}/cycles`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',

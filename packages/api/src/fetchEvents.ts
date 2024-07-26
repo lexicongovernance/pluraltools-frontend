@@ -1,8 +1,10 @@
-import { GetEventsResponse } from './types';
+import { ApiRequest, GetEventsResponse } from './types';
 
-export async function fetchEvents(): Promise<GetEventsResponse | null> {
+export async function fetchEvents({
+  serverUrl,
+}: ApiRequest<unknown>): Promise<GetEventsResponse | null> {
   try {
-    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/events`, {
+    const response = await fetch(`${serverUrl}/api/events`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',

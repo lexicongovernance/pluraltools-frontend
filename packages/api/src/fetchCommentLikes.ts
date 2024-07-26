@@ -1,10 +1,11 @@
-import { GetLikesRequest, GetLikesResponse } from './types';
+import { ApiRequest, GetLikesRequest, GetLikesResponse } from './types';
 
 export async function fetchCommentLikes({
   commentId,
-}: GetLikesRequest): Promise<GetLikesResponse | null> {
+  serverUrl,
+}: ApiRequest<GetLikesRequest>): Promise<GetLikesResponse | null> {
   try {
-    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/comments/${commentId}/likes`, {
+    const response = await fetch(`${serverUrl}/api/comments/${commentId}/likes`, {
       credentials: 'include',
       headers: {
         'Content-type': 'application/json',

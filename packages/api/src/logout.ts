@@ -1,6 +1,8 @@
-export async function logout() {
+import { ApiRequest } from './types';
+
+export async function logout({ serverUrl }: ApiRequest<unknown>) {
   try {
-    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/auth/logout`, {
+    const response = await fetch(`${serverUrl}/api/auth/logout`, {
       method: 'POST',
       credentials: 'include',
       headers: {

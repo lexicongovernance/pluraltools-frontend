@@ -80,6 +80,7 @@ export function AccountForm({
         email: value.email,
         firstName: value.firstName,
         lastName: value.lastName,
+        serverUrl: import.meta.env.VITE_SERVER_URL,
       });
     }
   };

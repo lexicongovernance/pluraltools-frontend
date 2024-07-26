@@ -31,7 +31,7 @@ import SecretGroupRegistration from './pages/SecretGroupRegistration.tsx';
 async function redirectToLandingLoader(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
     queryKey: ['user'],
-    queryFn: fetchUser,
+    queryFn: () => fetchUser({ serverUrl: import.meta.env.VITE_SERVER_URL }),
     staleTime: 10000,
   });
 
@@ -47,7 +47,7 @@ async function redirectToLandingLoader(queryClient: QueryClient) {
 async function redirectToAccount(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
     queryKey: ['user'],
-    queryFn: fetchUser,
+    queryFn: () => fetchUser({ serverUrl: import.meta.env.VITE_SERVER_URL }),
   });
 
   if (user?.username) {
@@ -65,7 +65,7 @@ async function redirectToAccount(queryClient: QueryClient) {
 async function redirectOnLandingLoader(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
     queryKey: ['user'],
-    queryFn: fetchUser,
+    queryFn: () => fetchUser({ serverUrl: import.meta.env.VITE_SERVER_URL }),
   });
 
   if (!user) {
@@ -80,7 +80,7 @@ async function redirectOnLandingLoader(queryClient: QueryClient) {
 
   const events = await queryClient.fetchQuery({
     queryKey: ['events'],
-    queryFn: fetchEvents,
+    queryFn: () => fetchEvents({ serverUrl: import.meta.env.VITE_SERVER_URL }),
   });
 
   const userIsComplete = await redirectToAccount(queryClient);
@@ -92,7 +92,11 @@ async function redirectOnLandingLoader(queryClient: QueryClient) {
   if (events?.length === 1) {
     const registrations = await queryClient.fetchQuery({
       queryKey: ['event', events?.[0].id, 'registrations'],
-      queryFn: () => fetchRegistrations(events?.[0].id || ''),
+      queryFn: () =>
+        fetchRegistrations({
+          eventId: events?.[0].id || '',
+          serverUrl: import.meta.env.VITE_SERVER_URL,
+        }),
     });
 
     if (registrations && registrations.some((registration) => registration.status === 'APPROVED')) {
@@ -111,7 +115,7 @@ async function redirectOnLandingLoader(queryClient: QueryClient) {
 async function redirectToOnlyOneEventLoader(queryClient: QueryClient) {
   const events = await queryClient.fetchQuery({
     queryKey: ['events'],
-    queryFn: fetchEvents,
+    queryFn: () => fetchEvents({ serverUrl: import.meta.env.VITE_SERVER_URL }),
   });
 
   if (events?.length === 1) {
@@ -128,7 +132,8 @@ async function redirectToOnlyOneEventLoader(queryClient: QueryClient) {
 async function redirectToEventHoldingOrRegister(queryClient: QueryClient, eventId?: string) {
   const registrations = await queryClient.fetchQuery({
     queryKey: ['event', eventId, 'registrations'],
-    queryFn: () => fetchRegistrations(eventId || ''),
+    queryFn: () =>
+      fetchRegistrations({ eventId: eventId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
   });
 
   if (!registrations || !registrations.length) {
@@ -152,7 +157,8 @@ async function redirectToCycleResultsLoader(
 ) {
   const cycle = await queryClient.fetchQuery({
     queryKey: ['cycles', cycleId],
-    queryFn: () => fetchCycle(cycleId || ''),
+    queryFn: () =>
+      fetchCycle({ cycleId: cycleId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
   });
 
   if (cycle?.status === 'CLOSED') {
@@ -168,7 +174,8 @@ async function redirectToCycleResultsLoader(
 async function redirectToCycleIfOpen(queryClient: QueryClient, eventId?: string, cycleId?: string) {
   const cycle = await queryClient.fetchQuery({
     queryKey: ['cycles', cycleId],
-    queryFn: () => fetchCycle(cycleId || ''),
+    queryFn: () =>
+      fetchCycle({ cycleId: cycleId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
   });
 
   if (cycle?.status === 'OPEN') {

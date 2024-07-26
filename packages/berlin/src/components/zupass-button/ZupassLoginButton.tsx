@@ -67,6 +67,7 @@ function ZupassLoginButton({ children, $variant, ...props }: ZupassLoginButtonPr
             email: user.value.email,
             uuid: user.value.uuid,
             pcdStr: JSON.parse(pcdStr).pcd,
+            serverUrl: import.meta.env.VITE_SERVER_URL,
           });
         }
       });

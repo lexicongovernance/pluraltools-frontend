@@ -1,8 +1,11 @@
-import { PostVotesRequest, PostVotesResponse } from './types';
+import { ApiRequest, PostVotesRequest, PostVotesResponse } from './types';
 
-export async function postVotes({ votes }: PostVotesRequest): Promise<PostVotesResponse | null> {
+export async function postVotes({
+  votes,
+  serverUrl,
+}: ApiRequest<PostVotesRequest>): Promise<PostVotesResponse | null> {
   try {
-    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/votes`, {
+    const response = await fetch(`${serverUrl}/api/votes`, {
       method: 'POST',
       credentials: 'include',
       headers: {

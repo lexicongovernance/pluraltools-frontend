@@ -1,4 +1,4 @@
-import { PutUserRequest, GetUserResponse } from './types';
+import { PutUserRequest, GetUserResponse, ApiRequest } from './types';
 
 export async function putUser({
   email,
@@ -7,9 +7,10 @@ export async function putUser({
   telegram,
   userId,
   username,
-}: PutUserRequest): Promise<{ data: GetUserResponse } | { errors: string[] } | null> {
+  serverUrl,
+}: ApiRequest<PutUserRequest>): Promise<{ data: GetUserResponse } | { errors: string[] } | null> {
   try {
-    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/users/${userId}`, {
+    const response = await fetch(`${serverUrl}/api/users/${userId}`, {
       method: 'PUT',
       credentials: 'include',
       headers: {

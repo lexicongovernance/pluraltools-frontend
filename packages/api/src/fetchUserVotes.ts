@@ -1,8 +1,11 @@
-import { GetUserVotesResponse } from './types';
+import { ApiRequest, GetUserVotesResponse } from './types';
 
-export async function fetchUserVotes(cycleId: string): Promise<GetUserVotesResponse | null> {
+export async function fetchUserVotes({
+  serverUrl,
+  cycleId,
+}: ApiRequest<{ cycleId: string }>): Promise<GetUserVotesResponse | null> {
   try {
-    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/cycles/${cycleId}/votes`, {
+    const response = await fetch(`${serverUrl}/api/cycles/${cycleId}/votes`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',

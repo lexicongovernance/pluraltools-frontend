@@ -1,11 +1,14 @@
-import { PostUsersToGroupsRequest, PostUsersToGroupsResponse } from './types';
+import { ApiRequest, PostUsersToGroupsRequest, PostUsersToGroupsResponse } from './types';
 
 export async function postUsersToGroups({
   secret,
   groupId,
-}: PostUsersToGroupsRequest): Promise<PostUsersToGroupsResponse | { errors: string[] } | null> {
+  serverUrl,
+}: ApiRequest<PostUsersToGroupsRequest>): Promise<
+  PostUsersToGroupsResponse | { errors: string[] } | null
+> {
   try {
-    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/users-to-groups`, {
+    const response = await fetch(`${serverUrl}/api/users-to-groups`, {
       method: 'POST',
       credentials: 'include',
       headers: {

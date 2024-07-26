@@ -1,8 +1,12 @@
+import { ApiRequest } from './types';
 import { GetUserOptionsResponse } from './types/UserOptions';
 
-export async function fetchUserOptions(userId: string): Promise<GetUserOptionsResponse | null> {
+export async function fetchUserOptions({
+  serverUrl,
+  userId,
+}: ApiRequest<{ userId: string }>): Promise<GetUserOptionsResponse | null> {
   try {
-    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/users/${userId}/options`, {
+    const response = await fetch(`${serverUrl}/api/users/${userId}/options`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',

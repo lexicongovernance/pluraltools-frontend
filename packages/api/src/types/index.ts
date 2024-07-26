@@ -19,3 +19,4 @@ export * from './UserAttributes';
 export * from './UsersToGroups';
 export * from './Users';
 export * from './UserVotes';
+export * from './ApiRequest';

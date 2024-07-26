@@ -1,8 +1,10 @@
-import { GetGroupCategoriesResponse } from './types';
+import { ApiRequest, GetGroupCategoriesResponse } from './types';
 
-export async function fetchGroupCategories(): Promise<GetGroupCategoriesResponse | null> {
+export async function fetchGroupCategories({
+  serverUrl,
+}: ApiRequest<unknown>): Promise<GetGroupCategoriesResponse | null> {
   try {
-    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/group-categories`, {
+    const response = await fetch(`${serverUrl}/api/group-categories`, {
       credentials: 'include',
       headers: {
         'Content-type': 'application/json',

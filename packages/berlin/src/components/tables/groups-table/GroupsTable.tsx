@@ -38,13 +38,21 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
 
   const { data: groupMembers } = useQuery({
     queryKey: ['group', userToGroup.group.id, 'users-to-groups'],
-    queryFn: () => fetchGroupMembers(userToGroup.group.id),
+    queryFn: () =>
+      fetchGroupMembers({
+        groupId: userToGroup.group.id,
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      }),
     enabled: !!userToGroup.group.id,
   });
 
   const { data: groupRegistrations } = useQuery({
     queryKey: ['group', userToGroup.group.id, 'group-registrations'],
-    queryFn: () => fetchGroupRegistrations(userToGroup.group.id || ''),
+    queryFn: () =>
+      fetchGroupRegistrations({
+        groupId: userToGroup.group.id || '',
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      }),
     enabled: !!userToGroup.group.id,
   });
 
@@ -157,7 +165,9 @@ function GroupsTable({ groupsInCategory }: { groupsInCategory?: GetUsersToGroups
       key={userToGroup.id}
       userToGroup={userToGroup}
       theme={theme}
-      onLeaveGroup={(userToGroupId) => mutate({ userToGroupId })}
+      onLeaveGroup={(userToGroupId) =>
+        mutate({ userToGroupId, serverUrl: import.meta.env.VITE_SERVER_URL })
+      }
     />
   ));
 }
