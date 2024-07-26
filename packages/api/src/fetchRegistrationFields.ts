@@ -1,18 +1,16 @@
-import { GetRegistrationFieldsResponse } from './types';
+import { ApiRequest, GetRegistrationFieldsResponse } from './types';
 
-async function fetchRegistrationFields(
-  eventId: string,
-): Promise<GetRegistrationFieldsResponse | null> {
+export async function fetchRegistrationFields({
+  serverUrl,
+  eventId,
+}: ApiRequest<{ eventId: string }>): Promise<GetRegistrationFieldsResponse | null> {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/events/${eventId}/registration-fields`,
-      {
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const response = await fetch(`${serverUrl}/api/events/${eventId}/registration-fields`, {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -25,5 +23,3 @@ async function fetchRegistrationFields(
     return null;
   }
 }
-
-export default fetchRegistrationFields;

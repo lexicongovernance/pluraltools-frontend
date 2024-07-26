@@ -37,7 +37,7 @@ import { Heart } from 'lucide-react';
 
 type Order = 'asc' | 'desc';
 type LocalUserVotes = { optionId: string; numOfVotes: number }[];
-type QuestionOption = GetCycleResponse['forumQuestions'][number]['questionOptions'][number];
+type QuestionOption = GetCycleResponse['questions'][number]['options'][number];
 
 function Cycle() {
   const queryClient = useQueryClient();
@@ -46,20 +46,21 @@ function Cycle() {
   const { eventId, cycleId } = useParams();
   const { data: cycle } = useQuery({
     queryKey: ['cycles', cycleId],
-    queryFn: () => fetchCycle(cycleId || ''),
+    queryFn: () =>
+      fetchCycle({ cycleId: cycleId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!cycleId,
     refetchInterval: 5000, // Poll every 5 seconds
   });
 
   const { data: userVotes } = useQuery({
     queryKey: ['votes', cycleId],
-    queryFn: () => fetchUserVotes(cycleId || ''),
+    queryFn: () =>
+      fetchUserVotes({ cycleId: cycleId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!user?.id && !!cycleId,
   });
 
   const availableHearts =
-    useAppStore((state) => state.availableHearts[cycle?.forumQuestions[0].id || '']) ??
-    INITIAL_HEARTS;
+    useAppStore((state) => state.availableHearts[cycle?.questions[0].id || '']) ?? INITIAL_HEARTS;
   const setAvailableHearts = useAppStore((state) => state.setAvailableHearts);
   const [startAt, setStartAt] = useState<string | null>(null);
   const [endAt, setEndAt] = useState<string | null>(null);
@@ -90,11 +91,11 @@ function Cycle() {
 
   useEffect(() => {
     // Initial sorting
-    if (cycle?.forumQuestions[0].questionOptions.length) {
+    if (cycle?.questions[0].options.length) {
       setSortedOptions((prev) => ({
         ...prev,
         options: sortOptions({
-          options: cycle.forumQuestions[0].questionOptions,
+          options: cycle.questions[0].options,
           sorting: prev,
           votes: userVotes,
         }),
@@ -124,7 +125,7 @@ function Cycle() {
       votes?.map((option) => option.numOfVotes).reduce((prev, curr) => prev + curr, 0) ?? 0;
 
     setAvailableHearts({
-      questionId: cycle?.forumQuestions[0].id || '',
+      questionId: cycle?.questions[0].id || '',
       hearts: Math.max(0, INITIAL_HEARTS - givenVotes),
     });
 
@@ -175,7 +176,7 @@ function Cycle() {
 
     setLocalUserVotes((prevLocalUserVotes) => handleLocalVote(optionId, prevLocalUserVotes));
     setAvailableHearts({
-      questionId: cycle?.forumQuestions[0].id ?? '',
+      questionId: cycle?.questions[0].id ?? '',
       hearts: handleAvailableHearts(availableHearts, 'vote'),
     });
   };
@@ -188,20 +189,22 @@ function Cycle() {
 
     setLocalUserVotes((prevLocalUserVotes) => handleLocalUnVote(optionId, prevLocalUserVotes));
     setAvailableHearts({
-      questionId: cycle?.forumQuestions[0].id ?? '',
+      questionId: cycle?.questions[0].id ?? '',
       hearts: handleAvailableHearts(availableHearts, 'unVote'),
     });
   };
 
   const handleSaveVotesWrapper = () => {
     if (cycle?.status === 'OPEN') {
-      handleSaveVotes(userVotes, localUserVotes, mutateVotes);
+      handleSaveVotes(userVotes, localUserVotes, ({ votes }) =>
+        mutateVotes({ votes, serverUrl: import.meta.env.VITE_SERVER_URL }),
+      );
     } else {
       toast.error('Cycle is not open');
     }
   };
 
-  const currentCycle = cycle?.forumQuestions[0];
+  const currentCycle = cycle?.questions[0];
 
   const sortId = (a: QuestionOption, b: QuestionOption, order: Order) => {
     const idA = a.id.toUpperCase();
@@ -310,7 +313,7 @@ function Cycle() {
           Save all votes
         </Button>
       </FlexColumn>
-      {currentCycle?.questionOptions.length ? (
+      {currentCycle?.options.length ? (
         <FlexColumn $gap="0">
           <CycleColumns onColumnClick={handleColumnClick} showScore={currentCycle.showScore} />
           {sortedOptions.options.map((option) => {

@@ -1,8 +1,11 @@
-import { PostVotesRequest, PostVotesResponse } from './types';
+import { ApiRequest, PostVotesRequest, PostVotesResponse } from './types';
 
-async function postVotes({ votes }: PostVotesRequest): Promise<PostVotesResponse | null> {
+export async function postVotes({
+  votes,
+  serverUrl,
+}: ApiRequest<PostVotesRequest>): Promise<PostVotesResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/votes`, {
+    const response = await fetch(`${serverUrl}/api/votes`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -22,5 +25,3 @@ async function postVotes({ votes }: PostVotesRequest): Promise<PostVotesResponse
     return null;
   }
 }
-
-export default postVotes;

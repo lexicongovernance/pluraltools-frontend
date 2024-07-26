@@ -20,13 +20,15 @@ function Event() {
   const { eventId } = useParams();
   const { data: event } = useQuery({
     queryKey: ['event', eventId],
-    queryFn: () => fetchEvent(eventId || ''),
+    queryFn: () =>
+      fetchEvent({ eventId: eventId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!eventId,
   });
 
   const { data: eventCycles } = useQuery({
     queryKey: ['events', eventId, 'cycles'],
-    queryFn: () => fetchEventCycles(eventId || ''),
+    queryFn: () =>
+      fetchEventCycles({ eventId: eventId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!eventId,
     refetchInterval: 5000, // Poll every 5 seconds
   });
@@ -62,7 +64,7 @@ function Event() {
           {event.description}
         </Markdown>
       )}
-      <div className="flex flex-col md:flex-row justify-between md:items-center gap-2 w-full">
+      <div className="flex w-full flex-col justify-between gap-2 md:flex-row md:items-center">
         <Subtitle>Questions</Subtitle>
         <Tabs.TabsHeader tabNames={tabNames} onTabChange={setActiveTab} />
       </div>

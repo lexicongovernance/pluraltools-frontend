@@ -1,4 +1,4 @@
-import { RegistrationStatus } from './RegistrationType';
+import { RegistrationStatus } from './Registrations';
 
 export type GetRegistrationDataResponse = {
   id: string;

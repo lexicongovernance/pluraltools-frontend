@@ -38,32 +38,20 @@ import Textarea from '../components/textarea';
 function Comments() {
   const queryClient = useQueryClient();
   const { optionId } = useParams();
-  // const { user } = useUser();
-  // const [localUserVotes, setLocalUserVotes] = useState<LocalUserVotes>([]);
-  // const [localOptionHearts, setLocalOptionHearts] = useState(0);
   const [comment, setComment] = useState('');
   const [sortOrder, setSortOrder] = useState('desc'); // 'asc' for ascending, 'desc' for descending
 
   const { data: option, isLoading } = useQuery({
     queryKey: ['option', optionId],
-    queryFn: () => fetchOption(optionId || ''),
+    queryFn: () =>
+      fetchOption({ optionId: optionId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!optionId,
   });
 
-  // const availableHearts =
-  //   useAppStore((state) => state.availableHearts[option?.questionId || '']) ?? INITIAL_HEARTS;
-  // const setAvailableHearts = useAppStore((state) => state.setAvailableHearts);
-
-  // const { data: userVotes } = useQuery({
-  //   queryKey: ['votes', cycleId],
-  //   queryFn: () => fetchUserVotes(cycleId || ''),
-  //   enabled: !!user?.id && !!cycleId,
-  //   retry: false,
-  // });
-
   const { data: optionUsers } = useQuery({
     queryKey: ['option', optionId, 'users'],
-    queryFn: () => fetchOptionUsers(optionId || ''),
+    queryFn: () =>
+      fetchOptionUsers({ optionId: optionId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!optionId,
   });
 
@@ -73,7 +61,8 @@ function Comments() {
 
   const { data: comments } = useQuery({
     queryKey: ['option', optionId, 'comments'],
-    queryFn: () => fetchComments({ optionId: optionId || '' }),
+    queryFn: () =>
+      fetchComments({ optionId: optionId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!optionId,
     refetchInterval: 5000, // Poll every 5 seconds
   });
@@ -88,20 +77,6 @@ function Comments() {
     });
   }, [comments, sortOrder]);
 
-  // useEffect(() => {
-  //   if (optionId) {
-  //     const sumOfAllVotes = userVotes?.reduce((acc, option) => acc + option.numOfVotes, 0) || 0;
-  //     const hearts = userVotes?.find((option) => optionId === option.optionId)?.numOfVotes || 0;
-  //     setLocalOptionHearts(hearts);
-  //     setLocalUserVotes([{ optionId: optionId, numOfVotes: hearts }]);
-  //     // update the available hearts
-  //     setAvailableHearts({
-  //       questionId: option?.questionId ?? '',
-  //       hearts: Math.max(0, INITIAL_HEARTS - sumOfAllVotes),
-  //     });
-  //   }
-  // }, [optionId, userVotes, setAvailableHearts, option?.questionId]);
-
   const { mutate: mutateComments } = useMutation({
     mutationFn: postComment,
     onSuccess: (body) => {
@@ -111,55 +86,13 @@ function Comments() {
     },
   });
 
-  // const handleVoteWrapper = (optionId: string) => {
-  //   if (availableHearts === 0) {
-  //     toast.error('No hearts left to give');
-  //     return;
-  //   }
-
-  //   setLocalOptionHearts((prevLocalOptionHearts) => prevLocalOptionHearts + 1);
-  //   setLocalUserVotes((prevLocalUserVotes) => handleLocalVote(optionId, prevLocalUserVotes));
-  //   setAvailableHearts({
-  //     questionId: option?.questionId ?? '',
-  //     hearts: handleAvailableHearts(availableHearts, 'vote'),
-  //   });
-  // };
-
-  // const handleUnVoteWrapper = (optionId: string) => {
-  //   if (availableHearts === INITIAL_HEARTS) {
-  //     toast.error('No votes to left to remove');
-  //     return;
-  //   }
-
-  //   setLocalOptionHearts((prevLocalOptionHearts) => Math.max(0, prevLocalOptionHearts - 1));
-  //   setLocalUserVotes((prevLocalUserVotes) => handleLocalUnVote(optionId, prevLocalUserVotes));
-  //   setAvailableHearts({
-  //     questionId: option?.questionId ?? '',
-  //     hearts: handleAvailableHearts(availableHearts, 'unVote'),
-  //   });
-  // };
-
-  // const { mutate: mutateVotes } = useMutation({
-  //   mutationFn: postVotes,
-  //   onSuccess: (body) => {
-  //     if (body?.errors?.length) {
-  //       toast.error(`Failed to save votes, ${body?.errors[0].message}`);
-  //     } else if (body?.data.length) {
-  //       queryClient.invalidateQueries({ queryKey: ['votes', cycleId] });
-  //       // this is to update the plural scores in each option
-  //       queryClient.invalidateQueries({ queryKey: ['cycles', cycleId] });
-  //       toast.success('Votes saved successfully!');
-  //     }
-  //   },
-  // });
-
-  // const handleSaveVoteWrapper = () => {
-  //   handleSaveVotes(userVotes, localUserVotes, mutateVotes);
-  // };
-
   const handlePostComment = () => {
     if (optionId && comment) {
-      mutateComments({ questionOptionId: optionId, value: comment });
+      mutateComments({
+        questionOptionId: optionId,
+        value: comment,
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      });
       setComment('');
     }
   };
@@ -172,29 +105,6 @@ function Comments() {
     <FlexColumn $gap="2rem">
       <BackButton />
       <FlexColumn>
-        {/* <FlexRow style={{ maxWidth: '4rem' }}>
-          <FlexColumn $gap="-4px" style={{ maxWidth: '1rem' }}>
-            <IconButton
-              $padding={0}
-              $color="secondary"
-              icon={{ src: `/icons/upvote-${theme}.svg`, alt: 'Upvote arrow' }}
-              onClick={() => handleVoteWrapper(option?.id ?? '')}
-              $width={16}
-              $height={16}
-              disabled={availableHearts === 0}
-            />
-            <IconButton
-              $padding={0}
-              $color="secondary"
-              icon={{ src: `/icons/downvote-${theme}.svg`, alt: 'Downvote arrow' }}
-              onClick={() => handleUnVoteWrapper(option?.id ?? '')}
-              $width={16}
-              $height={16}
-              disabled={localOptionHearts === 0}
-            />
-          </FlexColumn>
-          <Subtitle>{localOptionHearts}</Subtitle>
-        </FlexRow> */}
         <Subtitle>{option?.optionTitle}</Subtitle>
         <Body>{option?.optionSubTitle}</Body>
         <Body>

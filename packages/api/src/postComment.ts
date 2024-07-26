@@ -1,11 +1,12 @@
-import { PostCommentRequest, PostCommentResponse } from './types';
+import { ApiRequest, PostCommentRequest, PostCommentResponse } from './types';
 
-async function postComment({
+export async function postComment({
   questionOptionId,
   value,
-}: PostCommentRequest): Promise<PostCommentResponse | null> {
+  serverUrl,
+}: ApiRequest<PostCommentRequest>): Promise<PostCommentResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/comments`, {
+    const response = await fetch(`${serverUrl}/api/comments`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -25,5 +26,3 @@ async function postComment({
     return null;
   }
 }
-
-export default postComment;

@@ -19,7 +19,7 @@ export function TabsHeader({ tabNames, initialTab, onTabChange }: TabsHeaderProp
   };
 
   return (
-    <div className='flex gap-2'>
+    <div className="flex gap-2">
       {tabNames.map((tabName, index) => (
         <Fragment key={tabName}>
           <Tab

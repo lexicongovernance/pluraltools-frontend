@@ -6,7 +6,7 @@ export type GetCycleResponse = {
   status: 'OPEN' | 'CLOSED' | 'UPCOMING' | null;
   startAt: string;
   endAt: string;
-  forumQuestions: {
+  questions: {
     id: string;
     showScore: boolean;
     createdAt: string;
@@ -14,7 +14,7 @@ export type GetCycleResponse = {
     questionSubTitle: string | null;
     cycleId: string;
     questionTitle: string;
-    questionOptions: {
+    options: {
       id: string;
       createdAt: string;
       updatedAt: string;

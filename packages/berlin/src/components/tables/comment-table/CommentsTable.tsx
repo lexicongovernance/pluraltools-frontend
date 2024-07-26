@@ -39,7 +39,8 @@ function CommentsTable({ comment }: CommentsTableProps) {
 
   const { data: commentLikes } = useQuery({
     queryKey: ['commentLikes', comment.id],
-    queryFn: () => fetchCommentLikes({ commentId: comment.id }),
+    queryFn: () =>
+      fetchCommentLikes({ commentId: comment.id, serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!comment.id,
     refetchInterval: 5000, // Poll every 5 seconds
   });
@@ -83,15 +84,15 @@ function CommentsTable({ comment }: CommentsTableProps) {
 
   const handleLikeClick = () => {
     if (isCommentLiked) {
-      deleteLikeMutation({ commentId: comment.id });
+      deleteLikeMutation({ commentId: comment.id, serverUrl: import.meta.env.VITE_SERVER_URL });
     } else {
-      postLikeMutation({ commentId: comment.id });
+      postLikeMutation({ commentId: comment.id, serverUrl: import.meta.env.VITE_SERVER_URL });
     }
   };
 
   const handleTrashClick = () => {
     if (optionId) {
-      deleteCommentMutation({ commentId: comment.id });
+      deleteCommentMutation({ commentId: comment.id, serverUrl: import.meta.env.VITE_SERVER_URL });
     }
   };
 

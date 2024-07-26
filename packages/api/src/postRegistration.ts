@@ -1,12 +1,13 @@
-import { PostRegistrationRequest, PostRegistrationResponse } from './types';
+import { ApiRequest, PostRegistrationRequest, PostRegistrationResponse } from './types';
 
-async function postRegistration({
+export async function postRegistration({
   body,
-}: {
+  serverUrl,
+}: ApiRequest<{
   body: PostRegistrationRequest;
-}): Promise<PostRegistrationResponse | null> {
+}>): Promise<PostRegistrationResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/registrations`, {
+    const response = await fetch(`${serverUrl}/api/registrations`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -26,5 +27,3 @@ async function postRegistration({
     return null;
   }
 }
-
-export default postRegistration;
