@@ -1,16 +1,16 @@
-import { GetUsersToGroupsResponse } from './types';
+import { ApiRequest, GetUsersToGroupsResponse } from './types';
 
-async function fetchUsersToGroups(userId: string): Promise<GetUsersToGroupsResponse | null> {
+export async function fetchUsersToGroups({
+  serverUrl,
+  userId,
+}: ApiRequest<{ userId: string }>): Promise<GetUsersToGroupsResponse | null> {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/users/${userId}/users-to-groups`,
-      {
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const response = await fetch(`${serverUrl}/api/users/${userId}/users-to-groups`, {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);
@@ -23,5 +23,3 @@ async function fetchUsersToGroups(userId: string): Promise<GetUsersToGroupsRespo
     return null;
   }
 }
-
-export default fetchUsersToGroups;

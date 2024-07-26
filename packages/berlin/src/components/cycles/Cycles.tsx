@@ -29,7 +29,7 @@ function Cycles({ cycles, errorMessage, eventId }: CyclesProps) {
             key={cycle.id}
             onClick={() => handleCycleClick(cycle.id)}
           >
-            <Body>{cycle.forumQuestions && cycle.forumQuestions[0]?.questionTitle}</Body>
+            <Body>{cycle.questions[0]?.questionTitle}</Body>
             <Body>{formatDate(cycle.endAt)}</Body>
           </div>
         ))

@@ -1,4 +1,4 @@
-export type GetForumQuestionStatisticsResponse = {
+export type GetQuestionStatisticsResponse = {
   numProposals: number;
   sumNumOfHearts: number;
   numOfParticipants: number;

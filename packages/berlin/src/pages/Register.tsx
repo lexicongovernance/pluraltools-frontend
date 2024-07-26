@@ -54,31 +54,42 @@ function Register() {
 
   const { data: event } = useQuery({
     queryKey: ['event', eventId],
-    queryFn: () => fetchEvent(eventId || ''),
+    queryFn: () =>
+      fetchEvent({ eventId: eventId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!eventId,
   });
 
   const { data: registrations } = useQuery({
     queryKey: ['event', eventId, 'registrations'],
-    queryFn: () => fetchRegistrations(eventId || ''),
+    queryFn: () =>
+      fetchRegistrations({ eventId: eventId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!eventId,
   });
 
   const { data: registrationFields } = useQuery({
     queryKey: ['event', eventId, 'registrations', 'fields'],
-    queryFn: () => fetchRegistrationFields(eventId || ''),
+    queryFn: () =>
+      fetchRegistrationFields({
+        eventId: eventId || '',
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      }),
     enabled: !!eventId,
   });
 
   const { data: usersToGroups } = useQuery({
     queryKey: ['user', user?.id, 'users-to-groups'],
-    queryFn: () => fetchUsersToGroups(user?.id || ''),
+    queryFn: () =>
+      fetchUsersToGroups({ userId: user?.id || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!user?.id,
   });
 
   const { data: groupCategories } = useQuery({
     queryKey: ['event', eventId, 'group-categories'],
-    queryFn: () => fetchEventGroupCategories(eventId || ''),
+    queryFn: () =>
+      fetchEventGroupCategories({
+        eventId: eventId || '',
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      }),
     enabled: !!eventId,
   });
 
@@ -102,7 +113,11 @@ function Register() {
     queries:
       registrations?.map((registration) => ({
         queryKey: ['registrations', registration.id, 'registration-data'],
-        queryFn: () => fetchRegistrationData(registration.id || ''),
+        queryFn: () =>
+          fetchRegistrationData({
+            registrationId: registration.id || '',
+            serverUrl: import.meta.env.VITE_SERVER_URL,
+          }),
         enabled: !!registration.id,
       })) ?? [],
     combine: (results) => {
@@ -278,7 +293,11 @@ const SelectEventGroup = ({
   const queryClient = useQueryClient();
   const { data: groups } = useQuery({
     queryKey: ['group-category', groupCategory?.id, 'groups'],
-    queryFn: () => fetchGroups({ groupCategoryId: groupCategory?.id ?? '' }),
+    queryFn: () =>
+      fetchGroups({
+        groupCategoryId: groupCategory?.id ?? '',
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      }),
     enabled: !!groupCategory?.id,
   });
 
@@ -328,12 +347,13 @@ const SelectEventGroup = ({
       putUsersToGroupsMutation({
         groupId: newGroup,
         userToGroupId: userGroup.id,
+        serverUrl: import.meta.env.VITE_SERVER_URL,
       });
       return;
     }
 
     // create a new group
-    postUsersToGroupsMutation({ groupId: newGroup });
+    postUsersToGroupsMutation({ groupId: newGroup, serverUrl: import.meta.env.VITE_SERVER_URL });
   };
 
   return (
@@ -666,6 +686,7 @@ function RegisterForm(props: {
           status: 'DRAFT',
           registrationData: registrationData,
         },
+        serverUrl: import.meta.env.VITE_SERVER_URL,
       });
     } else {
       mutateRegistrationData({
@@ -675,6 +696,7 @@ function RegisterForm(props: {
           status: 'DRAFT',
           registrationData: registrationData,
         },
+        serverUrl: import.meta.env.VITE_SERVER_URL,
       });
     }
   };

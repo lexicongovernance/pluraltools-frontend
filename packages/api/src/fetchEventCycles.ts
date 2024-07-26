@@ -1,16 +1,16 @@
-import { GetCyclesResponse } from './types';
+import { ApiRequest, GetCyclesResponse } from './types';
 
-async function fetchEventCycles(eventId: string): Promise<GetCyclesResponse | null> {
+export async function fetchEventCycles({
+  eventId,
+  serverUrl,
+}: ApiRequest<{ eventId: string }>): Promise<GetCyclesResponse | null> {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/events/${eventId}/cycles`,
-      {
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const response = await fetch(`${serverUrl}/api/events/${eventId}/cycles`, {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);
@@ -23,5 +23,3 @@ async function fetchEventCycles(eventId: string): Promise<GetCyclesResponse | nu
     return null;
   }
 }
-
-export default fetchEventCycles;

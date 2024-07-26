@@ -18,7 +18,7 @@ function Events() {
   const { user } = useUser();
   const { data: events } = useQuery({
     queryKey: ['events'],
-    queryFn: fetchEvents,
+    queryFn: () => fetchEvents({ serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!user?.id,
   });
 

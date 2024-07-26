@@ -73,19 +73,23 @@ export default function NewHeader() {
 const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
   const { data: events } = useQuery({
     queryKey: ['events'],
-    queryFn: fetchEvents,
+    queryFn: () => fetchEvents({ serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!user,
   });
 
   const { data: registrationsData } = useQuery({
     queryKey: [user?.id, 'registrations'],
-    queryFn: () => fetchUserRegistrations(user?.id ?? ''),
+    queryFn: () =>
+      fetchUserRegistrations({
+        userId: user?.id ?? '',
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      }),
     enabled: !!user,
   });
 
   const { data: alerts } = useQuery({
     queryKey: ['alerts'],
-    queryFn: () => fetchAlerts(),
+    queryFn: () => fetchAlerts({ serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!user,
     refetchInterval: 10000,
   });
@@ -168,7 +172,7 @@ const UserMenuLinks = () => {
       },
       {
         title: 'Log out',
-        onClick: () => mutateLogout(),
+        onClick: () => mutateLogout({ serverUrl: import.meta.env.VITE_SERVER_URL }),
       },
     ];
   }, [mutateLogout]);

@@ -3,7 +3,6 @@ module.exports = {
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:react-hooks/recommended',
-    'plugin:@tanstack/eslint-plugin-query/recommended',
     'prettier',
   ],
   parser: '@typescript-eslint/parser',
@@ -28,11 +27,7 @@ module.exports = {
     //    Warn to encourage type safety, could be upgraded to 'error' for stricter enforcement
     '@typescript-eslint/no-explicit-any': 'warn',
 
-    // 5. '@tanstack/query/exhaustive-deps': Ensure exhaustive dependency arrays in React hooks
-    //    Warn to highlight potential issues, but doesn't necessarily break the build
-    '@tanstack/query/exhaustive-deps': 'warn',
-
-    // 6. '@typescript-eslint/no-unused-vars': Avoid unused variables, enforcing cleaner code
+    // 5. '@typescript-eslint/no-unused-vars': Avoid unused variables, enforcing cleaner code
     //    Error to ensure unused variables are caught during linting
     '@typescript-eslint/no-unused-vars': [
       'error',

@@ -1,8 +1,10 @@
-import { GetAlertsResponse } from './types';
+import { ApiRequest, GetAlertsResponse } from './types';
 
-async function fetchAlerts(): Promise<GetAlertsResponse | null> {
+export async function fetchAlerts({
+  serverUrl,
+}: ApiRequest<unknown>): Promise<GetAlertsResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/alerts`, {
+    const response = await fetch(`${serverUrl}/api/alerts`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
@@ -20,5 +22,3 @@ async function fetchAlerts(): Promise<GetAlertsResponse | null> {
     return null;
   }
 }
-
-export default fetchAlerts;

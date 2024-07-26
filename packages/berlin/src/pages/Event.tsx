@@ -22,13 +22,15 @@ function Event() {
   const { eventId } = useParams();
   const { data: event } = useQuery({
     queryKey: ['event', eventId],
-    queryFn: () => fetchEvent(eventId || ''),
+    queryFn: () =>
+      fetchEvent({ eventId: eventId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!eventId,
   });
 
   const { data: eventCycles } = useQuery({
     queryKey: ['events', eventId, 'cycles'],
-    queryFn: () => fetchEventCycles(eventId || ''),
+    queryFn: () =>
+      fetchEventCycles({ eventId: eventId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!eventId,
     refetchInterval: 5000, // Poll every 5 seconds
   });

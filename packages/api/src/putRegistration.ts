@@ -1,24 +1,22 @@
-import { PutRegistrationRequest, PutRegistrationResponse } from './types';
+import { ApiRequest, PutRegistrationRequest, PutRegistrationResponse } from './types';
 
-async function putRegistration({
+export async function putRegistration({
   registrationId,
   body,
-}: {
+  serverUrl,
+}: ApiRequest<{
   registrationId: string;
   body: PutRegistrationRequest;
-}): Promise<PutRegistrationResponse | null> {
+}>): Promise<PutRegistrationResponse | null> {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/registrations/${registrationId}`,
-      {
-        method: 'PUT',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
+    const response = await fetch(`${serverUrl}/api/registrations/${registrationId}`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+      body: JSON.stringify(body),
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -31,5 +29,3 @@ async function putRegistration({
     return null;
   }
 }
-
-export default putRegistration;

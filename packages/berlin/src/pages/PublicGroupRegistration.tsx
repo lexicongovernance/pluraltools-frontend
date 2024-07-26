@@ -36,13 +36,18 @@ function PublicGroupRegistration() {
 
   const { data: groups } = useQuery({
     queryKey: ['group-categories', groupCategoryIdParam, 'groups'],
-    queryFn: () => fetchGroups({ groupCategoryId: groupCategoryIdParam || '' }),
+    queryFn: () =>
+      fetchGroups({
+        groupCategoryId: groupCategoryIdParam || '',
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      }),
     enabled: !!user?.id && !!groupCategoryIdParam,
   });
 
   const { data: usersToGroups } = useQuery({
     queryKey: ['user', user?.id, 'users-to-groups'],
-    queryFn: () => fetchUsersToGroups(user?.id || ''),
+    queryFn: () =>
+      fetchUsersToGroups({ userId: user?.id || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!user?.id,
   });
 
@@ -109,6 +114,7 @@ function PublicGroupRegistration() {
         putUsersToGroupsMutation({
           userToGroupId: prevUserToGroup.id,
           groupId: getValues('group'),
+          serverUrl: import.meta.env.VITE_SERVER_URL,
         });
         setValue('group', '');
         reset();
@@ -116,7 +122,10 @@ function PublicGroupRegistration() {
       }
 
       // If the user is not in the category group, create a new userToGroup
-      postUsersToGroupsMutation({ groupId: getValues('group') });
+      postUsersToGroupsMutation({
+        groupId: getValues('group'),
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      });
       setValue('group', '');
       reset();
     }

@@ -1,8 +1,11 @@
-import { GetQuestionOptionResponse } from './types';
+import { ApiRequest, GetQuestionOptionResponse } from './types';
 
-async function fetchOption(optionId: string): Promise<GetQuestionOptionResponse | null> {
+export async function fetchOption({
+  serverUrl,
+  optionId,
+}: ApiRequest<{ optionId: string }>): Promise<GetQuestionOptionResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/options/${optionId}`, {
+    const response = await fetch(`${serverUrl}/api/options/${optionId}`, {
       credentials: 'include',
       headers: {
         'Content-type': 'application/json',
@@ -19,5 +22,3 @@ async function fetchOption(optionId: string): Promise<GetQuestionOptionResponse 
     return null;
   }
 }
-
-export default fetchOption;

@@ -56,19 +56,28 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
 
   const { data: optionUsers } = useQuery({
     queryKey: ['option', option.id, 'users'],
-    queryFn: () => fetchOptionUsers(option.id || ''),
+    queryFn: () =>
+      fetchOptionUsers({ optionId: option.id || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!option.id,
   });
 
   const { data: registrationFields } = useQuery({
     queryKey: ['event', eventId, 'registrations', 'fields'],
-    queryFn: () => fetchRegistrationFields(eventId || ''),
+    queryFn: () =>
+      fetchRegistrationFields({
+        eventId: eventId || '',
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      }),
     enabled: !!eventId,
   });
 
   const { data: registrationData } = useQuery({
     queryKey: ['registrations', optionUsers?.registrationId, 'registration-data'],
-    queryFn: () => fetchRegistrationData(optionUsers?.registrationId || ''),
+    queryFn: () =>
+      fetchRegistrationData({
+        registrationId: optionUsers?.registrationId || '',
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      }),
     enabled: !!optionUsers?.registrationId,
   });
 

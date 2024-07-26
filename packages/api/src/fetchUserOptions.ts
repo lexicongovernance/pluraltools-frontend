@@ -1,8 +1,12 @@
-import { GetUserOptionsResponse } from './types/UserOptionType';
+import { ApiRequest } from './types';
+import { GetUserOptionsResponse } from './types/UserOptions';
 
-async function fetchUserOptions(userId: string): Promise<GetUserOptionsResponse | null> {
+export async function fetchUserOptions({
+  serverUrl,
+  userId,
+}: ApiRequest<{ userId: string }>): Promise<GetUserOptionsResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/users/${userId}/options`, {
+    const response = await fetch(`${serverUrl}/api/users/${userId}/options`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
@@ -20,5 +24,3 @@ async function fetchUserOptions(userId: string): Promise<GetUserOptionsResponse 
     return null;
   }
 }
-
-export default fetchUserOptions;
