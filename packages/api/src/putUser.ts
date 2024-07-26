@@ -1,6 +1,6 @@
 import { PutUserRequest, GetUserResponse } from './types';
 
-export async function updateUserData({
+export async function putUser({
   email,
   firstName,
   lastName,

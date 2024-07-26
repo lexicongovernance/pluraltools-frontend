@@ -1,4 +1,4 @@
-import { fetchCycle, fetchForumQuestionFunding, fetchForumQuestionStatistics } from 'api';
+import { fetchCycle, fetchQuestionFunding, fetchQuestionStatistics } from 'api';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import { useParams } from 'react-router-dom';
@@ -25,16 +25,16 @@ function Results() {
   });
 
   const { data: statistics } = useQuery({
-    queryKey: ['cycles', cycleId, 'forumQuestions', 0, 'statistics', cycle?.forumQuestions[0].id],
-    queryFn: () => fetchForumQuestionStatistics(cycle?.forumQuestions[0].id || ''),
+    queryKey: ['cycles', cycleId, 'forumQuestions', 0, 'statistics', cycle?.questions[0].id],
+    queryFn: () => fetchQuestionStatistics(cycle?.questions[0].id || ''),
     enabled: !!cycle?.id,
     retry: false,
   });
 
   const { data: funding } = useQuery({
-    queryKey: ['funding', cycle?.forumQuestions[0].id],
-    queryFn: () => fetchForumQuestionFunding(cycle?.forumQuestions[0].id || ''),
-    enabled: !!cycle?.id && cycle?.forumQuestions?.[0].questionTitle === FINAL_QUESTION_TITLE,
+    queryKey: ['funding', cycle?.questions[0].id],
+    queryFn: () => fetchQuestionFunding(cycle?.questions[0].id || ''),
+    enabled: !!cycle?.id && cycle?.questions?.[0].questionTitle === FINAL_QUESTION_TITLE,
   });
 
   const overallStatistics = [
@@ -72,7 +72,7 @@ function Results() {
   return (
     <FlexColumn $gap="2rem">
       <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
-      <Subtitle>Results for: {cycle?.forumQuestions?.[0].questionTitle}</Subtitle>
+      <Subtitle>Results for: {cycle?.questions?.[0].questionTitle}</Subtitle>
       <Column>
         <ResultsColumns $showFunding={!!funding} />
         {optionStatsArray.map((option, index) => (
