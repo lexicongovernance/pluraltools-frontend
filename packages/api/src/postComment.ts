@@ -5,7 +5,7 @@ async function postComment({
   value,
 }: PostCommentRequest): Promise<PostCommentResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/comments`, {
+    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/comments`, {
       method: 'POST',
       credentials: 'include',
       headers: {

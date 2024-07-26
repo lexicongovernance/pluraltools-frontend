@@ -3,7 +3,7 @@ import { GetLikesRequest, GetLikesResponse } from './types';
 async function fetchLikes({ commentId }: GetLikesRequest): Promise<GetLikesResponse | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/comments/${commentId}/likes`,
+      `${process.env.VITE_SERVER_URL}/api/comments/${commentId}/likes`,
       {
         credentials: 'include',
         headers: {

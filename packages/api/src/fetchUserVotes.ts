@@ -2,7 +2,7 @@ import { GetUserVotesResponse } from './types';
 
 async function fetchUserVotes(cycleId: string): Promise<GetUserVotesResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/cycles/${cycleId}/votes`, {
+    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/cycles/${cycleId}/votes`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',

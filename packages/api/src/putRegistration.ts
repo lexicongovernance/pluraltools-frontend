@@ -9,7 +9,7 @@ async function putRegistration({
 }): Promise<PutRegistrationResponse | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/registrations/${registrationId}`,
+      `${process.env.VITE_SERVER_URL}/api/registrations/${registrationId}`,
       {
         method: 'PUT',
         credentials: 'include',

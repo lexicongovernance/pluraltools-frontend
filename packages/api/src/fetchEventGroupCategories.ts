@@ -5,7 +5,7 @@ async function fetchEventGroupCategories(
 ): Promise<GetGroupCategoriesResponse | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/events/${eventId}/group-categories`,
+      `${process.env.VITE_SERVER_URL}/api/events/${eventId}/group-categories`,
       {
         credentials: 'include',
         headers: {

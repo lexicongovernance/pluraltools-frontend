@@ -1,4 +1,4 @@
-import { RegistrationFieldOption } from './RegistrationFieldOptionType';
+import { RegistrationFieldOption } from './RegistrationFieldOptions';
 
 export type GetRegistrationFieldsResponse = {
   id: string;

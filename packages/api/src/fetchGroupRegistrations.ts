@@ -3,7 +3,7 @@ import { GetGroupRegistrations } from './types';
 async function fetchGroupRegistrations(groupId: string): Promise<GetGroupRegistrations | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/groups/${groupId}/registrations`,
+      `${process.env.VITE_SERVER_URL}/api/groups/${groupId}/registrations`,
       {
         credentials: 'include',
         headers: {

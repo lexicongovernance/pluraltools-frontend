@@ -2,7 +2,7 @@ import { GetEventResponse } from './types';
 
 async function fetchEvent(eventId: string): Promise<GetEventResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/events/${eventId}`, {
+    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/events/${eventId}`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',

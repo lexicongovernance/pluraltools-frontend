@@ -5,7 +5,7 @@ async function fetchComments({
 }: GetCommentsRequest): Promise<GetCommentsResponse | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/options/${optionId}/comments`,
+      `${process.env.VITE_SERVER_URL}/api/options/${optionId}/comments`,
       {
         credentials: 'include',
         headers: {

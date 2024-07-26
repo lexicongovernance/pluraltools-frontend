@@ -3,7 +3,7 @@ import { GetCyclesResponse } from './types';
 async function fetchEventCycles(eventId: string): Promise<GetCyclesResponse | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/events/${eventId}/cycles`,
+      `${process.env.VITE_SERVER_URL}/api/events/${eventId}/cycles`,
       {
         credentials: 'include',
         headers: {

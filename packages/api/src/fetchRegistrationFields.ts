@@ -5,7 +5,7 @@ async function fetchRegistrationFields(
 ): Promise<GetRegistrationFieldsResponse | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/events/${eventId}/registration-fields`,
+      `${process.env.VITE_SERVER_URL}/api/events/${eventId}/registration-fields`,
       {
         credentials: 'include',
         headers: {

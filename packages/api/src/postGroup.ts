@@ -5,7 +5,7 @@ async function postGroup({
   groupCategoryId,
 }: PostGroupRequest): Promise<PostGroupResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/groups`, {
+    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/groups`, {
       method: 'POST',
       credentials: 'include',
       headers: {

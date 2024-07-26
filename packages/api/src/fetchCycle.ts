@@ -2,7 +2,7 @@ import { GetCyclesResponse } from './types';
 
 async function fetchCycle(cycleId: string): Promise<GetCyclesResponse[number] | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/cycles/${cycleId}`, {
+    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/cycles/${cycleId}`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',

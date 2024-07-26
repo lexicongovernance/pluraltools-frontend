@@ -3,7 +3,7 @@ import { GetRegistrationsResponseType } from './types';
 async function fetchRegistrations(eventId: string): Promise<GetRegistrationsResponseType | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/events/${eventId}/registrations`,
+      `${process.env.VITE_SERVER_URL}/api/events/${eventId}/registrations`,
       {
         credentials: 'include',
         headers: {

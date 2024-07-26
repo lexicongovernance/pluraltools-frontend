@@ -1,8 +1,8 @@
-import { GetUserOptionsResponse } from './types/UserOptionType';
+import { GetUserOptionsResponse } from './types/UserOptions';
 
 async function fetchUserOptions(userId: string): Promise<GetUserOptionsResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/users/${userId}/options`, {
+    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/users/${userId}/options`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',

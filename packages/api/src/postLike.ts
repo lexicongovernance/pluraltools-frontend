@@ -3,7 +3,7 @@ import { PostLikeRequest, PostLikeResponse } from './types';
 async function postLike({ commentId }: PostLikeRequest): Promise<PostLikeResponse | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/comments/${commentId}/likes`,
+      `${process.env.VITE_SERVER_URL}/api/comments/${commentId}/likes`,
       {
         method: 'POST',
         credentials: 'include',

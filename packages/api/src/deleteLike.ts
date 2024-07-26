@@ -3,7 +3,7 @@ import { DeleteLikeRequest, DeleteLikeResponse } from './types';
 async function deleteLike({ commentId }: DeleteLikeRequest): Promise<DeleteLikeResponse | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/comments/${commentId}/likes`,
+      `${process.env.VITE_SERVER_URL}/api/comments/${commentId}/likes`,
       {
         method: 'DELETE',
         credentials: 'include',

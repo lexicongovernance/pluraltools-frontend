@@ -6,7 +6,7 @@ async function postRegistration({
   body: PostRegistrationRequest;
 }): Promise<PostRegistrationResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/registrations`, {
+    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/registrations`, {
       method: 'POST',
       credentials: 'include',
       headers: {

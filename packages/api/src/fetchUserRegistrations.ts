@@ -5,7 +5,7 @@ async function fetchUserRegistrations(
 ): Promise<GetRegistrationsResponseType | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/users/${userId}/registrations`,
+      `${process.env.VITE_SERVER_URL}/api/users/${userId}/registrations`,
       {
         credentials: 'include',
         headers: {

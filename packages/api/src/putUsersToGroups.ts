@@ -6,7 +6,7 @@ async function postUsersToGroups({
 }: PutUsersToGroupsRequest): Promise<PostUsersToGroupsResponse | { errors: string[] } | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/users-to-groups/${userToGroupId}`,
+      `${process.env.VITE_SERVER_URL}/api/users-to-groups/${userToGroupId}`,
       {
         method: 'PUT',
         credentials: 'include',

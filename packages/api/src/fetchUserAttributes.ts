@@ -3,7 +3,7 @@ import { GetUserAttributesResponse } from './types';
 async function fetchUserAttributes(userId: string): Promise<GetUserAttributesResponse | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/users/${userId}/attributes`,
+      `${process.env.VITE_SERVER_URL}/api/users/${userId}/attributes`,
       {
         credentials: 'include',
         headers: {

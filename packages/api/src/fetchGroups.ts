@@ -7,7 +7,7 @@ async function fetchGroups({
 }): Promise<GetGroupsResponse[] | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/group-categories/${groupCategoryId}/groups`,
+      `${process.env.VITE_SERVER_URL}/api/group-categories/${groupCategoryId}/groups`,
       {
         credentials: 'include',
         headers: {

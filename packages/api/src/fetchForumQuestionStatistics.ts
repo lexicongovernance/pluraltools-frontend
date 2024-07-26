@@ -5,7 +5,7 @@ async function fetchForumQuestionStatistics(
 ): Promise<GetForumQuestionStatisticsResponse | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/forum-questions/${questionId}/statistics`,
+      `${process.env.VITE_SERVER_URL}/api/forum-questions/${questionId}/statistics`,
       {
         credentials: 'include',
         headers: {

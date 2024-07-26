@@ -3,7 +3,7 @@ import { GetOptionUsersResponse } from './types';
 async function fetchOptionUsers(optionId: string): Promise<GetOptionUsersResponse | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/options/${optionId}/users`,
+      `${process.env.VITE_SERVER_URL}/api/options/${optionId}/users`,
       {
         credentials: 'include',
         headers: {

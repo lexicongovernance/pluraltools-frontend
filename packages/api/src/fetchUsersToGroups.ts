@@ -3,7 +3,7 @@ import { GetUsersToGroupsResponse } from './types';
 async function fetchUsersToGroups(userId: string): Promise<GetUsersToGroupsResponse | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/users/${userId}/users-to-groups`,
+      `${process.env.VITE_SERVER_URL}/api/users/${userId}/users-to-groups`,
       {
         credentials: 'include',
         headers: {

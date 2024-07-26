@@ -10,7 +10,7 @@ async function updateUserData({
   username,
 }: PutUserRequest): Promise<{ data: GetUserResponse } | { errors: string[] } | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/users/${userId}`, {
+    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/users/${userId}`, {
       method: 'PUT',
       credentials: 'include',
       headers: {

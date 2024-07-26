@@ -2,7 +2,7 @@ import { GetAlertsResponse } from './types';
 
 async function fetchAlerts(): Promise<GetAlertsResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/alerts`, {
+    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/alerts`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',

@@ -6,7 +6,7 @@ async function postVerify(body: {
   uuid: string;
 }): Promise<GetUserResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/auth/zupass/verify`, {
+    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/auth/zupass/verify`, {
       method: 'POST',
       credentials: 'include',
       headers: {

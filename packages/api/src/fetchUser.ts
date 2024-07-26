@@ -2,7 +2,7 @@ import { GetUserResponse } from './types';
 
 async function fetchUserData(): Promise<GetUserResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/users`, {
+    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/users`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',

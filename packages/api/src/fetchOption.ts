@@ -2,7 +2,7 @@ import { GetQuestionOptionResponse } from './types';
 
 async function fetchOption(optionId: string): Promise<GetQuestionOptionResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/options/${optionId}`, {
+    const response = await fetch(`${process.env.VITE_SERVER_URL}/api/options/${optionId}`, {
       credentials: 'include',
       headers: {
         'Content-type': 'application/json',
