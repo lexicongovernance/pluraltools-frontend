@@ -300,8 +300,8 @@ function Cycle() {
   return (
     <>
       <Onboarding steps={cycleSteps} type="cycle" />
-      <FlexColumn $gap="2rem">
-        <FlexColumn className="welcome plurality expand">
+      <FlexColumn $gap="2rem" className="welcome plurality">
+        <FlexColumn>
           <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
           <Title>{currentCycle?.title}</Title>
           <Body>{voteInfo}</Body>

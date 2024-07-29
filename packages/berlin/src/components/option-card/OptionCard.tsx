@@ -82,7 +82,7 @@ function OptionCard({
   }, [optionUsers, option.user?.username]);
 
   return (
-    <Card $expanded={expanded}>
+    <Card $expanded={expanded} className="expand">
       <FlexColumn>
         <Container>
           <Proposal>
