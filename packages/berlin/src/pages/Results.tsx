@@ -1,18 +1,23 @@
-import { fetchCycle, fetchQuestionFunding, fetchQuestionStatistics } from 'api';
-import { FlexColumn } from '../components/containers/FlexColumn.styled';
-import { Subtitle } from '../components/typography/Subtitle.styled';
+// React and third party libraries
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+
+// API
+import { fetchCycle, fetchQuestionFunding, fetchQuestionStatistics } from 'api';
+
+// Components
+import { Column } from '../components/tables/results-table/ResultsTable.styled';
+import { FINAL_QUESTION_TITLE } from '../utils/constants';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
+import { resultsSteps } from '@/components/onboarding/Steps';
+import { Subtitle } from '../components/typography/Subtitle.styled';
 import BackButton from '../components/back-button';
+import Onboarding from '@/components/onboarding';
 import ResultsColumns from '../components/columns/results-columns';
 import ResultsTable from '../components/tables/results-table';
-import StatsTable from '../components/tables/stats-table';
 import StatsColumns from '../components/columns/stats-columns';
-import { FINAL_QUESTION_TITLE } from '../utils/constants';
-import { Column } from '../components/tables/results-table/ResultsTable.styled';
-import Onboarding from '@/components/onboarding';
-import { resultsSteps } from '@/components/onboarding/Steps';
+import StatsTable from '../components/tables/stats-table';
 
 function Results() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);

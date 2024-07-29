@@ -303,7 +303,7 @@ function Cycle() {
       <FlexColumn $gap="2rem">
         <FlexColumn className="welcome plurality expand">
           <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
-          <Title>{currentCycle?.questionTitle}</Title>
+          <Title>{currentCycle?.title}</Title>
           <Body>{voteInfo}</Body>
           <Body>
             You have <Bold>{availableHearts}</Bold> hearts left to give away:
@@ -328,7 +328,7 @@ function Cycle() {
                   key={option.id}
                   option={option}
                   numOfVotes={numOfVotes}
-                  showFundingRequest={currentCycle.questionTitle === FINAL_QUESTION_TITLE}
+                  showFundingRequest={currentCycle.title === FINAL_QUESTION_TITLE}
                   showScore={currentCycle.showScore}
                   onVote={() => handleVoteWrapper(option.id)}
                   onUnVote={() => handleUnVoteWrapper(option.id)}
