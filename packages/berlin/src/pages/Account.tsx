@@ -19,10 +19,13 @@ import { Body } from '../components/typography/Body.styled';
 import { useQueries, useQuery } from '@tanstack/react-query';
 import Link from '../components/link';
 import { Underline } from '../components/typography/Underline.styled';
+import { useNavigate } from 'react-router-dom';
 
 function Account() {
-  const { user, isLoading: userIsLoading } = useUser();
-  const [tab, setTab] = useState<'view' | 'edit'>('view');
+  const { user: initialUser, isLoading: userIsLoading } = useUser();
+  const isFirstLogin = !initialUser?.username;
+  const [tab, setTab] = useState<'view' | 'edit'>(isFirstLogin ? 'edit' : 'view');
+  const navigate = useNavigate();
 
   if (userIsLoading) {
     return <Title>Loading...</Title>;
@@ -31,20 +34,24 @@ function Account() {
   const tabs = {
     edit: (
       <AccountForm
-        user={user}
+        user={initialUser}
         initialUser={{
-          email: user?.email ?? '',
-          firstName: user?.firstName ?? '',
-          lastName: user?.lastName ?? '',
-          username: user?.username ?? '',
+          email: initialUser?.email ?? '',
+          firstName: initialUser?.firstName ?? '',
+          lastName: initialUser?.lastName ?? '',
+          username: initialUser?.username ?? '',
         }}
-        title="Edit Account"
+        title={isFirstLogin ? 'Complete Account' : 'Edit Account'}
         afterSubmit={() => {
+          if (isFirstLogin) {
+            navigate('/events');
+          }
+
           setTab('view');
         }}
       />
     ),
-    view: <AccountHub user={user} />,
+    view: <AccountHub user={initialUser} />,
   };
 
   return (

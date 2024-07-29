@@ -50,6 +50,10 @@ async function redirectAfterLogin(queryClient: QueryClient) {
     return null;
   }
 
+  if (!user.username) {
+    return redirect('/account');
+  }
+
   const events = await queryClient.fetchQuery({
     queryKey: ['events'],
     queryFn: () => fetchEvents({ serverUrl: import.meta.env.VITE_SERVER_URL }),
