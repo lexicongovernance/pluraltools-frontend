@@ -1,17 +1,23 @@
-import { useAppStore } from '@/store';
-import { useQuery } from '@tanstack/react-query';
-import { fetchCycle, fetchQuestionFunding, fetchQuestionStatistics } from 'api';
-import { useState } from 'react';
+// React and third party libraries
 import { useParams } from 'react-router-dom';
-import BackButton from '../components/back-button';
-import ResultsColumns from '../components/columns/results-columns';
-import StatsColumns from '../components/columns/stats-columns';
-import { FlexColumn } from '../components/containers/FlexColumn.styled';
-import ResultsTable from '../components/tables/results-table';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+
+// API
+import { fetchCycle, fetchQuestionFunding, fetchQuestionStatistics } from 'api';
+
+// Components
 import { Column } from '../components/tables/results-table/ResultsTable.styled';
-import StatsTable from '../components/tables/stats-table';
-import { Subtitle } from '../components/typography/Subtitle.styled';
 import { FINAL_QUESTION_TITLE } from '../utils/constants';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
+import { resultsSteps } from '@/components/onboarding/Steps';
+import { Subtitle } from '../components/typography/Subtitle.styled';
+import BackButton from '../components/back-button';
+import Onboarding from '@/components/onboarding';
+import ResultsColumns from '../components/columns/results-columns';
+import ResultsTable from '../components/tables/results-table';
+import StatsColumns from '../components/columns/stats-columns';
+import StatsTable from '../components/tables/stats-table';
 
 function Results() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -44,7 +50,7 @@ function Results() {
         questionId: cycle?.questions[0].id || '',
         serverUrl: import.meta.env.VITE_SERVER_URL,
       }),
-    enabled: !!cycle?.id && cycle?.questions?.[0].questionTitle === FINAL_QUESTION_TITLE,
+    enabled: !!cycle?.id && cycle?.questions?.[0].title === FINAL_QUESTION_TITLE,
   });
 
   const overallStatistics = [
@@ -80,30 +86,33 @@ function Results() {
     .sort((a, b) => parseFloat(b.pluralityScore) - parseFloat(a.pluralityScore));
 
   return (
-    <FlexColumn $gap="2rem">
-      <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
-      <Subtitle>Results for: {cycle?.questions?.[0].questionTitle}</Subtitle>
-      <Column>
-        <ResultsColumns $showFunding={!!funding} />
-        {optionStatsArray.map((option, index) => (
-          <ResultsTable
-            key={option.id}
-            $expanded={expandedIndex === index}
-            option={option}
-            cycleId={cycleId}
-            eventId={eventId}
-            onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
-          />
-        ))}
-      </Column>
-      <Subtitle>Overall Statistics</Subtitle>
-      <FlexColumn $gap="0">
-        <StatsColumns />
-        {overallStatistics.map((stat) => (
-          <StatsTable key={stat.id} title={stat.title} number={stat.data} />
-        ))}
+    <>
+      <Onboarding steps={resultsSteps} type="results" />
+      <FlexColumn $gap="2rem" className="welcome icons expand">
+        <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
+        <Subtitle>Results for: {cycle?.questions?.[0].title}</Subtitle>
+        <Column>
+          <ResultsColumns $showFunding={!!funding} />
+          {optionStatsArray.map((option, index) => (
+            <ResultsTable
+              key={option.id}
+              $expanded={expandedIndex === index}
+              option={option}
+              cycleId={cycleId}
+              eventId={eventId}
+              onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
+            />
+          ))}
+        </Column>
+        <Subtitle>Overall Statistics</Subtitle>
+        <FlexColumn $gap="0">
+          <StatsColumns />
+          {overallStatistics.map((stat) => (
+            <StatsTable key={stat.id} title={stat.title} number={stat.data} />
+          ))}
+        </FlexColumn>
       </FlexColumn>
-    </FlexColumn>
+    </>
   );
 }
 

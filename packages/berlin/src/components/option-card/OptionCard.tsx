@@ -82,7 +82,7 @@ function OptionCard({
   }, [optionUsers, option.user?.username]);
 
   return (
-    <Card $expanded={expanded}>
+    <Card $expanded={expanded} className="expand">
       <FlexColumn>
         <Container>
           <Proposal>
@@ -95,7 +95,7 @@ function OptionCard({
                 $flipVertical={expanded}
               />
             </ArrowDownIcon>
-            <Body>{option.optionTitle}</Body>
+            <Body>{option.title}</Body>
           </Proposal>
           <Author>
             <Field>Lead:</Field>
@@ -109,7 +109,7 @@ function OptionCard({
             </Body>
           </Affiliation>
           <Votes $showScore={showScore}>
-            <VotesIcon $gap="-4px">
+            <VotesIcon $gap="-4px" className="votes">
               <IconButton
                 $padding={0}
                 $color="secondary"

@@ -5,10 +5,11 @@ import { Tab } from './TabsHeader.styled';
 type TabsHeaderProps = {
   tabNames: string[];
   initialTab?: string;
+  className?: string;
   onTabChange?: (tab: string) => void;
 };
 
-export function TabsHeader({ tabNames, initialTab, onTabChange }: TabsHeaderProps) {
+export function TabsHeader({ tabNames, initialTab, className, onTabChange }: TabsHeaderProps) {
   const [activeTab, setActiveTab] = useState<string>(initialTab || tabNames[0]);
 
   const handleTabClick = (tab: string) => {
@@ -19,7 +20,7 @@ export function TabsHeader({ tabNames, initialTab, onTabChange }: TabsHeaderProp
   };
 
   return (
-    <div className="flex gap-2">
+    <div className={`flex gap-2 ${className}`}>
       {tabNames.map((tabName, index) => (
         <Fragment key={tabName}>
           <Tab

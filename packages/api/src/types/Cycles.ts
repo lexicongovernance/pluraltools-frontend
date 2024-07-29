@@ -13,13 +13,13 @@ export type GetCycleResponse = {
     updatedAt: string;
     questionSubTitle: string | null;
     cycleId: string;
-    questionTitle: string;
+    title: string;
     options: {
       id: string;
       createdAt: string;
       updatedAt: string;
       questionId: string;
-      optionTitle: string;
+      title: string;
       optionSubTitle?: string;
       accepted: boolean;
       voteScore?: number;
