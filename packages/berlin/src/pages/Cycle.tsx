@@ -25,15 +25,17 @@ import { useAppStore } from '../store';
 // Components
 import { Body } from '../components/typography/Body.styled';
 import { Bold } from '../components/typography/Bold.styled';
+import { cycleSteps } from '@/components/onboarding/Steps';
+import { FINAL_QUESTION_TITLE, INITIAL_HEARTS } from '../utils/constants';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
+import { Heart } from 'lucide-react';
 import { Title } from '../components/typography/Title.styled';
 import BackButton from '../components/back-button';
 import Button from '../components/button';
 import CycleColumns from '../components/columns/cycle-columns';
+import Onboarding from '@/components/onboarding';
 import OptionCard from '../components/option-card';
-import { FINAL_QUESTION_TITLE, INITIAL_HEARTS } from '../utils/constants';
-import { Heart } from 'lucide-react';
 
 type Order = 'asc' | 'desc';
 type LocalUserVotes = { optionId: string; numOfVotes: number }[];
@@ -297,10 +299,11 @@ function Cycle() {
 
   return (
     <>
-      <FlexColumn $gap="2rem">
+      <Onboarding steps={cycleSteps} type="cycle" />
+      <FlexColumn $gap="2rem" className="welcome plurality">
         <FlexColumn>
           <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
-          <Title>{currentCycle?.questionTitle}</Title>
+          <Title>{currentCycle?.title}</Title>
           <Body>{voteInfo}</Body>
           <Body>
             You have <Bold>{availableHearts}</Bold> hearts left to give away:
@@ -310,7 +313,7 @@ function Cycle() {
               <Heart key={id} fill={id < availableHearts ? '#ff0000' : 'none'} />
             ))}
           </FlexRow>
-          <Button onClick={handleSaveVotesWrapper} disabled={!votesAreDifferent}>
+          <Button onClick={handleSaveVotesWrapper} disabled={!votesAreDifferent} className="save">
             Save all votes
           </Button>
         </FlexColumn>
@@ -325,7 +328,7 @@ function Cycle() {
                   key={option.id}
                   option={option}
                   numOfVotes={numOfVotes}
-                  showFundingRequest={currentCycle.questionTitle === FINAL_QUESTION_TITLE}
+                  showFundingRequest={currentCycle.title === FINAL_QUESTION_TITLE}
                   showScore={currentCycle.showScore}
                   onVote={() => handleVoteWrapper(option.id)}
                   onUnVote={() => handleUnVoteWrapper(option.id)}

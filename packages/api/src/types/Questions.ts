@@ -6,7 +6,7 @@ export type GetQuestionStatisticsResponse = {
   optionStats: Record<
     string,
     {
-      optionTitle: string;
+      title: string;
       pluralityScore: string;
       distinctUsers: string;
       allocatedHearts: string;

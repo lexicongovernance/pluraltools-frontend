@@ -21,7 +21,7 @@ function CycleColumns({ onColumnClick, showScore }: CycleColumnsProps) {
       <Affiliation onClick={() => onColumnClick('affiliation')}>
         <Body>Affiliation</Body>
       </Affiliation>
-      <Hearts onClick={() => onColumnClick('numOfVotes')}>
+      <Hearts onClick={() => onColumnClick('numOfVotes')} className="hearts">
         <Icon>
           <Heart fill="#ff0000" />
         </Icon>
