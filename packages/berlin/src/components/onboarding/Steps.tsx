@@ -132,13 +132,14 @@ export const cycleSteps = [
 
 export const resultsSteps = [
   createStep({
-    target: 'event',
+    target: 'welcome',
     placement: 'center',
     title: 'Results Page',
     children: <Body>See community decisions.</Body>,
   }),
   createStep({
-    target: 'tabs',
+    target: 'icons',
+    placement: 'center',
     title: 'Icons',
     children: (
       <>
@@ -168,7 +169,7 @@ export const resultsSteps = [
     ),
   }),
   createStep({
-    target: 'event',
+    target: 'expand',
     placement: 'center',
     title: 'Expand a vote item',
     children: (

@@ -95,7 +95,7 @@ function OptionCard({
                 $flipVertical={expanded}
               />
             </ArrowDownIcon>
-            <Body>{option.optionTitle}</Body>
+            <Body>{option.title}</Body>
           </Proposal>
           <Author>
             <Field>Lead:</Field>

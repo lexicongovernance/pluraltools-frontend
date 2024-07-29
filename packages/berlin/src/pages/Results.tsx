@@ -11,6 +11,8 @@ import StatsTable from '../components/tables/stats-table';
 import StatsColumns from '../components/columns/stats-columns';
 import { FINAL_QUESTION_TITLE } from '../utils/constants';
 import { Column } from '../components/tables/results-table/ResultsTable.styled';
+import Onboarding from '@/components/onboarding';
+import { resultsSteps } from '@/components/onboarding/Steps';
 
 function Results() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -43,7 +45,7 @@ function Results() {
         questionId: cycle?.questions[0].id || '',
         serverUrl: import.meta.env.VITE_SERVER_URL,
       }),
-    enabled: !!cycle?.id && cycle?.questions?.[0].questionTitle === FINAL_QUESTION_TITLE,
+    enabled: !!cycle?.id && cycle?.questions?.[0].title === FINAL_QUESTION_TITLE,
   });
 
   const overallStatistics = [
@@ -79,30 +81,33 @@ function Results() {
     .sort((a, b) => parseFloat(b.pluralityScore) - parseFloat(a.pluralityScore));
 
   return (
-    <FlexColumn $gap="2rem">
-      <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
-      <Subtitle>Results for: {cycle?.questions?.[0].questionTitle}</Subtitle>
-      <Column>
-        <ResultsColumns $showFunding={!!funding} />
-        {optionStatsArray.map((option, index) => (
-          <ResultsTable
-            key={option.id}
-            $expanded={expandedIndex === index}
-            option={option}
-            cycleId={cycleId}
-            eventId={eventId}
-            onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
-          />
-        ))}
-      </Column>
-      <Subtitle>Overall Statistics</Subtitle>
-      <FlexColumn $gap="0">
-        <StatsColumns />
-        {overallStatistics.map((stat) => (
-          <StatsTable key={stat.id} title={stat.title} number={stat.data} />
-        ))}
+    <>
+      <Onboarding steps={resultsSteps} type="results" />
+      <FlexColumn $gap="2rem" className="welcome icons expand">
+        <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
+        <Subtitle>Results for: {cycle?.questions?.[0].title}</Subtitle>
+        <Column>
+          <ResultsColumns $showFunding={!!funding} />
+          {optionStatsArray.map((option, index) => (
+            <ResultsTable
+              key={option.id}
+              $expanded={expandedIndex === index}
+              option={option}
+              cycleId={cycleId}
+              eventId={eventId}
+              onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
+            />
+          ))}
+        </Column>
+        <Subtitle>Overall Statistics</Subtitle>
+        <FlexColumn $gap="0">
+          <StatsColumns />
+          {overallStatistics.map((stat) => (
+            <StatsTable key={stat.id} title={stat.title} number={stat.data} />
+          ))}
+        </FlexColumn>
       </FlexColumn>
-    </FlexColumn>
+    </>
   );
 }
 

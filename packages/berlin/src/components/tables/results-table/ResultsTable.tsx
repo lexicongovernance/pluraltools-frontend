@@ -1,8 +1,7 @@
 // React and third-party libraries
 import { useQuery } from '@tanstack/react-query';
-import { Heart, MessageSquareText, Radical } from 'lucide-react';
+import { Heart, Radical } from 'lucide-react';
 import { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Markdown from 'react-markdown';
 
 // API
@@ -27,7 +26,7 @@ type ResultsTableProps = {
   eventId?: string;
   cycleId?: string;
   option: {
-    optionTitle: string;
+    title: string;
     pluralityScore: string;
     distinctUsers: string;
     allocatedHearts: string;
@@ -41,9 +40,8 @@ type ResultsTableProps = {
   onClick: () => void;
 };
 
-function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsTableProps) {
+function ResultsTable({ $expanded, option, onClick, eventId }: ResultsTableProps) {
   const theme = useAppStore((state) => state.theme);
-  const navigate = useNavigate();
   const formattedQuadraticScore = useMemo(() => {
     const score = parseFloat(option.quadraticScore);
     return score % 1 === 0 ? score.toFixed(0) : score.toFixed(3);
@@ -97,10 +95,6 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
     )
     .map((user) => `${user.firstName} ${user.lastName}`);
 
-  const handleCommentsClick = () => {
-    navigate(`/events/${eventId}/cycles/${cycleId}/options/${option.id}`);
-  };
-
   return (
     <Card $expanded={$expanded} $showFunding={option.allocatedFunding !== null} $rowgap="2rem">
       <TitleContainer>
@@ -111,7 +105,7 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
           $flipVertical={$expanded}
           onClick={onClick}
         />
-        <Body>{option.optionTitle}</Body>
+        <Body>{option.title}</Body>
       </TitleContainer>
       <FlexRow>
         <Icon>
@@ -154,7 +148,6 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
           />
         </Icon>
         <Body>{option.allocatedFunding} ARB</Body>
-
         <IconButton
           $padding={0}
           $color="secondary"
@@ -198,11 +191,6 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
         </Body>
         <Body>
           <Bold>Voter affiliations:</Bold> {option.listOfGroupNames.join(', ')}
-        </Body>
-        <Body>
-          <Icon>
-            <MessageSquareText onClick={handleCommentsClick} />
-          </Icon>
         </Body>
       </FlexColumn>
     </Card>
