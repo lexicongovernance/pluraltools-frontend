@@ -296,48 +296,50 @@ function Cycle() {
   };
 
   return (
-    <FlexColumn $gap="2rem">
-      <FlexColumn>
-        <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
-        <Title>{currentCycle?.questionTitle}</Title>
-        <Body>{voteInfo}</Body>
-        <Body>
-          You have <Bold>{availableHearts}</Bold> hearts left to give away:
-        </Body>
-        <FlexRow $gap="0.25rem" $wrap>
-          {Array.from({ length: INITIAL_HEARTS }).map((_, id) => (
-            <Heart key={id} fill={id < availableHearts ? '#ff0000' : 'none'} />
-          ))}
-        </FlexRow>
-        <Button onClick={handleSaveVotesWrapper} disabled={!votesAreDifferent}>
-          Save all votes
-        </Button>
-      </FlexColumn>
-      {currentCycle?.options.length ? (
-        <FlexColumn $gap="0">
-          <CycleColumns onColumnClick={handleColumnClick} showScore={currentCycle.showScore} />
-          {sortedOptions.options.map((option) => {
-            const userVote = localUserVotes.find((vote) => vote.optionId === option.id);
-            const numOfVotes = userVote ? userVote.numOfVotes : 0;
-            return (
-              <OptionCard
-                key={option.id}
-                option={option}
-                numOfVotes={numOfVotes}
-                showFundingRequest={currentCycle.questionTitle === FINAL_QUESTION_TITLE}
-                showScore={currentCycle.showScore}
-                onVote={() => handleVoteWrapper(option.id)}
-                onUnVote={() => handleUnVoteWrapper(option.id)}
-              />
-            );
-          })}
+    <>
+      <FlexColumn $gap="2rem">
+        <FlexColumn>
+          <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
+          <Title>{currentCycle?.questionTitle}</Title>
+          <Body>{voteInfo}</Body>
+          <Body>
+            You have <Bold>{availableHearts}</Bold> hearts left to give away:
+          </Body>
+          <FlexRow $gap="0.25rem" $wrap>
+            {Array.from({ length: INITIAL_HEARTS }).map((_, id) => (
+              <Heart key={id} fill={id < availableHearts ? '#ff0000' : 'none'} />
+            ))}
+          </FlexRow>
+          <Button onClick={handleSaveVotesWrapper} disabled={!votesAreDifferent}>
+            Save all votes
+          </Button>
         </FlexColumn>
-      ) : (
-        <Body>
-          <i>No options to show...</i>
-        </Body>
-      )}
-    </FlexColumn>
+        {currentCycle?.options.length ? (
+          <FlexColumn $gap="0">
+            <CycleColumns onColumnClick={handleColumnClick} showScore={currentCycle.showScore} />
+            {sortedOptions.options.map((option) => {
+              const userVote = localUserVotes.find((vote) => vote.optionId === option.id);
+              const numOfVotes = userVote ? userVote.numOfVotes : 0;
+              return (
+                <OptionCard
+                  key={option.id}
+                  option={option}
+                  numOfVotes={numOfVotes}
+                  showFundingRequest={currentCycle.questionTitle === FINAL_QUESTION_TITLE}
+                  showScore={currentCycle.showScore}
+                  onVote={() => handleVoteWrapper(option.id)}
+                  onUnVote={() => handleUnVoteWrapper(option.id)}
+                />
+              );
+            })}
+          </FlexColumn>
+        ) : (
+          <Body>
+            <i>No options to show...</i>
+          </Body>
+        )}
+      </FlexColumn>
+    </>
   );
 }
 

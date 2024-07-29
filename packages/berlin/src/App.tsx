@@ -18,7 +18,6 @@ import Event from './pages/Event.tsx';
 import Events from './pages/Events.tsx';
 import Holding from './pages/Holding';
 import Landing from './pages/Landing';
-import Onboarding from './pages/Onboarding';
 import PassportPopupRedirect from './pages/Popup';
 import PublicGroupRegistration from './pages/PublicGroupRegistration.tsx';
 import Register from './pages/Register';
@@ -70,12 +69,6 @@ async function redirectOnLandingLoader(queryClient: QueryClient) {
 
   if (!user) {
     return null;
-  }
-
-  const onboardingState = useAppStore.getState().onboardingStatus;
-
-  if (onboardingState === 'INCOMPLETE') {
-    return redirect('/onboarding');
   }
 
   const events = await queryClient.fetchQuery({
@@ -202,10 +195,6 @@ const router = (queryClient: QueryClient) =>
         {
           loader: () => redirectToLandingLoader(queryClient),
           children: [
-            {
-              path: '/onboarding',
-              Component: Onboarding,
-            },
             {
               path: '/data-policy',
               Component: DataPolicy,

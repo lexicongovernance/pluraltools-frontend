@@ -1,16 +1,17 @@
-import { fetchCycle, fetchQuestionFunding, fetchQuestionStatistics } from 'api';
-import { FlexColumn } from '../components/containers/FlexColumn.styled';
-import { Subtitle } from '../components/typography/Subtitle.styled';
-import { useParams } from 'react-router-dom';
+import { useAppStore } from '@/store';
 import { useQuery } from '@tanstack/react-query';
+import { fetchCycle, fetchQuestionFunding, fetchQuestionStatistics } from 'api';
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import BackButton from '../components/back-button';
 import ResultsColumns from '../components/columns/results-columns';
-import ResultsTable from '../components/tables/results-table';
-import StatsTable from '../components/tables/stats-table';
 import StatsColumns from '../components/columns/stats-columns';
-import { FINAL_QUESTION_TITLE } from '../utils/constants';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
+import ResultsTable from '../components/tables/results-table';
 import { Column } from '../components/tables/results-table/ResultsTable.styled';
+import StatsTable from '../components/tables/stats-table';
+import { Subtitle } from '../components/typography/Subtitle.styled';
+import { FINAL_QUESTION_TITLE } from '../utils/constants';
 
 function Results() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
