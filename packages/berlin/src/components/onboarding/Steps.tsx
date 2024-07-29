@@ -1,12 +1,13 @@
 import { Body } from '../typography/Body.styled';
 import { FlexColumn } from '../containers/FlexColumn.styled';
 import { FlexRow } from '../containers/FlexRow.styled';
-import { Heart } from 'lucide-react';
+import { Heart, Radical } from 'lucide-react';
 import { OnboardingCard } from './Onboarding';
 import { ReactNode } from 'react';
 import { Subtitle } from '../typography/Subtitle.styled';
 import Icon from '../icon';
 import IconButton from '../icon-button';
+import { useAppStore } from '@/store';
 
 export const eventSteps = [
   createStep({
@@ -49,14 +50,17 @@ export const cycleSteps = [
           <IconButton
             $padding={0}
             $color="secondary"
-            icon={{ src: `/icons/upvote-${`dark`}.svg`, alt: 'Upvote arrow' }}
+            icon={{ src: `/icons/upvote-${useAppStore.getState().theme}.svg`, alt: 'Upvote arrow' }}
             $width={16}
             $height={16}
           />
           <IconButton
             $padding={0}
             $color="secondary"
-            icon={{ src: `/icons/downvote-${`dark`}.svg`, alt: 'Downvote arrow' }}
+            icon={{
+              src: `/icons/downvote-${useAppStore.getState().theme}.svg`,
+              alt: 'Downvote arrow',
+            }}
             $width={16}
             $height={16}
           />
@@ -113,12 +117,78 @@ export const cycleSteps = [
         <IconButton
           $padding={0}
           $color="secondary"
-          icon={{ src: `/icons/arrow-down-${`dark`}.svg`, alt: 'Arrow down icon' }}
+          icon={{
+            src: `/icons/arrow-down-${useAppStore.getState().theme}.svg`,
+            alt: 'Arrow down icon',
+          }}
           $width={24}
           $height={24}
         />
         <Body>Click to view the vote item description and other useful information.</Body>
       </FlexRow>
+    ),
+  }),
+];
+
+export const resultsSteps = [
+  createStep({
+    target: 'event',
+    placement: 'center',
+    title: 'Results Page',
+    children: <Body>See community decisions.</Body>,
+  }),
+  createStep({
+    target: 'tabs',
+    title: 'Icons',
+    children: (
+      <>
+        <FlexRow>
+          <Icon>
+            <Radical />
+          </Icon>
+          <Body>Quadratic score</Body>
+        </FlexRow>
+        <FlexRow>
+          <Icon>
+            <Heart fill="#ff0000" />
+          </Icon>
+          <Body>Hearts received by a vote item</Body>
+        </FlexRow>
+        <FlexRow>
+          <IconButton
+            $padding={0}
+            $color="secondary"
+            icon={{ src: `/icons/plurality-score.svg`, alt: 'Plurality icon' }}
+            $width={24}
+            $height={24}
+          />
+          <Body>Plurality score</Body>
+        </FlexRow>
+      </>
+    ),
+  }),
+  createStep({
+    target: 'event',
+    placement: 'center',
+    title: 'Expand a vote item',
+    children: (
+      <>
+        <FlexRow>
+          <IconButton
+            $padding={0}
+            $color="secondary"
+            icon={{
+              src: `/icons/arrow-down-${useAppStore.getState().theme}.svg`,
+              alt: 'Arrow down icon',
+            }}
+            $width={24}
+            $height={24}
+          />
+          <Body>
+            Clicking this icon will display the vote item description and other useful information.
+          </Body>
+        </FlexRow>
+      </>
     ),
   }),
 ];
