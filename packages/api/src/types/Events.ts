@@ -7,6 +7,7 @@ export type GetEventResponse = {
   createdAt: string;
   updatedAt: string;
   description: string | null;
+  fields: unknown;
 };
 
 export type GetEventsResponse = GetEventResponse[];

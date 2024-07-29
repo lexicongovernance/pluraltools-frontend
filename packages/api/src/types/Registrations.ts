@@ -7,6 +7,7 @@ export type GetRegistrationResponseType = {
   groupId: string | null;
   eventId?: string | undefined;
   createdAt: string;
+  data: unknown;
   updatedAt: string;
   event?: {
     id: string;

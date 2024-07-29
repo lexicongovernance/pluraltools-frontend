@@ -13,33 +13,32 @@ export type PostRegistrationRequest = {
   eventId: string;
   groupId: string | null;
   status: RegistrationStatus;
-  registrationData: {
-    registrationFieldId: string;
-    value: string;
-  }[];
+  data: Record<
+    string,
+    {
+      value: string | number | boolean | string[] | null;
+      type: 'TEXT' | 'TEXTAREA' | 'SELECT' | 'CHECKBOX' | 'MULTI_SELECT' | 'NUMBER';
+      fieldId: string;
+    }
+  >;
 };
 
 export type PutRegistrationRequest = {
   eventId: string;
   groupId: string | null;
   status: RegistrationStatus;
-  registrationData: {
-    registrationFieldId: string;
-    value: string;
-  }[];
+  data: Record<
+    string,
+    {
+      value: string | number | boolean | string[] | null;
+      type: 'TEXT' | 'TEXTAREA' | 'SELECT' | 'CHECKBOX' | 'MULTI_SELECT' | 'NUMBER';
+      fieldId: string;
+    }
+  >;
 };
 
 export type PostRegistrationResponse = {
-  registrationData:
-    | {
-        id: string;
-        createdAt: string;
-        updatedAt: string;
-        registrationId: string;
-        registrationFieldId: string;
-        value: string;
-      }[]
-    | null;
+  data: unknown | null;
   id: string;
   createdAt: string;
   updatedAt: string;
@@ -49,16 +48,7 @@ export type PostRegistrationResponse = {
 };
 
 export type PutRegistrationResponse = {
-  registrationData:
-    | {
-        id: string;
-        createdAt: string;
-        updatedAt: string;
-        registrationId: string;
-        registrationFieldId: string;
-        value: string;
-      }[]
-    | null;
+  registrationData: unknown | null;
   id: string;
   createdAt: string;
   updatedAt: string;

@@ -1,7 +1,6 @@
 // React and third-party libraries
-import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useMemo, useState } from 'react';
-import ContentLoader from 'react-content-loader';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMemo, useState } from 'react';
 import { UseFormReturn, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -16,16 +15,11 @@ import {
   fetchEvent,
   fetchEventGroupCategories,
   fetchGroups,
-  fetchRegistrationData,
-  fetchRegistrationFields,
   fetchRegistrations,
   fetchUsersToGroups,
   postRegistration,
   postUsersToGroups,
   putRegistration,
-  type GetRegistrationDataResponse,
-  type GetRegistrationFieldsResponse,
-  type GetRegistrationResponseType,
   type GetUserResponse,
 } from 'api';
 
@@ -33,22 +27,21 @@ import {
 import useUser from '../hooks/useUser';
 
 // Components
+import { dataSchema, fieldsSchema } from '@/utils/form-validation';
+import { z } from 'zod';
 import Button from '../components/button';
 import { Carousel } from '../components/carousel';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { Form } from '../components/containers/Form.styled';
+import { FormInput, FormSelectInput } from '../components/form-input';
 import Select from '../components/select';
 import Label from '../components/typography/Label';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import { SafeArea } from '../layout/Layout.styled';
-import { FormInput, FormSelectInput } from '../components/form-input';
 
 function Register() {
   const { user, isLoading } = useUser();
   const { eventId } = useParams();
-  const [selectedRegistrationFormKey, setSelectedRegistrationFormKey] = useState<
-    string | undefined
-  >();
 
   const { data: event } = useQuery({
     queryKey: ['event', eventId],
@@ -61,16 +54,6 @@ function Register() {
     queryKey: ['event', eventId, 'registrations'],
     queryFn: () =>
       fetchRegistrations({ eventId: eventId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
-    enabled: !!eventId,
-  });
-
-  const { data: registrationFields } = useQuery({
-    queryKey: ['event', eventId, 'registrations', 'fields'],
-    queryFn: () =>
-      fetchRegistrationFields({
-        eventId: eventId || '',
-        serverUrl: import.meta.env.VITE_SERVER_URL,
-      }),
     enabled: !!eventId,
   });
 
@@ -107,42 +90,6 @@ function Register() {
     return 0;
   }, [groupCategories, usersToGroups]);
 
-  const multipleRegistrationData = useQueries({
-    queries:
-      registrations?.map((registration) => ({
-        queryKey: ['registrations', registration.id, 'registration-data'],
-        queryFn: () =>
-          fetchRegistrationData({
-            registrationId: registration.id || '',
-            serverUrl: import.meta.env.VITE_SERVER_URL,
-          }),
-        enabled: !!registration.id,
-      })) ?? [],
-    combine: (results) => {
-      // return a map of registration id to { data, loading }
-      return results.reduce(
-        (acc, result, idx) => {
-          if (registrations && registrations[idx] && result.data) {
-            acc[registrations[idx].id || ''] = {
-              data: result.data,
-              loading: result.isLoading,
-            };
-          }
-          return acc;
-        },
-        {} as Record<
-          string,
-          { data: GetRegistrationDataResponse | null | undefined; loading: boolean }
-        >,
-      );
-    },
-  });
-
-  const onRegistrationFormCreate = (newRegistrationId: string) => {
-    // select the newly created registration form
-    setSelectedRegistrationFormKey(newRegistrationId);
-  };
-
   if (isLoading) {
     return <Subtitle>Loading...</Subtitle>;
   }
@@ -155,12 +102,7 @@ function Register() {
         usersToGroups={usersToGroups}
         user={user}
         registrations={registrations}
-        selectedRegistrationFormKey={selectedRegistrationFormKey}
-        multipleRegistrationData={multipleRegistrationData}
-        registrationFields={registrationFields}
         event={event}
-        onRegistrationFormCreate={onRegistrationFormCreate}
-        setSelectedRegistrationFormKey={setSelectedRegistrationFormKey}
       />
     </SafeArea>
   );
@@ -171,30 +113,15 @@ const CarouselWrapper = ({
   usersToGroups,
   user,
   registrations,
-  selectedRegistrationFormKey,
-  multipleRegistrationData,
-  registrationFields,
   event,
-  onRegistrationFormCreate,
-  setSelectedRegistrationFormKey,
+  defaultStep,
 }: {
   defaultStep: number;
   groupCategories: GetGroupCategoriesResponse | null | undefined;
   usersToGroups: GetUsersToGroupsResponse | null | undefined;
   user: GetUserResponse | null | undefined;
   registrations: GetRegistrationsResponseType | undefined | null;
-  selectedRegistrationFormKey: string | undefined;
-  multipleRegistrationData: Record<
-    string,
-    {
-      data: GetRegistrationDataResponse | null | undefined;
-      loading: boolean;
-    }
-  >;
-  registrationFields: GetRegistrationFieldsResponse | null | undefined;
   event: GetEventResponse | null | undefined;
-  onRegistrationFormCreate: (newRegistrationId: string) => void;
-  setSelectedRegistrationFormKey: (key: string) => void;
 }) => {
   const navigate = useNavigate();
 
@@ -263,7 +190,7 @@ const CarouselWrapper = ({
           eventId: event?.id || '',
           groupId: null,
           status: 'DRAFT',
-          registrationData: [],
+          data: {},
         },
         serverUrl: import.meta.env.VITE_SERVER_URL,
       });
@@ -273,7 +200,7 @@ const CarouselWrapper = ({
           eventId: event?.id || '',
           groupId: null,
           status: 'DRAFT',
-          registrationData: [],
+          data: {},
         },
         serverUrl: import.meta.env.VITE_SERVER_URL,
       });
@@ -282,6 +209,7 @@ const CarouselWrapper = ({
 
   return (
     <Carousel
+      initialStep={defaultStep}
       onComplete={async () => {
         // query registration to check if it is approved
         const registrations = await queryClient.fetchQuery({
@@ -323,18 +251,16 @@ const CarouselWrapper = ({
           ),
         },
         {
-          isEnabled: (registrationFields?.length ?? 0) > 0,
+          isEnabled:
+            (fieldsSchema.safeParse(event?.fields).success
+              ? Object.values(fieldsSchema.parse(event?.fields)).length
+              : 0) > 0,
           render: ({ handleStepComplete }) => (
             <RegistrationForm
               registrations={registrations}
               usersToGroups={usersToGroups}
-              selectedRegistrationFormKey={selectedRegistrationFormKey}
-              multipleRegistrationData={multipleRegistrationData}
-              registrationFields={registrationFields}
               user={user}
               event={event}
-              onRegistrationFormCreate={onRegistrationFormCreate}
-              onSelectedRegistrationFormKeyChange={setSelectedRegistrationFormKey}
               onStepComplete={handleStepComplete}
             />
           ),
@@ -342,210 +268,6 @@ const CarouselWrapper = ({
       ]}
     />
   );
-};
-
-const sortRegistrationsByCreationDate = (registrations: GetRegistrationResponseType[]) => {
-  return [
-    ...registrations.sort((a, b) => {
-      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-    }),
-  ];
-};
-
-const createRegistrationForms = ({
-  registrations,
-  usersToGroups,
-}: {
-  registrations: GetRegistrationsResponseType | undefined | null;
-  usersToGroups: GetUsersToGroupsResponse | undefined | null;
-}) => {
-  const sortedRegistrationsByCreationDate = sortRegistrationsByCreationDate(registrations || []);
-
-  const registrationForms: {
-    key: string | 'create';
-    registration?: GetRegistrationResponseType;
-    group?: GetUsersToGroupsResponse[number]['group'];
-    mode: 'edit' | 'create';
-  }[] = sortedRegistrationsByCreationDate.map((reg) => {
-    return {
-      key: reg.id || '',
-      registration: reg,
-      group: usersToGroups?.find((userToGroup) => userToGroup.group.id === reg.groupId)?.group,
-      mode: 'edit',
-    };
-  });
-
-  registrationForms.push({
-    key: 'create',
-    mode: 'create',
-  });
-
-  return registrationForms;
-};
-
-function SelectRegistrationDropdown({
-  usersToGroups,
-  selectedRegistrationFormKey,
-  registrations,
-  onSelectedRegistrationFormKeyChange,
-  multipleRegistrationData,
-  registrationFields,
-}: {
-  selectedRegistrationFormKey: string | undefined;
-  registrations: GetRegistrationsResponseType | undefined | null;
-  usersToGroups: GetUsersToGroupsResponse | undefined | null;
-  onSelectedRegistrationFormKeyChange: (key: string) => void;
-  multipleRegistrationData: Record<
-    string,
-    {
-      data: GetRegistrationDataResponse | null | undefined;
-      loading: boolean;
-    }
-  >;
-  registrationFields: GetRegistrationFieldsResponse | null | undefined;
-}) {
-  useEffect(() => {
-    // select the first registration if it exists
-    // and no registration form is selected
-    if (
-      registrations &&
-      registrations.length &&
-      registrations[0].id &&
-      !selectedRegistrationFormKey
-    ) {
-      const firstRegistrationId = sortRegistrationsByCreationDate(registrations)[0].id;
-
-      if (firstRegistrationId) {
-        onSelectedRegistrationFormKeyChange(firstRegistrationId);
-      }
-    }
-  }, [onSelectedRegistrationFormKeyChange, registrations, selectedRegistrationFormKey]);
-
-  const showRegistrationsSelect = (
-    registrations: GetRegistrationsResponseType | null | undefined,
-  ): boolean => {
-    // only show select when user has previously registered
-    return !!registrations && registrations.length > 0;
-  };
-
-  const getRegistrationTitle = ({
-    multipleRegistrationData,
-    registration,
-    registrationFields,
-  }: {
-    multipleRegistrationData: Record<
-      string,
-      {
-        data: GetRegistrationDataResponse | null | undefined;
-        loading: boolean;
-      }
-    >;
-    registration: GetRegistrationResponseType | null | undefined;
-    registrationFields: GetRegistrationFieldsResponse | null | undefined;
-  }) => {
-    const firstField = filterRegistrationFields(
-      registrationFields,
-      registration?.groupId ? 'group' : 'user',
-    )?.sort((a, b) => (a.fieldDisplayRank ?? 0) - (b.fieldDisplayRank ?? 0))[0];
-
-    if (!firstField) {
-      return '';
-    }
-
-    const registrationData = multipleRegistrationData[registration?.id || '']?.data;
-
-    if (!registrationData) {
-      return '';
-    }
-
-    return (
-      registrationData.find((data) => data.registrationFieldId === firstField.id)?.value ??
-      'Untitled'
-    );
-  };
-
-  const createOptionName = ({
-    index,
-    mode,
-    groupName,
-    multipleRegistrationData,
-    registration,
-    registrationFields,
-  }: {
-    multipleRegistrationData: Record<
-      string,
-      {
-        data: GetRegistrationDataResponse | null | undefined;
-        loading: boolean;
-      }
-    >;
-    registration: GetRegistrationResponseType | null | undefined;
-    registrationFields: GetRegistrationFieldsResponse | null | undefined;
-    mode: 'edit' | 'create';
-    index: number;
-    groupName?: string;
-  }) => {
-    if (mode === 'create') {
-      return 'Create a new proposal';
-    }
-
-    return `${index}. ${getRegistrationTitle({
-      multipleRegistrationData,
-      registration,
-      registrationFields,
-    })} ${groupName ? `[${groupName}]` : ''}`;
-  };
-
-  return (
-    showRegistrationsSelect(registrations) && (
-      <FlexColumn $gap="0.5rem">
-        <Label>Select Proposal</Label>
-        <Select
-          value={selectedRegistrationFormKey ?? ''}
-          options={createRegistrationForms({ registrations, usersToGroups }).map((form, idx) => ({
-            id: form.key,
-            name: createOptionName({
-              multipleRegistrationData,
-              registration: form.registration,
-              registrationFields,
-              mode: form.mode,
-              index: idx + 1,
-              groupName: form.group?.name,
-            }),
-          }))}
-          placeholder="Select a Proposal"
-          onChange={onSelectedRegistrationFormKeyChange}
-        />
-      </FlexColumn>
-    )
-  );
-}
-
-const getDefaultValues = (registrationData: GetRegistrationDataResponse | null | undefined) => {
-  return registrationData?.reduce(
-    (acc, curr) => {
-      acc[curr.registrationFieldId] = curr.value;
-      return acc;
-    },
-    {} as Record<string, string>,
-  );
-};
-
-const filterRegistrationFields = (
-  registrationFields: GetRegistrationFieldsResponse | null | undefined,
-  client: 'user' | 'group',
-) => {
-  return registrationFields?.filter((field) => {
-    if (field.forGroup && client == 'group') {
-      return true;
-    }
-
-    if (field.forUser && client == 'user') {
-      return true;
-    }
-
-    return false;
-  });
 };
 
 function EventGroupsForm({
@@ -697,81 +419,32 @@ function SelectEventGroup({
 }
 
 function RegistrationForm({
-  registrationFields,
   event,
-  multipleRegistrationData,
   registrations,
-  selectedRegistrationFormKey,
   user,
   usersToGroups,
-  onRegistrationFormCreate,
-  onSelectedRegistrationFormKeyChange,
   onStepComplete,
 }: {
   registrations: GetRegistrationsResponseType | undefined | null;
   usersToGroups: GetUsersToGroupsResponse | undefined | null;
-  selectedRegistrationFormKey: string | undefined;
-  multipleRegistrationData: Record<
-    string,
-    {
-      data: GetRegistrationDataResponse | null | undefined;
-      loading: boolean;
-    }
-  >;
-  registrationFields: GetRegistrationFieldsResponse | null | undefined;
   user: GetUserResponse | null | undefined;
   event: GetEventResponse | null | undefined;
-  onRegistrationFormCreate?: (newRegistrationId: string) => void;
-  onSelectedRegistrationFormKeyChange: (key: string) => void;
   onStepComplete?: () => void;
 }) {
-  const showRegistrationForm = ({
-    registrationId,
-    selectedRegistrationFormKey,
-  }: {
-    registrationId?: string;
-    selectedRegistrationFormKey?: string;
-  }) => {
-    if (selectedRegistrationFormKey === 'create' && !registrationId) {
-      // show create registration form
-      return true;
-    }
-
-    return registrationId === selectedRegistrationFormKey;
-  };
+  const firstRegistration = registrations?.at(0);
 
   return (
     <>
-      <SelectRegistrationDropdown
-        onSelectedRegistrationFormKeyChange={onSelectedRegistrationFormKeyChange}
-        registrations={registrations}
+      <DynamicRegistrationFieldsForm
         usersToGroups={usersToGroups}
-        selectedRegistrationFormKey={selectedRegistrationFormKey}
-        multipleRegistrationData={multipleRegistrationData}
-        registrationFields={registrationFields}
+        user={user}
+        groupId={firstRegistration?.groupId}
+        registrationId={firstRegistration?.id}
+        mode={firstRegistration ? 'edit' : 'create'}
+        data={firstRegistration?.data}
+        event={event}
+        onStepComplete={onStepComplete}
       />
-      {createRegistrationForms({ registrations, usersToGroups }).map((form, idx) => {
-        return (
-          <DynamicRegistrationFieldsForm
-            show={showRegistrationForm({
-              selectedRegistrationFormKey,
-              registrationId: form.registration?.id,
-            })}
-            usersToGroups={usersToGroups}
-            registrationData={multipleRegistrationData[form.registration?.id || '']?.data}
-            key={idx}
-            user={user}
-            groupId={form.group?.id}
-            registrationFields={registrationFields}
-            registrationId={form.registration?.id}
-            mode={form.mode}
-            isLoading={multipleRegistrationData[form.registration?.id || '']?.loading}
-            event={event}
-            onRegistrationFormCreate={onRegistrationFormCreate}
-            onStepComplete={onStepComplete}
-          />
-        );
-      })}
     </>
   );
 }
@@ -779,54 +452,51 @@ function RegistrationForm({
 function DynamicRegistrationFieldsForm(props: {
   user: GetUserResponse | null | undefined;
   usersToGroups: GetUsersToGroupsResponse | null | undefined;
-  registrationFields: GetRegistrationFieldsResponse | null | undefined;
   registrationId: string | null | undefined;
   groupId: string | null | undefined;
   event: GetEventResponse | null | undefined;
-  show: boolean;
+  data: GetRegistrationsResponseType[number]['data'] | null | undefined;
   mode: 'edit' | 'create';
-  isLoading: boolean;
-  onRegistrationFormCreate?: (newRegistrationId: string) => void;
-  registrationData: GetRegistrationDataResponse | null | undefined;
   onStepComplete?: () => void;
 }) {
   const queryClient = useQueryClient();
-
-  // i want to differentiate between when a group is selected and it is not
-  // so i can show the correct registration fields
-  // i will use the selectedGroupId to do this
   const [selectedGroupId, setSelectedGroupId] = useState<string>('');
   const prevSelectGroupId = props.groupId ?? 'none';
+  const registrationData = dataSchema.safeParse(props.data);
+  const eventFields = fieldsSchema.safeParse(props.event?.fields);
 
   const form = useForm({
-    defaultValues: useMemo(
-      () => getDefaultValues(props.registrationData),
-      [props.registrationData],
-    ),
+    defaultValues: registrationData.success
+      ? registrationData.data
+      : eventFields.success
+        ? Object.values(eventFields.data).reduce(
+            (acc, field) => {
+              acc[field.id] = {
+                value: '',
+                type: field.type,
+                fieldId: field.id,
+              };
+
+              return acc;
+            },
+            {} as z.infer<typeof dataSchema>,
+          )
+        : {},
     mode: 'all',
   });
 
   const {
     formState: { isSubmitting },
     handleSubmit,
-    reset,
   } = form;
 
-  useEffect(() => {
-    reset(getDefaultValues(props.registrationData));
-  }, [props.registrationData, reset]);
-
   const sortedRegistrationFields = useMemo(() => {
-    const regGroupId = selectedGroupId || prevSelectGroupId;
-    const client = regGroupId === 'none' ? 'user' : 'group';
+    if (!eventFields.success) {
+      return [];
+    }
 
-    const sortedFields = filterRegistrationFields(props.registrationFields || [], client);
-
-    // Sort by field_display_rank in ascending order
-    sortedFields?.sort((a, b) => (a.fieldDisplayRank || 0) - (b.fieldDisplayRank || 0));
-
-    return sortedFields;
-  }, [props.registrationFields, selectedGroupId, prevSelectGroupId]);
+    return Object.values(eventFields.data)?.sort((a, b) => (a.position || 0) - (b.position || 0));
+  }, [eventFields]);
 
   const { mutate: mutateRegistrationData, isPending } = useMutation({
     mutationFn: postRegistration,
@@ -845,8 +515,6 @@ function DynamicRegistrationFieldsForm(props: {
         await queryClient.invalidateQueries({
           queryKey: [props.user?.id, 'registrations'],
         });
-
-        props.onRegistrationFormCreate?.(body.id);
 
         props.onStepComplete?.();
       } else {
@@ -883,25 +551,26 @@ function DynamicRegistrationFieldsForm(props: {
     },
   });
 
-  const onSubmit = (values: Record<string, string>) => {
+  const onSubmit = (values: z.infer<typeof dataSchema>) => {
     const regGroupId = selectedGroupId || prevSelectGroupId;
     const client = regGroupId === 'none' ? 'user' : 'group';
 
     // Filter out empty values
     const filteredValues = Object.entries(values).reduce(
-      (acc, [key, value]) => {
-        if (value.trim() !== '') {
-          acc[key] = value.trim();
+      (acc, [key, { value, type }]) => {
+        if (value?.toString().trim() !== '') {
+          acc[key] = {
+            fieldId: key,
+            value: value,
+            type: type,
+          };
         }
         return acc;
       },
-      {} as Record<string, string>,
+      {} as z.infer<typeof dataSchema>,
     );
 
-    const registrationData = Object.entries(filteredValues).map(([key, value]) => ({
-      registrationFieldId: key,
-      value: value || '',
-    }));
+    console.log({ values, filteredValues });
 
     if (props.mode === 'edit') {
       updateRegistrationData({
@@ -910,7 +579,7 @@ function DynamicRegistrationFieldsForm(props: {
           eventId: props.event?.id || '',
           groupId: client === 'user' ? null : regGroupId,
           status: 'DRAFT',
-          registrationData: registrationData,
+          data: filteredValues,
         },
         serverUrl: import.meta.env.VITE_SERVER_URL,
       });
@@ -920,50 +589,18 @@ function DynamicRegistrationFieldsForm(props: {
           eventId: props.event?.id || '',
           groupId: client === 'user' ? null : regGroupId,
           status: 'DRAFT',
-          registrationData: registrationData,
+          data: filteredValues,
         },
         serverUrl: import.meta.env.VITE_SERVER_URL,
       });
     }
   };
 
-  if (props.isLoading) {
-    return (
-      props.show && (
-        <>
-          {sortedRegistrationFields?.map((_, idx) => (
-            <ContentLoader
-              key={idx}
-              speed={1.75}
-              width={'100%'}
-              height={80}
-              viewBox="0 0 100% 80"
-              backgroundColor="var(--color-gray)"
-              foregroundColor="var(--color-darkgray)"
-              {...props}
-            >
-              <rect x="0" y="0" rx="0" ry="0" width="100" height="22" />
-              <rect x="0" y="30" rx="4" ry="4" width="100%" height="50" />
-            </ContentLoader>
-          ))}
-          <ContentLoader
-            speed={1.75}
-            width={'100%'}
-            height={80}
-            viewBox="0 0 100% 80"
-            backgroundColor="var(--color-gray)"
-            foregroundColor="var(--color-darkgray)"
-            {...props}
-          >
-            <rect x="0" y="0" rx="8" ry="8" width="72" height="36" />
-            <rect x="0" y="52" rx="0" ry="0" width="100%" height="28" />
-          </ContentLoader>
-        </>
-      )
-    );
+  if (!eventFields.success) {
+    return <Subtitle>Failed to load registration fields</Subtitle>;
   }
 
-  return props.show ? (
+  return (
     <FlexColumn>
       <RegisterGroupSelect
         usersToGroups={props.usersToGroups}
@@ -976,13 +613,13 @@ function DynamicRegistrationFieldsForm(props: {
           <FormInput
             key={regField.id}
             form={form}
-            name={regField.id}
+            name={`${regField.id}.value`}
             label={regField.name}
-            required={regField.required}
+            required={regField.validation.required}
             type={regField.type.toLocaleUpperCase()}
-            options={regField.registrationFieldOptions?.map((option) => ({
-              name: option.value,
-              value: option.value,
+            options={regField.options?.map((value) => ({
+              name: value,
+              value: value,
             }))}
           />
         ))}
@@ -991,8 +628,6 @@ function DynamicRegistrationFieldsForm(props: {
         Save
       </Button>
     </FlexColumn>
-  ) : (
-    <></>
   );
 }
 
