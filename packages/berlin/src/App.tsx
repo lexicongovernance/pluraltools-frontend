@@ -2,9 +2,6 @@
 import { QueryClient } from '@tanstack/react-query';
 import { RouterProvider, createBrowserRouter, redirect } from 'react-router-dom';
 
-// Store
-import { useAppStore } from './store';
-
 // API
 import { fetchCycle, fetchEvents, fetchRegistrations, fetchUser } from 'api';
 
@@ -18,7 +15,6 @@ import Event from './pages/Event.tsx';
 import Events from './pages/Events.tsx';
 import Holding from './pages/Holding';
 import Landing from './pages/Landing';
-import Onboarding from './pages/Onboarding';
 import PassportPopupRedirect from './pages/Popup';
 import PublicGroupRegistration from './pages/PublicGroupRegistration.tsx';
 import Register from './pages/Register';
@@ -52,18 +48,6 @@ async function redirectAfterLogin(queryClient: QueryClient) {
 
   if (!user) {
     return null;
-  }
-
-  // if the user has not completed onboarding, redirect to the onboarding page
-  // assume that the user has completed onboarding if they have a username
-  if (user.username !== '') {
-    useAppStore.setState({ onboardingStatus: 'COMPLETE' });
-  }
-
-  const onboardingState = useAppStore.getState().onboardingStatus;
-
-  if (onboardingState === 'INCOMPLETE') {
-    return redirect('/onboarding');
   }
 
   const events = await queryClient.fetchQuery({
@@ -189,10 +173,6 @@ const router = (queryClient: QueryClient) =>
         {
           loader: () => redirectToLandingLoader(queryClient),
           children: [
-            {
-              path: '/onboarding',
-              Component: Onboarding,
-            },
             {
               path: '/data-policy',
               Component: DataPolicy,

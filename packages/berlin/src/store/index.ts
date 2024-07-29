@@ -4,13 +4,20 @@ import { devtools, persist } from 'zustand/middleware';
 type COMPLETION_STATUS = 'COMPLETE' | 'INCOMPLETE';
 
 interface AppState {
-  onboardingStatus: COMPLETION_STATUS;
   theme: 'light' | 'dark';
   availableHearts: {
     [questionId: string]: number;
   };
-  setOnboardingStatus: (status: COMPLETION_STATUS) => void;
+  onboardingStatus: {
+    event: COMPLETION_STATUS;
+    cycle: COMPLETION_STATUS;
+    results: COMPLETION_STATUS;
+  };
   setAvailableHearts: ({ hearts, questionId }: { questionId: string; hearts: number }) => void;
+  setOnboardingStatus: (
+    type: keyof AppState['onboardingStatus'],
+    status: COMPLETION_STATUS,
+  ) => void;
   toggleTheme: () => void;
   reset: () => void;
 }
@@ -19,13 +26,20 @@ export const useAppStore = create<AppState>()(
   devtools(
     persist(
       (set) => ({
-        // Default values
-        onboardingStatus: 'INCOMPLETE',
-        theme: 'dark',
-        availableHearts: {},
-        // Actions
-        setOnboardingStatus: (status: COMPLETION_STATUS) =>
-          set(() => ({ onboardingStatus: status })),
+        onboardingStatus: {
+          event: 'INCOMPLETE',
+          cycle: 'INCOMPLETE',
+          results: 'INCOMPLETE',
+        },
+        theme: 'dark', // Default theme is dark
+        availableHearts: {}, // Set the initial hearts value
+        setOnboardingStatus: (type, status) =>
+          set((state) => ({
+            onboardingStatus: {
+              ...state.onboardingStatus,
+              [type]: status,
+            },
+          })),
         setAvailableHearts: ({ hearts, questionId }) =>
           set((state) => ({ availableHearts: { ...state.availableHearts, [questionId]: hearts } })),
         toggleTheme: () => set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),

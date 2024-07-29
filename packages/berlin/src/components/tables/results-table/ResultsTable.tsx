@@ -18,6 +18,7 @@ import IconButton from '../../icon-button';
 import { Body } from '../../typography/Body.styled';
 import { Bold } from '../../typography/Bold.styled';
 import Link from '../../link';
+import LucideIcon from '@/components/icon';
 
 // Styled Components
 import { Card, Funding, Icon, Plurality, TitleContainer } from './ResultsTable.styled';
@@ -199,11 +200,9 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
         <Body>
           <Bold>Voter affiliations:</Bold> {option.listOfGroupNames.join(', ')}
         </Body>
-        <Body>
-          <Icon>
-            <MessageSquareText onClick={handleCommentsClick} />
-          </Icon>
-        </Body>
+        <LucideIcon>
+          <MessageSquareText onClick={handleCommentsClick} />
+        </LucideIcon>
       </FlexColumn>
     </Card>
   );
