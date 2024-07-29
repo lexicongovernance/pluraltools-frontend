@@ -42,27 +42,9 @@ async function redirectToLandingLoader(queryClient: QueryClient) {
 }
 
 /**
- * Redirects the user to the account page if they have not completed their profile
+ * Redirects the user after successful login
  */
-async function redirectToAccount(queryClient: QueryClient) {
-  const user = await queryClient.fetchQuery({
-    queryKey: ['user'],
-    queryFn: () => fetchUser({ serverUrl: import.meta.env.VITE_SERVER_URL }),
-  });
-
-  if (user?.username) {
-    useAppStore.setState({ userStatus: 'COMPLETE' });
-    return null;
-  }
-
-  useAppStore.setState({ userStatus: 'INCOMPLETE' });
-  return redirect('/account');
-}
-
-/**
- * Redirects the user to the landing page to cycles or account page
- */
-async function redirectOnLandingLoader(queryClient: QueryClient) {
+async function redirectAfterLogin(queryClient: QueryClient) {
   const user = await queryClient.fetchQuery({
     queryKey: ['user'],
     queryFn: () => fetchUser({ serverUrl: import.meta.env.VITE_SERVER_URL }),
@@ -70,6 +52,12 @@ async function redirectOnLandingLoader(queryClient: QueryClient) {
 
   if (!user) {
     return null;
+  }
+
+  // if the user has not completed onboarding, redirect to the onboarding page
+  // assume that the user has completed onboarding if they have a username
+  if (user.username !== '') {
+    useAppStore.setState({ onboardingStatus: 'COMPLETE' });
   }
 
   const onboardingState = useAppStore.getState().onboardingStatus;
@@ -83,12 +71,7 @@ async function redirectOnLandingLoader(queryClient: QueryClient) {
     queryFn: () => fetchEvents({ serverUrl: import.meta.env.VITE_SERVER_URL }),
   });
 
-  const userIsComplete = await redirectToAccount(queryClient);
-
-  if (userIsComplete) {
-    return userIsComplete;
-  }
-
+  // if there is only one event, redirect to the cycles page
   if (events?.length === 1) {
     const registrations = await queryClient.fetchQuery({
       queryKey: ['event', events?.[0].id, 'registrations'],
@@ -99,14 +82,18 @@ async function redirectOnLandingLoader(queryClient: QueryClient) {
         }),
     });
 
-    if (registrations && registrations.some((registration) => registration.status === 'APPROVED')) {
+    if (
+      registrations &&
+      registrations.every((registration) => registration.status !== 'APPROVED')
+    ) {
       return redirect(`/events/${events?.[0].id}/register`);
     }
 
     return redirect(`/events/${events?.[0].id}/cycles`);
   }
 
-  return null;
+  // if there are multiple events, redirect to the events page
+  return redirect('/events');
 }
 
 /**
@@ -196,7 +183,7 @@ const router = (queryClient: QueryClient) =>
       children: [
         {
           path: '/',
-          loader: () => redirectOnLandingLoader(queryClient),
+          loader: () => redirectAfterLogin(queryClient),
           element: <Landing />,
         },
         {
@@ -223,7 +210,6 @@ const router = (queryClient: QueryClient) =>
               Component: PublicGroupRegistration,
             },
             {
-              loader: () => redirectToAccount(queryClient),
               path: '/events',
               children: [
                 {
