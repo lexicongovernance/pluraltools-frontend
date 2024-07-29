@@ -175,14 +175,14 @@ function OptionCard({
               <Bold>Funding request:</Bold> {option.fundingRequest}
             </Body>
           )}
-          {option.optionSubTitle && (
+          {option.subTitle && (
             <Markdown
               components={{
                 a: ({ node, ...props }) => <Link to={props.href ?? ''}>{props.children}</Link>,
                 p: ({ node, ...props }) => <Body>{props.children}</Body>,
               }}
             >
-              {option.optionSubTitle}
+              {option.subTitle}
             </Markdown>
           )}
           <Icon>

@@ -36,6 +36,7 @@ import Button from '../components/button';
 import CycleColumns from '../components/columns/cycle-columns';
 import Onboarding from '@/components/onboarding';
 import OptionCard from '../components/option-card';
+import Option from '@/components/option';
 
 type Order = 'asc' | 'desc';
 type LocalUserVotes = { optionId: string; numOfVotes: number }[];
@@ -317,6 +318,7 @@ function Cycle() {
             Save all votes
           </Button>
         </FlexColumn>
+        <Option />
         {currentCycle?.options.length ? (
           <FlexColumn $gap="0">
             <CycleColumns onColumnClick={handleColumnClick} showScore={currentCycle.showScore} />
