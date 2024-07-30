@@ -1,8 +1,10 @@
-import { GetCyclesResponse } from './types';
+import { ApiRequest, GetCyclesResponse } from './types';
 
-async function fetchCycles(): Promise<GetCyclesResponse | null> {
+export async function fetchCycles({
+  serverUrl,
+}: ApiRequest<unknown>): Promise<GetCyclesResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/cycles`, {
+    const response = await fetch(`${serverUrl}/api/cycles`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
@@ -20,5 +22,3 @@ async function fetchCycles(): Promise<GetCyclesResponse | null> {
     return null;
   }
 }
-
-export default fetchCycles;

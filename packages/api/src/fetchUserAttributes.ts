@@ -1,16 +1,16 @@
-import { GetUserAttributesResponse } from './types';
+import { ApiRequest, GetUserAttributesResponse } from './types';
 
-async function fetchUserAttributes(userId: string): Promise<GetUserAttributesResponse | null> {
+export async function fetchUserAttributes({
+  serverUrl,
+  userId,
+}: ApiRequest<{ userId: string }>): Promise<GetUserAttributesResponse | null> {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/users/${userId}/attributes`,
-      {
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const response = await fetch(`${serverUrl}/api/users/${userId}/attributes`, {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);
@@ -23,5 +23,3 @@ async function fetchUserAttributes(userId: string): Promise<GetUserAttributesRes
     return null;
   }
 }
-
-export default fetchUserAttributes;

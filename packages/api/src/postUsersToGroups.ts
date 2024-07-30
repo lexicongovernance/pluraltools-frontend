@@ -1,11 +1,14 @@
-import { PostUsersToGroupsRequest, PostUsersToGroupsResponse } from './types';
+import { ApiRequest, PostUsersToGroupsRequest, PostUsersToGroupsResponse } from './types';
 
-async function postUserToGroups({
+export async function postUsersToGroups({
   secret,
   groupId,
-}: PostUsersToGroupsRequest): Promise<PostUsersToGroupsResponse | { errors: string[] } | null> {
+  serverUrl,
+}: ApiRequest<PostUsersToGroupsRequest>): Promise<
+  PostUsersToGroupsResponse | { errors: string[] } | null
+> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/users-to-groups`, {
+    const response = await fetch(`${serverUrl}/api/users-to-groups`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -32,5 +35,3 @@ async function postUserToGroups({
     return null;
   }
 }
-
-export default postUserToGroups;

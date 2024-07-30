@@ -1,8 +1,11 @@
-import { GetEventResponse } from './types';
+import { ApiRequest, GetEventResponse } from './types';
 
-async function fetchEvent(eventId: string): Promise<GetEventResponse | null> {
+export async function fetchEvent({
+  serverUrl,
+  eventId,
+}: ApiRequest<{ eventId: string }>): Promise<GetEventResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/events/${eventId}`, {
+    const response = await fetch(`${serverUrl}/api/events/${eventId}`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
@@ -20,5 +23,3 @@ async function fetchEvent(eventId: string): Promise<GetEventResponse | null> {
     return null;
   }
 }
-
-export default fetchEvent;

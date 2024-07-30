@@ -1,16 +1,16 @@
-import { GetOptionUsersResponse } from './types';
+import { ApiRequest, GetOptionUsersResponse } from './types';
 
-async function fetchOptionUsers(optionId: string): Promise<GetOptionUsersResponse | null> {
+export async function fetchOptionUsers({
+  serverUrl,
+  optionId,
+}: ApiRequest<{ optionId: string }>): Promise<GetOptionUsersResponse | null> {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/options/${optionId}/users`,
-      {
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const response = await fetch(`${serverUrl}/api/options/${optionId}/users`, {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);
@@ -23,5 +23,3 @@ async function fetchOptionUsers(optionId: string): Promise<GetOptionUsersRespons
     return null;
   }
 }
-
-export default fetchOptionUsers;

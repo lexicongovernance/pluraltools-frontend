@@ -1,16 +1,16 @@
-import { GetLikesRequest, GetLikesResponse } from './types';
+import { ApiRequest, GetLikesRequest, GetLikesResponse } from './types';
 
-async function fetchLikes({ commentId }: GetLikesRequest): Promise<GetLikesResponse | null> {
+export async function fetchCommentLikes({
+  commentId,
+  serverUrl,
+}: ApiRequest<GetLikesRequest>): Promise<GetLikesResponse | null> {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/comments/${commentId}/likes`,
-      {
-        credentials: 'include',
-        headers: {
-          'Content-type': 'application/json',
-        },
+    const response = await fetch(`${serverUrl}/api/comments/${commentId}/likes`, {
+      credentials: 'include',
+      headers: {
+        'Content-type': 'application/json',
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);
@@ -23,5 +23,3 @@ async function fetchLikes({ commentId }: GetLikesRequest): Promise<GetLikesRespo
     return null;
   }
 }
-
-export default fetchLikes;

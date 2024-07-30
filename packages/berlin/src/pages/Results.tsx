@@ -1,49 +1,56 @@
-import { fetchCycle, fetchForumQuestionFunding, fetchForumQuestionStatistics } from 'api';
-import { FlexColumn } from '../components/containers/FlexColumn.styled';
-import { Subtitle } from '../components/typography/Subtitle.styled';
+// React and third party libraries
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+
+// API
+import { fetchCycle, fetchQuestionFunding, fetchQuestionStatistics } from 'api';
+
+// Components
+import { Column } from '../components/tables/results-table/ResultsTable.styled';
+import { FINAL_QUESTION_TITLE } from '../utils/constants';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
+import { resultsSteps } from '@/components/onboarding/Steps';
+import { Subtitle } from '../components/typography/Subtitle.styled';
 import BackButton from '../components/back-button';
+import Onboarding from '@/components/onboarding';
 import ResultsColumns from '../components/columns/results-columns';
 import ResultsTable from '../components/tables/results-table';
-import StatsTable from '../components/tables/stats-table';
 import StatsColumns from '../components/columns/stats-columns';
-import { FINAL_QUESTION_TITLE } from '../utils/constants';
-import { Column } from '../components/tables/results-table/ResultsTable.styled';
-import { OnboardingCard } from '@/components/onboarding/Onboaring.styled';
-import { Body } from '@/components/typography/Body.styled';
-import IconButton from '@/components/icon-button';
-import { FlexRow } from '@/components/containers/FlexRow.styled';
-import { useAppStore } from '@/store';
-import Onboarding from '@/components/onboarding';
-import Icon from '@/components/icon';
-import { Heart, Radical } from 'lucide-react';
+import StatsTable from '../components/tables/stats-table';
 
 function Results() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
-  const theme = useAppStore((state) => state.theme);
 
   const { eventId, cycleId } = useParams();
 
   const { data: cycle } = useQuery({
     queryKey: ['cycles', cycleId],
-    queryFn: () => fetchCycle(cycleId || ''),
+    queryFn: () =>
+      fetchCycle({ cycleId: cycleId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!cycleId,
     retry: false,
   });
 
   const { data: statistics } = useQuery({
-    queryKey: ['cycles', cycleId, 'forumQuestions', 0, 'statistics', cycle?.forumQuestions[0].id],
-    queryFn: () => fetchForumQuestionStatistics(cycle?.forumQuestions[0].id || ''),
+    queryKey: ['cycles', cycleId, 'forumQuestions', 0, 'statistics', cycle?.questions[0].id],
+    queryFn: () =>
+      fetchQuestionStatistics({
+        questionId: cycle?.questions[0].id || '',
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      }),
     enabled: !!cycle?.id,
     retry: false,
   });
 
   const { data: funding } = useQuery({
-    queryKey: ['funding', cycle?.forumQuestions[0].id],
-    queryFn: () => fetchForumQuestionFunding(cycle?.forumQuestions[0].id || ''),
-    enabled: !!cycle?.id && cycle?.forumQuestions?.[0].questionTitle === FINAL_QUESTION_TITLE,
+    queryKey: ['funding', cycle?.questions[0].id],
+    queryFn: () =>
+      fetchQuestionFunding({
+        questionId: cycle?.questions[0].id || '',
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      }),
+    enabled: !!cycle?.id && cycle?.questions?.[0].title === FINAL_QUESTION_TITLE,
   });
 
   const overallStatistics = [
@@ -69,82 +76,6 @@ function Results() {
     },
   ];
 
-  const steps = [
-    {
-      target: '.step-1',
-      content: (
-        <OnboardingCard>
-          <Subtitle>Results Page</Subtitle>
-          <Body>See community decisions.</Body>
-        </OnboardingCard>
-      ),
-      placement: 'center',
-    },
-    {
-      target: '.step-2',
-      content: (
-        <OnboardingCard>
-          <Subtitle>Icons</Subtitle>
-          <FlexRow>
-            <Icon>
-              <Radical />
-            </Icon>
-            <Body>Quadratic score</Body>
-          </FlexRow>
-          <FlexRow>
-            <Icon>
-              <Heart fill="#ff0000" />
-            </Icon>
-            <Body>Hearts received by a vote item</Body>
-          </FlexRow>
-          <FlexRow>
-            <IconButton
-              $padding={0}
-              $color="secondary"
-              icon={{ src: `/icons/plurality-score.svg`, alt: 'Plurality icon' }}
-              $width={24}
-              $height={24}
-            />
-            <Body>Plurality score</Body>
-          </FlexRow>
-        </OnboardingCard>
-      ),
-      placement: 'center',
-    },
-    {
-      target: '.step-3',
-      content: (
-        <OnboardingCard>
-          <Subtitle>Expand a vote item</Subtitle>
-          <FlexRow>
-            <IconButton
-              $padding={0}
-              $color="secondary"
-              icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: 'Arrow down icon' }}
-              $width={24}
-              $height={24}
-            />
-            <Body>
-              Clicking this icon will display the vote item description and other useful
-              information.
-            </Body>
-          </FlexRow>
-          {/* <FlexRow>
-            <IconButton
-              $padding={0}
-              $color="secondary"
-              icon={{ src: `/icons/comments-${theme}.svg`, alt: 'Comments icon' }}
-              $width={24}
-              $height={24}
-            />
-            <Body>Access the comments page to start a discussion with other participants.</Body>
-          </FlexRow> */}
-        </OnboardingCard>
-      ),
-      placement: 'center',
-    },
-  ];
-
   const optionStatsArray = Object.entries(statistics?.optionStats || {})
     .map(([id, stats]) => ({
       id,
@@ -156,10 +87,10 @@ function Results() {
 
   return (
     <>
-      <Onboarding steps={steps} type="results" />
-      <FlexColumn $gap="2rem" className="step-1 step-2 step-3">
+      <Onboarding steps={resultsSteps} type="results" />
+      <FlexColumn $gap="2rem" className="welcome icons expand">
         <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
-        <Subtitle>Results for: {cycle?.forumQuestions?.[0].questionTitle}</Subtitle>
+        <Subtitle>Results for: {cycle?.questions?.[0].title}</Subtitle>
         <Column>
           <ResultsColumns $showFunding={!!funding} />
           {optionStatsArray.map((option, index) => (

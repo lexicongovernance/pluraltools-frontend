@@ -11,6 +11,8 @@ export const GlobalStyle = createGlobalStyle`
 }
 
 :root {
+  --color-primary: '#222';
+  --color-secondary: '#fff';
   --color-white: ${(props) => props.theme.backgroundColor};
   --color-black: ${(props) => props.theme.textColor};
   --color-gray:  ${(props) => props.theme.gray};
