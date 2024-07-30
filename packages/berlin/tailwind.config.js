@@ -20,6 +20,9 @@ module.exports = {
       fontFamily: {
         raleway: ["'Raleway'", 'sans-serif'],
       },
+      transitionProperty: {
+        'max-height': 'max-height',
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

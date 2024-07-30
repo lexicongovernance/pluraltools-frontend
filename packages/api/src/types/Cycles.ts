@@ -20,7 +20,7 @@ export type GetCycleResponse = {
       updatedAt: string;
       questionId: string;
       title: string;
-      optionSubTitle?: string;
+      subTitle?: string;
       accepted: boolean;
       voteScore?: number;
       fundingRequest: string;

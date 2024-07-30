@@ -29,13 +29,19 @@ import { cycleSteps } from '@/components/onboarding/Steps';
 import { FINAL_QUESTION_TITLE, INITIAL_HEARTS } from '../utils/constants';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
-import { Heart } from 'lucide-react';
+import { Heart, SlidersHorizontal } from 'lucide-react';
+import { Subtitle } from '@/components/typography/Subtitle.styled';
 import { Title } from '../components/typography/Title.styled';
 import BackButton from '../components/back-button';
 import Button from '../components/button';
-import CycleColumns from '../components/columns/cycle-columns';
 import Onboarding from '@/components/onboarding';
-import OptionCard from '../components/option-card';
+import Option from '@/components/option';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/_components/ui/dropdown-menu';
 
 type Order = 'asc' | 'desc';
 type LocalUserVotes = { optionId: string; numOfVotes: number }[];
@@ -318,21 +324,49 @@ function Cycle() {
           </Button>
         </FlexColumn>
         {currentCycle?.options.length ? (
-          <FlexColumn $gap="0">
-            <CycleColumns onColumnClick={handleColumnClick} showScore={currentCycle.showScore} />
+          <FlexColumn>
+            <div className="flex w-full items-center justify-between">
+              <Subtitle>Vote items</Subtitle>
+              <div className="flex cursor-pointer items-center gap-2">
+                <Body>Sort</Body>
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <SlidersHorizontal />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-primary border-secondary">
+                    <DropdownMenuItem onClick={() => handleColumnClick('lead')}>
+                      <label>Creator</label>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleColumnClick('affiliation')}>
+                      <label>Affiliation</label>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleColumnClick('numOfVotes')}>
+                      <label>Votes</label>
+                    </DropdownMenuItem>
+                    {currentCycle.showScore && (
+                      <DropdownMenuItem onClick={() => handleColumnClick('voteScore')}>
+                        <label>Plurality Score</label>
+                      </DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
             {sortedOptions.options.map((option) => {
               const userVote = localUserVotes.find((vote) => vote.optionId === option.id);
               const numOfVotes = userVote ? userVote.numOfVotes : 0;
               return (
-                <OptionCard
-                  key={option.id}
-                  option={option}
-                  numOfVotes={numOfVotes}
-                  showFundingRequest={currentCycle.title === FINAL_QUESTION_TITLE}
-                  showScore={currentCycle.showScore}
-                  onVote={() => handleVoteWrapper(option.id)}
-                  onUnVote={() => handleUnVoteWrapper(option.id)}
-                />
+                <>
+                  <Option
+                    key={option.id}
+                    option={option}
+                    numOfVotes={numOfVotes}
+                    showFundingRequest={currentCycle.title === FINAL_QUESTION_TITLE}
+                    showScore={currentCycle.showScore}
+                    onVote={() => handleVoteWrapper(option.id)}
+                    onUnVote={() => handleUnVoteWrapper(option.id)}
+                  />
+                </>
               );
             })}
           </FlexColumn>
