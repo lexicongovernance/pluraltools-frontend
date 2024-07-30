@@ -263,9 +263,12 @@ const CarouselWrapper = ({
               : 0) > 0,
           render: ({ handleStepComplete }) => (
             <RegistrationForm
-              registrations={registrations}
               usersToGroups={usersToGroups}
               user={user}
+              groupId={registrations?.at(0)?.groupId}
+              registrationId={registrations?.at(0)?.id}
+              mode={registrations?.at(0) ? 'edit' : 'create'}
+              data={registrations?.at(0)?.data}
               event={event}
               onStepComplete={handleStepComplete}
             />
@@ -424,38 +427,7 @@ function SelectEventGroup({
   );
 }
 
-function RegistrationForm({
-  event,
-  registrations,
-  user,
-  usersToGroups,
-  onStepComplete,
-}: {
-  registrations: GetRegistrationsResponseType | undefined | null;
-  usersToGroups: GetUsersToGroupsResponse | undefined | null;
-  user: GetUserResponse | null | undefined;
-  event: GetEventResponse | null | undefined;
-  onStepComplete?: () => void;
-}) {
-  const firstRegistration = registrations?.at(0);
-
-  return (
-    <>
-      <DynamicRegistrationFieldsForm
-        usersToGroups={usersToGroups}
-        user={user}
-        groupId={firstRegistration?.groupId}
-        registrationId={firstRegistration?.id}
-        mode={firstRegistration ? 'edit' : 'create'}
-        data={firstRegistration?.data}
-        event={event}
-        onStepComplete={onStepComplete}
-      />
-    </>
-  );
-}
-
-function DynamicRegistrationFieldsForm(props: {
+function RegistrationForm(props: {
   user: GetUserResponse | null | undefined;
   usersToGroups: GetUsersToGroupsResponse | null | undefined;
   registrationId: string | null | undefined;
@@ -468,7 +440,7 @@ function DynamicRegistrationFieldsForm(props: {
   const queryClient = useQueryClient();
   const [selectedGroupId, setSelectedGroupId] = useState<string>('');
   const prevSelectGroupId = props.groupId ?? 'none';
-  const registrationData = dataSchema.safeParse(props.data);
+  const registrationData = dataSchema.safeParse(props.data ?? {});
   const eventFields = fieldsSchema.safeParse(props.event?.fields);
   const dataIsClean = registrationData.success && eventFields.success;
 
@@ -476,7 +448,7 @@ function DynamicRegistrationFieldsForm(props: {
     defaultValues: dataIsClean
       ? Object.entries(eventFields.data).reduce(
           (acc, [key]) => {
-            acc[key] = registrationData.data[key].value?.toString() ?? '';
+            acc[key] = registrationData.data[key]?.value?.toString() ?? '';
             return acc;
           },
           {} as Record<string, string>,
@@ -565,6 +537,7 @@ function DynamicRegistrationFieldsForm(props: {
 
   const onSubmit = (values: Record<string, string>) => {
     if (!dataIsClean) {
+      console.log('Data is not clean');
       return;
     }
 
