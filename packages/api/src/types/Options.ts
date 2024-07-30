@@ -1,4 +1,4 @@
-export type QuestionOption = {
+export type Option = {
   id: string;
   createdAt: string;
   updatedAt: string;
@@ -7,11 +7,12 @@ export type QuestionOption = {
   userId?: string;
   optionSubTitle?: string;
   accepted: boolean;
+  data: unknown;
   fundingRequest: string;
 };
 
-export type GetQuestionOptionRequest = {
+export type GetOptionRequest = {
   optionId: string;
 };
 
-export type GetQuestionOptionResponse = QuestionOption;
+export type GetOptionResponse = Option;

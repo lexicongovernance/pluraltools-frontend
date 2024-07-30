@@ -15,7 +15,7 @@ import { Subtitle } from '../typography/Subtitle.styled';
 import { FlexRowToColumn } from '../containers/FlexRowToColumn.styled';
 import { FormTextInput } from '../form-input';
 import { z } from 'zod';
-import { returnZodError } from '../../utils/validation';
+import { returnZodError } from '../../utils/zod-error-handler';
 
 type InitialUser = {
   username: string;

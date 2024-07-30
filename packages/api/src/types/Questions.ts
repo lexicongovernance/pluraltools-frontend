@@ -25,4 +25,5 @@ export type Question = {
   description: string | null;
   cycleId: string;
   title: string;
+  fields: unknown;
 };

@@ -5,7 +5,7 @@ export async function postRegistration({
   serverUrl,
 }: ApiRequest<{
   body: PostRegistrationRequest;
-}>): Promise<PostRegistrationResponse | null> {
+}>): Promise<PostRegistrationResponse | { errors: string[] } | null> {
   try {
     const response = await fetch(`${serverUrl}/api/registrations`, {
       method: 'POST',
@@ -17,6 +17,10 @@ export async function postRegistration({
     });
 
     if (!response.ok) {
+      if (response.status < 500) {
+        const errors = (await response.json()) as { errors: string[] };
+        return errors;
+      }
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 

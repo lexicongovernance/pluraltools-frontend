@@ -4,7 +4,6 @@ import { devtools, persist } from 'zustand/middleware';
 type COMPLETION_STATUS = 'COMPLETE' | 'INCOMPLETE';
 
 interface AppState {
-  userStatus: COMPLETION_STATUS;
   theme: 'light' | 'dark';
   availableHearts: {
     [questionId: string]: number;
@@ -14,7 +13,6 @@ interface AppState {
     cycle: COMPLETION_STATUS;
     results: COMPLETION_STATUS;
   };
-  setUserStatus: (status: COMPLETION_STATUS) => void;
   setAvailableHearts: ({ hearts, questionId }: { questionId: string; hearts: number }) => void;
   setOnboardingStatus: (
     type: keyof AppState['onboardingStatus'],
@@ -28,7 +26,6 @@ export const useAppStore = create<AppState>()(
   devtools(
     persist(
       (set) => ({
-        userStatus: 'INCOMPLETE',
         onboardingStatus: {
           event: 'INCOMPLETE',
           cycle: 'INCOMPLETE',
@@ -36,7 +33,6 @@ export const useAppStore = create<AppState>()(
         },
         theme: 'dark', // Default theme is dark
         availableHearts: {}, // Set the initial hearts value
-        setUserStatus: (status: COMPLETION_STATUS) => set(() => ({ userStatus: status })),
         setOnboardingStatus: (type, status) =>
           set((state) => ({
             onboardingStatus: {
@@ -49,8 +45,6 @@ export const useAppStore = create<AppState>()(
         toggleTheme: () => set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
         reset: () =>
           set(() => ({
-            userStatus: 'INCOMPLETE',
-            eventRegistrationStatus: 'INCOMPLETE',
             availableHearts: {},
           })),
       }),
@@ -59,7 +53,6 @@ export const useAppStore = create<AppState>()(
         // Partialize the store to only persist the required keys
         partialize: (state) => ({
           onboardingStatus: state.onboardingStatus,
-          userStatus: state.userStatus,
           theme: state.theme,
         }),
       },
