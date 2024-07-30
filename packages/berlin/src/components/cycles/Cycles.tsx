@@ -24,14 +24,14 @@ function Cycles({ cycles, errorMessage, eventId }: CyclesProps) {
     <>
       {cycles?.length ? (
         cycles.map((cycle) => (
-          <div
+          <article
             className="border-secondary flex w-full flex-col gap-4 border p-4"
             key={cycle.id}
             onClick={() => handleCycleClick(cycle.id)}
           >
             <Body>{cycle?.questions[0]?.title}</Body>
             <Body>{formatDate(cycle.endAt)}</Body>
-          </div>
+          </article>
         ))
       ) : (
         <Body>{errorMessage}</Body>
