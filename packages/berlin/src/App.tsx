@@ -216,8 +216,8 @@ const router = (queryClient: QueryClient) =>
               path: '/events',
               children: [
                 {
-                  loader: () => redirectToOnlyOneEventLoader(queryClient),
-                  path: '',
+                  // loader: () => redirectToOnlyOneEventLoader(queryClient),
+                  path: '/events',
                   Component: Events,
                 },
                 {
