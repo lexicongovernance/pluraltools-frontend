@@ -102,7 +102,7 @@ export default function Option({
         {affiliation && (
           <Body>
             <Bold>Affiliation: </Bold>
-            {affiliation}
+            {affiliation} {/* should render `no affiliation` if its not found? */}
           </Body>
         )}
         {showScore && (
