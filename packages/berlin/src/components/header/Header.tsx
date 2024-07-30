@@ -143,8 +143,10 @@ const UserMenu = () => {
           <User />
         </Icon>
       </NavigationMenuTrigger>
-      <NavigationMenuContent className="flex flex-col gap-4 p-4">
-        <UserMenuLinks />
+      <NavigationMenuContent>
+        <NavigationMenuList className="flex flex-col gap-4 p-4">
+          <UserMenuLinks />
+        </NavigationMenuList>
       </NavigationMenuContent>
     </NavigationMenuItem>
   );
