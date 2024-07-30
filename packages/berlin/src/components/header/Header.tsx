@@ -12,7 +12,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchAlerts, fetchEvents, fetchUserRegistrations, GetUserResponse, logout } from 'api';
 import { Menu, User } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Icon from '../icon';
 import ThemeToggler from '../theme-toggler';
 import { useNavigate } from 'react-router-dom';
@@ -124,12 +124,12 @@ const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
   return links.map(({ title, link }) => (
     <NavigationMenuItem key={title}>
       <NavigationMenuLink asChild>
-        <NavLink
+        <Link
           to={link}
           className="border-secondary aria-[current=page]:border-b-2 aria-[current=page]:pb-1"
         >
           {title}
-        </NavLink>
+        </Link>
       </NavigationMenuLink>
     </NavigationMenuItem>
   ));
@@ -143,8 +143,10 @@ const UserMenu = () => {
           <User />
         </Icon>
       </NavigationMenuTrigger>
-      <NavigationMenuContent className="flex flex-col gap-4 p-4">
-        <UserMenuLinks />
+      <NavigationMenuContent>
+        <NavigationMenuList className="flex flex-col gap-4 p-4">
+          <UserMenuLinks />
+        </NavigationMenuList>
       </NavigationMenuContent>
     </NavigationMenuItem>
   );
@@ -180,13 +182,13 @@ const UserMenuLinks = () => {
   return links.map(({ title, link, onClick }) => (
     <NavigationMenuItem key={title}>
       <NavigationMenuLink asChild>
-        <NavLink
+        <Link
           to={link || ''}
           onClick={onClick}
           className="border-secondary aria-[current=page]:border-b-2 aria-[current=page]:pb-1"
         >
           {title}
-        </NavLink>
+        </Link>
       </NavigationMenuLink>
     </NavigationMenuItem>
   ));
