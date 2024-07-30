@@ -139,20 +139,26 @@ const CarouselWrapper = ({
     useMutation({
       mutationFn: postRegistration,
       onSuccess: async (body) => {
-        if (body) {
-          toast.success('Registration saved successfully!');
-          await queryClient.invalidateQueries({
-            queryKey: ['event', body.eventId, 'registrations'],
-          });
-
-          // invalidate user registrations, this is for the 1 event use case
-          // where the authentication is because you are approved to the event
-          await queryClient.invalidateQueries({
-            queryKey: [user?.id, 'registrations'],
-          });
-        } else {
+        if (!body) {
           toast.error('Failed to save registration, please try again');
+          return;
         }
+
+        if ('errors' in body) {
+          toast.error(body.errors[0]);
+          return;
+        }
+
+        toast.success('Registration saved successfully!');
+        await queryClient.invalidateQueries({
+          queryKey: ['event', body.eventId, 'registrations'],
+        });
+
+        // invalidate user registrations, this is for the 1 event use case
+        // where the authentication is because you are approved to the event
+        await queryClient.invalidateQueries({
+          queryKey: [user?.id, 'registrations'],
+        });
       },
       onError: (error) => {
         console.error('Error saving registration:', error);
@@ -492,28 +498,34 @@ function DynamicRegistrationFieldsForm(props: {
     return Object.values(eventFields.data)?.sort((a, b) => (a.position || 0) - (b.position || 0));
   }, [eventFields]);
 
-  const { mutate: mutateRegistrationData, isPending } = useMutation({
+  const { mutate: mutateRegistration, isPending } = useMutation({
     mutationFn: postRegistration,
     onSuccess: async (body) => {
-      if (body) {
-        toast.success('Registration saved successfully!');
-        await queryClient.invalidateQueries({
-          queryKey: ['event', body.eventId, 'registrations'],
-        });
-        await queryClient.invalidateQueries({
-          queryKey: ['registrations', body.id, 'registration-data'],
-        });
-
-        // invalidate user registrations, this is for the 1 event use case
-        // where the authentication is because you are approved to the event
-        await queryClient.invalidateQueries({
-          queryKey: [props.user?.id, 'registrations'],
-        });
-
-        props.onStepComplete?.();
-      } else {
+      if (!body) {
         toast.error('Failed to save registration, please try again');
+        return;
       }
+
+      if ('errors' in body) {
+        toast.error(body.errors[0]);
+        return;
+      }
+
+      toast.success('Registration saved successfully!');
+      await queryClient.invalidateQueries({
+        queryKey: ['event', body.eventId, 'registrations'],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['registrations', body.id, 'registration-data'],
+      });
+
+      // invalidate user registrations, this is for the 1 event use case
+      // where the authentication is because you are approved to the event
+      await queryClient.invalidateQueries({
+        queryKey: [props.user?.id, 'registrations'],
+      });
+
+      props.onStepComplete?.();
     },
     onError: (error) => {
       console.error('Error saving registration:', error);
@@ -521,23 +533,29 @@ function DynamicRegistrationFieldsForm(props: {
     },
   });
 
-  const { mutate: updateRegistrationData } = useMutation({
+  const { mutate: updateRegistration } = useMutation({
     mutationFn: putRegistration,
     onSuccess: async (body) => {
-      if (body) {
-        toast.success('Registration updated successfully!');
-
-        await queryClient.invalidateQueries({
-          queryKey: ['event', props.event?.id, 'registrations'],
-        });
-        await queryClient.invalidateQueries({
-          queryKey: ['registrations', props.registrationId, 'registration-data'],
-        });
-
-        props.onStepComplete?.();
-      } else {
+      if (!body) {
         toast.error('Failed to update registration, please try again');
+        return;
       }
+
+      if ('errors' in body) {
+        toast.error(body.errors[0]);
+        return;
+      }
+
+      toast.success('Registration updated successfully!');
+
+      await queryClient.invalidateQueries({
+        queryKey: ['event', props.event?.id, 'registrations'],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['registrations', props.registrationId, 'registration-data'],
+      });
+
+      props.onStepComplete?.();
     },
     onError: (error) => {
       console.error('Error updating registration:', error);
@@ -564,7 +582,7 @@ function DynamicRegistrationFieldsForm(props: {
       {} as Record<string, string>,
     );
 
-    const formattedData = Object.values(filteredValues).reduce(
+    const formattedData = Object.entries(filteredValues).reduce(
       (acc, [key, value]) => {
         acc[key] = {
           value,
@@ -577,7 +595,7 @@ function DynamicRegistrationFieldsForm(props: {
     );
 
     if (props.mode === 'edit') {
-      updateRegistrationData({
+      updateRegistration({
         registrationId: props.registrationId || '',
         body: {
           eventId: props.event?.id || '',
@@ -588,7 +606,7 @@ function DynamicRegistrationFieldsForm(props: {
         serverUrl: import.meta.env.VITE_SERVER_URL,
       });
     } else {
-      mutateRegistrationData({
+      mutateRegistration({
         body: {
           eventId: props.event?.id || '',
           groupId: client === 'user' ? null : regGroupId,

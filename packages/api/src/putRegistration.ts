@@ -7,7 +7,7 @@ export async function putRegistration({
 }: ApiRequest<{
   registrationId: string;
   body: PutRegistrationRequest;
-}>): Promise<PutRegistrationResponse | null> {
+}>): Promise<PutRegistrationResponse | { errors: string[] } | null> {
   try {
     const response = await fetch(`${serverUrl}/api/registrations/${registrationId}`, {
       method: 'PUT',
@@ -19,6 +19,10 @@ export async function putRegistration({
     });
 
     if (!response.ok) {
+      if (response.status < 500) {
+        const errors = (await response.json()) as { errors: string[] };
+        return errors;
+      }
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
