@@ -464,24 +464,18 @@ function DynamicRegistrationFieldsForm(props: {
   const prevSelectGroupId = props.groupId ?? 'none';
   const registrationData = dataSchema.safeParse(props.data);
   const eventFields = fieldsSchema.safeParse(props.event?.fields);
+  const dataIsClean = registrationData.success && eventFields.success;
 
   const form = useForm({
-    defaultValues: registrationData.success
-      ? registrationData.data
-      : eventFields.success
-        ? Object.values(eventFields.data).reduce(
-            (acc, field) => {
-              acc[field.id] = {
-                value: '',
-                type: field.type,
-                fieldId: field.id,
-              };
-
-              return acc;
-            },
-            {} as z.infer<typeof dataSchema>,
-          )
-        : {},
+    defaultValues: dataIsClean
+      ? Object.entries(eventFields.data).reduce(
+          (acc, [key]) => {
+            acc[key] = registrationData.data[key].value?.toString() ?? '';
+            return acc;
+          },
+          {} as Record<string, string>,
+        )
+      : {},
     mode: 'all',
   });
 
@@ -551,26 +545,36 @@ function DynamicRegistrationFieldsForm(props: {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof dataSchema>) => {
+  const onSubmit = (values: Record<string, string>) => {
+    if (!dataIsClean) {
+      return;
+    }
+
     const regGroupId = selectedGroupId || prevSelectGroupId;
     const client = regGroupId === 'none' ? 'user' : 'group';
 
     // Filter out empty values
     const filteredValues = Object.entries(values).reduce(
-      (acc, [key, { value, type }]) => {
-        if (value?.toString().trim() !== '') {
-          acc[key] = {
-            fieldId: key,
-            value: value,
-            type: type,
-          };
+      (acc, [key, value]) => {
+        if (value !== '') {
+          acc[key] = value;
         }
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
+
+    const formattedData = Object.values(filteredValues).reduce(
+      (acc, [key, value]) => {
+        acc[key] = {
+          value,
+          type: eventFields.data[key].type,
+          fieldId: eventFields.data[key].id,
+        };
         return acc;
       },
       {} as z.infer<typeof dataSchema>,
     );
-
-    console.log({ values, filteredValues });
 
     if (props.mode === 'edit') {
       updateRegistrationData({
@@ -579,7 +583,7 @@ function DynamicRegistrationFieldsForm(props: {
           eventId: props.event?.id || '',
           groupId: client === 'user' ? null : regGroupId,
           status: 'DRAFT',
-          data: filteredValues,
+          data: formattedData,
         },
         serverUrl: import.meta.env.VITE_SERVER_URL,
       });
@@ -589,7 +593,7 @@ function DynamicRegistrationFieldsForm(props: {
           eventId: props.event?.id || '',
           groupId: client === 'user' ? null : regGroupId,
           status: 'DRAFT',
-          data: filteredValues,
+          data: formattedData,
         },
         serverUrl: import.meta.env.VITE_SERVER_URL,
       });
@@ -613,7 +617,7 @@ function DynamicRegistrationFieldsForm(props: {
           <FormInput
             key={regField.id}
             form={form}
-            name={`${regField.id}.value`}
+            name={regField.id}
             label={regField.name}
             required={regField.validation.required}
             type={regField.type.toLocaleUpperCase()}
