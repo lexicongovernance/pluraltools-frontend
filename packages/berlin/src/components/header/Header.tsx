@@ -12,7 +12,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchAlerts, fetchEvents, fetchUserRegistrations, GetUserResponse, logout } from 'api';
 import { Menu, User } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import Icon from '../icon';
 import ThemeToggler from '../theme-toggler';
 import { useNavigate } from 'react-router-dom';
@@ -124,12 +124,12 @@ const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
   return links.map(({ title, link }) => (
     <NavigationMenuItem key={title}>
       <NavigationMenuLink asChild>
-        <Link
+        <NavLink
           to={link}
           className="border-secondary aria-[current=page]:border-b-2 aria-[current=page]:pb-1"
         >
           {title}
-        </Link>
+        </NavLink>
       </NavigationMenuLink>
     </NavigationMenuItem>
   ));
@@ -182,13 +182,13 @@ const UserMenuLinks = () => {
   return links.map(({ title, link, onClick }) => (
     <NavigationMenuItem key={title}>
       <NavigationMenuLink asChild>
-        <Link
+        <NavLink
           to={link || ''}
           onClick={onClick}
           className="border-secondary aria-[current=page]:border-b-2 aria-[current=page]:pb-1"
         >
           {title}
-        </Link>
+        </NavLink>
       </NavigationMenuLink>
     </NavigationMenuItem>
   ));
