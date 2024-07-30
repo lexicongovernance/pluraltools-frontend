@@ -2,7 +2,6 @@ import styled, { css } from 'styled-components';
 import { StyledButtonProps } from './Button.types';
 
 export const StyledButton = styled.button<StyledButtonProps>`
-  border-radius: 0.5rem;
   border: none;
   font-family: var(--font-family-button);
   font-size: 1rem;
