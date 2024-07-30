@@ -7,6 +7,7 @@ export type GetEventResponse = {
   createdAt: string;
   updatedAt: string;
   description: string | null;
+  status: 'OPEN' | 'CLOSED' | 'UPCOMING' | null;
 };
 
 export type GetEventsResponse = GetEventResponse[];
