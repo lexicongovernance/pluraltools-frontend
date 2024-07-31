@@ -15,8 +15,8 @@ export async function fetchNavLinks({
       throw new Error(`HTTP Error! Status: ${response.status}`);
     }
 
-    const alerts = (await response.json()) as { data: GetNavLinksResponse };
-    return alerts.data;
+    const navLinks = (await response.json()) as { data: GetNavLinksResponse };
+    return navLinks.data;
   } catch (error) {
     console.error('Error fetching nav links:', error);
     return null;

@@ -103,6 +103,7 @@ const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
     refetchInterval: 10000,
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: eventNavLinks } = useQuery({
     queryKey: ['eventNavLinks'],
     queryFn: () =>
@@ -110,8 +111,6 @@ const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
     enabled: !!user && !!eventId,
     refetchInterval: 10000,
   });
-
-  console.log('eventNavLinks:', eventNavLinks);
 
   const links = useMemo(() => {
     const baseLinks = [
