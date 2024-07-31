@@ -1,4 +1,4 @@
-export * from './Alerts';
+export * from './NavLinks';
 export * from './Comments';
 export * from './Cycles';
 export * from './Events';
