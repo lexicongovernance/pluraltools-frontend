@@ -9,7 +9,14 @@ import {
 import useUser from '@/hooks/useUser';
 import { useAppStore } from '@/store';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { fetchNavLinks, fetchEvents, fetchUserRegistrations, GetUserResponse, logout } from 'api';
+import {
+  fetchEventNavLinks,
+  fetchEvents,
+  fetchNavLinks,
+  fetchUserRegistrations,
+  GetUserResponse,
+  logout,
+} from 'api';
 import { Menu, User } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
@@ -89,13 +96,22 @@ const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
     enabled: !!user,
   });
 
-  const { data: alerts } = useQuery({
-    queryKey: ['alerts'],
+  const { data: navLinks } = useQuery({
+    queryKey: ['navLinks'],
+    queryFn: () => fetchNavLinks({ serverUrl: import.meta.env.VITE_SERVER_URL }),
+    enabled: !!user,
+    refetchInterval: 10000,
+  });
+
+  const { data: eventNavLinks } = useQuery({
+    queryKey: ['eventNavLinks'],
     queryFn: () =>
-      fetchNavLinks({ serverUrl: import.meta.env.VITE_SERVER_URL, eventId: eventId || '' }),
+      fetchEventNavLinks({ serverUrl: import.meta.env.VITE_SERVER_URL, eventId: eventId || '' }),
     enabled: !!user && !!eventId,
     refetchInterval: 10000,
   });
+
+  console.log('eventNavLinks:', eventNavLinks);
 
   const links = useMemo(() => {
     const baseLinks = [
@@ -111,18 +127,18 @@ const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
 
     if (
       registrationsData?.some((registration) => registration.status === 'APPROVED') &&
-      alerts &&
-      alerts.length > 0
+      navLinks &&
+      navLinks.length > 0
     ) {
-      const alertsLinks = alerts.map((alert) => ({
-        title: alert.title,
-        link: alert.link || '',
+      const additionalNavLinks = navLinks.map((eventNavLink) => ({
+        title: eventNavLink.title,
+        link: eventNavLink.link || '',
       }));
-      return [...baseLinks, ...alertsLinks];
+      return [...baseLinks, ...additionalNavLinks];
     }
 
     return baseLinks;
-  }, [events, registrationsData, alerts]);
+  }, [events, registrationsData, navLinks]);
 
   return links.map(({ title, link }) => (
     <NavigationMenuItem key={title}>
