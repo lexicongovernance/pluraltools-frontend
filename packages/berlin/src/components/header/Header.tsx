@@ -1,14 +1,10 @@
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from '@/_components/ui/navigation-menu';
-import useUser from '@/hooks/useUser';
-import { useAppStore } from '@/store';
+// React and third-party libraries
+import { useMemo, useState } from 'react';
+import { useNavigate, useParams, NavLink } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Menu, User } from 'lucide-react';
+
+// API
 import {
   fetchEventNavLinks,
   fetchEvents,
@@ -17,12 +13,22 @@ import {
   GetUserResponse,
   logout,
 } from 'api';
-import { Menu, User } from 'lucide-react';
-import { useMemo, useState } from 'react';
-import { NavLink, useParams } from 'react-router-dom';
+
+// Hooks
+import { useAppStore } from '@/store';
+import useUser from '@/hooks/useUser';
+
+// Components
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from '@/_components/ui/navigation-menu';
 import Icon from '../icon';
 import ThemeToggler from '../theme-toggler';
-import { useNavigate } from 'react-router-dom';
 import ZupassLoginButton from '../zupass-button';
 
 export default function NewHeader() {
