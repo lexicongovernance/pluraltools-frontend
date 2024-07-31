@@ -5,7 +5,7 @@ export async function fetchNavLinks({
   eventId,
 }: ApiRequest<{ eventId: string }>): Promise<GetNavLinksResponse | null> {
   try {
-    const response = await fetch(`${serverUrl}/api/${eventId}/nav-links`, {
+    const response = await fetch(`${serverUrl}/api/events/${eventId}/nav-links`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
