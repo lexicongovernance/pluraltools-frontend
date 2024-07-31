@@ -9,10 +9,10 @@ import {
 import useUser from '@/hooks/useUser';
 import { useAppStore } from '@/store';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { fetchAlerts, fetchEvents, fetchUserRegistrations, GetUserResponse, logout } from 'api';
+import { fetchNavLinks, fetchEvents, fetchUserRegistrations, GetUserResponse, logout } from 'api';
 import { Menu, User } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import Icon from '../icon';
 import ThemeToggler from '../theme-toggler';
 import { useNavigate } from 'react-router-dom';
@@ -71,6 +71,8 @@ export default function NewHeader() {
 }
 
 const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
+  const { eventId } = useParams();
+
   const { data: events } = useQuery({
     queryKey: ['events'],
     queryFn: () => fetchEvents({ serverUrl: import.meta.env.VITE_SERVER_URL }),
@@ -89,8 +91,9 @@ const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
 
   const { data: alerts } = useQuery({
     queryKey: ['alerts'],
-    queryFn: () => fetchAlerts({ serverUrl: import.meta.env.VITE_SERVER_URL }),
-    enabled: !!user,
+    queryFn: () =>
+      fetchNavLinks({ serverUrl: import.meta.env.VITE_SERVER_URL, eventId: eventId || '' }),
+    enabled: !!user && !!eventId,
     refetchInterval: 10000,
   });
 
