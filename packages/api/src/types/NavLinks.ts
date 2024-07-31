@@ -1,4 +1,4 @@
-export type Alert = {
+export type NavLink = {
   id: string;
   createdAt: Date;
   updatedAt: Date;
@@ -10,4 +10,4 @@ export type Alert = {
   title: string;
 };
 
-export type GetAlertsResponse = Alert[];
+export type GetNavLinksResponse = NavLink[];
