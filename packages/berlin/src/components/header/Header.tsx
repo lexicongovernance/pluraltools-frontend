@@ -32,8 +32,9 @@ import ZupassLoginButton from '../zupass-button';
 
 export default function Header() {
   const theme = useAppStore((state) => state.theme);
-  const { user } = useUser();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const { user } = useUser();
 
   return (
     <header className="bg-primary border-secondary border-b text-sm">
@@ -49,7 +50,7 @@ export default function Header() {
         </NavigationMenu>
       )}
       <section className="mx-auto flex min-h-16 w-[min(90%,1080px)] items-center justify-between">
-        <div className="flex items-center gap-2">
+        <div className="flex cursor-pointer items-center gap-2" onClick={() => navigate('/')}>
           <img src={`/logos/lexicon-${theme}.svg`} alt="Lexicon Logo" height={32} width={32} />
           <h1 className="text-2xl font-semibold leading-6">Lexicon</h1>
         </div>
@@ -129,7 +130,7 @@ const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
 
       const fetchedEventNavLinks = eventNavLinks?.map(({ title, link }) => ({ title, link })) ?? [];
 
-      return approvedRegistration ? [...eventBaseLinks, ...fetchedEventNavLinks] : [];
+      return approvedRegistration ? [...fetchedEventNavLinks, ...eventBaseLinks] : [];
     } else {
       // User is outside of an event
       const baseLinks = [
@@ -141,7 +142,7 @@ const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
 
       const fetchedNavLinks = navLinks?.map(({ title, link }) => ({ title, link })) ?? [];
 
-      return [...baseLinks, ...fetchedNavLinks];
+      return [...fetchedNavLinks, ...baseLinks];
     }
   }, [eventId, eventNavLinks, navLinks, registrationsData]);
 
