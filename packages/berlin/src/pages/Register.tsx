@@ -75,6 +75,17 @@ function Register() {
   });
 
   const defaultStep = useMemo(() => {
+    const fields = fieldsSchema.safeParse(event?.fields);
+
+    if (!fields.success) {
+      return 0;
+    }
+
+    // if no fields exists then stay on group categories page
+    if (Object.values(fields).length === 0) {
+      return 0;
+    }
+
     // check if the user is already in all required groups for the event
     const requiredCategories = groupCategories?.filter((category) => category.required);
     const userGroups = usersToGroups?.map((userToGroup) => userToGroup.group.groupCategoryId);
@@ -88,7 +99,7 @@ function Register() {
     }
 
     return 0;
-  }, [groupCategories, usersToGroups]);
+  }, [groupCategories, usersToGroups, event]);
 
   if (isLoading) {
     return <Subtitle>Loading...</Subtitle>;
