@@ -31,7 +31,7 @@ import Icon from '../icon';
 import ThemeToggler from '../theme-toggler';
 import ZupassLoginButton from '../zupass-button';
 
-export default function NewHeader() {
+export default function Header() {
   const theme = useAppStore((state) => state.theme);
   const { user } = useUser();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
