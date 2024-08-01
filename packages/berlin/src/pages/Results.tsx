@@ -1,7 +1,7 @@
 // React and third party libraries
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 // API
 import {
@@ -22,7 +22,7 @@ import BackButton from '../components/back-button';
 import Onboarding from '@/components/onboarding';
 import { Body } from '@/components/typography/Body.styled';
 import { Bold } from '@/components/typography/Bold.styled';
-import { Heart, Radical } from 'lucide-react';
+import { ChevronDown, Heart, Radical } from 'lucide-react';
 import Markdown from 'react-markdown';
 import Link from '@/components/link';
 import { useAppStore } from '@/store';
@@ -143,8 +143,18 @@ function Option({
 }) {
   console.log('option:', option);
   console.log('option.distinctUsers:', option.distinctUsers);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [expandedHeight, setExpandedHeight] = useState(0);
+  const expandedRef = useRef<HTMLDivElement>(null);
   const theme = useAppStore((state) => state.theme);
   const { eventId } = useParams();
+
+  useLayoutEffect(() => {
+    if (expandedRef.current) {
+      setExpandedHeight(isExpanded ? expandedRef.current.scrollHeight : 0);
+    }
+  }, [isExpanded]);
+
   const { data: optionUsers } = useQuery({
     queryKey: ['option', option.id, 'users'],
     queryFn: () =>
@@ -212,69 +222,95 @@ function Option({
       .map((user) => `${user.firstName} ${user.lastName}`);
   }, [optionUsers]);
 
+  const handleChevronClick = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   return (
-    <article className="border-secondary flex w-full flex-col gap-4 border p-4">
-      <Body>{option.title}</Body>
-      {author && (
-        <Body>
-          <Bold>Creator: </Bold>
-          {author}
-        </Body>
-      )}
-      {pluralityScore && (
-        <span className="flex items-center gap-2">
-          <img src="/icons/plurality-score.svg" width={24} height={24} />
-          <Body>{pluralityScore}</Body>
+    <article className="border-secondary flex w-full flex-col gap-2 border p-4">
+      <section className="flex flex-col gap-3">
+        <Body>{option.title}</Body>
+        {author && (
+          <Body>
+            <Bold>Creator: </Bold>
+            {author}
+          </Body>
+        )}
+        {pluralityScore && (
+          <Body>
+            <img
+              className="inline align-middle"
+              src="/icons/plurality-score.svg"
+              width={24}
+              height={24}
+            />{' '}
+            {pluralityScore}
+          </Body>
+        )}
+        {quadraticScore && (
+          <Body>
+            <Radical className="inline align-middle" /> {quadraticScore}
+          </Body>
+        )}
+        <span className="flex items-center justify-between">
+          <Body>
+            <Heart className="inline align-middle" fill="#ff0000" /> {option.allocatedHearts}
+          </Body>
+          <ChevronDown
+            className={`expand cursor-pointer transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+            onClick={handleChevronClick}
+          />
         </span>
-      )}
-      {quadraticScore && (
-        <span className="flex items-center gap-2">
-          <Radical />
-          <Body>{quadraticScore}</Body>
-        </span>
-      )}
-      <span className="flex items-center gap-2">
-        <Heart fill="#ff0000" />
-        <Body>{option.allocatedHearts}</Body>
-      </span>
-      {option.allocatedFunding && (
-        <span className="flex items-center gap-2">
-          <img src={`/logos/arbitrum-${theme}.svg`} width={24} height={24} />
-          <Body>{pluralityScore}</Body>
-        </span>
-      )}
-      {option.distinctUsers !== 0 && (
-        <Body className="flex items-center gap-2">
-          <Bold>Distinct Voters: </Bold>
-          {option.distinctUsers}
-        </Body>
-      )}
-      {option.listOfGroupNames && option.listOfGroupNames.length > 0 && (
-        <Body className="flex items-center gap-2">
-          <Bold>Voter affiliations:</Bold> {option.listOfGroupNames.join(', ')}
-        </Body>
-      )}
-      {researchOutputValue && (
-        <Body className="flex items-center gap-2">
-          <Bold>Research Output:</Bold> {researchOutputValue}
-        </Body>
-      )}
-      {collaborators && collaborators.length > 0 && (
-        <Body>
-          <Bold>Collaborators: </Bold>
-          {collaborators.join(', ')}
-        </Body>
-      )}
-      {option.subTitle && (
-        <Markdown
-          components={{
-            a: ({ node, ...props }) => <Link to={props.href ?? ''}>{props.children}</Link>,
-            p: ({ node, ...props }) => <Body>{props.children}</Body>,
-          }}
-        >
-          {option.subTitle}
-        </Markdown>
-      )}
+        {option.allocatedFunding && (
+          <Body>
+            <img
+              className="inline align-middle"
+              src={`/logos/arbitrum-${theme}.svg`}
+              width={24}
+              height={24}
+            />{' '}
+            {pluralityScore}
+          </Body>
+        )}
+      </section>
+      <section
+        className="transition-max-height flex flex-col gap-3 overflow-hidden duration-300"
+        ref={expandedRef}
+        style={{ maxHeight: expandedHeight }}
+      >
+        {option.distinctUsers !== 0 && (
+          <Body className="flex items-center gap-2">
+            <Bold>Distinct Voters: </Bold>
+            {option.distinctUsers}
+          </Body>
+        )}
+        {option.listOfGroupNames && option.listOfGroupNames.length > 0 && (
+          <Body className="flex items-center gap-2">
+            <Bold>Voter affiliations:</Bold> {option.listOfGroupNames.join(', ')}
+          </Body>
+        )}
+        {researchOutputValue && (
+          <Body className="flex items-center gap-2">
+            <Bold>Research Output:</Bold> {researchOutputValue}
+          </Body>
+        )}
+        {collaborators && collaborators.length > 0 && (
+          <Body>
+            <Bold>Collaborators: </Bold>
+            {collaborators.join(', ')}
+          </Body>
+        )}
+        {option.subTitle && (
+          <Markdown
+            components={{
+              a: ({ node, ...props }) => <Link to={props.href ?? ''}>{props.children}</Link>,
+              p: ({ node, ...props }) => <Body>{props.children}</Body>,
+            }}
+          >
+            {option.subTitle}
+          </Markdown>
+        )}
+      </section>
     </article>
   );
 }
