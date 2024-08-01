@@ -90,7 +90,7 @@ export default function Option({
   }, [option.fundingRequest, showFundingRequest]);
 
   return (
-    <article className="border-secondary grid w-full grid-cols-[1fr_auto] gap-4 border p-4">
+    <article className="border-secondary grid w-full grid-cols-[1fr_auto] gap-x-4 border p-4">
       <section className="col-span-1 flex flex-col gap-4">
         <Body>{option.title}</Body>
         {author && (
@@ -112,8 +112,8 @@ export default function Option({
           </span>
         )}
       </section>
-      <section className="col-start-1 col-end-3 flex flex-col justify-between md:col-start-2">
-        <section className="flex gap-1">
+      <section className="col-start-1 col-end-3 flex flex-col justify-between gap-10 md:col-start-2">
+        <section className="votes flex gap-1">
           <Button
             style={{ padding: '4px 4px', borderRadius: 0 }}
             onClick={onUnVote}
@@ -121,7 +121,7 @@ export default function Option({
           >
             <Minus height={16} width={16} strokeWidth={3} />
           </Button>
-          <Body className="min-w-8 text-center">{numOfVotes}</Body>
+          <Body className="hearts min-w-8 text-center">{numOfVotes}</Body>
           <Button style={{ padding: '4px 4px', borderRadius: 0 }} onClick={onVote}>
             <Plus height={16} width={16} strokeWidth={3} />
           </Button>

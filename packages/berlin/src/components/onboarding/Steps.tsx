@@ -1,13 +1,13 @@
 import { Body } from '../typography/Body.styled';
-import { FlexColumn } from '../containers/FlexColumn.styled';
 import { FlexRow } from '../containers/FlexRow.styled';
-import { Heart, Radical } from 'lucide-react';
+import { ChevronDown, Heart, Minus, Plus, Radical } from 'lucide-react';
 import { OnboardingCard } from './Onboarding';
 import { ReactNode } from 'react';
 import { Subtitle } from '../typography/Subtitle.styled';
 import Icon from '../icon';
 import IconButton from '../icon-button';
 import { useAppStore } from '@/store';
+import Button from '../button';
 
 export const eventSteps = [
   createStep({
@@ -45,28 +45,28 @@ export const cycleSteps = [
     title: 'Vote',
 
     children: (
-      <FlexRow>
-        <FlexColumn $gap="-4px" style={{ width: 16 }}>
-          <IconButton
-            $padding={0}
-            $color="secondary"
-            icon={{ src: `/icons/upvote-${useAppStore.getState().theme}.svg`, alt: 'Upvote arrow' }}
-            $width={16}
-            $height={16}
-          />
-          <IconButton
-            $padding={0}
-            $color="secondary"
-            icon={{
-              src: `/icons/downvote-${useAppStore.getState().theme}.svg`,
-              alt: 'Downvote arrow',
-            }}
-            $width={16}
-            $height={16}
-          />
-        </FlexColumn>
+      <>
+        <FlexRow>
+          <Button style={{ padding: '4px 4px', borderRadius: 0 }}>
+            <Minus height={16} width={16} strokeWidth={3} />
+          </Button>
+          <Body>0</Body>
+          <Button style={{ padding: '4px 4px', borderRadius: 0 }}>
+            <Plus height={16} width={16} strokeWidth={3} />
+          </Button>
+        </FlexRow>
         <Body>Upvote or downvote a vote item.</Body>
-      </FlexRow>
+      </>
+    ),
+  }),
+  createStep({
+    target: 'hearts',
+    title: 'Information',
+    children: (
+      <Body>
+        <Heart className="inline align-top" fill="#ff0000" /> Current number of hearts allocated to
+        this vote item.
+      </Body>
     ),
   }),
   createStep({
@@ -75,37 +75,20 @@ export const cycleSteps = [
     children: <Body>You must click this button or your votes will not be recorded.</Body>,
   }),
   createStep({
-    target: 'hearts',
-    title: 'Information',
-    children: (
-      <>
-        <Body>View vote item.</Body>
-        <FlexRow>
-          <Icon>
-            <Heart fill="#ff0000" />
-          </Icon>
-          <Body>Current number of hearts allocated to this vote item.</Body>
-        </FlexRow>
-      </>
-    ),
-  }),
-  createStep({
     target: 'plurality',
     title: 'Voting Mechanisms',
     placement: 'center',
     children: (
-      <FlexRow>
+      <Body>
         <IconButton
           $padding={0}
           $color="secondary"
           icon={{ src: `/icons/plurality-score.svg`, alt: 'Plurality score icon' }}
           $width={24}
           $height={24}
-        />
-        <Body>
-          Plurality score, unlike quadratic score, considers pre-existing participant relationships
-        </Body>
-      </FlexRow>
+        />{' '}
+        Plurality score, unlike quadratic score, considers pre-existing participant relationships
+      </Body>
     ),
   }),
   createStep({
@@ -113,19 +96,10 @@ export const cycleSteps = [
     title: 'Expand a vote item',
 
     children: (
-      <FlexRow>
-        <IconButton
-          $padding={0}
-          $color="secondary"
-          icon={{
-            src: `/icons/arrow-down-${useAppStore.getState().theme}.svg`,
-            alt: 'Arrow down icon',
-          }}
-          $width={24}
-          $height={24}
-        />
-        <Body>Click to view the vote item description and other useful information.</Body>
-      </FlexRow>
+      <Body>
+        Click <ChevronDown className="inline align-middle" /> to view the vote item description and
+        other useful information.
+      </Body>
     ),
   }),
 ];
