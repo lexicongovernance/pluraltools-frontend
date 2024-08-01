@@ -115,7 +115,9 @@ const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
     if (eventId) {
       // User is within an event
       const approvedRegistration =
-        registrationsData?.some((registration) => registration.status === 'APPROVED') ?? false;
+        registrationsData
+          ?.filter((reg) => reg.eventId === eventId)
+          .some((registration) => registration.status === 'APPROVED') ?? false;
 
       const eventBaseLinks = [
         {
