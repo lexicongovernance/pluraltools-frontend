@@ -7,7 +7,6 @@ import { Menu, User } from 'lucide-react';
 // API
 import {
   fetchEventNavLinks,
-  fetchEvents,
   fetchNavLinks,
   fetchUserRegistrations,
   GetUserResponse,
@@ -31,10 +30,11 @@ import Icon from '../icon';
 import ThemeToggler from '../theme-toggler';
 import ZupassLoginButton from '../zupass-button';
 
-export default function NewHeader() {
+export default function Header() {
   const theme = useAppStore((state) => state.theme);
-  const { user } = useUser();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const { user } = useUser();
 
   return (
     <header className="bg-primary border-secondary border-b text-sm">
@@ -50,7 +50,7 @@ export default function NewHeader() {
         </NavigationMenu>
       )}
       <section className="mx-auto flex min-h-16 w-[min(90%,1080px)] items-center justify-between">
-        <div className="flex items-center gap-2">
+        <div className="flex cursor-pointer items-center gap-2" onClick={() => navigate('/')}>
           <img src={`/logos/lexicon-${theme}.svg`} alt="Lexicon Logo" height={32} width={32} />
           <h1 className="text-2xl font-semibold leading-6">Lexicon</h1>
         </div>
@@ -86,12 +86,6 @@ export default function NewHeader() {
 const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
   const { eventId } = useParams();
 
-  const { data: events } = useQuery({
-    queryKey: ['events'],
-    queryFn: () => fetchEvents({ serverUrl: import.meta.env.VITE_SERVER_URL }),
-    enabled: !!user,
-  });
-
   const { data: registrationsData } = useQuery({
     queryKey: [user?.id, 'registrations'],
     queryFn: () =>
@@ -109,7 +103,6 @@ const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
     refetchInterval: 10000,
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: eventNavLinks } = useQuery({
     queryKey: ['eventNavLinks'],
     queryFn: () =>
@@ -119,37 +112,47 @@ const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
   });
 
   const links = useMemo(() => {
-    const baseLinks = [
-      {
-        title: 'My Proposals',
-        link: events ? `/events/${events?.[0].id}/register` : '',
-      },
-      {
-        title: 'Agenda',
-        link: events ? `/events/${events?.[0].id}/cycles` : '',
-      },
-    ];
+    if (eventId) {
+      // User is within an event
+      const approvedRegistration =
+        registrationsData
+          ?.filter((reg) => reg.eventId === eventId)
+          .some((registration) => registration.status === 'APPROVED') ?? false;
 
-    if (
-      registrationsData?.some((registration) => registration.status === 'APPROVED') &&
-      navLinks &&
-      navLinks.length > 0
-    ) {
-      const additionalNavLinks = navLinks.map((eventNavLink) => ({
-        title: eventNavLink.title,
-        link: eventNavLink.link || '',
-      }));
-      return [...baseLinks, ...additionalNavLinks];
+      const eventBaseLinks = [
+        {
+          title: 'My Proposals',
+          link: `/events/${eventId}/register`,
+        },
+        {
+          title: 'Agenda',
+          link: `/events/${eventId}/cycles`,
+        },
+      ];
+
+      const fetchedEventNavLinks = eventNavLinks?.map(({ title, link }) => ({ title, link })) ?? [];
+
+      return approvedRegistration ? [...fetchedEventNavLinks, ...eventBaseLinks] : [];
+    } else {
+      // User is outside of an event
+      const baseLinks = [
+        {
+          title: 'Events',
+          link: `/events`,
+        },
+      ];
+
+      const fetchedNavLinks = navLinks?.map(({ title, link }) => ({ title, link })) ?? [];
+
+      return [...fetchedNavLinks, ...baseLinks];
     }
-
-    return baseLinks;
-  }, [events, registrationsData, navLinks]);
+  }, [eventId, eventNavLinks, navLinks, registrationsData]);
 
   return links.map(({ title, link }) => (
     <NavigationMenuItem key={title}>
       <NavigationMenuLink asChild>
         <NavLink
-          to={link}
+          to={link || ''}
           className="border-secondary aria-[current=page]:border-b-2 aria-[current=page]:pb-1"
         >
           {title}
