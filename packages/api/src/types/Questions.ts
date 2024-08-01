@@ -8,9 +8,9 @@ export type GetQuestionStatisticsResponse = {
     {
       title: string;
       pluralityScore: string;
-      distinctUsers: string;
-      allocatedHearts: string;
-      optionSubTitle: string;
+      distinctUsers: number;
+      allocatedHearts: number;
+      subTitle: string;
       distinctGroups: number;
       listOfGroupNames: string[];
       quadraticScore: string;
