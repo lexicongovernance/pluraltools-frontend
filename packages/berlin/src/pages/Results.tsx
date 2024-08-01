@@ -227,7 +227,7 @@ function Option({
   };
 
   return (
-    <article className="border-secondary flex w-full flex-col gap-2 border p-4">
+    <article className="border-secondary flex w-full flex-col gap-4 border p-4">
       <section className="flex flex-col gap-3">
         <Body>{option.title}</Body>
         {author && (
