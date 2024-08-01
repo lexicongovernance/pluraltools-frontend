@@ -128,7 +128,7 @@ export default function Option({
         </section>
         <section className="flex w-full justify-end" onClick={handleChevronClick}>
           <ChevronDown
-            className={`cursor-pointer transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+            className={`expand cursor-pointer transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
           />
         </section>
       </section>
