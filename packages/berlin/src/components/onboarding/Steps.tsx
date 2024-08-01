@@ -1,12 +1,9 @@
 import { Body } from '../typography/Body.styled';
-import { FlexRow } from '../containers/FlexRow.styled';
 import { ChevronDown, Heart, Minus, Plus, Radical } from 'lucide-react';
+import { FlexRow } from '../containers/FlexRow.styled';
 import { OnboardingCard } from './Onboarding';
 import { ReactNode } from 'react';
 import { Subtitle } from '../typography/Subtitle.styled';
-import Icon from '../icon';
-import IconButton from '../icon-button';
-import { useAppStore } from '@/store';
 import Button from '../button';
 
 export const eventSteps = [
@@ -80,14 +77,8 @@ export const cycleSteps = [
     placement: 'center',
     children: (
       <Body>
-        <IconButton
-          $padding={0}
-          $color="secondary"
-          icon={{ src: `/icons/plurality-score.svg`, alt: 'Plurality score icon' }}
-          $width={24}
-          $height={24}
-        />{' '}
-        Plurality score, unlike quadratic score, considers pre-existing participant relationships
+        <img src="/icons/plurality-score.svg" className="inline align-bottom" /> Plurality score,
+        unlike quadratic score, considers pre-existing participant relationships.
       </Body>
     ),
   }),
@@ -117,28 +108,15 @@ export const resultsSteps = [
     title: 'Icons',
     children: (
       <>
-        <FlexRow>
-          <Icon>
-            <Radical />
-          </Icon>
-          <Body>Quadratic score</Body>
-        </FlexRow>
-        <FlexRow>
-          <Icon>
-            <Heart fill="#ff0000" />
-          </Icon>
-          <Body>Hearts received by a vote item</Body>
-        </FlexRow>
-        <FlexRow>
-          <IconButton
-            $padding={0}
-            $color="secondary"
-            icon={{ src: `/icons/plurality-score.svg`, alt: 'Plurality icon' }}
-            $width={24}
-            $height={24}
-          />
-          <Body>Plurality score</Body>
-        </FlexRow>
+        <Body>
+          <img src="/icons/plurality-score.svg" className="inline align-bottom" /> Plurality score
+        </Body>
+        <Body>
+          <Radical className="inline" /> Quadratic score
+        </Body>
+        <Body>
+          <Heart className="inline" fill="#ff0000" /> Hearts received by a vote item
+        </Body>
       </>
     ),
   }),
@@ -147,23 +125,10 @@ export const resultsSteps = [
     placement: 'center',
     title: 'Expand a vote item',
     children: (
-      <>
-        <FlexRow>
-          <IconButton
-            $padding={0}
-            $color="secondary"
-            icon={{
-              src: `/icons/arrow-down-${useAppStore.getState().theme}.svg`,
-              alt: 'Arrow down icon',
-            }}
-            $width={24}
-            $height={24}
-          />
-          <Body>
-            Clicking this icon will display the vote item description and other useful information.
-          </Body>
-        </FlexRow>
-      </>
+      <Body>
+        Click <ChevronDown className="inline align-middle" /> to view the vote item description and
+        other useful information.
+      </Body>
     ),
   }),
 ];
