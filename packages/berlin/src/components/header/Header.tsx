@@ -7,7 +7,6 @@ import { Menu, User } from 'lucide-react';
 // API
 import {
   fetchEventNavLinks,
-  fetchEvents,
   fetchNavLinks,
   fetchUserRegistrations,
   GetUserResponse,
@@ -86,12 +85,6 @@ export default function Header() {
 const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
   const { eventId } = useParams();
 
-  const { data: events } = useQuery({
-    queryKey: ['events'],
-    queryFn: () => fetchEvents({ serverUrl: import.meta.env.VITE_SERVER_URL }),
-    enabled: !!user,
-  });
-
   const { data: registrationsData } = useQuery({
     queryKey: [user?.id, 'registrations'],
     queryFn: () =>
@@ -109,7 +102,6 @@ const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
     refetchInterval: 10000,
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: eventNavLinks } = useQuery({
     queryKey: ['eventNavLinks'],
     queryFn: () =>
@@ -119,37 +111,45 @@ const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
   });
 
   const links = useMemo(() => {
-    const baseLinks = [
-      {
-        title: 'My Proposals',
-        link: events ? `/events/${events?.[0].id}/register` : '',
-      },
-      {
-        title: 'Agenda',
-        link: events ? `/events/${events?.[0].id}/cycles` : '',
-      },
-    ];
+    if (eventId) {
+      // User is within an event
+      const approvedRegistration =
+        registrationsData?.some((registration) => registration.status === 'APPROVED') ?? false;
 
-    if (
-      registrationsData?.some((registration) => registration.status === 'APPROVED') &&
-      navLinks &&
-      navLinks.length > 0
-    ) {
-      const additionalNavLinks = navLinks.map((eventNavLink) => ({
-        title: eventNavLink.title,
-        link: eventNavLink.link || '',
-      }));
-      return [...baseLinks, ...additionalNavLinks];
+      const eventBaseLinks = [
+        {
+          title: 'My Proposals',
+          link: `/events/${eventId}/register`,
+        },
+        {
+          title: 'Agenda',
+          link: `/events/${eventId}/cycles`,
+        },
+      ];
+
+      const fetchedEventNavLinks = eventNavLinks?.map(({ title, link }) => ({ title, link })) ?? [];
+
+      return approvedRegistration ? [...eventBaseLinks, ...fetchedEventNavLinks] : [];
+    } else {
+      // User is outside of an event
+      const baseLinks = [
+        {
+          title: 'Events',
+          link: `/events`,
+        },
+      ];
+
+      const fetchedNavLinks = navLinks?.map(({ title, link }) => ({ title, link })) ?? [];
+
+      return [...baseLinks, ...fetchedNavLinks];
     }
-
-    return baseLinks;
-  }, [events, registrationsData, navLinks]);
+  }, [eventId, eventNavLinks, navLinks, registrationsData]);
 
   return links.map(({ title, link }) => (
     <NavigationMenuItem key={title}>
       <NavigationMenuLink asChild>
         <NavLink
-          to={link}
+          to={link || ''}
           className="border-secondary aria-[current=page]:border-b-2 aria-[current=page]:pb-1"
         >
           {title}
