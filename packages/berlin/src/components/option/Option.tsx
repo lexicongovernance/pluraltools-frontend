@@ -121,7 +121,7 @@ export default function Option({
           >
             <Minus height={16} width={16} strokeWidth={3} />
           </Button>
-          <Body className="hearts min-w-8 text-center">{numOfVotes}</Body>
+          <Body className="min-w-8 text-center">{numOfVotes}</Body>
           <Button style={{ padding: '4px 4px', borderRadius: 0 }} onClick={onVote}>
             <Plus height={16} width={16} strokeWidth={3} />
           </Button>

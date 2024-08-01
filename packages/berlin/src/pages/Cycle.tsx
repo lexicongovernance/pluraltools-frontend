@@ -306,7 +306,7 @@ function Cycle() {
   return (
     <>
       <Onboarding steps={cycleSteps} type="cycle" />
-      <FlexColumn $gap="2rem" className="welcome plurality">
+      <FlexColumn $gap="2rem" className="welcome hearts plurality">
         <FlexColumn>
           <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
           <Title>{currentCycle?.title}</Title>
