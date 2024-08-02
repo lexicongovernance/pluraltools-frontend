@@ -1,7 +1,10 @@
 // React and third party libraries
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { ChevronDown, Heart, Radical } from 'lucide-react';
+import { useAppStore } from '@/store';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import Markdown from 'react-markdown';
 
 // API
 import {
@@ -14,18 +17,15 @@ import {
 } from 'api';
 
 // Components
+import { Body } from '@/components/typography/Body.styled';
+import { Bold } from '@/components/typography/Bold.styled';
 import { FINAL_QUESTION_TITLE } from '../utils/constants';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { resultsSteps } from '@/components/onboarding/Steps';
 import { Subtitle } from '../components/typography/Subtitle.styled';
 import BackButton from '../components/back-button';
-import Onboarding from '@/components/onboarding';
-import { Body } from '@/components/typography/Body.styled';
-import { Bold } from '@/components/typography/Bold.styled';
-import { ChevronDown, Heart, Radical } from 'lucide-react';
-import Markdown from 'react-markdown';
 import Link from '@/components/link';
-import { useAppStore } from '@/store';
+import Onboarding from '@/components/onboarding';
 
 function Results() {
   const { eventId, cycleId } = useParams();
@@ -59,28 +59,28 @@ function Results() {
     enabled: !!cycle?.id && cycle?.questions?.[0].title === FINAL_QUESTION_TITLE,
   });
 
-  // const overallStatistics = [
-  //   {
-  //     id: 0,
-  //     title: 'Number of proposals',
-  //     data: statistics?.numProposals,
-  //   },
-  //   {
-  //     id: 1,
-  //     title: 'Allocated hearts',
-  //     data: statistics?.sumNumOfHearts,
-  //   },
-  //   {
-  //     id: 2,
-  //     title: 'Number of participants',
-  //     data: statistics?.numOfParticipants,
-  //   },
-  //   {
-  //     id: 3,
-  //     title: 'Number of groups',
-  //     data: statistics?.numOfGroups,
-  //   },
-  // ];
+  const overallStatistics = [
+    {
+      id: 0,
+      title: 'Number of proposals',
+      data: statistics?.numProposals,
+    },
+    {
+      id: 1,
+      title: 'Allocated hearts',
+      data: statistics?.sumNumOfHearts,
+    },
+    {
+      id: 2,
+      title: 'Number of participants',
+      data: statistics?.numOfParticipants,
+    },
+    {
+      id: 3,
+      title: 'Number of groups',
+      data: statistics?.numOfGroups,
+    },
+  ];
 
   const optionStatsArray = Object.entries(statistics?.optionStats || {})
     .map(([id, stats]) => ({
@@ -97,29 +97,25 @@ function Results() {
       <FlexColumn $gap="2rem" className="welcome icons expand">
         <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
         <Subtitle>Results for: {cycle?.questions?.[0].title}</Subtitle>
-        {optionStatsArray.map((option) => {
-          return <Option key={option.id} option={option} />;
-        })}
-        {/* <Column>
-          <ResultsColumns $showFunding={!!funding} />
-          {optionStatsArray.map((option, index) => (
-            <ResultsTable
-              key={option.id}
-              $expanded={expandedIndex === index}
-              option={option}
-              cycleId={cycleId}
-              eventId={eventId}
-              onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
-            />
-          ))}
-        </Column>
+        <section className="flex w-full flex-col gap-4">
+          {optionStatsArray.map((option) => {
+            return <Option key={option.id} option={option} />;
+          })}
+        </section>
         <Subtitle>Overall Statistics</Subtitle>
-        <FlexColumn $gap="0">
-          <StatsColumns />
-          {overallStatistics.map((stat) => (
-            <StatsTable key={stat.id} title={stat.title} number={stat.data} />
-          ))}
-        </FlexColumn> */}
+        <section className="flex w-full flex-col gap-4">
+          {overallStatistics.map((stat) => {
+            return (
+              <article
+                key={stat.id}
+                className="border-secondary flex w-full flex-col gap-4 border p-4"
+              >
+                <Body>{stat.title}</Body>
+                <Body>{stat.data}</Body>
+              </article>
+            );
+          })}
+        </section>
       </FlexColumn>
     </>
   );
@@ -141,8 +137,6 @@ function Option({
     title: string;
   };
 }) {
-  console.log('option:', option);
-  console.log('option.distinctUsers:', option.distinctUsers);
   const [isExpanded, setIsExpanded] = useState(false);
   const [expandedHeight, setExpandedHeight] = useState(0);
   const expandedRef = useRef<HTMLDivElement>(null);
