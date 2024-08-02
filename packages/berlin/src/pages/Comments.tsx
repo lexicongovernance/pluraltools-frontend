@@ -7,17 +7,6 @@ import { useMemo, useState } from 'react';
 // API
 import { fetchOption, fetchComments, postComment, fetchOptionUsers } from 'api';
 
-// Hooks
-// import useUser from '../hooks/useUser';
-
-// Utils
-// import {
-//   handleSaveVotes,
-//   handleAvailableHearts,
-//   handleLocalUnVote,
-//   handleLocalVote,
-// } from '../utils/voting';
-
 // Components
 import { Body } from '../components/typography/Body.styled';
 import { Bold } from '../components/typography/Bold.styled';
@@ -31,9 +20,6 @@ import CommentsColumns from '../components/columns/comments-columns';
 import CommentsTable from '../components/tables/comment-table';
 import Icon from '../components/icon';
 import Textarea from '../components/textarea';
-// import { INITIAL_HEARTS } from '../utils/constants';
-
-// type LocalUserVotes = { optionId: string; numOfVotes: number }[];
 
 function Comments() {
   const queryClient = useQueryClient();
