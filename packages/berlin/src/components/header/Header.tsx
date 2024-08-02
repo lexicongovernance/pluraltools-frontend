@@ -52,7 +52,7 @@ export default function Header() {
       <section className="mx-auto flex min-h-16 w-[min(90%,1080px)] items-center justify-between">
         <div className="flex cursor-pointer items-center gap-2" onClick={() => navigate('/')}>
           <img src={`/logos/lexicon-${theme}.svg`} alt="Lexicon Logo" height={32} width={32} />
-          <h1 className="text-2xl font-semibold leading-6">Lexicon</h1>
+          <h1 className="text-2xl font-semibold leading-6">Plural Voting</h1>
         </div>
         <NavigationMenu className="font-raleway uppercase">
           <NavigationMenuList className="gap-3">
