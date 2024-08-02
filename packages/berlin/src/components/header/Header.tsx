@@ -121,7 +121,7 @@ const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
 
       const eventBaseLinks = [
         {
-          title: 'My Proposals',
+          title: 'Registration',
           link: `/events/${eventId}/register`,
         },
         {
