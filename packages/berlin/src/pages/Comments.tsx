@@ -1,25 +1,25 @@
 // React and third-party libraries
-import { ArrowDownUp } from 'lucide-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { ArrowDownUp } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 // API
-import { fetchOption, fetchComments, postComment } from 'api';
+import { fetchComments, fetchOption, postComment } from 'api';
 
 // Components
-import { Body } from '../components/typography/Body.styled';
-import { Bold } from '../components/typography/Bold.styled';
-import { FlexColumn } from '../components/containers/FlexColumn.styled';
-import { FlexRow } from '../components/containers/FlexRow.styled';
-import { Form } from '../components/containers/Form.styled';
-import { Subtitle } from '../components/typography/Subtitle.styled';
 import BackButton from '../components/back-button';
 import Button from '../components/button';
 import CommentsColumns from '../components/columns/comments-columns';
-import CommentsTable from '../components/tables/comment-table';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
+import { FlexRow } from '../components/containers/FlexRow.styled';
+import { Form } from '../components/containers/Form.styled';
 import Icon from '../components/icon';
+import CommentsTable from '../components/tables/comment-table';
 import Textarea from '../components/textarea';
+import { Body } from '../components/typography/Body.styled';
+import { Bold } from '../components/typography/Bold.styled';
+import { Subtitle } from '../components/typography/Subtitle.styled';
 
 function Comments() {
   const queryClient = useQueryClient();
