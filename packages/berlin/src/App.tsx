@@ -232,14 +232,6 @@ const router = (queryClient: QueryClient) =>
               Component: Account,
             },
             {
-              path: '/secret-groups',
-              Component: SecretGroupRegistration,
-            },
-            {
-              path: '/public-groups',
-              Component: PublicGroupRegistration,
-            },
-            {
               path: '/events',
               children: [
                 {
@@ -254,6 +246,14 @@ const router = (queryClient: QueryClient) =>
                 {
                   path: ':eventId/holding',
                   Component: Holding,
+                },
+                {
+                  path: ':eventId/secret-groups',
+                  Component: SecretGroupRegistration,
+                },
+                {
+                  path: ':eventId/public-groups',
+                  Component: PublicGroupRegistration,
                 },
                 {
                   loader: ({ params }) =>
