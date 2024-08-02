@@ -89,7 +89,7 @@ function Comments() {
   const handlePostComment = () => {
     if (optionId && comment) {
       mutateComments({
-        questionOptionId: optionId,
+        optionId: optionId,
         value: comment,
         serverUrl: import.meta.env.VITE_SERVER_URL,
       });

@@ -4,7 +4,7 @@ export type Comment = {
   updatedAt: Date;
   userId: string | null;
   value: string;
-  questionOptionId: string | null;
+  optionId: string | null;
 };
 
 export type GetCommentsRequest = {
@@ -22,7 +22,7 @@ export type GetCommentsResponse = (Comment & {
 
 export type PostCommentRequest = {
   value: string;
-  questionOptionId: string;
+  optionId: string;
 };
 
 export type DeleteCommentRequest = {
