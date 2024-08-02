@@ -25,22 +25,27 @@ import { useAppStore } from '../store';
 // Components
 import { Body } from '../components/typography/Body.styled';
 import { Bold } from '../components/typography/Bold.styled';
+import { cycleSteps } from '@/components/onboarding/Steps';
+import { FINAL_QUESTION_TITLE, INITIAL_HEARTS } from '../utils/constants';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { FlexRow } from '../components/containers/FlexRow.styled';
+import { Heart, SlidersHorizontal } from 'lucide-react';
+import { Subtitle } from '@/components/typography/Subtitle.styled';
 import { Title } from '../components/typography/Title.styled';
 import BackButton from '../components/back-button';
 import Button from '../components/button';
-import CycleColumns from '../components/columns/cycle-columns';
-import OptionCard from '../components/option-card';
-import { FINAL_QUESTION_TITLE, INITIAL_HEARTS } from '../utils/constants';
-import { OnboardingCard } from '../components/onboarding/Onboaring.styled';
-import { Subtitle } from '../components/typography/Subtitle.styled';
-import Onboarding from '../components/onboarding';
-import IconButton from '../components/icon-button';
+import Onboarding from '@/components/onboarding';
+import Option from '@/components/option';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/_components/ui/dropdown-menu';
 
 type Order = 'asc' | 'desc';
 type LocalUserVotes = { optionId: string; numOfVotes: number }[];
-type QuestionOption = GetCycleResponse['forumQuestions'][number]['questionOptions'][number];
+type QuestionOption = GetCycleResponse['questions'][number]['options'][number];
 
 function Cycle() {
   const queryClient = useQueryClient();
@@ -50,20 +55,21 @@ function Cycle() {
   const { eventId, cycleId } = useParams();
   const { data: cycle } = useQuery({
     queryKey: ['cycles', cycleId],
-    queryFn: () => fetchCycle(cycleId || ''),
+    queryFn: () =>
+      fetchCycle({ cycleId: cycleId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!cycleId,
     refetchInterval: 5000, // Poll every 5 seconds
   });
 
   const { data: userVotes } = useQuery({
     queryKey: ['votes', cycleId],
-    queryFn: () => fetchUserVotes(cycleId || ''),
+    queryFn: () =>
+      fetchUserVotes({ cycleId: cycleId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!user?.id && !!cycleId,
   });
 
   const availableHearts =
-    useAppStore((state) => state.availableHearts[cycle?.forumQuestions[0].id || '']) ??
-    INITIAL_HEARTS;
+    useAppStore((state) => state.availableHearts[cycle?.questions[0].id || '']) ?? INITIAL_HEARTS;
   const setAvailableHearts = useAppStore((state) => state.setAvailableHearts);
   const [startAt, setStartAt] = useState<string | null>(null);
   const [endAt, setEndAt] = useState<string | null>(null);
@@ -94,11 +100,11 @@ function Cycle() {
 
   useEffect(() => {
     // Initial sorting
-    if (cycle?.forumQuestions[0].questionOptions.length) {
+    if (cycle?.questions[0].options.length) {
       setSortedOptions((prev) => ({
         ...prev,
         options: sortOptions({
-          options: cycle.forumQuestions[0].questionOptions,
+          options: cycle.questions[0].options,
           sorting: prev,
           votes: userVotes,
         }),
@@ -128,7 +134,7 @@ function Cycle() {
       votes?.map((option) => option.numOfVotes).reduce((prev, curr) => prev + curr, 0) ?? 0;
 
     setAvailableHearts({
-      questionId: cycle?.forumQuestions[0].id || '',
+      questionId: cycle?.questions[0].id || '',
       hearts: Math.max(0, INITIAL_HEARTS - givenVotes),
     });
 
@@ -179,7 +185,7 @@ function Cycle() {
 
     setLocalUserVotes((prevLocalUserVotes) => handleLocalVote(optionId, prevLocalUserVotes));
     setAvailableHearts({
-      questionId: cycle?.forumQuestions[0].id ?? '',
+      questionId: cycle?.questions[0].id ?? '',
       hearts: handleAvailableHearts(availableHearts, 'vote'),
     });
   };
@@ -192,20 +198,22 @@ function Cycle() {
 
     setLocalUserVotes((prevLocalUserVotes) => handleLocalUnVote(optionId, prevLocalUserVotes));
     setAvailableHearts({
-      questionId: cycle?.forumQuestions[0].id ?? '',
+      questionId: cycle?.questions[0].id ?? '',
       hearts: handleAvailableHearts(availableHearts, 'unVote'),
     });
   };
 
   const handleSaveVotesWrapper = () => {
     if (cycle?.status === 'OPEN') {
-      handleSaveVotes(userVotes, localUserVotes, mutateVotes);
+      handleSaveVotes(userVotes, localUserVotes, ({ votes }) =>
+        mutateVotes({ votes, serverUrl: import.meta.env.VITE_SERVER_URL }),
+      );
     } else {
       toast.error('Cycle is not open');
     }
   };
 
-  const currentCycle = cycle?.forumQuestions[0];
+  const currentCycle = cycle?.questions[0];
 
   const sortId = (a: QuestionOption, b: QuestionOption, order: Order) => {
     const idA = a.id.toUpperCase();
@@ -296,174 +304,64 @@ function Cycle() {
     );
   };
 
-  const steps = [
-    {
-      target: '.step-1',
-      content: (
-        <OnboardingCard>
-          <Subtitle>Voting Page</Subtitle>
-          <Body>View vote items and allocate your hearts.</Body>
-        </OnboardingCard>
-      ),
-      placement: 'center',
-    },
-    {
-      target: '.step-2',
-      content: (
-        <OnboardingCard>
-          <Subtitle>Vote</Subtitle>
-          <FlexRow>
-            <FlexColumn $gap="-4px" style={{ width: 16 }}>
-              <IconButton
-                $padding={0}
-                $color="secondary"
-                icon={{ src: `/icons/upvote-${theme}.svg`, alt: 'Upvote arrow' }}
-                $width={16}
-                $height={16}
-              />
-              <IconButton
-                $padding={0}
-                $color="secondary"
-                icon={{ src: `/icons/downvote-${theme}.svg`, alt: 'Downvote arrow' }}
-                $width={16}
-                $height={16}
-              />
-            </FlexColumn>
-            <Body>Upvote or downvote a vote item.</Body>
-          </FlexRow>
-        </OnboardingCard>
-      ),
-      placement: 'center',
-    },
-    {
-      target: '.step-3',
-      content: (
-        <OnboardingCard>
-          <Subtitle>Save Your Votes</Subtitle>
-          <Body>
-            You must click the
-            <Button $color="secondary" style={{ paddingInline: 4 }}>
-              save all votes
-            </Button>{' '}
-            button or your vote will not be recorded.
-          </Body>
-        </OnboardingCard>
-      ),
-      placement: 'center',
-    },
-    {
-      target: '.step-4',
-      content: (
-        <OnboardingCard>
-          <Subtitle>Information</Subtitle>
-          <Body>View vote item.</Body>
-          <FlexRow>
-            <IconButton
-              $padding={0}
-              $color="secondary"
-              icon={{ src: `/icons/heart-full.svg`, alt: 'Heart icon' }}
-              $width={24}
-              $height={24}
-            />
-            <Body>Current number of hearts allocated to this vote item.</Body>
-          </FlexRow>
-        </OnboardingCard>
-      ),
-      placement: 'center',
-    },
-    {
-      target: '.step-5',
-      content: (
-        <OnboardingCard>
-          <Subtitle>Voting Mechanisms</Subtitle>
-          <FlexRow>
-            <IconButton
-              $padding={0}
-              $color="secondary"
-              icon={{ src: `/icons/plurality-score.svg`, alt: 'Plurality score icon' }}
-              $width={24}
-              $height={24}
-            />
-            <Body>
-              Plurality score, unlike quadratic score, considers pre-existing participant
-              relationships
-            </Body>
-          </FlexRow>
-        </OnboardingCard>
-      ),
-      placement: 'center',
-    },
-    {
-      target: '.step-6',
-      content: (
-        <OnboardingCard>
-          <Subtitle>Expand a vote item</Subtitle>
-          <FlexRow>
-            <IconButton
-              $padding={0}
-              $color="secondary"
-              icon={{ src: `/icons/arrow-down-${theme}.svg`, alt: 'Arrow down icon' }}
-              $width={24}
-              $height={24}
-            />
-            <Body>Click to view the vote item description and other useful information.</Body>
-          </FlexRow>
-          {/* <FlexRow>
-            <IconButton
-              $padding={0}
-              $color="secondary"
-              icon={{ src: `/icons/comments-${theme}.svg`, alt: 'Comments icon' }}
-              $width={24}
-              $height={24}
-            />
-            <Body>
-              Click to view the comments page and start a discussion with other participants.
-            </Body>
-          </FlexRow> */}
-        </OnboardingCard>
-      ),
-      placement: 'center',
-    },
-  ];
-
   return (
     <>
-      <Onboarding type="cycle" steps={steps} />
-      <FlexColumn $gap="2rem" className="step-1 step-2 step-3 step-4 step-5 step-6">
+      <Onboarding steps={cycleSteps} type="cycle" />
+      <FlexColumn $gap="2rem" className="welcome plurality">
         <FlexColumn>
           <BackButton fallbackRoute={`/events/${eventId}/cycles`} />
-          <Title>{currentCycle?.questionTitle}</Title>
+          <Title>{currentCycle?.title}</Title>
           <Body>{voteInfo}</Body>
           <Body>
-            You have <Bold>{availableHearts}</Bold> hearts left to allocate:
+            You have <Bold>{availableHearts}</Bold> hearts left to give away:
           </Body>
           <FlexRow $gap="0.25rem" $wrap>
             {Array.from({ length: INITIAL_HEARTS }).map((_, id) => (
-              <img
-                key={id}
-                src={id < availableHearts ? '/icons/heart-full.svg' : '/icons/heart-empty.svg'}
-                height={24}
-                width={24}
-                alt={id < availableHearts ? 'Full Heart' : 'Empty Heart'}
-              />
+              <Heart key={id} fill={id < availableHearts ? '#ff0000' : 'none'} />
             ))}
           </FlexRow>
-          <Button onClick={handleSaveVotesWrapper} disabled={!votesAreDifferent}>
+          <Button onClick={handleSaveVotesWrapper} disabled={!votesAreDifferent} className="save">
             Save all votes
           </Button>
         </FlexColumn>
-        {currentCycle?.questionOptions.length ? (
-          <FlexColumn $gap="0">
-            <CycleColumns onColumnClick={handleColumnClick} showScore={currentCycle.showScore} />
+        {currentCycle?.options.length ? (
+          <FlexColumn>
+            <div className="flex w-full items-center justify-between">
+              <Subtitle>Vote items</Subtitle>
+              <div className="flex cursor-pointer items-center gap-2">
+                <Body>Sort</Body>
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <SlidersHorizontal />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-primary border-secondary">
+                    <DropdownMenuItem onClick={() => handleColumnClick('lead')}>
+                      <label>Creator</label>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleColumnClick('affiliation')}>
+                      <label>Affiliation</label>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleColumnClick('numOfVotes')}>
+                      <label>Votes</label>
+                    </DropdownMenuItem>
+                    {currentCycle.showScore && (
+                      <DropdownMenuItem onClick={() => handleColumnClick('voteScore')}>
+                        <label>Plurality Score</label>
+                      </DropdownMenuItem>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
             {sortedOptions.options.map((option) => {
               const userVote = localUserVotes.find((vote) => vote.optionId === option.id);
               const numOfVotes = userVote ? userVote.numOfVotes : 0;
               return (
-                <OptionCard
+                <Option
                   key={option.id}
                   option={option}
                   numOfVotes={numOfVotes}
-                  showFundingRequest={currentCycle.questionTitle === FINAL_QUESTION_TITLE}
+                  showFundingRequest={currentCycle.title === FINAL_QUESTION_TITLE}
                   showScore={currentCycle.showScore}
                   onVote={() => handleVoteWrapper(option.id)}
                   onUnVote={() => handleUnVoteWrapper(option.id)}

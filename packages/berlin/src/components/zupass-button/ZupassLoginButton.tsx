@@ -8,7 +8,7 @@ import {
   useZupassPopupMessages,
 } from '@pcd/passport-interface';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { postPcdStr } from 'api';
+import { postVerify } from 'api';
 import { useEffect, useState } from 'react';
 import Button from '../button';
 import { useNavigate } from 'react-router-dom';
@@ -25,7 +25,7 @@ function ZupassLoginButton({ children, $variant, ...props }: ZupassLoginButtonPr
   const queryClient = useQueryClient();
 
   const { mutate: mutateVerify } = useMutation({
-    mutationFn: postPcdStr,
+    mutationFn: postVerify,
     onSuccess: (body) => {
       if (body) {
         queryClient.invalidateQueries({ queryKey: ['user'] });
@@ -67,6 +67,7 @@ function ZupassLoginButton({ children, $variant, ...props }: ZupassLoginButtonPr
             email: user.value.email,
             uuid: user.value.uuid,
             pcdStr: JSON.parse(pcdStr).pcd,
+            serverUrl: import.meta.env.VITE_SERVER_URL,
           });
         }
       });
@@ -80,7 +81,12 @@ function ZupassLoginButton({ children, $variant, ...props }: ZupassLoginButtonPr
 
   return (
     <>
-      <Button onClick={handleLoginClick} {...props} $variant={$variant}>
+      <Button
+        onClick={handleLoginClick}
+        {...props}
+        $variant={$variant}
+        style={{ fontSize: '14px', lineHeight: '14px', borderRadius: 4 }}
+      >
         {children}
       </Button>
     </>

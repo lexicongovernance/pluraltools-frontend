@@ -1,16 +1,16 @@
-import { PutUserRequest, GetUserResponse } from './types';
+import { PutUserRequest, GetUserResponse, ApiRequest } from './types';
 
-async function updateUserData({
+export async function putUser({
   email,
   firstName,
   lastName,
   telegram,
-  userAttributes,
   userId,
   username,
-}: PutUserRequest): Promise<{ data: GetUserResponse } | { errors: string[] } | null> {
+  serverUrl,
+}: ApiRequest<PutUserRequest>): Promise<{ data: GetUserResponse } | { errors: string[] } | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/users/${userId}`, {
+    const response = await fetch(`${serverUrl}/api/users/${userId}`, {
       method: 'PUT',
       credentials: 'include',
       headers: {
@@ -21,7 +21,6 @@ async function updateUserData({
         firstName,
         lastName,
         telegram,
-        userAttributes,
         username,
       }),
     });
@@ -41,5 +40,3 @@ async function updateUserData({
     return null;
   }
 }
-
-export default updateUserData;

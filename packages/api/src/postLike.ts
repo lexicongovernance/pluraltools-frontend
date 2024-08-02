@@ -1,17 +1,17 @@
-import { PostLikeRequest, PostLikeResponse } from './types';
+import { ApiRequest, PostLikeRequest, PostLikeResponse } from './types';
 
-async function postLike({ commentId }: PostLikeRequest): Promise<PostLikeResponse | null> {
+export async function postLike({
+  commentId,
+  serverUrl,
+}: ApiRequest<PostLikeRequest>): Promise<PostLikeResponse | null> {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/comments/${commentId}/likes`,
-      {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const response = await fetch(`${serverUrl}/api/comments/${commentId}/likes`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);
@@ -24,5 +24,3 @@ async function postLike({ commentId }: PostLikeRequest): Promise<PostLikeRespons
     return null;
   }
 }
-
-export default postLike;

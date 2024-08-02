@@ -56,12 +56,15 @@ export function Carousel({ steps, initialStep = 0, onComplete }: CarouselProps) 
     if (!isCompletingStep) {
       // Check if not already running
       setIsCompletingStep(true); // Mark as running
-      if (currentStepIndex === enabledSteps.length - 1) {
-        await onComplete();
-      } else {
-        goToNextStep();
+      try {
+        if (currentStepIndex === enabledSteps.length - 1) {
+          await onComplete();
+        } else {
+          goToNextStep();
+        }
+      } finally {
+        setIsCompletingStep(false); // Reset after completion
       }
-      setIsCompletingStep(false); // Reset after completion
     }
   };
 

@@ -8,7 +8,7 @@ function useUser() {
     isError,
   } = useQuery({
     queryKey: ['user'],
-    queryFn: fetchUser,
+    queryFn: () => fetchUser({ serverUrl: import.meta.env.VITE_SERVER_URL }),
   });
 
   return { user, isLoading, isError };

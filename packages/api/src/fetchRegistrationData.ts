@@ -1,11 +1,12 @@
-import { GetRegistrationDataResponse } from './types';
+import { ApiRequest, GetRegistrationDataResponse } from './types';
 
-async function fetchRegistrationData(
-  registrationId: string,
-): Promise<GetRegistrationDataResponse | null> {
+export async function fetchRegistrationData({
+  serverUrl,
+  registrationId,
+}: ApiRequest<{ registrationId: string }>): Promise<GetRegistrationDataResponse | null> {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/registrations/${registrationId}/registration-data`,
+      `${serverUrl}/api/registrations/${registrationId}/registration-data`,
       {
         credentials: 'include',
         headers: {
@@ -25,5 +26,3 @@ async function fetchRegistrationData(
     return null;
   }
 }
-
-export default fetchRegistrationData;

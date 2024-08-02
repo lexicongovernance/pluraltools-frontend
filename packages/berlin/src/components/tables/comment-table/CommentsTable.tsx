@@ -1,4 +1,5 @@
 // React and third-party libraries
+import { ThumbsUp, Trash } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
@@ -9,14 +10,11 @@ import { GetCommentsResponse, deleteComment, deleteLike, fetchCommentLikes, post
 // Hooks
 import useUser from '../../../hooks/useUser';
 
-// Store
-import { useAppStore } from '../../../store';
-
 // Components
 import { FlexRow } from '../../containers/FlexRow.styled';
 import Button from '../../button';
 import Dialog from '../../dialog';
-import IconButton from '../../icon-button';
+import Icon from '../../icon';
 
 // Styled Components
 import { Author, Card, Comment, FormattedDate } from './CommentsTable.styled';
@@ -27,7 +25,6 @@ type CommentsTableProps = {
 
 function CommentsTable({ comment }: CommentsTableProps) {
   const { optionId } = useParams();
-  const theme = useAppStore((state) => state.theme);
   const queryClient = useQueryClient();
   const { user } = useUser();
 
@@ -42,7 +39,8 @@ function CommentsTable({ comment }: CommentsTableProps) {
 
   const { data: commentLikes } = useQuery({
     queryKey: ['commentLikes', comment.id],
-    queryFn: () => fetchCommentLikes({ commentId: comment.id }),
+    queryFn: () =>
+      fetchCommentLikes({ commentId: comment.id, serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!comment.id,
     refetchInterval: 5000, // Poll every 5 seconds
   });
@@ -86,15 +84,15 @@ function CommentsTable({ comment }: CommentsTableProps) {
 
   const handleLikeClick = () => {
     if (isCommentLiked) {
-      deleteLikeMutation({ commentId: comment.id });
+      deleteLikeMutation({ commentId: comment.id, serverUrl: import.meta.env.VITE_SERVER_URL });
     } else {
-      postLikeMutation({ commentId: comment.id });
+      postLikeMutation({ commentId: comment.id, serverUrl: import.meta.env.VITE_SERVER_URL });
     }
   };
 
   const handleTrashClick = () => {
     if (optionId) {
-      deleteCommentMutation({ commentId: comment.id });
+      deleteCommentMutation({ commentId: comment.id, serverUrl: import.meta.env.VITE_SERVER_URL });
     }
   };
 
@@ -114,16 +112,7 @@ function CommentsTable({ comment }: CommentsTableProps) {
         onClick={handleLikeClick}
         style={{ userSelect: 'none' }}
       >
-        <IconButton
-          icon={{
-            src: isCommentLiked ? `/icons/thumb-up-active.svg` : `/icons/thumb-up-${theme}.svg`,
-            alt: 'Thumb up icon',
-          }}
-          $padding={4}
-          $color="secondary"
-          $height={20}
-          $width={20}
-        />
+        <Icon>{isCommentLiked ? <ThumbsUp fill="#0866ff" /> : <ThumbsUp />}</Icon>
         <Button $variant="text" $color="secondary">
           ({commentLikes?.length})
         </Button>
@@ -131,13 +120,11 @@ function CommentsTable({ comment }: CommentsTableProps) {
       {comment.user?.username === user?.username && (
         <Dialog
           trigger={
-            <IconButton
-              icon={{ src: `/icons/trash-${theme}.svg`, alt: 'Trash bin icon' }}
-              $color="secondary"
-              $height={20}
-              $padding={0}
-              $width={20}
-            />
+            <div style={{ width: 24 }}>
+              <Icon>
+                <Trash />
+              </Icon>
+            </div>
           }
           title="Are you sure?"
           description="This action cannot be undone. This will permanently delete your comment from our servers."

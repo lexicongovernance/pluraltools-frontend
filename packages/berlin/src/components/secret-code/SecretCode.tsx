@@ -1,11 +1,10 @@
-import toast from 'react-hot-toast';
-import { useAppStore } from '../../store';
-
 import { Body } from '../typography/Body.styled';
+import { Copy } from 'lucide-react';
 import { FlexRow } from '../containers/FlexRow.styled';
 import { SecretCodeContainer } from './SecretCode.styled';
 import { Subtitle } from '../typography/Subtitle.styled';
-import IconButton from '../icon-button';
+import Icon from '../icon';
+import toast from 'react-hot-toast';
 
 type SecretCodeProps = {
   groupName: string;
@@ -13,8 +12,6 @@ type SecretCodeProps = {
 };
 
 function SecretCode({ groupName, secretCode }: SecretCodeProps) {
-  const theme = useAppStore((state) => state.theme);
-
   const handleCopyButtonClick = () => {
     navigator.clipboard.writeText(secretCode);
     toast.success(`Secret code ${secretCode} copied to clipboard`);
@@ -24,12 +21,9 @@ function SecretCode({ groupName, secretCode }: SecretCodeProps) {
       <Body>Access code for {groupName} research group</Body>
       <FlexRow $align="center" $justify="space-between">
         <Subtitle>{secretCode}</Subtitle>
-        <IconButton
-          onClick={handleCopyButtonClick}
-          icon={{ src: `/icons/copy-${theme}.svg`, alt: 'Copy icon' }}
-          $color="secondary"
-          $padding={4}
-        />
+        <Icon>
+          <Copy onClick={handleCopyButtonClick} />
+        </Icon>
       </FlexRow>
     </SecretCodeContainer>
   );

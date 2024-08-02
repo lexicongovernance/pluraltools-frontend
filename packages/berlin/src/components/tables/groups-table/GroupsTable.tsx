@@ -1,4 +1,5 @@
 // React and third-party libraries
+import { Copy } from 'lucide-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -7,8 +8,8 @@ import toast from 'react-hot-toast';
 import {
   deleteUsersToGroups,
   fetchGroupMembers,
-  GetUsersToGroupsResponse,
   fetchGroupRegistrations,
+  GetUsersToGroupsResponse,
 } from 'api';
 
 // Hooks
@@ -16,14 +17,15 @@ import { useAppStore } from '../../../store';
 import useUser from '../../../hooks/useUser';
 
 // Components
+import { Body } from '../../typography/Body.styled';
+import { Bold } from '../../typography/Bold.styled';
 import { Card, Group, GroupProposal, Secret } from './GroupsTable.styled';
+import { FlexColumn } from '../../containers/FlexColumn.styled';
+import { FlexRow } from '../../containers/FlexRow.styled';
 import Button from '../../button';
 import Dialog from '../../dialog';
+import Icon from '../../icon';
 import IconButton from '../../icon-button';
-import { Body } from '../../typography/Body.styled';
-import { FlexRow } from '../../containers/FlexRow.styled';
-import { FlexColumn } from '../../containers/FlexColumn.styled';
-import { Bold } from '../../typography/Bold.styled';
 
 interface GroupCardProps {
   userToGroup: GetUsersToGroupsResponse[0];
@@ -36,13 +38,21 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
 
   const { data: groupMembers } = useQuery({
     queryKey: ['group', userToGroup.group.id, 'users-to-groups'],
-    queryFn: () => fetchGroupMembers(userToGroup.group.id),
+    queryFn: () =>
+      fetchGroupMembers({
+        groupId: userToGroup.group.id,
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      }),
     enabled: !!userToGroup.group.id,
   });
 
   const { data: groupRegistrations } = useQuery({
     queryKey: ['group', userToGroup.group.id, 'group-registrations'],
-    queryFn: () => fetchGroupRegistrations(userToGroup.group.id || ''),
+    queryFn: () =>
+      fetchGroupRegistrations({
+        groupId: userToGroup.group.id || '',
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      }),
     enabled: !!userToGroup.group.id,
   });
 
@@ -91,12 +101,9 @@ function GroupCard({ userToGroup, theme, onLeaveGroup }: GroupCardProps) {
       {userToGroup.group.secret ? (
         <FlexRow>
           <Secret>{userToGroup.group.secret}</Secret>
-          <IconButton
-            onClick={() => handleCopyButtonClick(userToGroup.group.secret || '')}
-            icon={{ src: `/icons/copy-${theme}.svg`, alt: 'Copy icon' }}
-            $color="secondary"
-            $padding={4}
-          />
+          <Icon>
+            <Copy onClick={() => handleCopyButtonClick(userToGroup.group.secret || '')} />
+          </Icon>
         </FlexRow>
       ) : (
         <Body>No secret</Body>
@@ -158,7 +165,9 @@ function GroupsTable({ groupsInCategory }: { groupsInCategory?: GetUsersToGroups
       key={userToGroup.id}
       userToGroup={userToGroup}
       theme={theme}
-      onLeaveGroup={(userToGroupId) => mutate({ userToGroupId })}
+      onLeaveGroup={(userToGroupId) =>
+        mutate({ userToGroupId, serverUrl: import.meta.env.VITE_SERVER_URL })
+      }
     />
   ));
 }

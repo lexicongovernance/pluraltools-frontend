@@ -1,6 +1,8 @@
-async function logout() {
+import { ApiRequest } from './types';
+
+export async function logout({ serverUrl }: ApiRequest<unknown>) {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/auth/logout`, {
+    const response = await fetch(`${serverUrl}/api/auth/logout`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -18,5 +20,3 @@ async function logout() {
     throw new Error('Logout failed');
   }
 }
-
-export default logout;

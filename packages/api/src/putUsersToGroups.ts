@@ -1,21 +1,21 @@
-import { PostUsersToGroupsResponse, PutUsersToGroupsRequest } from './types';
+import { ApiRequest, PostUsersToGroupsResponse, PutUsersToGroupsRequest } from './types';
 
-async function postUsersToGroups({
+export async function putUsersToGroups({
   groupId,
   userToGroupId,
-}: PutUsersToGroupsRequest): Promise<PostUsersToGroupsResponse | { errors: string[] } | null> {
+  serverUrl,
+}: ApiRequest<PutUsersToGroupsRequest>): Promise<
+  PostUsersToGroupsResponse | { errors: string[] } | null
+> {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/users-to-groups/${userToGroupId}`,
-      {
-        method: 'PUT',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ groupId }),
+    const response = await fetch(`${serverUrl}/api/users-to-groups/${userToGroupId}`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+      body: JSON.stringify({ groupId }),
+    });
 
     if (!response.ok) {
       if (response.status < 500) {
@@ -35,5 +35,3 @@ async function postUsersToGroups({
     return null;
   }
 }
-
-export default postUsersToGroups;

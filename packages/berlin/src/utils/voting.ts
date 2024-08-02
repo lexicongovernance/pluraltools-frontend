@@ -4,7 +4,7 @@ import { INITIAL_HEARTS } from './constants';
 
 export const handleLocalVote = (
   optionId: string,
-  prevLocalUserVotes: GetUserVotesResponse | { optionId: string; numOfVotes: number }[],
+  prevLocalUserVotes: { optionId: string; numOfVotes: number }[],
 ) => {
   // find if the user has already voted for this option
   const prevVote = prevLocalUserVotes.find((x) => x.optionId === optionId);
@@ -27,7 +27,7 @@ export const handleLocalVote = (
 
 export const handleLocalUnVote = (
   optionId: string,
-  prevLocalUserVotes: GetUserVotesResponse | { optionId: string; numOfVotes: number }[],
+  prevLocalUserVotes: { optionId: string; numOfVotes: number }[],
 ) => {
   // this will just find the option and decrease the number of votes by 1
   const updatedLocalVotes = prevLocalUserVotes.map((prevLocalUserVote) => {
@@ -51,12 +51,10 @@ export const handleAvailableHearts = (availableHearts: number, type: 'vote' | 'u
 
 export const handleSaveVotes = (
   userVotes: GetUserVotesResponse | null | undefined,
-  localUserVotes:
-    | GetUserVotesResponse
-    | {
-        optionId: string;
-        numOfVotes: number;
-      }[],
+  localUserVotes: {
+    optionId: string;
+    numOfVotes: number;
+  }[],
   mutateVotes: (data: PostVotesRequest) => void,
 ) => {
   try {
