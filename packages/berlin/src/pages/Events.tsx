@@ -41,7 +41,7 @@ function Events() {
         <Title>Events</Title>
         <Tabs.TabsHeader className="tabs" tabNames={tabNames} onTabChange={setActiveTab} />
       </section>
-      <section className="grid w-full grid-cols-2 gap-4">
+      <section className="grid w-full gap-4 md:grid-cols-2">
         <Tabs.TabsManager tabs={tabs} tab={activeTab} fallback={'Tab not found'} />
       </section>
     </FlexColumn>
