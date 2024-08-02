@@ -5,23 +5,7 @@ import { useParams } from 'react-router-dom';
 import { useMemo, useState } from 'react';
 
 // API
-import {
-  fetchOption,
-  fetchComments,
-  postComment,
-  // fetchOptionUsers
-} from 'api';
-
-// Hooks
-// import useUser from '../hooks/useUser';
-
-// Utils
-// import {
-//   handleSaveVotes,
-//   handleAvailableHearts,
-//   handleLocalUnVote,
-//   handleLocalVote,
-// } from '../utils/voting';
+import { fetchOption, fetchComments, postComment } from 'api';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
@@ -36,9 +20,6 @@ import CommentsColumns from '../components/columns/comments-columns';
 import CommentsTable from '../components/tables/comment-table';
 import Icon from '../components/icon';
 import Textarea from '../components/textarea';
-// import { INITIAL_HEARTS } from '../utils/constants';
-
-// type LocalUserVotes = { optionId: string; numOfVotes: number }[];
 
 function Comments() {
   const queryClient = useQueryClient();
@@ -52,27 +33,6 @@ function Comments() {
       fetchOption({ optionId: optionId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!optionId,
   });
-
-  // const availableHearts =
-  //   useAppStore((state) => state.availableHearts[option?.questionId || '']) ?? INITIAL_HEARTS;
-  // const setAvailableHearts = useAppStore((state) => state.setAvailableHearts);
-
-  // const { data: userVotes } = useQuery({
-  //   queryKey: ['votes', cycleId],
-  //   queryFn: () => fetchUserVotes(cycleId || ''),
-  //   enabled: !!user?.id && !!cycleId,
-  //   retry: false,
-  // });
-
-  // const { data: optionUsers } = useQuery({
-  //   queryKey: ['option', optionId, 'users'],
-  //   queryFn: () => fetchOptionUsers(optionId || ''),
-  //   enabled: !!optionId,
-  // });
-
-  // const coauthors = useMemo(() => {
-  //   return optionUsers?.group?.users?.filter((optionUser) => optionUser.id !== option?.userId);
-  // }, [optionUsers, option]);
 
   const { data: comments } = useQuery({
     queryKey: ['option', optionId, 'comments'],
@@ -104,7 +64,7 @@ function Comments() {
   const handlePostComment = () => {
     if (optionId && comment) {
       mutateComments({
-        questionOptionId: optionId,
+        optionId: optionId,
         value: comment,
         serverUrl: import.meta.env.VITE_SERVER_URL,
       });
@@ -120,19 +80,9 @@ function Comments() {
     <FlexColumn $gap="2rem">
       <BackButton />
       <FlexColumn>
-        <Subtitle>{option?.optionTitle}</Subtitle>
-        <Body>{option?.optionSubTitle}</Body>
-        {/* <Body>
-          <Bold>Creator:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
-          {coauthors && coauthors.length > 0 && (
-            <Body>
-              <Bold>Co-authors:</Bold>{' '}
-              {coauthors.map((coauthor) => `${coauthor.firstName} ${coauthor.lastName}`).join(', ')}
-            </Body>
-          )}
-        </Body> */}
+        <Subtitle>{option?.title}</Subtitle>
+        <Body>{option?.subTitle}</Body>
       </FlexColumn>
-      {/* <Button onClick={handleSaveVoteWrapper}>Save votes</Button> */}
       <Form>
         <Textarea
           label="Leave a comment:"
