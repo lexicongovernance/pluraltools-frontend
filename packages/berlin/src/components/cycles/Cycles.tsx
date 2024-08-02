@@ -25,7 +25,7 @@ function Cycles({ cycles, errorMessage, eventId }: CyclesProps) {
       {cycles?.length ? (
         cycles.map((cycle) => (
           <article
-            className="border-secondary flex w-full flex-col gap-4 border p-4"
+            className="border-secondary flex w-full cursor-pointer flex-col gap-4 border p-4"
             key={cycle.id}
             onClick={() => handleCycleClick(cycle.id)}
           >

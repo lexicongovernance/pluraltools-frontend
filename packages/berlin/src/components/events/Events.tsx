@@ -1,11 +1,12 @@
-import Markdown from 'react-markdown';
+// React and third-party libraries
+import { useNavigate } from 'react-router-dom';
 
+// API
 import { GetEventResponse } from 'api';
 
+// Components
 import { Body } from '../typography/Body.styled';
 import { Subtitle } from '../typography/Subtitle.styled';
-import Link from '../link';
-import { useNavigate } from 'react-router-dom';
 
 type EventsProps = {
   events: GetEventResponse[] | undefined;
@@ -29,20 +30,6 @@ export default function Events({ events, errorMessage }: EventsProps) {
         >
           <section className="flex flex-col gap-4 p-4">
             <Subtitle>{event.name}</Subtitle>
-            {event.description && (
-              <Markdown
-                components={{
-                  a: ({ node, ...props }) => <Link to={props.href ?? ''}>{props.children}</Link>,
-                  p: ({ node, ...props }) => (
-                    <Body className="truncate" style={{ whiteSpace: 'nowrap' }}>
-                      {props.children}
-                    </Body>
-                  ),
-                }}
-              >
-                {event.description}
-              </Markdown>
-            )}
           </section>
           {event.imageUrl && (
             <section className="h-40 w-full">
