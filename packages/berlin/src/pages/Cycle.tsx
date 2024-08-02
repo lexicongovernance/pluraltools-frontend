@@ -356,17 +356,15 @@ function Cycle() {
               const userVote = localUserVotes.find((vote) => vote.optionId === option.id);
               const numOfVotes = userVote ? userVote.numOfVotes : 0;
               return (
-                <>
-                  <Option
-                    key={option.id}
-                    option={option}
-                    numOfVotes={numOfVotes}
-                    showFundingRequest={currentCycle.title === FINAL_QUESTION_TITLE}
-                    showScore={currentCycle.showScore}
-                    onVote={() => handleVoteWrapper(option.id)}
-                    onUnVote={() => handleUnVoteWrapper(option.id)}
-                  />
-                </>
+                <Option
+                  key={option.id}
+                  option={option}
+                  numOfVotes={numOfVotes}
+                  showFundingRequest={currentCycle.title === FINAL_QUESTION_TITLE}
+                  showScore={currentCycle.showScore}
+                  onVote={() => handleVoteWrapper(option.id)}
+                  onUnVote={() => handleUnVoteWrapper(option.id)}
+                />
               );
             })}
           </FlexColumn>
