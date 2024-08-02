@@ -57,7 +57,7 @@ function Event() {
       <Onboarding steps={eventSteps} type="event" />
       <FlexColumn $gap="2rem" className="event">
         <section className="grid grid-cols-3 gap-x-4">
-          <div className="col-span-2 flex flex-col gap-4">
+          <div className={`${event?.imageUrl ? 'col-span-2' : 'col-span-3'} flex flex-col gap-4`}>
             <BackButton />
             <Subtitle>{event?.name}</Subtitle>
             {event?.description && (
