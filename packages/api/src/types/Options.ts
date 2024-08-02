@@ -3,9 +3,9 @@ export type Option = {
   createdAt: string;
   updatedAt: string;
   questionId: string;
-  optionTitle: string;
+  title: string;
   userId?: string;
-  optionSubTitle?: string;
+  subTitle?: string;
   accepted: boolean;
   data: unknown;
   fundingRequest: string;

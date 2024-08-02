@@ -105,8 +105,8 @@ function Comments() {
     <FlexColumn $gap="2rem">
       <BackButton />
       <FlexColumn>
-        <Subtitle>{option?.optionTitle}</Subtitle>
-        <Body>{option?.optionSubTitle}</Body>
+        <Subtitle>{option?.title}</Subtitle>
+        <Body>{option?.subTitle}</Body>
         <Body>
           <Bold>Lead author:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
           {coauthors && coauthors.length > 0 && (
