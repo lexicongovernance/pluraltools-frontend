@@ -1,18 +1,16 @@
-import { GetCommentsRequest, GetCommentsResponse } from './types';
+import { ApiRequest, GetCommentsRequest, GetCommentsResponse } from './types';
 
-async function fetchComments({
+export async function fetchComments({
   optionId,
-}: GetCommentsRequest): Promise<GetCommentsResponse | null> {
+  serverUrl,
+}: ApiRequest<GetCommentsRequest>): Promise<GetCommentsResponse | null> {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/options/${optionId}/comments`,
-      {
-        credentials: 'include',
-        headers: {
-          'Content-type': 'application/json',
-        },
+    const response = await fetch(`${serverUrl}/api/options/${optionId}/comments`, {
+      credentials: 'include',
+      headers: {
+        'Content-type': 'application/json',
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);
@@ -25,5 +23,3 @@ async function fetchComments({
     return null;
   }
 }
-
-export default fetchComments;

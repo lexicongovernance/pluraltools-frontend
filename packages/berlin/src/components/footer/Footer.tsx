@@ -1,27 +1,25 @@
 import { useAppStore } from '../../store';
-import { FlexRow } from '../containers/FlexRow.styled';
 import { Link as RouterLink } from 'react-router-dom';
-import { Copy, FooterContainer, SyledFooter } from './Footer.styled';
 import footerData from '../../data/footer';
 
 function Footer() {
   const theme = useAppStore((state) => state.theme);
 
   return (
-    <SyledFooter>
-      <FooterContainer $gap="0.75rem" $align="center">
+    <footer className="bg-primary border-secondary border-t py-4 text-sm">
+      <section className="mx-auto flex w-[min(90%,1080px)] flex-col items-center gap-2">
         {footerData.copy.map(({ id, text }) => (
-          <Copy key={id}>{text}</Copy>
+          <p key={id}>{text}</p>
         ))}
-        <FlexRow $justify="center">
+        <div className="flex">
           {footerData.logos.map((logo) => (
             <RouterLink key={logo.src} to={logo.link}>
               <img src={`/logos/${logo.src}-${theme}.svg`} alt={logo.alt} height={24} width={24} />
             </RouterLink>
           ))}
-        </FlexRow>
-      </FooterContainer>
-    </SyledFooter>
+        </div>
+      </section>
+    </footer>
   );
 }
 

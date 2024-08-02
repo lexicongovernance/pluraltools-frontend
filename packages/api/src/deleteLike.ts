@@ -1,17 +1,17 @@
-import { DeleteLikeRequest, DeleteLikeResponse } from './types';
+import { ApiRequest, DeleteLikeRequest, DeleteLikeResponse } from './types';
 
-async function deleteLike({ commentId }: DeleteLikeRequest): Promise<DeleteLikeResponse | null> {
+export async function deleteLike({
+  commentId,
+  serverUrl,
+}: ApiRequest<DeleteLikeRequest>): Promise<DeleteLikeResponse | null> {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/comments/${commentId}/likes`,
-      {
-        method: 'DELETE',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const response = await fetch(`${serverUrl}/api/comments/${commentId}/likes`, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);
@@ -24,5 +24,3 @@ async function deleteLike({ commentId }: DeleteLikeRequest): Promise<DeleteLikeR
     return null;
   }
 }
-
-export default deleteLike;

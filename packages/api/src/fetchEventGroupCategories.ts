@@ -1,18 +1,16 @@
-import { GetGroupCategoriesResponse } from './types';
+import { ApiRequest, GetGroupCategoriesResponse } from './types';
 
-async function fetchEventGroupCategories(
-  eventId: string,
-): Promise<GetGroupCategoriesResponse | null> {
+export async function fetchEventGroupCategories({
+  eventId,
+  serverUrl,
+}: ApiRequest<{ eventId: string }>): Promise<GetGroupCategoriesResponse | null> {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/events/${eventId}/group-categories`,
-      {
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const response = await fetch(`${serverUrl}/api/events/${eventId}/group-categories`, {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);
@@ -25,5 +23,3 @@ async function fetchEventGroupCategories(
     return null;
   }
 }
-
-export default fetchEventGroupCategories;

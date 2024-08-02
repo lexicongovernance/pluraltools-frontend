@@ -1,8 +1,10 @@
-import { GetUserResponse } from './types';
+import { ApiRequest, GetUserResponse } from './types';
 
-async function fetchUserData(): Promise<GetUserResponse | null> {
+export async function fetchUser({
+  serverUrl,
+}: ApiRequest<unknown>): Promise<GetUserResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/users`, {
+    const response = await fetch(`${serverUrl}/api/users`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
@@ -20,5 +22,3 @@ async function fetchUserData(): Promise<GetUserResponse | null> {
     return null;
   }
 }
-
-export default fetchUserData;

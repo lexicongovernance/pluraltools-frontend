@@ -1,8 +1,7 @@
 // React and third-party libraries
-import { Heart, MessageSquareText, Radical } from 'lucide-react';
-import { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { Heart, Radical } from 'lucide-react';
+import { useMemo } from 'react';
 import Markdown from 'react-markdown';
 
 // API
@@ -12,13 +11,12 @@ import { fetchOptionUsers, fetchRegistrationData, fetchRegistrationFields } from
 import { useAppStore } from '../../../store';
 
 // Components
-import { Body } from '../../typography/Body.styled';
-import { Bold } from '../../typography/Bold.styled';
 import { FlexColumn } from '../../containers/FlexColumn.styled';
 import { FlexRow } from '../../containers/FlexRow.styled';
 import IconButton from '../../icon-button';
+import { Body } from '../../typography/Body.styled';
+import { Bold } from '../../typography/Bold.styled';
 import Link from '../../link';
-import LucideIcon from '@/components/icon';
 
 // Styled Components
 import { Card, Funding, Icon, Plurality, TitleContainer } from './ResultsTable.styled';
@@ -28,7 +26,7 @@ type ResultsTableProps = {
   eventId?: string;
   cycleId?: string;
   option: {
-    optionTitle: string;
+    title: string;
     pluralityScore: string;
     distinctUsers: string;
     allocatedHearts: string;
@@ -42,9 +40,8 @@ type ResultsTableProps = {
   onClick: () => void;
 };
 
-function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsTableProps) {
+function ResultsTable({ $expanded, option, onClick, eventId }: ResultsTableProps) {
   const theme = useAppStore((state) => state.theme);
-  const navigate = useNavigate();
   const formattedQuadraticScore = useMemo(() => {
     const score = parseFloat(option.quadraticScore);
     return score % 1 === 0 ? score.toFixed(0) : score.toFixed(3);
@@ -57,19 +54,28 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
 
   const { data: optionUsers } = useQuery({
     queryKey: ['option', option.id, 'users'],
-    queryFn: () => fetchOptionUsers(option.id || ''),
+    queryFn: () =>
+      fetchOptionUsers({ optionId: option.id || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!option.id,
   });
 
   const { data: registrationFields } = useQuery({
     queryKey: ['event', eventId, 'registrations', 'fields'],
-    queryFn: () => fetchRegistrationFields(eventId || ''),
+    queryFn: () =>
+      fetchRegistrationFields({
+        eventId: eventId || '',
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      }),
     enabled: !!eventId,
   });
 
   const { data: registrationData } = useQuery({
     queryKey: ['registrations', optionUsers?.registrationId, 'registration-data'],
-    queryFn: () => fetchRegistrationData(optionUsers?.registrationId || ''),
+    queryFn: () =>
+      fetchRegistrationData({
+        registrationId: optionUsers?.registrationId || '',
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      }),
     enabled: !!optionUsers?.registrationId,
   });
 
@@ -89,10 +95,6 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
     )
     .map((user) => `${user.firstName} ${user.lastName}`);
 
-  const handleCommentsClick = () => {
-    navigate(`/events/${eventId}/cycles/${cycleId}/options/${option.id}`);
-  };
-
   return (
     <Card $expanded={$expanded} $showFunding={option.allocatedFunding !== null} $rowgap="2rem">
       <TitleContainer>
@@ -103,7 +105,7 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
           $flipVertical={$expanded}
           onClick={onClick}
         />
-        <Body>{option.optionTitle}</Body>
+        <Body>{option.title}</Body>
       </TitleContainer>
       <FlexRow>
         <Icon>
@@ -146,7 +148,6 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
           />
         </Icon>
         <Body>{option.allocatedFunding} ARB</Body>
-
         <IconButton
           $padding={0}
           $color="secondary"
@@ -176,14 +177,21 @@ function ResultsTable({ $expanded, option, onClick, cycleId, eventId }: ResultsT
           {collaborators && collaborators.length > 0 ? collaborators.join(', ') : 'None'}
         </Body>
         <Body>
+          <Bold>Research Output:</Bold> {researchOutputValue}
+        </Body>
+        <Body>
+          <Bold>Lead Author:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
+        </Body>
+        <Body>
+          <Bold>Collaborators:</Bold>{' '}
+          {collaborators && collaborators.length > 0 ? collaborators.join(', ') : 'None'}
+        </Body>
+        <Body>
           <Bold>Distinct voters:</Bold> {option.distinctUsers}
         </Body>
         <Body>
           <Bold>Voter affiliations:</Bold> {option.listOfGroupNames.join(', ')}
         </Body>
-        <LucideIcon>
-          <MessageSquareText onClick={handleCommentsClick} />
-        </LucideIcon>
       </FlexColumn>
     </Card>
   );

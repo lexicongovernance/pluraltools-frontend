@@ -1,18 +1,23 @@
-import { GetUserResponse } from './types';
+import { ApiRequest, GetUserResponse } from './types';
 
-async function postVerify(body: {
+export async function postVerify({
+  email,
+  pcdStr,
+  serverUrl,
+  uuid,
+}: ApiRequest<{
   pcdStr: string;
   email: string;
   uuid: string;
-}): Promise<GetUserResponse | null> {
+}>): Promise<GetUserResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/auth/zupass/verify`, {
+    const response = await fetch(`${serverUrl}/api/auth/zupass/verify`, {
       method: 'POST',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ pcd: body.pcdStr, email: body.email, uuid: body.uuid }),
+      body: JSON.stringify({ pcd: pcdStr, email: email, uuid: uuid }),
     });
 
     if (!response.ok) {
@@ -26,5 +31,3 @@ async function postVerify(body: {
     return null;
   }
 }
-
-export default postVerify;
