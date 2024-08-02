@@ -1,159 +1,159 @@
-// React and third-party libraries
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
+import { useState } from 'react';
+import { AccountForm } from '../components/form/AccountForm';
+import { Title } from '../components/typography/Title.styled';
+import useUser from '../hooks/useUser';
+import { FlexColumn } from '../components/containers/FlexColumn.styled';
+import { FlexRow } from '../components/containers/FlexRow.styled';
+import { TabsManager } from '../components/tabs';
+import { Edit, X } from 'lucide-react';
+import {
+  GetUserResponse,
+  fetchCycle,
+  fetchUserOptions,
+  fetchUserRegistrations,
+  fetchUsersToGroups,
+} from 'api';
+import { Subtitle } from '../components/typography/Subtitle.styled';
+import { Separator } from '../components/separator';
+import { Body } from '../components/typography/Body.styled';
+import { useQueries, useQuery } from '@tanstack/react-query';
+import Link from '../components/link';
+import { Underline } from '../components/typography/Underline.styled';
 import { useNavigate } from 'react-router-dom';
 
-// API Calls
-import { GetEventsResponse, fetchEvents, putUser, type GetUserResponse } from 'api';
-
-// Components
-import Button from '../components/button';
-import { FlexColumn } from '../components/containers/FlexColumn.styled';
-import Input from '../components/input';
-import { Subtitle } from '../components/typography/Subtitle.styled';
-import { Title } from '../components/typography/Title.styled';
-
-// Hooks
-import useUser from '../hooks/useUser';
-
-// Store
-import { useEffect, useMemo } from 'react';
-import { FlexRowToColumn } from '../components/containers/FlexRowToColumn.styled';
-
-type InitialUser = {
-  username: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-};
-
 function Account() {
-  const { user, isLoading: userIsLoading } = useUser();
-
-  const { data: events } = useQuery({
-    queryKey: ['events'],
-    queryFn: fetchEvents,
-    enabled: !!user?.id,
-  });
-
-  const initialUser: InitialUser = useMemo(() => {
-    return {
-      username: user?.username || '',
-      firstName: user?.firstName || '',
-      lastName: user?.lastName || '',
-      email: user?.email || '',
-    };
-  }, [user]);
+  const { user: initialUser, isLoading: userIsLoading } = useUser();
+  const isFirstLogin = !initialUser?.username;
+  const [tab, setTab] = useState<'view' | 'edit'>(isFirstLogin ? 'edit' : 'view');
+  const navigate = useNavigate();
 
   if (userIsLoading) {
     return <Title>Loading...</Title>;
   }
 
-  return <AccountForm initialUser={initialUser} user={user} events={events} />;
-}
+  const tabs = {
+    edit: (
+      <AccountForm
+        user={initialUser}
+        initialUser={{
+          email: initialUser?.email ?? '',
+          firstName: initialUser?.firstName ?? '',
+          lastName: initialUser?.lastName ?? '',
+          username: initialUser?.username ?? '',
+        }}
+        title={isFirstLogin ? 'Complete Account' : 'Edit Account'}
+        afterSubmit={() => {
+          if (isFirstLogin) {
+            navigate('/events');
+          }
 
-function AccountForm({
-  initialUser,
-  user,
-  events,
-}: {
-  initialUser: InitialUser;
-  user: GetUserResponse | null | undefined;
-  events: GetEventsResponse | null | undefined;
-}) {
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-
-  const { mutate: mutateUserData } = useMutation({
-    mutationFn: putUser,
-    onSuccess: async (body) => {
-      if (!body) {
-        return;
-      }
-
-      if ('errors' in body) {
-        toast.error(`There was an error: ${body.errors.join(', ')}`);
-        return;
-      }
-
-      await queryClient.invalidateQueries({ queryKey: ['user'] });
-      await queryClient.invalidateQueries({ queryKey: ['user', user?.id, 'groups'] });
-
-      toast.success('User data updated!');
-
-      if (events?.length === 1) {
-        navigate(`/events/${events?.[0].id}/register`);
-      }
-    },
-    onError: () => {
-      toast.error('There was an error, please try again.');
-    },
-  });
-
-  const {
-    register,
-    formState: { errors, isValid, isSubmitting },
-    handleSubmit,
-    reset,
-  } = useForm({
-    defaultValues: useMemo(() => initialUser, [initialUser]),
-    mode: 'all',
-  });
-
-  useEffect(() => {
-    reset(initialUser);
-  }, [initialUser, reset]);
-
-  const onSubmit = async (value: typeof initialUser) => {
-    if (isValid && user && user.id) {
-      await mutateUserData({
-        userId: user.id,
-        username: value.username,
-        email: value.email,
-        firstName: value.firstName,
-        lastName: value.lastName,
-      });
-    }
+          setTab('view');
+        }}
+      />
+    ),
+    view: <AccountHub user={initialUser} />,
   };
 
   return (
     <FlexColumn>
-      <Subtitle>Complete your registration</Subtitle>
-      <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%' }}>
-        <FlexColumn>
-          <FlexRowToColumn>
-            <Input
-              label="First name"
-              autoComplete="off"
-              placeholder="Enter your first name"
-              required
-              {...register('firstName', { required: 'First name is required' })}
-              errors={errors.firstName ? [errors.firstName.message ?? ''] : []}
-            />
-            <Input
-              label="Last name"
-              autoComplete="off"
-              placeholder="Enter your last name"
-              required
-              {...register('lastName', { required: 'Last name is required' })}
-              errors={errors.lastName ? [errors.lastName.message ?? ''] : []}
-            />
-          </FlexRowToColumn>
-          <Input
-            label="Username"
-            placeholder="Enter your Username"
-            autoComplete="off"
-            required
-            {...register('username', { required: 'Username is required', minLength: 3 })}
-            errors={errors.username ? [errors.username.message ?? ''] : []}
+      <FlexRow $justify="flex-end">
+        {tab === 'view' ? (
+          <Edit
+            onClick={() => {
+              setTab('edit');
+            }}
           />
-          <Input label="Email" placeholder="Enter your Email" {...register('email')} />
-          <Button type="submit" disabled={isSubmitting}>
-            Submit
-          </Button>
+        ) : (
+          <X
+            onClick={() => {
+              setTab('view');
+            }}
+          />
+        )}
+      </FlexRow>
+      <TabsManager tabs={tabs} tab={tab} fallback={<Title>Tab not found</Title>} />
+    </FlexColumn>
+  );
+}
+
+function AccountHub({ user }: { user: GetUserResponse | null | undefined }) {
+  const { data: registrations } = useQuery({
+    queryKey: ['users', user?.id, 'registrations'],
+    queryFn: () =>
+      fetchUserRegistrations({
+        userId: user?.id ?? '',
+        serverUrl: import.meta.env.VITE_SERVER_URL,
+      }),
+  });
+
+  const { data: options } = useQuery({
+    queryKey: ['users', user?.id, 'options'],
+    queryFn: () =>
+      fetchUserOptions({ userId: user?.id ?? '', serverUrl: import.meta.env.VITE_SERVER_URL }),
+  });
+
+  const { data: usersToGroups } = useQuery({
+    queryKey: ['users', user?.id, 'groups'],
+    queryFn: () =>
+      fetchUsersToGroups({ userId: user?.id ?? '', serverUrl: import.meta.env.VITE_SERVER_URL }),
+  });
+
+  const cycles = useQueries({
+    queries:
+      // can be improved by filtering repeated cycles
+      options?.map((option) => ({
+        queryKey: ['cycles', option.question.cycleId],
+        queryFn: () =>
+          fetchCycle({
+            cycleId: option.question.cycleId,
+            serverUrl: import.meta.env.VITE_SERVER_URL,
+          }),
+      })) ?? [],
+  });
+
+  return (
+    <FlexColumn>
+      <div>
+        <Subtitle>
+          {user?.firstName} {user?.lastName}
+        </Subtitle>
+        <Body>@{user?.username}</Body>
+        <Body>{user?.email}</Body>
+      </div>
+      <Separator />
+      <div>
+        <Subtitle>Events</Subtitle>
+        <FlexColumn>
+          {registrations
+            ?.filter((registrations) => registrations.status !== 'REJECTED')
+            .map((registration) => (
+              <Link key={registration.eventId} to={`/events/${registration.eventId}/cycles`}>
+                - {registration.event?.name}
+              </Link>
+            ))}
         </FlexColumn>
-      </form>
+      </div>
+      <div>
+        <Subtitle>Proposals</Subtitle>
+        <FlexColumn>
+          {options?.map((option) => (
+            <Link
+              key={option.id}
+              to={`/events/${cycles.find((c) => c.data?.id === option.question.cycleId)?.data?.eventId}/cycles/${option.question.cycleId}/options/${option.id}`}
+            >
+              - {option.title}
+            </Link>
+          ))}
+        </FlexColumn>
+      </div>
+      <div>
+        <Subtitle>Groups</Subtitle>
+        <FlexColumn>
+          {usersToGroups?.map((userToGroup) => (
+            <Underline key={userToGroup.group?.id}>- {userToGroup.group?.name}</Underline>
+          ))}
+        </FlexColumn>
+      </div>
     </FlexColumn>
   );
 }

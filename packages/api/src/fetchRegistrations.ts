@@ -1,16 +1,16 @@
-import { GetRegistrationsResponseType } from './types';
+import { ApiRequest, GetRegistrationsResponseType } from './types';
 
-async function fetchRegistrations(eventId: string): Promise<GetRegistrationsResponseType | null> {
+export async function fetchRegistrations({
+  serverUrl,
+  eventId,
+}: ApiRequest<{ eventId: string }>): Promise<GetRegistrationsResponseType | null> {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/events/${eventId}/registrations`,
-      {
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const response = await fetch(`${serverUrl}/api/events/${eventId}/registrations`, {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -27,5 +27,3 @@ async function fetchRegistrations(eventId: string): Promise<GetRegistrationsResp
     return null;
   }
 }
-
-export default fetchRegistrations;

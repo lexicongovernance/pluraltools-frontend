@@ -1,5 +1,3 @@
-// src/components/multi-select.tsx
-
 import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { CheckIcon, XCircle, ChevronDown, XIcon, WandSparkles } from 'lucide-react';
@@ -190,9 +188,7 @@ export const MultiSelect = React.forwardRef<HTMLButtonElement, MultiSelectProps>
               </div>
             ) : (
               <div className="mx-auto flex w-full items-center justify-between">
-                <span className="text-muted-foreground mx-3 text-[16px] text-[var(--color-gray)]">
-                  {placeholder}
-                </span>
+                <span className="mx-3 text-[16px] text-[var(--color-gray)]">{placeholder}</span>
                 <ChevronDown
                   className="text-muted-foreground mx-2 h-5 cursor-pointer"
                   color="var(--color-black)"

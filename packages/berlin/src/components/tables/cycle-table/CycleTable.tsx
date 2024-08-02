@@ -34,7 +34,7 @@ function CycleTable({ cycle }: CycleTableProps) {
   return (
     <Card>
       <FlexColumn $gap="0.5rem">
-        <Subtitle>{cycle.forumQuestions[0].questionTitle}</Subtitle>
+        <Subtitle>{cycle.questions[0].questionTitle}</Subtitle>
         <Body>
           {formattedDateText()} {formattedDate}
         </Body>

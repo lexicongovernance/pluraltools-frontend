@@ -1,10 +1,11 @@
-import { DeleteCommentRequest, DeleteCommentResponse } from './types';
+import { ApiRequest, DeleteCommentRequest, DeleteCommentResponse } from './types';
 
-async function deleteComment({
+export async function deleteComment({
   commentId,
-}: DeleteCommentRequest): Promise<DeleteCommentResponse | null> {
+  serverUrl,
+}: ApiRequest<DeleteCommentRequest>): Promise<DeleteCommentResponse | null> {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/comments/${commentId}`, {
+    const response = await fetch(`${serverUrl}/api/comments/${commentId}`, {
       method: 'DELETE',
       credentials: 'include',
       headers: {
@@ -23,5 +24,3 @@ async function deleteComment({
     return null;
   }
 }
-
-export default deleteComment;

@@ -1,18 +1,16 @@
-import { GetRegistrationsResponseType } from './types';
+import { ApiRequest, GetRegistrationsResponseType } from './types';
 
-async function fetchUserRegistrations(
-  userId: string,
-): Promise<GetRegistrationsResponseType | null> {
+export async function fetchUserRegistrations({
+  serverUrl,
+  userId,
+}: ApiRequest<{ userId: string }>): Promise<GetRegistrationsResponseType | null> {
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/api/users/${userId}/registrations`,
-      {
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const response = await fetch(`${serverUrl}/api/users/${userId}/registrations`, {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);
@@ -25,5 +23,3 @@ async function fetchUserRegistrations(
     return null;
   }
 }
-
-export default fetchUserRegistrations;

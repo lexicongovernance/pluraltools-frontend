@@ -1,84 +1,36 @@
 // React and third-party libraries
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 // API
-import { GetCycleResponse, fetchEvent, fetchEventCycles } from 'api';
+import { fetchEvent, fetchEventCycles } from 'api';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
+import { eventSteps } from '@/components/onboarding/Steps';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
-import { OnboardingCard } from '../components/onboarding/Onboaring.styled';
 import { Subtitle } from '../components/typography/Subtitle.styled';
-import { Table } from '../components/table';
-import Button from '../components/button';
-import EventCard from '../components/event-card';
+import * as Tabs from '../components/tabs';
+import BackButton from '@/components/back-button';
+import Cycles from '../components/cycles';
 import Link from '../components/link';
-import Onboarding from '../components/onboarding';
-
-const steps = [
-  {
-    target: '.step-1',
-    content: (
-      <OnboardingCard>
-        <Subtitle>Welcome</Subtitle>
-        <Body>Welcome to our tool!</Body>
-        <Body>Would you like to take a tour to see how it works?</Body>
-      </OnboardingCard>
-    ),
-    placement: 'center',
-  },
-  {
-    target: '.step-2',
-    content: (
-      <OnboardingCard>
-        <Subtitle>Open Votes</Subtitle>
-        <Body>Explore current vote items, the vote deadline, and cast your vote.</Body>
-      </OnboardingCard>
-    ),
-    placement: 'center',
-  },
-  {
-    target: '.step-3',
-    content: (
-      <OnboardingCard>
-        <Subtitle>Closed Votes</Subtitle>
-        <Body>
-          Review past votes and see results by clicking the
-          <Button $color="secondary" style={{ paddingInline: 4 }}>
-            results
-          </Button>{' '}
-          button.
-        </Body>
-      </OnboardingCard>
-    ),
-    placement: 'center',
-  },
-  // {
-  //   target: '.step-4',
-  //   content: (
-  //     <OnboardingCard>
-  //       <Subtitle>You can also create and join Groups</Subtitle>
-  //       <Body>You can link your artefacts to your group via My Artefacts.</Body>
-  //     </OnboardingCard>
-  //   ),
-  //   placement: 'center',
-  // },
-];
+import Markdown from 'react-markdown';
+import Onboarding from '@/components/onboarding';
 
 function Event() {
-  const navigate = useNavigate();
   const { eventId } = useParams();
   const { data: event } = useQuery({
     queryKey: ['event', eventId],
-    queryFn: () => fetchEvent(eventId || ''),
+    queryFn: () =>
+      fetchEvent({ eventId: eventId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!eventId,
   });
 
   const { data: eventCycles } = useQuery({
     queryKey: ['events', eventId, 'cycles'],
-    queryFn: () => fetchEventCycles(eventId || ''),
+    queryFn: () =>
+      fetchEventCycles({ eventId: eventId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
     enabled: !!eventId,
     refetchInterval: 5000, // Poll every 5 seconds
   });
@@ -92,63 +44,41 @@ function Event() {
     [eventCycles],
   );
 
-  const handleDataPolicyClick = () => {
-    navigate(`/data-policy`);
+  const tabNames = ['upcoming', 'past'];
+  const [activeTab, setActiveTab] = useState<string>('upcoming');
+
+  const tabs = {
+    upcoming: <Cycles cycles={openCycles} eventId={eventId} errorMessage="No upcoming events..." />,
+    past: <Cycles cycles={closedCycles} eventId={eventId} errorMessage="No past events..." />,
   };
 
   return (
     <>
-      <Onboarding type="event" steps={steps} />
-      <FlexColumn $gap="2rem" className="step-1 step-2 step-3">
-        {!!openCycles?.length && <CycleTable cycles={openCycles} status="open" />}
-        {!!closedCycles?.length && <CycleTable cycles={closedCycles} status="closed" />}
-        {event && <EventCard event={event} />}
-        <Body>
-          Click to revisit the community’s{' '}
-          <Link to="#" onClick={handleDataPolicyClick}>
-            data policy
-          </Link>
-          .
-        </Body>
+      <Onboarding steps={eventSteps} type="event" />
+      <FlexColumn $gap="2rem" className="event">
+        <BackButton />
+        <section className="flex flex-col gap-4">
+          <Subtitle>{event?.name}</Subtitle>
+          {event?.description && (
+            <Markdown
+              components={{
+                a: ({ node, ...props }) => <Link to={props.href ?? ''}>{props.children}</Link>,
+                p: ({ node, ...props }) => <Body>{props.children}</Body>,
+              }}
+            >
+              {event.description}
+            </Markdown>
+          )}
+        </section>
+        <section className="flex w-full flex-col justify-between gap-2 md:flex-row md:items-center">
+          <Subtitle>Questions</Subtitle>
+          <Tabs.TabsHeader className="tabs" tabNames={tabNames} onTabChange={setActiveTab} />
+        </section>
+        <FlexColumn className="cycles">
+          <Tabs.TabsManager tabs={tabs} tab={activeTab} fallback={'Tab not found'} />
+        </FlexColumn>
       </FlexColumn>
     </>
-  );
-}
-
-function CycleTable({ cycles, status }: { cycles: GetCycleResponse[]; status: 'open' | 'closed' }) {
-  const { eventId } = useParams();
-  const navigate = useNavigate();
-  const formatDate = (date: string) => {
-    const eventEndDate = new Date(date);
-    return eventEndDate.toLocaleDateString();
-  };
-  const handleClick = (cycleId: string) => {
-    navigate(`/events/${eventId}/cycles/${cycleId}`);
-  };
-
-  const formattedColumnText = () => {
-    if (status === 'open') {
-      return 'Closes on';
-    } else {
-      return 'Closed on';
-    }
-  };
-
-  return (
-    <Table
-      columns={[
-        `${status.charAt(0).toUpperCase() + status.slice(1)} Votes`,
-        formattedColumnText(),
-        '',
-      ]}
-      rows={cycles.map((cycle) => [
-        cycle.forumQuestions?.[0]?.questionTitle,
-        formatDate(cycle.endAt),
-        <Button onClick={() => handleClick(cycle.id)}>
-          {status === 'open' ? 'Vote' : 'Results'}
-        </Button>,
-      ])}
-    />
   );
 }
 

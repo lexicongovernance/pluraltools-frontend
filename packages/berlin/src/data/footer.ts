@@ -1,5 +1,5 @@
 const footer = {
-  copy: [{ id: 2, text: 'Tooling built by Lexicon Governance' }],
+  copy: [{ id: 0, text: 'Tooling built by Lexicon Governance' }],
   logos: [
     {
       src: `lexicon`,

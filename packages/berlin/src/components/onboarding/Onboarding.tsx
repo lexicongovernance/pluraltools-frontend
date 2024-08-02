@@ -70,4 +70,9 @@ function Onboarding({ steps, type }: OnboardingProps) {
   );
 }
 
+function OnboardingCard({ children }: { children: ReactNode }) {
+  return <article className="bg-primary flex flex-col gap-3 p-0 text-left">{children}</article>;
+}
+
+export { OnboardingCard };
 export default Onboarding;

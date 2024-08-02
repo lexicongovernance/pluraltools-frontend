@@ -9,6 +9,7 @@ export const Content = styled.div`
 export const Main = styled.main`
   flex: 1;
   margin-inline: auto;
+  min-height: calc(100vh - 9.375rem);
   padding-block: 4rem;
   width: min(90%, 1080px);
 `;
