@@ -7,17 +7,6 @@ import { useMemo, useState } from 'react';
 // API
 import { fetchOption, fetchComments, postComment, fetchOptionUsers } from 'api';
 
-// Hooks
-// import useUser from '../hooks/useUser';
-
-// Utils
-// import {
-//   handleSaveVotes,
-//   handleAvailableHearts,
-//   handleLocalUnVote,
-//   handleLocalVote,
-// } from '../utils/voting';
-
 // Components
 import { Body } from '../components/typography/Body.styled';
 import { Bold } from '../components/typography/Bold.styled';
@@ -31,9 +20,6 @@ import CommentsColumns from '../components/columns/comments-columns';
 import CommentsTable from '../components/tables/comment-table';
 import Icon from '../components/icon';
 import Textarea from '../components/textarea';
-// import { INITIAL_HEARTS } from '../utils/constants';
-
-// type LocalUserVotes = { optionId: string; numOfVotes: number }[];
 
 function Comments() {
   const queryClient = useQueryClient();
@@ -89,7 +75,7 @@ function Comments() {
   const handlePostComment = () => {
     if (optionId && comment) {
       mutateComments({
-        questionOptionId: optionId,
+        optionId: optionId,
         value: comment,
         serverUrl: import.meta.env.VITE_SERVER_URL,
       });
@@ -105,8 +91,8 @@ function Comments() {
     <FlexColumn $gap="2rem">
       <BackButton />
       <FlexColumn>
-        <Subtitle>{option?.optionTitle}</Subtitle>
-        <Body>{option?.optionSubTitle}</Body>
+        <Subtitle>{option?.title}</Subtitle>
+        <Body>{option?.subTitle}</Body>
         <Body>
           <Bold>Lead author:</Bold> {optionUsers?.user?.firstName} {optionUsers?.user?.lastName}
           {coauthors && coauthors.length > 0 && (
