@@ -56,18 +56,31 @@ function Event() {
     <>
       <Onboarding steps={eventSteps} type="event" />
       <FlexColumn $gap="2rem" className="event">
-        <BackButton />
-        <section className="flex flex-col gap-4">
-          <Subtitle>{event?.name}</Subtitle>
-          {event?.description && (
-            <Markdown
-              components={{
-                a: ({ node, ...props }) => <Link to={props.href ?? ''}>{props.children}</Link>,
-                p: ({ node, ...props }) => <Body>{props.children}</Body>,
-              }}
-            >
-              {event.description}
-            </Markdown>
+        <section className="grid grid-cols-3 gap-x-4">
+          <div className={`${event?.imageUrl ? 'col-span-2' : 'col-span-3'} flex flex-col gap-4`}>
+            <BackButton />
+            <Subtitle>{event?.name}</Subtitle>
+            {event?.description && (
+              <div>
+                <Markdown
+                  components={{
+                    a: ({ node, ...props }) => <Link to={props.href ?? ''}>{props.children}</Link>,
+                    p: ({ node, ...props }) => <Body>{props.children}</Body>,
+                  }}
+                >
+                  {event.description}
+                </Markdown>
+              </div>
+            )}
+          </div>
+          {event?.imageUrl && (
+            <div className="col-span-1">
+              <img
+                src={event?.imageUrl}
+                alt={`${event.name} image`}
+                className="h-full w-full object-cover object-center"
+              />
+            </div>
           )}
         </section>
         <section className="flex w-full flex-col justify-between gap-2 md:flex-row md:items-center">
