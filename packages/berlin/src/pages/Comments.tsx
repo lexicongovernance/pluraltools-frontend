@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { useMemo, useState } from 'react';
 
 // API
-import { fetchOption, fetchComments, postComment, fetchOptionUsers } from 'api';
+import { fetchOption, fetchComments, postComment } from 'api';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
