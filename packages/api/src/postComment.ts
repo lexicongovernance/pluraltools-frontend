@@ -1,7 +1,7 @@
 import { ApiRequest, PostCommentRequest, PostCommentResponse } from './types';
 
 export async function postComment({
-  questionOptionId,
+  optionId,
   value,
   serverUrl,
 }: ApiRequest<PostCommentRequest>): Promise<PostCommentResponse | null> {
@@ -12,7 +12,7 @@ export async function postComment({
       headers: {
         'Content-type': 'application/json',
       },
-      body: JSON.stringify({ value, questionOptionId }),
+      body: JSON.stringify({ value, optionId }),
     });
 
     if (!response.ok) {

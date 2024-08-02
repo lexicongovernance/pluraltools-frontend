@@ -5,8 +5,8 @@ export type GetUserOptionsResponse = {
   userId: string | null;
   registrationId: string | null;
   questionId: string;
-  optionTitle: string;
-  optionSubTitle: string | null;
+  title: string;
+  subTitle: string | null;
   accepted: boolean | null;
   voteScore: string;
   fundingRequest: string | null;
