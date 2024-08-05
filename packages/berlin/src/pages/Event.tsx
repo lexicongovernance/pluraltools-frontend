@@ -48,8 +48,24 @@ function Event() {
   const [activeTab, setActiveTab] = useState<string>('upcoming');
 
   const tabs = {
-    upcoming: <Cycles cycles={openCycles} eventId={eventId} errorMessage="No upcoming events..." />,
-    past: <Cycles cycles={closedCycles} eventId={eventId} errorMessage="No past events..." />,
+    upcoming: (
+      <Cycles
+        cycles={openCycles}
+        eventId={eventId}
+        errorMessage="No upcoming questions"
+        tab="past"
+        setActiveTab={setActiveTab}
+      />
+    ),
+    past: (
+      <Cycles
+        cycles={closedCycles}
+        eventId={eventId}
+        errorMessage="No past questions"
+        tab="upcoming"
+        setActiveTab={setActiveTab}
+      />
+    ),
   };
 
   return (
