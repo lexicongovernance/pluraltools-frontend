@@ -1,5 +1,5 @@
 // React and third-party libraries
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
@@ -47,6 +47,15 @@ function Event() {
   const tabNames = ['upcoming', 'past'];
   const [activeTab, setActiveTab] = useState<string>('upcoming');
 
+  // Update the active tab based on the presence of openCycles
+  useEffect(() => {
+    if (!openCycles || openCycles.length === 0) {
+      setActiveTab('past');
+    } else {
+      setActiveTab('upcoming');
+    }
+  }, [openCycles]);
+
   const tabs = {
     upcoming: <Cycles cycles={openCycles} eventId={eventId} errorMessage="No upcoming events..." />,
     past: <Cycles cycles={closedCycles} eventId={eventId} errorMessage="No past events..." />,
@@ -85,7 +94,12 @@ function Event() {
         </section>
         <section className="flex w-full flex-col justify-between gap-2 md:flex-row md:items-center">
           <Subtitle>Questions</Subtitle>
-          <Tabs.TabsHeader className="tabs" tabNames={tabNames} onTabChange={setActiveTab} />
+          <Tabs.TabsHeader
+            className="tabs"
+            tabNames={tabNames}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+          />
         </section>
         <FlexColumn className="cycles">
           <Tabs.TabsManager tabs={tabs} tab={activeTab} fallback={'Tab not found'} />
