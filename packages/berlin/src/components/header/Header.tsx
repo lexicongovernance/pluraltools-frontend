@@ -104,7 +104,7 @@ const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
   });
 
   const { data: eventNavLinks } = useQuery({
-    queryKey: ['eventNavLinks'],
+    queryKey: ['event', eventId, 'navLinks'],
     queryFn: () =>
       fetchEventNavLinks({ serverUrl: import.meta.env.VITE_SERVER_URL, eventId: eventId || '' }),
     enabled: !!user && !!eventId,
