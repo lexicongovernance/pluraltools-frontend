@@ -4,17 +4,15 @@ import { Tab } from './TabsHeader.styled';
 
 type TabsHeaderProps = {
   tabNames: string[];
-  activeTab: string;
+  initialTab: string | null;
   className?: string;
   onTabChange?: (tab: string) => void;
 };
 
-export function TabsHeader({ tabNames, activeTab, className, onTabChange }: TabsHeaderProps) {
+export function TabsHeader({ tabNames, initialTab, className, onTabChange }: TabsHeaderProps) {
   const handleTabClick = (tab: string) => {
-    if (activeTab !== tab) {
-      if (onTabChange) {
-        onTabChange(tab);
-      }
+    if (onTabChange && initialTab !== tab) {
+      onTabChange(tab);
     }
   };
 
@@ -23,7 +21,7 @@ export function TabsHeader({ tabNames, activeTab, className, onTabChange }: Tabs
       {tabNames.map((tabName, index) => (
         <Fragment key={tabName}>
           <Tab
-            className={activeTab === tabName ? 'active' : ''}
+            className={initialTab === tabName ? 'active' : ''}
             onClick={() => handleTabClick(tabName)}
           >
             {tabName}
