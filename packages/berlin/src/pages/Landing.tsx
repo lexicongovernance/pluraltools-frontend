@@ -16,7 +16,8 @@ function Landing() {
           created this tool to analyze the efficiency, effectiveness and risks of quadratic and
           plural voting mechanisms. You can learn more about the plural voting mechanism
           <Link to="https://github.com/lexicongovernance/pluraltools-backend/wiki/Plural-Voting-Model">
-          {' '}here
+            {' '}
+            here
           </Link>
           .
         </Body>
