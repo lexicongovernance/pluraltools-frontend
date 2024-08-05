@@ -6,13 +6,15 @@ import Button from '../button';
 
 type CyclesProps = {
   cycles: GetCycleResponse[] | undefined;
-  errorMessage: string;
   eventId: string | undefined;
-  tab: string;
-  setActiveTab: (tab: string) => void;
+  fallback: {
+    message: string;
+    buttonMessage: string;
+    buttonOnClick: () => void;
+  };
 };
 
-function Cycles({ cycles, errorMessage, eventId, tab, setActiveTab }: CyclesProps) {
+function Cycles({ cycles, eventId, fallback }: CyclesProps) {
   const navigate = useNavigate();
 
   const formatDate = (date: string) => {
@@ -40,8 +42,8 @@ function Cycles({ cycles, errorMessage, eventId, tab, setActiveTab }: CyclesProp
       ) : (
         <section className="flex w-full flex-col items-center gap-4 pt-12">
           <CalendarX2 width={64} height={64} />
-          <Body>{errorMessage}</Body>
-          <Button onClick={() => setActiveTab(tab)}>{tab} questions</Button>
+          <Body>{fallback.message}</Body>
+          <Button onClick={fallback.buttonOnClick}>{fallback.buttonMessage}</Button>
         </section>
       )}
     </>
