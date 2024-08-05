@@ -52,18 +52,22 @@ function Event() {
       <Cycles
         cycles={openCycles}
         eventId={eventId}
-        errorMessage="No upcoming questions"
-        tab="past"
-        setActiveTab={setActiveTab}
+        fallback={{
+          message: 'No upcoming questions available.',
+          buttonMessage: 'Past questions',
+          buttonOnClick: () => setActiveTab('past'),
+        }}
       />
     ),
     past: (
       <Cycles
         cycles={closedCycles}
         eventId={eventId}
-        errorMessage="No past questions"
-        tab="upcoming"
-        setActiveTab={setActiveTab}
+        fallback={{
+          message: 'No past questions available.',
+          buttonMessage: 'Upcoming questions',
+          buttonOnClick: () => setActiveTab('upcoming'),
+        }}
       />
     ),
   };
