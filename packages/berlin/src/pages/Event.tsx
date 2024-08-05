@@ -1,10 +1,10 @@
 // React and third-party libraries
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
 // API
-import { fetchEvent, fetchEventCycles } from 'api';
+import { fetchEvent, fetchEventCycles, GetCycleResponse } from 'api';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
@@ -17,6 +17,10 @@ import Cycles from '../components/cycles';
 import Link from '../components/link';
 import Markdown from 'react-markdown';
 import Onboarding from '@/components/onboarding';
+
+function getInitialTab(openCycles: GetCycleResponse[] | undefined) {
+  return openCycles && openCycles.length > 0 ? 'upcoming' : 'past';
+}
 
 function Event() {
   const { eventId } = useParams();
@@ -45,16 +49,12 @@ function Event() {
   );
 
   const tabNames = ['upcoming', 'past'];
-  const [activeTab, setActiveTab] = useState<string>('upcoming');
+  const [activeTab, setActiveTab] = useState<string | null>(null);
 
-  // Update the active tab based on the presence of openCycles
-  useEffect(() => {
-    if (!openCycles || openCycles.length === 0) {
-      setActiveTab('past');
-    } else {
-      setActiveTab('upcoming');
-    }
-  }, [openCycles]);
+  if (openCycles && activeTab === null) {
+    const initialTab = getInitialTab(openCycles);
+    setActiveTab(initialTab);
+  }
 
   const tabs = {
     upcoming: <Cycles cycles={openCycles} eventId={eventId} errorMessage="No upcoming events..." />,
@@ -95,14 +95,15 @@ function Event() {
         <section className="flex w-full flex-col justify-between gap-2 md:flex-row md:items-center">
           <Subtitle>Questions</Subtitle>
           <Tabs.TabsHeader
+            key={activeTab} // Ensure TabsHeader re-renders when activeTab changes
             className="tabs"
             tabNames={tabNames}
-            activeTab={activeTab}
+            initialTab={activeTab}
             onTabChange={setActiveTab}
           />
         </section>
         <FlexColumn className="cycles">
-          <Tabs.TabsManager tabs={tabs} tab={activeTab} fallback={'Tab not found'} />
+          <Tabs.TabsManager tabs={tabs} tab={activeTab || ''} fallback={'Tab not found'} />
         </FlexColumn>
       </FlexColumn>
     </>
