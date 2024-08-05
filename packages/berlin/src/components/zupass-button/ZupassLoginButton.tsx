@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 type ZupassLoginButtonProps = {
   $variant?: 'contained' | 'link';
   children: React.ReactNode;
+  style?: React.CSSProperties; // Add this line
 };
 
 const POPUP_URL = window.location.origin + '/popup';
@@ -81,12 +82,7 @@ function ZupassLoginButton({ children, $variant, ...props }: ZupassLoginButtonPr
 
   return (
     <>
-      <Button
-        onClick={handleLoginClick}
-        {...props}
-        $variant={$variant}
-        style={{ fontSize: '14px', lineHeight: '14px', borderRadius: 4 }}
-      >
+      <Button onClick={handleLoginClick} {...props} $variant={$variant}>
         {children}
       </Button>
     </>
