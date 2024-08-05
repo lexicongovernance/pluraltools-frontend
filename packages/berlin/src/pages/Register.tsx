@@ -226,6 +226,7 @@ const CarouselWrapper = ({
 
   return (
     <Carousel
+      key={defaultStep}
       initialStep={defaultStep}
       onComplete={async () => {
         // query registration to check if it is approved
