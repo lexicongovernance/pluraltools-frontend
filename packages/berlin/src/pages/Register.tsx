@@ -1,9 +1,10 @@
 // React and third-party libraries
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
 import { UseFormReturn, useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
+import { useMemo, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
+import { z } from 'zod';
+import toast from 'react-hot-toast';
 
 // API
 import {
@@ -23,21 +24,23 @@ import {
   type GetUserResponse,
 } from 'api';
 
+// Utils
+import { dataSchema, fieldsSchema } from '@/utils/form-validation';
+
 // Hooks
 import useUser from '../hooks/useUser';
 
 // Components
-import { dataSchema, fieldsSchema } from '@/utils/form-validation';
-import { z } from 'zod';
-import Button from '../components/button';
 import { Carousel } from '../components/carousel';
 import { FlexColumn } from '../components/containers/FlexColumn.styled';
 import { Form } from '../components/containers/Form.styled';
 import { FormInput, FormSelectInput } from '../components/form-input';
-import Select from '../components/select';
-import Label from '../components/typography/Label';
-import { Subtitle } from '../components/typography/Subtitle.styled';
 import { SafeArea } from '../layout/Layout.styled';
+import { Subtitle } from '../components/typography/Subtitle.styled';
+import Button from '../components/button';
+import Label from '../components/typography/Label';
+import Select from '../components/select';
+import Skeleton from '@/components/skeleton';
 
 function Register() {
   const { user, isLoading } = useUser();
@@ -389,6 +392,16 @@ function EventGroupsForm({
       console.error('Error saving groups:', e);
     }
   };
+
+  if (!groupCategories) {
+    return (
+      <div className="flex w-full flex-col gap-4">
+        <Skeleton className="h-5 w-60" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-9 w-20" />
+      </div>
+    );
+  }
 
   return (
     <FlexColumn>
