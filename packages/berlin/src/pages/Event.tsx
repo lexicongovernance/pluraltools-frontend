@@ -17,10 +17,11 @@ import Cycles from '../components/cycles';
 import Link from '../components/link';
 import Markdown from 'react-markdown';
 import Onboarding from '@/components/onboarding';
+import Skeleton from '@/components/skeleton';
 
 function Event() {
   const { eventId } = useParams();
-  const { data: event } = useQuery({
+  const { data: event, isLoading } = useQuery({
     queryKey: ['event', eventId],
     queryFn: () =>
       fetchEvent({ eventId: eventId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
@@ -45,9 +46,22 @@ function Event() {
   );
 
   const initialTab = useMemo(
-    () => (openCycles && openCycles.length > 0 ? 'upcoming' : 'past'),
+    () => (openCycles && openCycles.length > 0 ? 'open' : 'closed'),
     [openCycles],
   );
+
+  if (isLoading) {
+    return (
+      <div className="grid w-full grid-cols-3 gap-4">
+        <div className="col-span-3 flex flex-col gap-4 md:col-span-2">
+          <Skeleton className="h-[100px] md:h-[212px]" />
+          <Skeleton className="h-[50px] md:h-[122px]" />
+        </div>
+        <Skeleton className="col-span-3 h-[250px] md:col-span-1 md:h-[350px]" />
+        <Skeleton className="col-span-3 h-[200px]" />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -103,28 +117,28 @@ function Questions({
 }) {
   const [activeTab, setActiveTab] = useState<string>(initialTab);
 
-  const tabNames = ['upcoming', 'past'];
+  const tabNames = ['open', 'closed'];
 
   const tabs = {
-    upcoming: (
+    open: (
       <Cycles
         cycles={openCycles}
         eventId={eventId}
         fallback={{
-          message: 'No upcoming questions available.',
-          buttonMessage: 'Past questions',
-          buttonOnClick: () => setActiveTab('past'),
+          message: 'No open questions available.',
+          buttonMessage: 'Closed questions',
+          buttonOnClick: () => setActiveTab('closed'),
         }}
       />
     ),
-    past: (
+    closed: (
       <Cycles
         cycles={closedCycles}
         eventId={eventId}
         fallback={{
-          message: 'No past questions available.',
-          buttonMessage: 'Upcoming questions',
-          buttonOnClick: () => setActiveTab('upcoming'),
+          message: 'No closed questions available.',
+          buttonMessage: 'Open questions',
+          buttonOnClick: () => setActiveTab('open'),
         }}
       />
     ),
