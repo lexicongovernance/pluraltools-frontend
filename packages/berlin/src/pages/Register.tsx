@@ -395,7 +395,7 @@ function EventGroupsForm({
 
   if (!groupCategories) {
     return (
-      <div className="flex w-full flex-col gap-4">
+      <div className="mt-4 flex w-full flex-col gap-4">
         <Skeleton className="h-5 w-60" />
         <Skeleton className="h-10 w-full" />
         <Skeleton className="h-9 w-20" />
