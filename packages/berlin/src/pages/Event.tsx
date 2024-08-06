@@ -52,42 +52,40 @@ function Event() {
   return (
     <>
       <Onboarding steps={eventSteps} type="event" />
-      <FlexColumn $gap="2rem" className="event">
-        <section className="grid w-full grid-cols-2 gap-x-4">
-          <div className={`${event?.imageUrl ? 'col-span-2' : 'col-span-3'} flex flex-col gap-4`}>
-            <BackButton fallbackRoute="/events" />
-            <Subtitle>{event?.name}</Subtitle>
-            {event?.description && (
-              <div>
-                <Markdown
-                  components={{
-                    a: ({ node, ...props }) => <Link to={props.href ?? ''}>{props.children}</Link>,
-                    p: ({ node, ...props }) => <Body>{props.children}</Body>,
-                  }}
-                >
-                  {event.description}
-                </Markdown>
-              </div>
-            )}
-          </div>
-          {event?.imageUrl && (
-            <div className="col-span-1">
-              <img
-                src={event?.imageUrl}
-                alt={`${event.name} image`}
-                className="h-full w-full object-cover object-center"
-              />
+      <section className="event grid w-full grid-cols-3 gap-4">
+        <div className={`${event?.imageUrl ? 'col-span-2' : 'col-span-3'} flex flex-col gap-4`}>
+          <BackButton fallbackRoute="/events" />
+          <Subtitle>{event?.name}</Subtitle>
+          {event?.description && (
+            <div>
+              <Markdown
+                components={{
+                  a: ({ node, ...props }) => <Link to={props.href ?? ''}>{props.children}</Link>,
+                  p: ({ node, ...props }) => <Body>{props.children}</Body>,
+                }}
+              >
+                {event.description}
+              </Markdown>
             </div>
           )}
-          <Questions
-            initialTab={initialTab}
-            key={initialTab}
-            closedCycles={closedCycles}
-            eventId={eventId}
-            openCycles={openCycles}
-          />
-        </section>
-      </FlexColumn>
+        </div>
+        {event?.imageUrl && (
+          <div className="col-span-3 md:col-span-1">
+            <img
+              src={event?.imageUrl}
+              alt={`${event.name} image`}
+              className="h-52 w-full object-cover object-center md:h-full"
+            />
+          </div>
+        )}
+        <Questions
+          initialTab={initialTab}
+          key={initialTab}
+          closedCycles={closedCycles}
+          eventId={eventId}
+          openCycles={openCycles}
+        />
+      </section>
     </>
   );
 }
@@ -133,7 +131,7 @@ function Questions({
   };
 
   return (
-    <FlexColumn>
+    <FlexColumn className="col-span-3">
       <section className="flex w-full flex-col justify-between gap-2 md:flex-row md:items-center">
         <Subtitle>Questions</Subtitle>
         <Tabs.TabsHeader tabNames={tabNames} activeTab={activeTab} onTabChange={setActiveTab} />
