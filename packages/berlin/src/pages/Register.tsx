@@ -404,7 +404,7 @@ function EventGroupsForm({
   }
 
   return (
-    <FlexColumn>
+    <FlexColumn className="mt-4">
       {groupCategories
         ?.filter((groupCategory) => groupCategory.required)
         .map((groupCategory) => (
