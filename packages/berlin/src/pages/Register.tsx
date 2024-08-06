@@ -429,7 +429,7 @@ function SelectEventGroup({
   return (
     <FormSelectInput
       form={form}
-      label={`Which of these best describes you?`}
+      label={`Please choose an affiliation`}
       options={groups?.map((group) => ({ value: group.id, name: group.name })) || []}
       // group category id is the key for the form
       // and the form supports multiple groups hence the array key
