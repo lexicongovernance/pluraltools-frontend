@@ -18,10 +18,6 @@ import Link from '../components/link';
 import Markdown from 'react-markdown';
 import Onboarding from '@/components/onboarding';
 
-function getInitialTab(openCycles: GetCycleResponse[] | undefined) {
-  return openCycles && openCycles.length > 0 ? 'upcoming' : 'past';
-}
-
 function Event() {
   const { eventId } = useParams();
   const { data: event } = useQuery({
@@ -48,12 +44,12 @@ function Event() {
     [eventCycles],
   );
 
-  const tabNames = ['upcoming', 'past'];
-  const [activeTab, setActiveTab] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<string>(getInitialTab(openCycles));
 
-  if (openCycles && activeTab === null) {
-    const initialTab = getInitialTab(openCycles);
-    setActiveTab(initialTab);
+  const tabNames = ['upcoming', 'past'];
+
+  function getInitialTab(openCycles: GetCycleResponse[] | undefined) {
+    return openCycles && openCycles.length > 0 ? 'upcoming' : 'past';
   }
 
   const tabs = {
@@ -94,16 +90,10 @@ function Event() {
         </section>
         <section className="flex w-full flex-col justify-between gap-2 md:flex-row md:items-center">
           <Subtitle>Questions</Subtitle>
-          <Tabs.TabsHeader
-            key={activeTab} // Ensure TabsHeader re-renders when activeTab changes
-            className="tabs"
-            tabNames={tabNames}
-            initialTab={activeTab}
-            onTabChange={setActiveTab}
-          />
+          <Tabs.TabsHeader tabNames={tabNames} activeTab={activeTab} onTabChange={setActiveTab} />
         </section>
         <FlexColumn className="cycles">
-          <Tabs.TabsManager tabs={tabs} tab={activeTab || ''} fallback={'Tab not found'} />
+          <Tabs.TabsManager tabs={tabs} tab={activeTab} fallback={'Tab not found'} />
         </FlexColumn>
       </FlexColumn>
     </>
