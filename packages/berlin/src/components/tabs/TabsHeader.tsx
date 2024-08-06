@@ -1,19 +1,16 @@
-import { Fragment, useState } from 'react';
+import { Fragment } from 'react';
 import { Body } from '../typography/Body.styled';
 import { Tab } from './TabsHeader.styled';
 
 type TabsHeaderProps = {
   tabNames: string[];
-  initialTab?: string;
+  activeTab?: string;
   className?: string;
   onTabChange?: (tab: string) => void;
 };
 
-export function TabsHeader({ tabNames, initialTab, className, onTabChange }: TabsHeaderProps) {
-  const [activeTab, setActiveTab] = useState<string>(initialTab || tabNames[0]);
-
+export function TabsHeader({ tabNames, activeTab, className, onTabChange }: TabsHeaderProps) {
   const handleTabClick = (tab: string) => {
-    setActiveTab(tab);
     if (onTabChange) {
       onTabChange(tab);
     }
