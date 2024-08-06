@@ -44,11 +44,10 @@ function Event() {
     [eventCycles],
   );
 
-  function getInitialTab(openCycles: GetCycleResponse[] | undefined) {
-    return openCycles && openCycles.length > 0 ? 'upcoming' : 'past';
-  }
-
-  const initialTab = useMemo(() => getInitialTab(openCycles), [openCycles]);
+  const initialTab = useMemo(
+    () => (openCycles && openCycles.length > 0 ? 'upcoming' : 'past'),
+    [openCycles],
+  );
 
   const tabNames = ['upcoming', 'past'];
 
