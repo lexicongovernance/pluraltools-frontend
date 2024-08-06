@@ -17,10 +17,11 @@ import Cycles from '../components/cycles';
 import Link from '../components/link';
 import Markdown from 'react-markdown';
 import Onboarding from '@/components/onboarding';
+import Skeleton from '@/components/skeleton';
 
 function Event() {
   const { eventId } = useParams();
-  const { data: event } = useQuery({
+  const { data: event, isLoading } = useQuery({
     queryKey: ['event', eventId],
     queryFn: () =>
       fetchEvent({ eventId: eventId || '', serverUrl: import.meta.env.VITE_SERVER_URL }),
@@ -48,6 +49,19 @@ function Event() {
     () => (openCycles && openCycles.length > 0 ? 'upcoming' : 'past'),
     [openCycles],
   );
+
+  if (isLoading) {
+    return (
+      <div className="grid w-full grid-cols-3 gap-4">
+        <div className="col-span-3 flex flex-col gap-4 md:col-span-2">
+          <Skeleton className="h-[100px] md:h-[212px]" />
+          <Skeleton className="h-[50px] md:h-[122px]" />
+        </div>
+        <Skeleton className="col-span-3 h-[250px] md:col-span-1 md:h-[350px]" />
+        <Skeleton className="col-span-3 h-[200px]" />
+      </div>
+    );
+  }
 
   return (
     <>
