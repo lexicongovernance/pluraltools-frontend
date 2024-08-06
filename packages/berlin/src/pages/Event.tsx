@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
 // API
-import { fetchEvent, fetchEventCycles, GetCycleResponse } from 'api';
+import { fetchEvent, fetchEventCycles } from 'api';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
