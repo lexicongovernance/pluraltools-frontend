@@ -1,14 +1,20 @@
 import { GetCycleResponse } from 'api';
 import { Body } from '../typography/Body.styled';
 import { useNavigate } from 'react-router-dom';
+import { CalendarX2 } from 'lucide-react';
+import Button from '../button';
 
 type CyclesProps = {
   cycles: GetCycleResponse[] | undefined;
-  errorMessage: string;
   eventId: string | undefined;
+  fallback: {
+    message: string;
+    buttonMessage: string;
+    buttonOnClick: () => void;
+  };
 };
 
-function Cycles({ cycles, errorMessage, eventId }: CyclesProps) {
+function Cycles({ cycles, eventId, fallback }: CyclesProps) {
   const navigate = useNavigate();
 
   const formatDate = (date: string) => {
@@ -34,7 +40,11 @@ function Cycles({ cycles, errorMessage, eventId }: CyclesProps) {
           </article>
         ))
       ) : (
-        <Body>{errorMessage}</Body>
+        <section className="flex w-full flex-col items-center gap-4 pt-12">
+          <CalendarX2 width={64} height={64} />
+          <Body>{fallback.message}</Body>
+          <Button onClick={fallback.buttonOnClick}>{fallback.buttonMessage}</Button>
+        </section>
       )}
     </>
   );
