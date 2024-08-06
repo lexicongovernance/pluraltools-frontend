@@ -52,8 +52,28 @@ function Event() {
   const tabNames = ['upcoming', 'past'];
 
   const tabs = {
-    upcoming: <Cycles cycles={openCycles} eventId={eventId} errorMessage="No upcoming events..." />,
-    past: <Cycles cycles={closedCycles} eventId={eventId} errorMessage="No past events..." />,
+    upcoming: (
+      <Cycles
+        cycles={openCycles}
+        eventId={eventId}
+        fallback={{
+          message: 'No upcoming questions available.',
+          buttonMessage: 'Past questions',
+          buttonOnClick: () => setActiveTab('past'),
+        }}
+      />
+    ),
+    past: (
+      <Cycles
+        cycles={closedCycles}
+        eventId={eventId}
+        fallback={{
+          message: 'No past questions available.',
+          buttonMessage: 'Upcoming questions',
+          buttonOnClick: () => setActiveTab('upcoming'),
+        }}
+      />
+    ),
   };
 
   return (

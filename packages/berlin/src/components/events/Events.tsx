@@ -2,14 +2,14 @@
 import { useNavigate } from 'react-router-dom';
 
 // API
-import { GetEventResponse } from 'api';
+import { GetEventsResponse } from 'api';
 
 // Components
 import { Body } from '../typography/Body.styled';
 import { Subtitle } from '../typography/Subtitle.styled';
 
 type EventsProps = {
-  events: GetEventResponse[] | undefined;
+  events: GetEventsResponse | null | undefined;
   errorMessage: string;
 };
 
@@ -20,8 +20,14 @@ export default function Events({ events, errorMessage }: EventsProps) {
     navigate(`/events/${eventId}/cycles`);
   };
 
-  return events?.length ? (
-    events.map((event) => {
+  const sortedEvents = events?.sort((a, b) => {
+    const rankA = a.eventDisplayRank ?? Number.MAX_SAFE_INTEGER;
+    const rankB = b.eventDisplayRank ?? Number.MAX_SAFE_INTEGER;
+    return rankA - rankB;
+  });
+
+  return sortedEvents?.length ? (
+    sortedEvents.map((event) => {
       return (
         <article
           key={event.id}

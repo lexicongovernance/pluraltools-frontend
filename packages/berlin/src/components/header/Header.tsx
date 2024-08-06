@@ -69,7 +69,9 @@ export default function Header() {
                 </div>
               </>
             ) : (
-              <ZupassLoginButton>Login</ZupassLoginButton>
+              <ZupassLoginButton style={{ fontSize: '14px', lineHeight: '14px' }}>
+                Login
+              </ZupassLoginButton>
             )}
             <NavigationMenuItem>
               <NavigationMenuLink>
@@ -104,7 +106,7 @@ const HeaderLinks = ({ user }: { user: GetUserResponse }) => {
   });
 
   const { data: eventNavLinks } = useQuery({
-    queryKey: ['eventNavLinks'],
+    queryKey: ['event', eventId, 'navLinks'],
     queryFn: () =>
       fetchEventNavLinks({ serverUrl: import.meta.env.VITE_SERVER_URL, eventId: eventId || '' }),
     enabled: !!user && !!eventId,
