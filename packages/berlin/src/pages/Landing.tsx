@@ -14,9 +14,8 @@ function Landing() {
           As part of the Ethereum Foundation’s 2024{' '}
           <Link to="https://summerofprotocols.com">Summer of Protocols</Link> program, we have
           created this tool to analyze the efficiency, effectiveness and risks of quadratic and
-          plural voting mechanisms. You can learn more about the plural voting mechanism
+          plural voting mechanisms. You can learn more about the plural voting mechanism{' '}
           <Link to="https://github.com/lexicongovernance/pluraltools-backend/wiki/Plural-Voting-Model">
-            {' '}
             here
           </Link>
           .
