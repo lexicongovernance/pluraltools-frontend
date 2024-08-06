@@ -46,7 +46,7 @@ function Event() {
   );
 
   const initialTab = useMemo(
-    () => (openCycles && openCycles.length > 0 ? 'open' : 'past'),
+    () => (openCycles && openCycles.length > 0 ? 'open' : 'closed'),
     [openCycles],
   );
 
@@ -117,7 +117,7 @@ function Questions({
 }) {
   const [activeTab, setActiveTab] = useState<string>(initialTab);
 
-  const tabNames = ['open', 'past'];
+  const tabNames = ['open', 'closed'];
 
   const tabs = {
     open: (
@@ -126,17 +126,17 @@ function Questions({
         eventId={eventId}
         fallback={{
           message: 'No open questions available.',
-          buttonMessage: 'Past questions',
-          buttonOnClick: () => setActiveTab('past'),
+          buttonMessage: 'Closed questions',
+          buttonOnClick: () => setActiveTab('closed'),
         }}
       />
     ),
-    past: (
+    closed: (
       <Cycles
         cycles={closedCycles}
         eventId={eventId}
         fallback={{
-          message: 'No past questions available.',
+          message: 'No closed questions available.',
           buttonMessage: 'Open questions',
           buttonOnClick: () => setActiveTab('open'),
         }}
