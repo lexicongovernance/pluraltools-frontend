@@ -9,6 +9,7 @@ export type GetEventResponse = {
   description: string | null;
   fields: unknown;
   status: 'OPEN' | 'CLOSED' | 'UPCOMING' | null;
+  eventDisplayRank: number | null;
 };
 
 export type GetEventsResponse = GetEventResponse[];
