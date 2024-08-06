@@ -44,13 +44,13 @@ function Event() {
     [eventCycles],
   );
 
-  const [activeTab, setActiveTab] = useState<string>(getInitialTab(openCycles));
-
-  const tabNames = ['upcoming', 'past'];
-
   function getInitialTab(openCycles: GetCycleResponse[] | undefined) {
     return openCycles && openCycles.length > 0 ? 'upcoming' : 'past';
   }
+
+  const initialTab = useMemo(() => getInitialTab(openCycles), [openCycles]);
+
+  const tabNames = ['upcoming', 'past'];
 
   const tabs = {
     upcoming: <Cycles cycles={openCycles} eventId={eventId} errorMessage="No upcoming events..." />,
@@ -61,7 +61,7 @@ function Event() {
     <>
       <Onboarding steps={eventSteps} type="event" />
       <FlexColumn $gap="2rem" className="event">
-        <section className="grid w-full grid-cols-3 gap-x-4">
+        <section className="grid w-full grid-cols-2 gap-x-4">
           <div className={`${event?.imageUrl ? 'col-span-2' : 'col-span-3'} flex flex-col gap-4`}>
             <BackButton fallbackRoute="/events" />
             <Subtitle>{event?.name}</Subtitle>
@@ -87,17 +87,34 @@ function Event() {
               />
             </div>
           )}
+          <Questions tabNames={tabNames} tabs={tabs} initialTab={initialTab} key={initialTab} />
         </section>
-        <section className="flex w-full flex-col justify-between gap-2 md:flex-row md:items-center">
-          <Subtitle>Questions</Subtitle>
-          <Tabs.TabsHeader tabNames={tabNames} activeTab={activeTab} onTabChange={setActiveTab} />
-        </section>
-        <FlexColumn className="cycles">
-          <Tabs.TabsManager tabs={tabs} tab={activeTab} fallback={'Tab not found'} />
-        </FlexColumn>
       </FlexColumn>
     </>
   );
 }
 
+function Questions({
+  tabNames,
+  tabs,
+  initialTab,
+}: {
+  tabNames: string[];
+  tabs: Record<string, JSX.Element>;
+  initialTab: string;
+}) {
+  const [activeTab, setActiveTab] = useState<string>(initialTab);
+
+  return (
+    <FlexColumn>
+      <section className="flex w-full flex-col justify-between gap-2 md:flex-row md:items-center">
+        <Subtitle>Questions</Subtitle>
+        <Tabs.TabsHeader tabNames={tabNames} activeTab={activeTab} onTabChange={setActiveTab} />
+      </section>
+      <FlexColumn className="cycles">
+        <Tabs.TabsManager tabs={tabs} tab={activeTab} fallback={'Tab not found'} />
+      </FlexColumn>
+    </FlexColumn>
+  );
+}
 export default Event;
