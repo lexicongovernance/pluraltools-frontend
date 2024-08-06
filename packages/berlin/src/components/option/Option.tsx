@@ -159,7 +159,7 @@ export default function Option({
             {option.subTitle}
           </Markdown>
         )}
-        <MessageSquareText onClick={handleCommentsClick} />
+        <MessageSquareText className="cursor-pointer" onClick={handleCommentsClick} />
       </section>
     </article>
   );
