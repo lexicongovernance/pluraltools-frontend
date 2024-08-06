@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
 // API
-import { fetchEvent, fetchEventCycles } from 'api';
+import { fetchEvent, fetchEventCycles, GetCycleResponse } from 'api';
 
 // Components
 import { Body } from '../components/typography/Body.styled';
@@ -49,33 +49,6 @@ function Event() {
     [openCycles],
   );
 
-  const tabNames = ['upcoming', 'past'];
-
-  const tabs = {
-    upcoming: (
-      <Cycles
-        cycles={openCycles}
-        eventId={eventId}
-        fallback={{
-          message: 'No upcoming questions available.',
-          buttonMessage: 'Past questions',
-          buttonOnClick: () => setActiveTab('past'),
-        }}
-      />
-    ),
-    past: (
-      <Cycles
-        cycles={closedCycles}
-        eventId={eventId}
-        fallback={{
-          message: 'No past questions available.',
-          buttonMessage: 'Upcoming questions',
-          buttonOnClick: () => setActiveTab('upcoming'),
-        }}
-      />
-    ),
-  };
-
   return (
     <>
       <Onboarding steps={eventSteps} type="event" />
@@ -106,7 +79,13 @@ function Event() {
               />
             </div>
           )}
-          <Questions tabNames={tabNames} tabs={tabs} initialTab={initialTab} key={initialTab} />
+          <Questions
+            initialTab={initialTab}
+            key={initialTab}
+            closedCycles={closedCycles}
+            eventId={eventId}
+            openCycles={openCycles}
+          />
         </section>
       </FlexColumn>
     </>
@@ -114,15 +93,44 @@ function Event() {
 }
 
 function Questions({
-  tabNames,
-  tabs,
   initialTab,
+  openCycles,
+  closedCycles,
+  eventId,
 }: {
-  tabNames: string[];
-  tabs: Record<string, JSX.Element>;
   initialTab: string;
+  openCycles: GetCycleResponse[] | undefined;
+  eventId?: string;
+  closedCycles: GetCycleResponse[] | undefined;
 }) {
   const [activeTab, setActiveTab] = useState<string>(initialTab);
+
+  const tabNames = ['upcoming', 'past'];
+
+  const tabs = {
+    upcoming: (
+      <Cycles
+        cycles={openCycles}
+        eventId={eventId}
+        fallback={{
+          message: 'No upcoming questions available.',
+          buttonMessage: 'Past questions',
+          buttonOnClick: () => setActiveTab('past'),
+        }}
+      />
+    ),
+    past: (
+      <Cycles
+        cycles={closedCycles}
+        eventId={eventId}
+        fallback={{
+          message: 'No past questions available.',
+          buttonMessage: 'Upcoming questions',
+          buttonOnClick: () => setActiveTab('upcoming'),
+        }}
+      />
+    ),
+  };
 
   return (
     <FlexColumn>
