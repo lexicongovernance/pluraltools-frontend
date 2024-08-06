@@ -82,7 +82,7 @@ function Register() {
     }
 
     // if no fields exists then stay on group categories page
-    if (Object.values(fields).length === 0) {
+    if (Object.values(fields.data).length === 0) {
       return 0;
     }
 
