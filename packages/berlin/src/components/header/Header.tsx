@@ -69,7 +69,9 @@ export default function Header() {
                 </div>
               </>
             ) : (
-              <ZupassLoginButton>Login</ZupassLoginButton>
+              <ZupassLoginButton style={{ fontSize: '14px', lineHeight: '14px' }}>
+                Login
+              </ZupassLoginButton>
             )}
             <NavigationMenuItem>
               <NavigationMenuLink>
