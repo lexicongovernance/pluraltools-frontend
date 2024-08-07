@@ -17,11 +17,6 @@ type CyclesProps = {
 function Cycles({ cycles, eventId, fallback }: CyclesProps) {
   const navigate = useNavigate();
 
-  const formatDate = (date: string) => {
-    const eventEndDate = new Date(date);
-    return new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric' }).format(eventEndDate);
-  };
-
   const handleCycleClick = (cycleId: string) => {
     navigate(`/events/${eventId}/cycles/${cycleId}`);
   };
@@ -36,7 +31,6 @@ function Cycles({ cycles, eventId, fallback }: CyclesProps) {
             onClick={() => handleCycleClick(cycle.id)}
           >
             <Body>{cycle?.questions[0]?.title}</Body>
-            <Body>{formatDate(cycle.endAt)}</Body>
           </article>
         ))
       ) : (

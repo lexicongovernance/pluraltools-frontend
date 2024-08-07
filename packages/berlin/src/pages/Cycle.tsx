@@ -326,7 +326,7 @@ function Cycle() {
         {currentCycle?.options.length ? (
           <FlexColumn>
             <div className="flex w-full items-center justify-between">
-              <Subtitle>Vote items</Subtitle>
+              <Subtitle>Vote options</Subtitle>
               <div className="flex cursor-pointer items-center gap-2">
                 <Body>Sort</Body>
                 <DropdownMenu>
