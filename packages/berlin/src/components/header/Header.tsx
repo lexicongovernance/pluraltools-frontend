@@ -28,7 +28,7 @@ import {
 } from '@/_components/ui/navigation-menu';
 import Icon from '../icon';
 import ThemeToggler from '../theme-toggler';
-import ZupassLoginButton from '../zupass-button';
+import { SIWEButton } from '../siwe-button';
 
 export default function Header() {
   const theme = useAppStore((state) => state.theme);
@@ -69,9 +69,7 @@ export default function Header() {
                 </div>
               </>
             ) : (
-              <ZupassLoginButton style={{ fontSize: '14px', lineHeight: '14px' }}>
-                Login
-              </ZupassLoginButton>
+              <SIWEButton />
             )}
             <NavigationMenuItem>
               <NavigationMenuLink>
