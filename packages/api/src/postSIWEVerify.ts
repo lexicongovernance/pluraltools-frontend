@@ -1,23 +1,21 @@
 import { ApiRequest, GetUserResponse } from './types';
 
-export async function postVerify({
-  email,
-  pcdStr,
+export async function postSIWEVerify({
   serverUrl,
-  uuid,
+  message,
+  signature,
 }: ApiRequest<{
-  pcdStr: string;
-  email: string;
-  uuid: string;
+  message: string;
+  signature: string;
 }>): Promise<GetUserResponse | null> {
   try {
-    const response = await fetch(`${serverUrl}/api/auth/zupass/verify`, {
+    const response = await fetch(`${serverUrl}/api/auth/siwe/verify`, {
       method: 'POST',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ pcd: pcdStr, email: email, uuid: uuid }),
+      body: JSON.stringify({ message, signature }),
     });
 
     if (!response.ok) {
