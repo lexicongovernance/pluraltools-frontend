@@ -37,7 +37,7 @@ export default function Header() {
   const { user } = useUser();
 
   return (
-    <header className="bg-primary border-secondary border-b text-sm">
+    <header className="border-secondary border-b bg-amber-500 text-sm">
       {isMenuOpen && (
         <NavigationMenu
           className="font-raleway bg-primary absolute z-20 mt-[65px] flex h-full flex-col items-center justify-center uppercase"
@@ -52,7 +52,7 @@ export default function Header() {
       <section className="mx-auto flex min-h-16 w-[min(90%,1080px)] items-center justify-between">
         <div className="flex cursor-pointer items-center gap-2" onClick={() => navigate('/')}>
           <img src={`/logos/lexicon-${theme}.svg`} alt="Lexicon Logo" height={32} width={32} />
-          <h1 className="text-2xl font-semibold leading-6">Lexicon</h1>
+          <h1 className="text-2xl font-semibold leading-6">Camilo</h1>
         </div>
         <NavigationMenu className="font-raleway uppercase">
           <NavigationMenuList className="gap-3">
