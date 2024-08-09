@@ -10,6 +10,7 @@ function Landing() {
   return (
     <SafeArea>
       <FlexColumn $gap="2rem">
+        <Body>BEN BEN BEN</Body>
         <Body>
           This tool is designed to demonstrate Lexicon’s plural governance tooling. Users can
           register, discuss, and vote on proposals, with vote results calculated quadratically or
