@@ -50,7 +50,6 @@ type QuestionOption = GetCycleResponse['questions'][number]['options'][number];
 function Cycle() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const theme = useAppStore((state) => state.theme);
   const { user } = useUser();
   const { eventId, cycleId } = useParams();
   const { data: cycle } = useQuery({
